@@ -83,7 +83,7 @@ const Register = () => {
     //     </div>
     //   </div>
     // </div>
-    
+    <div>Register</div>
   );
 };
 
