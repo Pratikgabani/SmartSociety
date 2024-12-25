@@ -5,14 +5,18 @@ import building2 from './../../assets/Rectangle99.png';
 function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <div className="text-center mb-6">
-          <img src={logo} alt="Nova Vista" className="mx-auto mb-4" />
-          <h1 className="text-2xl font-bold">Login</h1>
-        </div>
+      <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-4xl">
+      {/* Left Form Section */}
+        <div className="md:w-1/2">
+          <a href='/'>
+          <img  src={logo} alt="Nova Vista" className="mx-auto mb-4 " />
+          </a>
+          
+          <h1 className="text-3xl font-bold  mb-4 cursor-pointer">Login</h1>
+        
         <form>
           <div className="mb-4">
-            <label className="block text-gray-700">Block</label>
+            <label className="block font-medium text-gray-700">Block</label>
             <input
               type="text"
               placeholder="A, B, C, etc."
@@ -20,7 +24,7 @@ function Login() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">House no.</label>
+            <label className="block font-medium text-gray-700">House no.</label>
             <input
               type="text"
               placeholder="102, 405, etc."
@@ -28,7 +32,7 @@ function Login() {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700">Password</label>
+            <label className="block font-medium text-gray-700">Password</label>
             <input
               type="password"
               placeholder="John@12deo5"
@@ -37,7 +41,7 @@ function Login() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            className="w-full bg-blue-600 text-white py-2 font-bold rounded-lg hover:bg-blue-700"
           >
             Login
           </button>
@@ -45,12 +49,12 @@ function Login() {
         <div className="text-center mt-4">
           <p>
             Don't have an account?{' '}
-            <a href="/register" className="text-blue-500">
+            <a href="/register" className="text-blue-600 font-bold">
               Register
             </a>
           </p>
         </div>
-        <div className="text-center mt-4">
+        <div className="text-center mt-4 cursor-pointer">
           <p>Or with</p>
           <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300">
             Continue with Mobile
@@ -60,12 +64,15 @@ function Login() {
           </button>
         </div>
       </div>
-      <div className="hidden lg:flex flex-col ml-8 mt-4">
-        <img src={building1} alt="Building 1" className=" mb-4 rounded-lg shadow-lg" />
-        <img src={building2} alt="Building 2" className="mb-4  rounded-lg shadow-lg" />
-        
+
+{/* Right Image Section */}
+      <div className="hidden md:flex md:w-1/2 md:flex-col md:gap-4 md:pl-6">
+        <img src={building1} alt="Building 1" className=" rounded-lg " />
+        <img src={building2} alt="Building 2" className=" rounded-lg" />
+        </div>
       </div>
     </div>
+    
   );
 }
 

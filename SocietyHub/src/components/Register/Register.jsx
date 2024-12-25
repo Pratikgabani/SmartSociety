@@ -1,17 +1,22 @@
 import React from 'react';
 import img1 from './../../assets/Rectangle95.png'
 import img2 from './../../assets/Rectangle99.png'
+import logo from './../../assets/logo.png';
+import Login from '../Login/Login';
 
 const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg p-6 md:flex w-11/12 max-w-4xl">
+      <div className="bg-white rounded-lg shadow-lg p-8 md:flex w-11/12 max-w-4xl">
         {/* Left Form Section */}
         <div className="md:w-1/2">
-          <h1 className="text-3xl font-bold mb-4">Register</h1>
+        <a href="/">
+        <img src={logo} alt="Nova Vista" className="mx-auto mb-4 " />
+        </a>
+          <h1 className="text-3xl font-bold mb-4 cursor-pointer">Register</h1>
           <form>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <label className="block  font-medium text-gray-700">Name</label>
               <input
                 type="text"
                 placeholder="John Deon"
@@ -19,7 +24,7 @@ const Register = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block font-medium text-gray-700">Email</label>
               <input
                 type="email"
                 placeholder="john76d0@gmail.com"
@@ -28,7 +33,7 @@ const Register = () => {
             </div>
             <div className="mb-4 flex gap-4">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">Block</label>
+                <label className="block font-medium text-gray-700">Block</label>
                 <input
                   type="text"
                   placeholder="A, B, C, etc."
@@ -36,7 +41,7 @@ const Register = () => {
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">House no.</label>
+                <label className="block font-medium text-gray-700">House no.</label>
                 <input
                   type="text"
                   placeholder="102, 405, etc."
@@ -45,7 +50,7 @@ const Register = () => {
               </div>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <label className="block font-medium text-gray-700">Password</label>
               <input
                 type="password"
                 placeholder="John@12deo5"
@@ -54,14 +59,14 @@ const Register = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white py-2 font-bold rounded-lg hover:bg-blue-700 transition"
             >
               Register
             </button>
           </form>
-          <p className="text-sm text-center mt-4">
+          <p className=" text-center mt-4">
             You have already registered?{'  '}
-            <a href="#" className="text-blue-600 underline">
+            <a href='/login'  className="text-blue-600 font-bold "> 
               Login
             </a>
           </p>

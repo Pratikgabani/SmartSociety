@@ -2,6 +2,8 @@ import React from 'react';
 import logo from './../../assets/logo.png'; // Adjust the path based on your folder structure
 import apartment from './../../assets/Rectangle99.png'; // Adjust the path based on your folder structure
 import { Link } from 'react-router-dom';
+import img1 from './../../assets/Rectangle95.png'
+import img2 from './../../assets/Rectangle99.png'
 
 const Front = () => {
   return (
@@ -19,8 +21,8 @@ const Front = () => {
         </h2>
         <p className="text-lg text-gray-600 mb-6">Connect with your neighbors and stay</p>
         <div className="flex flex-col items-center w-full mb-6">
-         <Link to="/register" className="w-full max-w-xs p-2 mb-2 text-center text-white bg-blue-500 rounded-3xl hover:bg-blue-600 " > <button  className='hover:underline'>Register</button></Link>
-          <Link to="/login" className="w-full max-w-xs p-2 mb-2 text-center text-white bg-blue-500 rounded-3xl hover:bg-blue-600 " > <button  className='hover:underline '>Login</button></Link>
+         <a href="/register" className="w-full max-w-xs p-2 mb-2 text-center text-white bg-blue-500 rounded-3xl hover:bg-blue-600 " > <button  className='hover:underline'>Register</button></a>
+          <a href="/login" className="w-full max-w-xs p-2 mb-2 text-center text-white bg-blue-500 rounded-3xl hover:bg-blue-600 " > <button  className='hover:underline '>Login</button></a>
           <p className="text-gray-600 mb-2">Or with</p>
           <button className="w-full max-w-xs p-2 mb-2 text-white bg-gray-500 hover:bg-gray-600 rounded-3xl">Continue with Mobile</button>
           <button className="w-full max-w-xs p-2 mb-2 text-white bg-gray-500 hover:bg-gray-600 rounded-3xl">Continue with Google</button>
@@ -38,6 +40,12 @@ const Front = () => {
       
       </main>
     </div>
+
+  //   <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      
+
+
+  //     </div>
   );
 };
 
