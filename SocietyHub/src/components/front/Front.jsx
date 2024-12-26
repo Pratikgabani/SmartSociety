@@ -16,10 +16,10 @@ const Front = () => {
       </header>
       <main className="flex mt-10 justify-center">
         <div >
-        <h2 className="text-4xl font-bold text-gray-800 mb-2">
+        {/* <h2 className="text-4xl font-bold text-gray-800 mb-2">
           Collaborate with <span className="text-blue-500">your.</span>
-        </h2>
-        <p className="text-lg text-gray-600 mb-6">Connect with your neighbors and stay</p>
+        </h2> */}
+        <p className="text-lg text-gray-600 mb-6">Connect with your neighbours and stay updated </p>
         <div className="flex flex-col items-center w-full mb-6">
          <a href="/register" className="w-full max-w-xs p-2 mb-2 text-center text-white bg-blue-500 rounded-3xl hover:bg-blue-600 " > <button  className='hover:underline'>Register</button></a>
           <a href="/login" className="w-full max-w-xs p-2 mb-2 text-center text-white bg-blue-500 rounded-3xl hover:bg-blue-600 " > <button  className='hover:underline '>Login</button></a>
