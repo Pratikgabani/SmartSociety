@@ -4,14 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter,createRoutesFromElements } from "react-router-dom";
 import { Route, RouterProvider } from "react-router-dom";
-import Front from './components/Front/Front';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
+import Landing from './components/Landing/Landing.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-    <Route path="/" element={<Front/>} />
+    <Route path="/" element={<Landing/>} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
     </>
