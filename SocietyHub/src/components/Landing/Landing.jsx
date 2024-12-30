@@ -4,68 +4,57 @@ import dropDown from './../../assets/dropDown.png'
 import logo from './../../assets/logo.png'
 import ShinyText from '../ReactBit/Shiny';
 import { SplitText } from '../ReactBit/SplitText';
-
+import support from './../../assets/support.png'
+import Userfriendly from './../../assets/Userfriendly.png'
+import communityBuiild from './../../assets/communityBuild.png'
+import betterCommunication from './../../assets/betterCommunication.png'
+import transparency from './../../assets/transparency.png'
 import tickMark from './../../assets/Group92.png'
 import Dropdown from '../Dropdown';
 import Card from '../Card';
 import SpotlightCard from '../SpotlightCard';
 function Landing() {
-<<<<<<< HEAD
-  return (
-    <>
-    <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2 border-blue-500 '>
-        <div className="container w-11/12 border-2 border-black">
-        <nav className='flex justify-between items-center mt-6  py-3 text-lg border-2 border-red-500 '>
-            <img className='cursor-pointer' href='/' src='#' alt="Resihub"/>
-            <ul className='flex gap-9 items-center '>
-                <li className='hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out'>Home</li>
-                <li className='hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out flex items-center'>Features <IoMdArrowDropdown /></li>
-                <li className='hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out'>Pricing</li>
-                <li className='hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out'>About Us</li>
-            </ul>
-            <a className=' cursor-pointer text-black  font-semibold py-1 px-4 rounded-3xl border-2 border-black trasnsition duration-300 ease-in-out hover:text-[white] hover:bg-[#005B96]  hover:border-[#005B96] hover:border-2  '>Login
-            </a>
-        </nav>
-=======
     return (
         <>
-            <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2 border-blue-500 '>
+            <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2  '>
                 <div className="container w-11/12 border-2 border-black">
->>>>>>> dcde57a311d6c267aa66bcd8bb27f688e5e42463
 
-                    <nav className=" border-b border-gray-200 text-white shadow-md py-3">
+                    <nav className="text-[18px] border-b border-gray-200 text-white shadow-md mt-3 py-3">
                         <div className="container mx-auto flex justify-between items-center px-4">
                             <a href="/" className="text-xl font-bold text-black"> <img className="h-8" src="#" alt="Resihub" /> </a>
                             <ul className="flex gap-9 items-center">
-                                <li className="text-black hover:text-blue-400 font-medium cursor-pointer transition duration-200 ease-in-out">Home</li>
-                                <li className="text-black hover:text-blue-400 font-medium cursor-pointer transition duration-200 ease-in-out"> <Dropdown /> </li>
-                                <li className="text-black hover:text-blue-400 font-medium cursor-pointer transition duration-200 ease-in-out">Pricing</li>
-                                <li className="text-black hover:text-blue-400 font-medium cursor-pointer transition duration-200 ease-in-out">About Us</li>
-                            </ul> <a className="text-black bg-gray-100 hover:text-white hover:bg-blue-500 font-semibold py-2 px-4 rounded-full border border-black hover:border-blue-500 transition duration-300 ease-in-out" href="/login"> Login </a>
+                                <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">Home</li>
+                                <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out"><Dropdown /></li>
+                                <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">Pricing</li>
+                                <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">About Us</li>
+                            </ul> 
+                            <a className="text-black bg-gray-100 hover:text-white hover:bg-[#005B96] font-semibold py-2 px-4 rounded-full border border-black hover:border-blue-500 transition duration-300 ease-in-out" href="/login"> Login </a>
                         </div>
                     </nav>
 
 
                     <div className='mt-10 '>
-                        <div className=" ml-10 leftPart">
+                        <div className="ml-10 leftPart">
                             <h1 className='text-[48px] font-bold'>Simplify Society Living with</h1>
                             <h1 className='text-[#005B96] text-[48px] font-bold '><SplitText text="ResiHub !" className="custom-class" delay={150} /></h1>
-                            <ul className='flex flex-col gap-3'>
-                                <li className='flex items-center text-[16px] w-[440px]'><img src={tickMark} alt="" />Streamline society communication with instant updates and announcements.</li>
-                                <li className='flex items-center text-[16px] w-[440px]'><img src={tickMark} alt="" />Manage finances securely with easy online payment and tracking.</li>
+                            <ul className='flex flex-col gap-3 text-lg  '>
+                                <li className='flex items-center text-[16px] w-[440px] line-height-[10px]'><img src={tickMark} alt="" />Streamline society communication with instant updates and announcements.</li>
+                                <li className='flex items-center text-[16px] w-[440px] line-height-[10px]'><img src={tickMark} alt="" />Manage finances securely with easy online payment and tracking.</li>
                                 <li className='flex items-center text-[16px] w-[440px]'><img src={tickMark} alt="" />Organize and optimize resources efficiently in one centralized system.</li>
                                 <li className='flex items-center text-[16px] w-[440px]'><img src={tickMark} alt="" />Simplify everyday management tasks with automation and user-friendly tools.</li>
-                                <li><button className='text-[#005B96] text-xl font-semibold border border-[#005B96] py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white'>Let's explore</button></li>
+                                <li className='pt-9'>
+                                <a href='#' className='text-black text-xl font-semibold cursor-pointer border transition ease-in-out duration-300 border-black py-[14px] px-4 rounded-full hover:bg-[#005B96] hover:text-white'>Let's explore</a></li>
                             </ul>
                         </div>
                        
-                        <div className="flex flex-col items-center justify-center mt-10 bg-[#F5F9FC] border-none"> <div className=" p-8 rounded-lg  max-w-lg text-center">
-                             <h1 className="text-5xl font-bold mb-4"> Why <span className="text-blue-600">ResiHub</span>? </h1> 
+                        <div className="flex flex-col items-center justify-center mt-[68px] bg-[#F5F9FC] border-none"> <div className=" p-8 rounded-lg  max-w-lg text-center">
+                             <h1 className="text-5xl font-bold mb-4"> Why <span className="text-[#005B96]">ResiHub</span>? </h1> 
                              <ul className="text-left space-y-4 mt-7">
-                                 <li> <span className="font-semibold text-xl">Better Communication:</span> Eliminate misunderstandings with instant notifications and updates. </li> 
-                                 <li> <span className="font-semibold text-xl">Transparency:</span> Track finances and records in real time. </li>
-                                  <li> <span className="font-semibold text-xl">Efficiency:</span> Save time with automation of daily tasks. </li>
-                                   <li> <span className="font-semibold text-xl">Community Building:</span> Create a strong sense of belonging with engaging tools and features. </li>
+                                 <li> <span className="font-semibold text-xl"> <img className='w-16  ' src={communityBuiild} alt="" /> Better Communication:</span> Eliminate misunderstandings with instant notifications and updates. </li> 
+                                 <li> <span className="font-semibold text-xl"><img className='w-16' src={transparency} alt="" />Transparency:</span> Track finances and records in real time. </li>
+                                  <li> <span className="font-semibold text-xl"><img className='w-16' src={support} alt="" />24/7 Support:</span> Save time with automation of daily tasks. </li>
+                                   <li> <span className="font-semibold text-xl"> <img className='w-16' src={betterCommunication} alt="" />Community Building:</span> Create a strong sense of belonging with engaging tools and features. </li>
+                                   <li><span className='font-semibold text-xl'><img className='w-16' src={Userfriendly} alt="" />User-Friendly Interface :</span></li>
                                  </ul> </div> </div>
 
                                  <div className='flex flex-col items-center justify-center mt-10'>

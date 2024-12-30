@@ -41,7 +41,7 @@ function Login() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 font-bold rounded-lg hover:bg-blue-700"
+            className="w-full bg-[#005B96] text-white py-2 font-bold rounded-lg hover:bg-[#005B96]"
           >
             Login
           </button>
@@ -49,7 +49,7 @@ function Login() {
         <div className="text-center mt-4">
           <p>
             Don't have an account?{' '}
-            <a href="/register" className="text-blue-600 font-bold">
+            <a href="/register" className="text-[#005B96] font-bold">
               Register
             </a>
           </p>
