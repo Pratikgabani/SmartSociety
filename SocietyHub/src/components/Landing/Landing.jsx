@@ -12,7 +12,7 @@ function Landing() {
     <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2 border-blue-500 '>
         <div className="container w-11/12 border-2 border-black">
         <nav className='flex justify-between items-center mt-6  py-3 text-lg border-2 border-red-500 '>
-            <img className='cursor-pointer' href='/' src='#'alt="Resihub"/>
+            <img className='cursor-pointer' href='/' src='#' alt="Resihub"/>
             <ul className='flex gap-9 items-center '>
                 <li className='hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out'>Home</li>
                 <li className='hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out flex items-center'>Features <IoMdArrowDropdown /></li>
