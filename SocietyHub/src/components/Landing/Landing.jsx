@@ -3,6 +3,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import dropDown from './../../assets/dropDown.png'
 import logo from './../../assets/logo.png'
 import ShinyText from '../ReactBit/Shiny';
+import ImageSlider from '../ImgSlider/ImgSlider';
 import { SplitText } from '../ReactBit/SplitText';
 import support from './../../assets/support.png'
 import Userfriendly from './../../assets/Userfriendly.png'
@@ -34,6 +35,7 @@ function Landing() {
 
 
           <div className='mt-10 '>
+            <div className='flex justify-between'>
             <div className="ml-10 leftPart">
               <h1 className='text-[48px] font-bold'>Simplify Society Living with</h1>
               <h1 className='text-[#005B96] text-[48px] font-bold '><SplitText text="ResiHub !" className="custom-class" delay={150} /></h1>
@@ -47,6 +49,10 @@ function Landing() {
               </ul>
             </div>
 
+            <div className="rightPart mr-10">
+              <ImageSlider />
+            </div>
+            </div>
             <div className="flex flex-col items-center justify-center mt-[68px] bg-[#F5F9FC] border-none"> <div className=" p-8 rounded-lg  max-w-lg text-center">
               <h1 className="text-5xl font-bold mb-4"> Why <span className="text-[#005B96]">ResiHub</span>? </h1>
               <ul className="text-left space-y-4 mt-7">
@@ -101,8 +107,9 @@ function Landing() {
   <button>Learn away</button>
 </SpotlightCard>
                                     
-                                 </div></div>
-                    </div>
+                        </div>
+                      </div>
+                  </div>
                 </div>
             </div>
         </>
