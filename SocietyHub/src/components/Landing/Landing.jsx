@@ -64,7 +64,7 @@ function Landing() {
                              <div >
                                 <h1 className='text-[48px] font-bold text-blue-500 text-center mt-10'>Features</h1>
                                  <div className='flex  items-center justify-center mt-10 gap-5 flex-wrap'>
-                                 <SpotlightCard className="custom-spotlight-card bg-[#005B96] max-w-sm h-[150px]  hidden-scrollbar " spotlightColor="rgba()">
+                                 <SpotlightCard className="custom-spotlight-card bg-[#005B96] max-w-sm h-[150px]  hidden-scrollbar " spotlightColor="rgba(0, 229, 155, 0.2)">
   <i class="fa fa-lock"></i>
   <h2>Card title</h2>
   <description  >Our state of the artOur state of tOur state of the artOur state of tOur state of the artOur state of tOur state of the artOur state of tOur state of the artOur state of the artOur state of the artOur state of the artOur state of the artOur state of the artOur state of the artOur state of the artOur state of the artLearnLearn moreLearn moreLearn moreLearn moremoreLearn moreLearn moreLearn more </description>
