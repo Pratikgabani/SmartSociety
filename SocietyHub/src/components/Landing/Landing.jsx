@@ -16,7 +16,7 @@ import SpotlightCard from '../SpotlightCard';
 function Landing() {
     return (
         <>
-            <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2  '>
+            <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2 font-raleway '>
                 <div className="container w-11/12 border-2 border-black">
 
                     <nav className="text-[18px] border-b border-gray-200 text-white shadow-md mt-3 py-3">
