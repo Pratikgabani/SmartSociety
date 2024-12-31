@@ -4,7 +4,7 @@ import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle99.png';
 function Login() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
       <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-4xl">
       {/* Left Form Section */}
         <div className="md:w-1/2">

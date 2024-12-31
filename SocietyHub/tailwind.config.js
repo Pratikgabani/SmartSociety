@@ -5,10 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {keyframes: {
-      shine: {
-        '0%': { 'background-position': '100%' },
-        '100%': { 'background-position': '-100%' },
+    extend: {
+      fontFamily:{
+        raleway : ['Raleway' , 'sans-serif'],
+        keyframes: {
+          shine: {
+            '0%': { 'background-position': '100%' },
+            '100%': { 'background-position': '-100%' },
+          }
       },
     },
     animation: {
