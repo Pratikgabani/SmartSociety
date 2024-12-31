@@ -17,8 +17,8 @@ function Landing() {
     return (
         <>
             <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2 font-raleway '>
+              
                 <div className="container w-11/12 border-2 border-black">
-
                     <nav className="text-[18px] border-b border-gray-200 text-white shadow-md mt-3 py-3">
                         <div className="container mx-auto flex justify-between items-center px-4">
                             <a href="/" className="text-xl font-bold text-black"> <img className="h-8" src="#" alt="Resihub" /> </a>
