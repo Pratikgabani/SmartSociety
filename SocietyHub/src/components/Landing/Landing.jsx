@@ -8,6 +8,8 @@ import { SplitText } from '../ReactBit/SplitText';
 import support from './../../assets/support.png'
 import Userfriendly from './../../assets/Userfriendly.png'
 import communityBuiild from './../../assets/communityBuild.png'
+// import Rectangle96 from './../../assets/Rectangle96.avif'
+// import Rectangle97 from './../../assets/Rectangle97.jpg'
 import betterCommunication from './../../assets/betterCommunication.png'
 import transparency from './../../assets/transparency.png'
 import tickMark from './../../assets/Group92.png'
@@ -32,7 +34,6 @@ function Landing() {
               <a className="text-black bg-gray-100 hover:text-white hover:bg-[#005B96] font-semibold py-2 px-4 rounded-full border border-black hover:border-blue-500 transition duration-300 ease-in-out" href="/login"> Login </a>
             </div>
           </nav>
-
 
           <div className='mt-10 '>
             <div className='flex justify-between'>
