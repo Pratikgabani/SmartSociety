@@ -57,7 +57,7 @@ function Landing() {
             <div className="flex flex-col items-center justify-center mt-[68px] bg-[#F5F9FC] border-none"> <div className=" p-8 rounded-lg  max-w-lg text-center">
               <h1 className="text-5xl font-bold mb-4"> Why <span className="text-[#005B96]">ResiHub</span>? </h1>
               <ul className="text-left space-y-4 mt-7">
-                <li> <span className="font-semibold text-xl"> <img className='w-16  ' src={communityBuiild} alt="" /> Better Communication:</span> Eliminate misunderstandings with instant notifications and updates. </li>
+                <li> <span className="font-semibold text-xl"> <img className='w-16  ' src={communityBuiild} alt="" /> Better Communication:</span>  </li>
                 <li> <span className="font-semibold text-xl"><img className='w-16' src={transparency} alt="" />Transparency:</span> Track finances and records in real time. </li>
                 <li> <span className="font-semibold text-xl"><img className='w-16' src={support} alt="" />24/7 Support:</span> Save time with automation of daily tasks. </li>
                 <li> <span className="font-semibold text-xl"> <img className='w-16' src={betterCommunication} alt="" />Community Building:</span> Create a strong sense of belonging with engaging tools and features. </li>
