@@ -1,6 +1,6 @@
 import React from 'react'
 
-function VisitorRecent() {
+function VisitorRecent({name,phone,purpose,checkIn,checkDay,duration}) {
   return (
     <div>
     
@@ -30,20 +30,20 @@ function VisitorRecent() {
                   PS
                 </div>
                 <div className="ml-4">
-                  <div className="text-sm font-medium text-gray-900">Priya Singh</div>
-                  <div className="text-sm text-gray-500">+91 98765 43211</div>
+                  <div className="text-sm font-medium text-gray-900">{name}</div>
+                  <div className="text-sm text-gray-500">{phone}</div>
                 </div>
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Delivery
+              {purpose}
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-900">Yesterday</div>
-              <div className="text-sm text-gray-500">2:30 PM</div>
+              <div className="text-sm text-gray-900">{checkDay}</div>
+              <div className="text-sm text-gray-500">{checkIn}</div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              15 mins
+              {duration}
             </td>
           </tr>
         </tbody>

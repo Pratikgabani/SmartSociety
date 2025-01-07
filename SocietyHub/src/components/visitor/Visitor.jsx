@@ -1,7 +1,90 @@
-import React from 'react'
+import React,{useState} from 'react'
 import VisitorActive from './VisitorActive'
 import VisitorRecent from './VisitorRecent'
 function Visitor() {
+
+   
+  
+  
+  const [activeVisitors, setActiveVisitors] = useState([
+    {
+      id: 1,
+      username: "Rahul Kumar",
+      phoneNo: "+91 98765 43210",
+      purpose: "House Help",
+      checkIn: {
+        time: "10:30 AM",
+        date: "Today"
+      },
+      Active: true
+    },
+    {
+      id: 2,
+      username: "Anita Desai",
+      phoneNo: "+91 87654 32109",
+      purpose: "Meeting",
+      checkIn: {
+        time: "11:45 AM",
+        date: "Today"
+      },
+      Active: true
+    },
+    {
+      id: 3,
+      username: "Vikram Singh",
+      phoneNo: "+91 76543 21098",
+      purpose: "Delivery",
+      checkIn: {
+        time: "09:15 AM",
+        date: "Today"
+      },
+      Active: true
+    }
+  ])
+  
+  
+  const [recentVisitors, setRecentVisitors] = useState( [
+    {
+      id: 4,
+      name: "Priya Singh",
+      phone: "+91 98765 43211",
+      purpose: "Delivery",
+      visitDate: {
+        date: "Yesterday",
+        time: "2:30 PM"
+      },
+      duration: "15 mins"
+    },
+    {
+      id: 5,
+      name: "Amit Patel",
+      phone: "+91 87654 32110",
+      purpose: "Maintenance",
+      visitDate: {
+        date: "2 days ago",
+        time: "10:00 AM"
+      },
+      duration: "45 mins"
+    },
+    {
+      id: 6,
+      name: "Sneha Gupta",
+      phone: "+91 76543 21099",
+      purpose: "Interview",
+      visitDate: {
+        date: "3 days ago",
+        time: "3:00 PM"
+      },
+      duration: "60 mins"
+    }
+  ]);
+const handleCheckOut = (id) => {
+  setActiveVisitors(activeVisitors.filter((user) => user.id !== id));
+  
+  
+};
+  
+
   return (
     <div className="p-6 min-h-screen bg-gray-100">
     {/* Header Section */}
@@ -40,11 +123,34 @@ function Visitor() {
 
     {/* Active Visitors Section */}
     <h2 className="text-xl font-semibold text-gray-900 mb-4">Active Visitors</h2>
-   <VisitorActive username="hitesh" phoneNo="1234567890" purpose="Meeting" checkIn="12/12/2022"  checkDay="yesterday" Active={true} />
-
+   
+   {activeVisitors.map((visitor) => (
+        <VisitorActive
+          key={visitor.id}
+          username={visitor.username}
+          phoneNo={visitor.phoneNo}
+          purpose={visitor.purpose}
+          checkIn={visitor.checkIn.time}
+          checkDay={visitor.checkIn.date}
+          Active={visitor.Active}
+          onCheckOut={() => handleCheckOut(visitor.id)}
+        />
+      ))}
     {/* Recent Visitors Section */}
     <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Visitors</h2>
-<VisitorRecent />
+    
+    {recentVisitors.map((visitor) => (
+      
+        <VisitorRecent
+          key={visitor.id}
+         name={visitor.name}
+          phone={visitor.phone}
+          purpose={visitor.purpose}
+          checkIn={visitor.visitDate.time}
+          checkDay={visitor.visitDate.date}
+          duration={visitor.duration}
+        />
+    ))}
   </div>
   )
 }

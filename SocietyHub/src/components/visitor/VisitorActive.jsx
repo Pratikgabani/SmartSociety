@@ -1,6 +1,7 @@
 import React from 'react'
 
-function VisitorActive({username,phoneNo,purpose,checkIn,checkDay,Active}) {
+
+function VisitorActive({username,phoneNo,purpose,checkIn,checkDay,Active,onCheckOut}) {
   return (
    
     <div className="mb-8">
@@ -52,7 +53,7 @@ function VisitorActive({username,phoneNo,purpose,checkIn,checkDay,Active}) {
               </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">
-              <button className="hover:text-red-800">Check Out</button>
+              <button onClick={onCheckOut} className="hover:text-red-800">Check Out</button>
             </td>
           </tr>
         </tbody>
