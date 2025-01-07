@@ -7,11 +7,12 @@ import { Route, RouterProvider } from "react-router-dom";
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import Landing from './components/Landing/Landing.jsx';
+import Visitor from './components/pages/Visitor.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-    <Route path="/" element={<Landing/>} />
+    <Route path="/" element={<Visitor/>} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
     </>
