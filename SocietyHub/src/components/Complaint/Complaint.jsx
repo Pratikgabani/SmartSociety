@@ -96,20 +96,14 @@ function Complaint() {
                   </div>
                 </div>
               )}
+              <hr className="border-t-2 border-gray-400  mb-4" />
               <div className="flex justify-between items-center text-sm text-gray-500">
+              
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
                   {complaint.date}
                 </div>
                 <div className="flex gap-2">
-                  {/* <span className={`flex items-center px-2 py-1 rounded ${
-                    complaint.priority === 'high' 
-                      ? 'bg-red-100 text-red-800' 
-                      : 'bg-gray-100 text-gray-800'
-                  }`}> */}
-                    {/* <AlertCircle className="w-4 h-4 mr-1" />
-                    {complaint.priority} */}
-                  {/* </span> */}
                   <button className="text-blue-600 hover:text-blue-800">View Details</button>
                 </div>
               </div>
