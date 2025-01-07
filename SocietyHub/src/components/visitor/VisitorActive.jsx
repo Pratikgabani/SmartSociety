@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 function VisitorActive({username,phoneNo,purpose,checkIn,checkDay,Active}) {
   return (
    

@@ -8,6 +8,7 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import Landing from './components/Landing/Landing.jsx';
 import Visitor from './components/visitor/Visitor.jsx';
+import Complaint from './components/Complaint/Complaint.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<Visitor/>} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
+    <Route path = "Complaint" element= {<Complaint />} />
     </>
      )
 )

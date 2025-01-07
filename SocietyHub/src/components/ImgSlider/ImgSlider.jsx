@@ -3,6 +3,7 @@ import Rectangle95 from './../../assets/Rectangle95.png'
 import Rectangle99 from './../../assets/Rectangle99.png'
 import Rectangle96 from './../../assets/Rectangle96.avif'
 import Rectangle97 from './../../assets/Rectangle97.jpg'
+
 const ImageSlider = () => {
   const images = [
     Rectangle95,
