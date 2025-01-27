@@ -14,9 +14,10 @@ import Visitor from './components/visitor/Visitor.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-    <Route path="/" element={<Visitor />} />
+    <Route path="/" element={<Landing />} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
+     <Route path="Payment" element={<Payment />} />
     </>
      )
 )

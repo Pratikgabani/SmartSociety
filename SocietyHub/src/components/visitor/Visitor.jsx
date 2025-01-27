@@ -80,7 +80,7 @@ function Visitor() {
   ]);
 const handleCheckOut = (id) => {
   setActiveVisitors(activeVisitors.filter((user) => user.id !== id));
-  
+  setRecentVisitors(recentVisitors.concat(activeVisitors.find((user) => user.id === id)));
   
 };
   
