@@ -12,7 +12,7 @@ const Dropdown = () => {
     <div className="relative inline-block text-left">
       <button
         onClick={toggleDropdown}
-        className="btn px-2 py-1   rounded-md  flex items-center"
+        className="btn px-2 py-1 text-black   rounded-md  flex items-center"
       >
         Features <IoMdArrowDropdown className={`ml-2 transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>

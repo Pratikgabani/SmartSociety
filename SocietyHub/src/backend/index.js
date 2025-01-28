@@ -14,6 +14,7 @@ connectDB()
         console.log(`Server is running on port ${PORT}`);
     })    
 })
+
 .catch((err)=>{
     console.log("Mongo db connection error " , err)
 })

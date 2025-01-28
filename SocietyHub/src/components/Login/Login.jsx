@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './../../assets/logo.png';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle99.png';
+
 function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">

@@ -16,7 +16,9 @@ import tickMark from './../../assets/Group92.png'
 import Dropdown from '../Dropdown';
 import Card from '../Card';
 import SpotlightCard from '../SpotlightCard';
+
 function Landing() {
+
   return (
     <>
       <div className='min-h-screen bg-[#F5F9FC] flex justify-center border-2 font-raleway  '>
