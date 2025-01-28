@@ -1,0 +1,49 @@
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  block: {
+    type: String,
+    required: true,
+  },
+  houseNo: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  societyId : {
+    type : String,
+    required : true
+  },
+  email : {
+    type : String,
+    required : true
+  },
+ 
+  nameOfPersons: [
+    {
+        type : String,
+        required : true
+    }
+  ],
+  phoneNo : [
+    {
+        type : String,
+        required : true
+    }
+  ],
+  numberOfVeh : {
+    type : Number,
+    required : true
+  },
+  vehicleNo : [
+    {
+        type : String,
+        required : true
+    }
+  ]
+});
+
+export const User = mongoose.model("User", userSchema);
