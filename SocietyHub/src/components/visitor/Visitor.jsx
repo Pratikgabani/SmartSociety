@@ -122,7 +122,7 @@ const handleCheckOut = (id) => {
     </div>
 
     {/* Active Visitors Section */}
-    <h2 className="text-xl font-semibold text-gray-900 mb-4">Active Visitors</h2>
+    <h2 className="text-xl font-semibold text-gray-700 mb-4">Active Visitors</h2>
    
    {activeVisitors.map((visitor) => (
         <VisitorActive
