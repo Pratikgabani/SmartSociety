@@ -17,13 +17,13 @@ const router = createBrowserRouter(
     <Route path="/" element={<Landing />} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
-<<<<<<< HEAD
+
      <Route path="Payment" element={<Payment />} />
      <Route path="Visitor" element={<Visitor />} />
-=======
+
     <Route path = "Complaint" element= {<Complaint />} />
     <Route path = "Payment" element = {<Payment />} />
->>>>>>> 033604e1f9c5fe85d0fa0ed01a5bc0e9aa4a9fba
+
     </>
      )
 )
