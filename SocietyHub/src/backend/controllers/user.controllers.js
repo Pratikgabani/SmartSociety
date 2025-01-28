@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import User from '../models/user.models.js'; // Adjust the import path
+import User  from '../models/user.models.js'; // Adjust the import path
 
 // @desc    Register a new user
 // @route   POST /api/users/register
