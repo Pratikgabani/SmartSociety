@@ -1,6 +1,11 @@
 import express from "express"
 import cors from "cors";
 import cookieParser from "cookie-parser"
+import dotenv from "dotenv";
+
+dotenv.config({
+    path : "./.env"
+})
 
 const app = express();
 
@@ -34,7 +39,8 @@ app.use(cookieParser())
 
 import userRouter from "./routes/user.routes.js";
 
-app.use("/apiv1/users/registerUser" , userRouter)
+
+app.use("/api/v1/users" , userRouter)
 
 
 export default app;

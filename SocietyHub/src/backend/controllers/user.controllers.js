@@ -1,9 +1,7 @@
-import bcrypt from 'bcrypt';
-import User from '../models/user.models.js'; // Adjust the import path
+import bcrypt from "bcryptjs";
+import {User} from "../models/user.models.js"; 
 
-// @desc    Register a new user
-// @route   POST /api/users/register
-// @access  Public
+
  const registerUser = async (req, res) => {
   try {
     const {
