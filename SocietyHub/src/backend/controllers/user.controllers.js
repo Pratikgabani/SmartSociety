@@ -1,5 +1,8 @@
-import bcrypt from "bcryptjs";
-import {User} from "../models/user.models.js"; 
+
+
+
+import bcrypt from 'bcrypt';
+import {User}  from '../models/user.models.js'; // Adjust the import path
 
 
  const registerUser = async (req, res) => {

@@ -1,4 +1,8 @@
+
 import mongoose,{Schema} from "mongoose";
+
+
+
 
 const userSchema = new Schema({
   block: {
@@ -46,4 +50,4 @@ const userSchema = new Schema({
   ]
 });
 
-export const User = mongoose.model("User", userSchema);
+export const User =  mongoose.model("User", userSchema);
