@@ -20,7 +20,7 @@ const Dropdown = () => {
         <ul className="menu dropdown-content bg-white rounded-md shadow-lg z-10 mt-2 py-2 w-48 absolute right-0 ring-1 ring-black ring-opacity-5">
           <li><a href="/Visitor" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Visitor</a></li>
           <li><a href="/Payment" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Payment</a></li>
-          <li><a href="#item2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 2</a></li>
+          <li><a href="/Complaint" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Complaint</a></li>
           <li><a href="#item2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 2</a></li>
           <li><a href="#item2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 2</a></li>
         </ul>

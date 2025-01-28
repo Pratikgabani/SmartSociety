@@ -10,6 +10,7 @@ import Landing from './components/Landing/Landing.jsx';
 import Payment from './components/payment/payment.jsx';
 import Visitor from './components/visitor/Visitor.jsx';
 import Complaint from './components/Complaint/Complaint.jsx';
+import Dashboard from './components/dashboard/dashboard.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,7 +23,7 @@ const router = createBrowserRouter(
      <Route path="Visitor" element={<Visitor />} />
 
     <Route path = "Complaint" element= {<Complaint />} />
-    
+    <Route path = "Dashboard" element= {<Dashboard />} />
 
     </>
      )
