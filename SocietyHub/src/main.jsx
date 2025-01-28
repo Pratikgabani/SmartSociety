@@ -22,7 +22,7 @@ const router = createBrowserRouter(
      <Route path="Visitor" element={<Visitor />} />
 
     <Route path = "Complaint" element= {<Complaint />} />
-    <Route path = "Payment" element = {<Payment />} />
+    
 
     </>
      )
