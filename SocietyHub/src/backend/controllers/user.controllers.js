@@ -121,7 +121,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       vehicleNo
     });
     
-
     // Return user data without password
     // const userResponse = {
     //   _id: newUser._id,
@@ -140,7 +139,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       // selecting the fields that we want to show in the response
         "-password -refreshToken " // This will select all the fields other than password and refreshToken
      )
-
 
     if(!userResponse){
       throw new ApiError(400, "User registration failed")
@@ -198,7 +196,55 @@ return res
 
 });
 
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id , 
+  {
+    $set : {
+      refreshToken : undefined,
+    }
+  },
+  {new : true}
+  )
+
+  const options = {
+    httpOnly : true , 
+    secure : process.env.NODE_ENV === "production"
+  }
+
+  return res
+  .status(200)
+  .clearCookie("accessToken" , options)
+  .clearCookie("refreshToken" , options)
+  .json(new ApiResponse(200 , {} , "User logged out successfully"))
+})
+
+const getUserDetail = asyncHandler(async (req, res) => {
+  return res
+  .status(200)
+  .json(new ApiResponse(200 , req.user , "User found successfully"))
+})
+
+const changeCurrentPassword = asyncHandler(async (req , res) =>{
+  const {oldPassword , newPassword} = req.body
+  
+  const user = await User.findById(req.user?._id)
+  
+  const isPasswordValid = user.isPasswordCorrect(oldPassword)
+  
+  if(!isPasswordValid){
+    throw new ApiError(400 , "Invalid old password")
+  }
+  
+  user.password = newPassword
+  
+  await user.save({validateBeforeSave:false})
+  
+  return res
+  .status(200)
+  .json(new ApiResponse(200 , {} , "Password changed successfully"))
+  
+  })
 
 
-
-export { registerUser, loginUser, refreshAccessToken , generateAccessAndRefereshTokens};
+export { registerUser, loginUser, refreshAccessToken , generateAccessAndRefereshTokens , logoutUser , getUserDetail ,changeCurrentPassword};

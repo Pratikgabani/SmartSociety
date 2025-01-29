@@ -84,28 +84,22 @@ userSchema.pre("save" , async function (next){
      return jwt.sign(
       {
          _id : this._id,
-          email : this.email,
-          username : this.username , 
-          fullname : this.fullname 
-          // Payload: Contains user-specific data (_id, email, username, fullname) to include in the token.
+          email : this.email
+          
+
       } ,
           process.env.ACCESS_TOKEN_SECRET ,
-          // Secret: 'process.env.ACCESS_TOKEN_SECRET' (string).  to fetch the environment variable.
       {
           expiresIn : process.env.ACCESS_TOKEN_EXPIRY
-          // Options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRY } specifies the token's expiration time (e.g., 15m for 15 minutes).
       }
       )   
   }
   
-  // Schema method to generate a refresh token for the user.A long lived token used to refresh access tokens
   userSchema.methods.generateRefreshToken = function(){
      return jwt.sign({
          _id : this._id,
-          // Payload: Only includes the user's _id, as refresh tokens usually don't need to carry additional sensitive information.
       } ,
            process.env.REFRESH_TOKEN_SECRET,
-          //  process.env.REFRESH_TOKEN_SECRET is the secret key for signing the token.
           {
               expiresIn : process.env.REFRESH_TOKEN_EXPIRY
               // { expiresIn: process.env.REFRESH_TOKEN_EXPIRY } specifies the token's expiration time (e.g., 7d for 7 days).
