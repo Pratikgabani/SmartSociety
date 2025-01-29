@@ -78,9 +78,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
  const registerUser = asyncHandler (async (req, res) => {
-   
- 
- 
     const {
       block,
       houseNo,
@@ -108,14 +105,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
     const newUser = await User.create({
       block,
       houseNo,
-      password: hashedPassword,
+      password,
       societyId,
       email,
       nameOfPersons,
@@ -123,23 +120,29 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       numberOfVeh,
       vehicleNo
     });
+    
 
     // Return user data without password
-    const userResponse = {
-      _id: newUser._id,
-      block: newUser.block,
-      houseNo: newUser.houseNo,
-      societyId: newUser.societyId,
-      email: newUser.email,
-      nameOfPersons: newUser.nameOfPersons,
-      phoneNo: newUser.phoneNo,
-      numberOfVeh: newUser.numberOfVeh,
-      vehicleNo: newUser.vehicleNo,
-      createdAt: newUser.createdAt
-    };
+    // const userResponse = {
+    //   _id: newUser._id,
+    //   block: newUser.block,
+    //   houseNo: newUser.houseNo,
+    //   societyId: newUser.societyId,
+    //   email: newUser.email,
+    //   nameOfPersons: newUser.nameOfPersons,
+    //   phoneNo: newUser.phoneNo,
+    //   numberOfVeh: newUser.numberOfVeh,
+    //   vehicleNo: newUser.vehicleNo,
+    //   createdAt: newUser.createdAt,
+    //   refreshToken : newUser.refreshToken
+    // };
+    const userResponse = await User.findById(newUser._id).select(
+      // selecting the fields that we want to show in the response
+        "-password -refreshToken " // This will select all the fields other than password and refreshToken
+     )
 
 
-    if(!newUser){
+    if(!userResponse){
       throw new ApiError(400, "User registration failed")
      }
 
@@ -156,19 +159,39 @@ const loginUser = asyncHandler (async (req, res) => {
 const {email, password} = req.body;
 
 const user = await User.findOne({email});
-
+console.log(user)
 if(!user){
   throw new ApiError(400, "User not found")
 }
 
-const isMatch = await bcrypt.compare(password, user.password);
 
-if(!isMatch){
-  throw new ApiError(400, "Invalid credentials")
+const isPasswordValid = await user.isPasswordCorrect(password)
+console.log(password)
+if(!isPasswordValid){
+  throw new ApiError(400 , "Invalid password")
 }
 
-return res.status(200).json(  
-  new ApiResponse(200, user, "User logged in Successfully")
+// const isMatch = await bcrypt.compare(password, user.password);
+// if(!isMatch){
+//   throw new ApiError(400, "Invalid credentials")
+// }
+
+const {accessToken , refreshToken } = await generateAccessAndRefereshTokens(user._id)
+const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+if(!loggedInUser){
+  throw new ApiError(500 , "Failed to login")
+}
+
+const options = {
+httpOnly : true ,//This means that the cookie cannot be accessed by client-side scripts.
+secure : process.env.NODE_ENV === "production" ,// This means that the cookie will only be sent over HTTPS in production environments.
+}
+
+return res
+.status(200)
+.cookie("accessToken" , accessToken , options)
+.cookie("refreshToken" , refreshToken , options)
+.json(new ApiResponse(200 , {user : loggedInUser , accessToken, refreshToken} , "User Logged in successfully")
 )
 
 
