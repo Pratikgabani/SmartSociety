@@ -3,10 +3,84 @@
 
 import bcrypt from 'bcrypt';
 import {User}  from '../models/user.models.js'; // Adjust the import path
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { ApiError } from '../utils/apiError.js';
+import { ApiResponse } from '../utils/apiResponse.js';
+import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 
 
- const registerUser = async (req, res) => {
+
+
+const generateAccessAndRefereshTokens = async(userId) =>{
   try {
+      const user = await User.findById(userId)
+      const accessToken = user.generateAccessToken()
+      const refreshToken = user.generateRefreshToken()
+
+      user.refreshToken = refreshToken
+      await user.save({ validateBeforeSave: false })
+
+      return {accessToken, refreshToken}
+
+
+  } catch (error) {
+      throw new ApiError(500, "Something went wrong while generating referesh and access token")
+  }
+}
+
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+  if (!incomingRefreshToken) {
+      throw new ApiError(401, "unauthorized request")
+  }
+
+  try {
+      const decodedToken = jwt.verify(
+          incomingRefreshToken,
+          process.env.REFRESH_TOKEN_SECRET
+      )
+  
+      const user = await User.findById(decodedToken?._id)
+  
+      if (!user) {
+          throw new ApiError(401, "Invalid refresh token")
+      }
+  
+      if (incomingRefreshToken !== user?.refreshToken) {
+          throw new ApiError(401, "Refresh token is expired or used")
+          
+      }
+  
+      const options = {
+          httpOnly: true,
+          secure: true
+      }
+  
+      const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
+  
+      return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+          new ApiResponse(
+              200, 
+              {accessToken, refreshToken: newRefreshToken},
+              "Access token refreshed"
+          )
+      )
+  } catch (error) {
+      throw new ApiError(401, error?.message || "Invalid refresh token")
+  }
+
+})
+
+ const registerUser = asyncHandler (async (req, res) => {
+   
+ 
+ 
     const {
       block,
       houseNo,
@@ -64,15 +138,44 @@ import {User}  from '../models/user.models.js'; // Adjust the import path
       createdAt: newUser.createdAt
     };
 
-    res.status(201).json(userResponse);
 
-  } catch (error) {
-    console.error('Registration Error:', error);
-    res.status(500).json({
-      message: 'Server Error',
-      error: error.message
-    });
-  }
-};
+    if(!newUser){
+      throw new ApiError(400, "User registration failed")
+     }
 
-export { registerUser };
+    return res.status(201).json(
+      new ApiResponse(200, userResponse, "User registered Successfully")
+  )
+
+  
+   
+})
+
+const loginUser = asyncHandler (async (req, res) => {
+
+const {email, password} = req.body;
+
+const user = await User.findOne({email});
+
+if(!user){
+  throw new ApiError(400, "User not found")
+}
+
+const isMatch = await bcrypt.compare(password, user.password);
+
+if(!isMatch){
+  throw new ApiError(400, "Invalid credentials")
+}
+
+return res.status(200).json(  
+  new ApiResponse(200, user, "User logged in Successfully")
+)
+
+
+
+});
+
+
+
+
+export { registerUser, loginUser, refreshAccessToken , generateAccessAndRefereshTokens};
