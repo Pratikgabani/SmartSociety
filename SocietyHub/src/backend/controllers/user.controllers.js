@@ -157,14 +157,14 @@ const loginUser = asyncHandler (async (req, res) => {
 const {email, password} = req.body;
 
 const user = await User.findOne({email});
-console.log(user)
+// console.log(user)
 if(!user){
   throw new ApiError(400, "User not found")
 }
 
 
 const isPasswordValid = await user.isPasswordCorrect(password)
-console.log(password)
+// console.log(password)
 if(!isPasswordValid){
   throw new ApiError(400 , "Invalid password")
 }
