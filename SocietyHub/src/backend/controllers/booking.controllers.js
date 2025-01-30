@@ -45,11 +45,10 @@ const getBookings = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(new ApiResponse(200 , allBookings , "Bookings found successfully"))
-}) 
+})
 
 const deleteBooking = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    console.log(req.user);
 
     const deletedBooking = await Booking.deleteOne({ bookingOwner: userId });
     if (!deletedBooking) {
@@ -61,4 +60,4 @@ const deleteBooking = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, deletedBooking, "Booking deleted successfully"));
 }); 
 
-    export { createBooking , getBookings , deleteBooking }
+export { createBooking , getBookings , deleteBooking }
