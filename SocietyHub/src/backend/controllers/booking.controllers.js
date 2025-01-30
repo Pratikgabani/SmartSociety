@@ -1,7 +1,7 @@
 import { Booking } from "../models/booking.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/apiError.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.models.js";
 
 const createBooking = asyncHandler(async (req, res) => {
@@ -49,10 +49,17 @@ const getBookings = asyncHandler(async (req, res) => {
 
 const deleteBooking = asyncHandler(async (req, res) => {
     const userId = req.user._id;
+    const {bookingType} = req.body
 
-    const deletedBooking = await Booking.deleteOne({ bookingOwner: userId });
-    if (!deletedBooking) {
+    const deletedBooking = await Booking.find({bookingOwner : userId , bookingType : bookingType})
+    console.log(deletedBooking)
+    if (!deletedBooking || deletedBooking.length === 0) {
         throw new ApiError(500, "Failed to delete booking");
+    }
+     
+   const deletebook=  await Booking.findByIdAndDelete(deletedBooking[0]._id)
+    if(!deletebook){
+        throw new ApiError(500 , "Failed to delete booking")
     }
 
     return res

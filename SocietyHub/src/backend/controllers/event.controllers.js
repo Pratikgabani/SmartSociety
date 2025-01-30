@@ -1,8 +1,8 @@
 import { User } from "../models/user.models.js";
 import { Event } from "../models/event.models.js";
 import {asyncHandler} from "./../utils/asyncHandler.js"
-import {ApiError} from "./../utils/apiError.js";
-import {ApiResponse} from "./../utils/apiResponse.js";
+import {ApiError} from "../utils/ApiError.js";
+import {ApiResponse} from "../utils/ApiResponse.js";
 
 const createEvent = asyncHandler(async (req, res) => {
     const { eventName, eventDate, venue, amtPerPerson, description, time, lastDateOfPay } = req.body;
@@ -24,7 +24,7 @@ const createEvent = asyncHandler(async (req, res) => {
     })
 
     if(!event){
-        throw new ApiError("Event not created", 400);
+        throw new ApiError( 400 ,"Event not created");
     }
 
     return res
@@ -33,11 +33,14 @@ const createEvent = asyncHandler(async (req, res) => {
 });
 
 const getAllEvents = asyncHandler(async (req, res) => {
-    const events = await Event.find();
-
+    const events = await Event.find()
+    console.log(events)
     if(!events){
-        throw new ApiError("No events found", 400);
+        return new ApiError( 500 ,"No events found" );
     }
+    // if(!events){
+    //     throw new ApiError("No events found", 500);
+    // }
 
     return res
     .status(200)
@@ -45,20 +48,24 @@ const getAllEvents = asyncHandler(async (req, res) => {
 })
 
 const deleteEvent = asyncHandler(async (req, res) => {
-    const id = req.params.id;
+    const {eventName} = req.body;
 
-    const eventExists = await Event.findById({_id : id})
+   if(!eventName.trim()){
+    throw new ApiError(400 ,"Please enter event name" )
+   }
+
+   const eventExists = await Event.findOne({eventName : eventName})
     
     if(!eventExists){
-        throw new ApiError("Event does not exist " , 400)
+        throw new ApiError(400 ,"Event does not exist " )
     }
     
-    const event = await Event.findByIdAndDelete(id);
+    const event = await Event.findByIdAndDelete(eventExists._id);
 
     console.log(event)
 
     if(!event){
-        throw new ApiError("Event not found", 400);
+        throw new ApiError(400 ,"Event not found" );
     }
 
     return res
@@ -92,7 +99,7 @@ const updateEvent = asyncHandler(async (req, res) => {
     })
 
     if(!event){
-        throw new ApiError("Event not updated", 400);
+        throw new ApiError(400 ,"Event not updated" );
     }
 
     return res
@@ -104,13 +111,13 @@ const toggleResponseToEvent = asyncHandler(async (req, res) => {
     const id = req.params.id;
 
     if(!id){
-        throw new ApiError("Event id not found", 400);
+        throw new ApiError( 400 ,"Event id not found");
     }
 
     const event = await Event.findById(id);
     
     if (!event) {
-        throw new ApiError("Event not found", 404);
+        throw new ApiError(404 ,"Event not found");
     }
 
     // Toggle the isReady field based on current value

@@ -14,11 +14,13 @@ const eventSchema = new Schema({
 
     eventName : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     eventDate : {
         type : Date,
-        required : true
+        required : true,
+        unique : true
     },
     venue : {
         type : String,

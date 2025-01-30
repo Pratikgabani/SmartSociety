@@ -9,7 +9,8 @@ const bookingSchema = new Schema({
     },
   bookingType : {
     type : String,
-    required : true
+    required : true,
+    unique : true
   },
   bookDescription : {
     type : String,
@@ -25,7 +26,8 @@ duration : {
 },
 date : {
   type : String,
-  required : true
+  required : true,
+  unique : true
 },
 bookingPrice : {
   type : Number,

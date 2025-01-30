@@ -4,8 +4,8 @@
 import bcrypt from 'bcrypt';
 import {User}  from '../models/user.models.js'; // Adjust the import path
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiError } from '../utils/apiError.js';
-import { ApiResponse } from '../utils/apiResponse.js';
+import { ApiError } from '../utils/ApiError.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
