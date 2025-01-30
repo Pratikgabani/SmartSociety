@@ -1,4 +1,5 @@
 import mongoose,{Schema} from "mongoose";
+import { User } from "./user.models.js";
 
 const complainSchema = new Schema({
     complainId : {
@@ -29,9 +30,9 @@ byHouse : {
 },
 proof : {
     type : String,
-   
+  
 }
-
+ 
 },{ timestamps : true})
 
 export const Complain =  mongoose.model("Complain",complainSchema );
