@@ -50,8 +50,6 @@ app.use("/api/v1/complain" , complainRouter)
 
 app.use("/api/v1/visitor" , visitorRouter)
 app.use("/api/v1/security" , securityRouter)
-
-
 app.use("/api/v1/polls" , pollRouter )
 
 export default app;
