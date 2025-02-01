@@ -5,9 +5,9 @@ import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 
 const createEvent = asyncHandler(async (req, res) => {
-    const { eventName, eventDate, venue, amtPerPerson, description, time, lastDateOfPay } = req.body;
+    const { eventName, eventDate, venue, amtPerPerson, description, time, lastDateOfPay , category} = req.body;
 
-    if(!eventName || !eventDate || !venue || !amtPerPerson || !description || !time || !lastDateOfPay ) {
+    if(!eventName || !eventDate || !venue || !amtPerPerson || !description || !time || !lastDateOfPay || !category) {
         res.status(400);
         throw new ApiError("Please fill all the fields");
     }
@@ -20,7 +20,7 @@ const createEvent = asyncHandler(async (req, res) => {
         description,
         time,
         lastDateOfPay,
-        // isReady
+        category
     })
 
     if(!event){

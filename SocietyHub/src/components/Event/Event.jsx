@@ -49,7 +49,7 @@ const [loading , setLoading] = useState(true);
             >
       <div className="flex items-center justify-between text-gray-600 text-sm w-">
         <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-sm">
-          {event.venue}
+          {event.category}
           {/* Here we need to enter event type  */}
         </span>
         <span>{new Date(event.eventDate).toLocaleDateString()}</span>
