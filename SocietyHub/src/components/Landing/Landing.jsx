@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useState,useEffect} from 'react'
 import { IoMdArrowDropdown } from "react-icons/io";
 import dropDown from './../../assets/dropDown.png'
 import logo from './../../assets/logo.png'
@@ -16,8 +16,38 @@ import tickMark from './../../assets/Group92.png'
 import Dropdown from '../Dropdown';
 import Card from '../Card';
 import SpotlightCard from '../SpotlightCard';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 
 function Landing() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // token
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/v1/users/logout", {
+        withCredentials: true,
+      });
+      // toast.success(response.data.message);
+      localStorage.removeItem("user");
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.log("Error in logging out ", error);
+      // toast.error(error.response.data.errors || "Error in logging out");
+    }
+  };
+
 
   return (
     <>
@@ -33,7 +63,31 @@ function Landing() {
                 <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">Pricing</li>
                 <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">About Us</li>
               </ul>
-              <a className="text-black bg-gray-100 hover:text-white hover:bg-[#005B96] font-semibold py-2 px-4 rounded-full border border-black hover:border-blue-500 transition duration-300 ease-in-out" href="/login"> Login </a>
+              <div className="space-x-4">
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="bg-transparent text-black text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link
+                  to={"/login"}
+                  className="bg-transparent text-black text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
+                >
+                  Login
+                </Link>
+                <Link
+                  to={"/register"}
+                  className="bg-transparent text-black text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
+                >
+                  Signup
+                </Link>
+              </>
+            )}
+          </div>
             </div>
           </nav>
 

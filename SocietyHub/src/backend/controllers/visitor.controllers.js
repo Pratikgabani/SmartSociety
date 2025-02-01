@@ -36,4 +36,6 @@ const createVisitor = asyncHandler(async (req, res) => {
 
 })
 
+
+
 export {createVisitor}
