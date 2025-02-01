@@ -61,8 +61,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
     }
 });
 
-
-const getAllEvents = asyncHandler(async (req, res) => {
+const getAllComplains = asyncHandler(async (req, res) => {
     const complains = await Complain.find();
   
     if (!complains) {
@@ -72,26 +71,25 @@ const getAllEvents = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(new ApiResponse(200, complains, "Complains fetched successfully"));
-  });
+});
 
 const deleteComplain = asyncHandler(async (req, res) => {
-    const {subject} = req.body;
-    const userId = req.user._id;
-    const deletedComplain = await Complain.findOne({subject : subject , complainId : userId});
+    const { complainId } = req.params;
+  
+    if (!complainId) {
+      throw new ApiError(400, "Complain ID is required");
+    }
+  
+    const deletedComplain = await Complain.findByIdAndDelete(complainId);
   
     if (!deletedComplain) {
       throw new ApiError(404, "Complain not found");
-    }
-    const delComplain = await Complain.findByIdAndDelete(deletedComplain._id);
-  
-    if (!delComplain) {
-      throw new ApiError(500, "Failed to delete complain");
     }
   
     return res
       .status(200)
       .json(new ApiResponse(200, deletedComplain, "Complain deleted successfully"));
-  });
 
+});
 
-    export { createComplain , deleteComplain , getAllEvents }
+export { createComplain , deleteComplain , getAllComplains }

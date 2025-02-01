@@ -15,7 +15,7 @@ const createBooking = asyncHandler(async (req, res) => {
     if(existingDate){
         throw new ApiError(400 , "Date and bookingType already booked")
     }
-    const userId = req.user?._id
+    // const userId = req.user?._id
    
     const newBooking = await Booking.create({
         bookingOwner : req.user?._id,  // here ? is optional chaining for user._id to check if user is logged in or not 
@@ -26,8 +26,8 @@ const createBooking = asyncHandler(async (req, res) => {
         date,
     })
  
-    const bookingRes = await Booking.findById(newBooking._id)
-    if(!bookingRes){
+    // const bookingRes = await Booking.findById(newBooking._id)
+    if(!newBooking){
         throw new ApiError(500 , "Failed to create booking")
     }
 
@@ -48,23 +48,45 @@ const getBookings = asyncHandler(async (req, res) => {
 })
 
 const deleteBooking = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
-    const {bookingType} = req.body
+    const {bookingId} = req.params
 
-    const deletedBooking = await Booking.find({bookingOwner : userId , bookingType : bookingType})
-    console.log(deletedBooking)
-    if (!deletedBooking || deletedBooking.length === 0) {
-        throw new ApiError(500, "Failed to delete booking");
+    if(!bookingId.trim()){
+        throw new ApiError(400 , "Booking Id is required")
     }
-     
-   const deletebook=  await Booking.findByIdAndDelete(deletedBooking[0]._id)
-    if(!deletebook){
+
+    const deletedBooking = await Booking.findByIdAndDelete(bookingId);
+
+    if(!deletedBooking){
         throw new ApiError(500 , "Failed to delete booking")
     }
 
     return res
-        .status(200)
-        .json(new ApiResponse(200, deletedBooking, "Booking deleted successfully"));
+    .status(200)
+    .json(new ApiResponse(200 , deletedBooking , "Booking deleted successfully"))
 }); 
 
-export { createBooking , getBookings , deleteBooking }
+const bookingStatus = asyncHandler(async (req, res) => {
+    const {bookingId} = req.params
+
+    if(!bookingId.trim()){
+        throw new ApiError(400 , "All fields are required")
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if(!booking){
+        throw new ApiError(404 , "Booking not found")
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(bookingId , 
+        {
+            isAccepted : !booking.isAccepted
+        }
+    )
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200 , updatedBooking , `Booking ${updatedBooking.isAccepted ? "accepted" : "rejected"} successfully`))
+
+})
+
+export { createBooking , getBookings , deleteBooking , bookingStatus}
