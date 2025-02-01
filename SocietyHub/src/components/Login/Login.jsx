@@ -1,9 +1,48 @@
-import React from 'react';
+import React,{ useState} from 'react';
 import logo from './../../assets/logo.png';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle99.png';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 
 function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Login successful: ", response.data);
+      // toast.success(response.data.message);
+      localStorage.setItem("user", JSON.stringify(response.data));
+      navigate("/");
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data.errors || "Login failed!!!");
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
       <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-4xl">
@@ -15,21 +54,18 @@ function Login() {
           
           <h1 className="text-3xl font-bold  mb-4 cursor-pointer">Login</h1>
         
-        <form>
+        <form onSubmit={handleSubmit}>
+         
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">Block</label>
+            <label className="block font-medium text-gray-700">email</label>
             <input
               type="text"
-              placeholder="A, B, C, etc."
+              placeholder="John@12deo5"
               className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block font-medium text-gray-700">House no.</label>
-            <input
-              type="text"
-              placeholder="102, 405, etc."
-              className="w-full px-3 py-2 border rounded-lg"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              id='email'
+              required
             />
           </div>
           <div className="mb-6">
@@ -38,8 +74,15 @@ function Login() {
               type="password"
               placeholder="John@12deo5"
               className="w-full px-3 py-2 border rounded-lg"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              id='password'
+              required
             />
           </div>
+          {errorMessage && (
+            <div className="text-red-500 mb-4">{errorMessage}</div>
+          )}
           <button
             type="submit"
             className="w-full bg-[#005B96] text-white py-2 font-bold rounded-lg hover:bg-[#005B96]"
