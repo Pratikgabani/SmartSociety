@@ -1,41 +1,70 @@
-import React from 'react'
-import { useState } from 'react';
-import { Search, Plus, Clock, X, AlertCircle, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Plus, Clock, X } from 'lucide-react';
+import axios from 'axios';
+
+
+
 
 
 function Complaint() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [complaints, setComplaints] = useState([
-    {
-      id: '1',
-      title: 'Water Leakage',
-      description: 'Continuous water leakage in bathroom ceiling',
-      status: 'pending',
-      priority: 'high',
-      date: new Date().toLocaleDateString(),
-      images: ['https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&auto=format']
-    }
-  ]);
+  const [complaints, setComplaints] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = user?.token;
+
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/v1/complain/getAllComplains", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        const data = response.data.data
+        console.log('Fetched Complaints:', data);
+        setComplaints(data);
+      } catch (error) {
+        console.error('Error fetching complaints:', error);
+        setErrorMessage('Failed to fetch complaints');
+      }
+    };
+    fetchComplaints();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const newComplaint = {
-      id: (complaints.length + 1).toString(),
-      title: formData.get('title'),
+      subject: formData.get('subject'),
       description: formData.get('description'),
-      priority: formData.get('priority'),
-      status: 'pending',
-      date: new Date().toLocaleDateString()
+      byHouse: formData.get('byHouse'),
+      date: new Date().toLocaleDateString(),
+      isResolved: false,
     };
-    setComplaints([...complaints, newComplaint]);
-    setIsFormOpen(false);
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/complain/createComplain", newComplaint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      console.log('New Complaint Added:', response.data);
+      setComplaints((prevComplaints) => [...prevComplaints, response.data.data]);
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error('Error adding complaint:', error);
+      setErrorMessage('Failed to add complaint');
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-gray-900">Complaints Management</h1>
@@ -43,11 +72,10 @@ function Complaint() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* Actions Bar */}
         <div className="flex gap-4 mb-6">
           <button
             onClick={() => setIsFormOpen(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center px-4 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-5 h-5 mr-2" />
             New Complaint
@@ -64,41 +92,25 @@ function Complaint() {
           </div>
         </div>
 
-        {/* Complaints List */}
         <div className="space-y-4">
           {complaints.map((complaint) => (
-            <div key={complaint.id} className="bg-white rounded-lg shadow p-6">
+            <div key={complaint._id} className="bg-white rounded-lg shadow p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold">{complaint.title}</h3>
-                  <p className="text-sm text-gray-500">ID: #{complaint.id}</p>
+                  <h3 className="text-lg font-semibold">{complaint.subject}</h3>
+                  <p className="text-sm text-red-500">ID: #{complaint._id}</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-sm ${
-                  complaint.status === 'pending' 
-                    ? 'bg-yellow-100 text-yellow-800' 
-                    : 'bg-green-100 text-green-800'
+                  complaint.isResolved 
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
                 }`}>
-                  {complaint.status === 'pending' ? 'Pending' : 'Resolved'}
+                  {complaint.isResolved ? 'Resolved' : 'Pending'}
                 </span>
               </div>
               <p className="text-gray-600 mb-4">{complaint.description}</p>
-              {complaint.images && (
-                <div className="mb-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    {complaint.images.map((image, index) => (
-                      <img 
-                        key={index}
-                        src={image}
-                        alt={`Complaint ${complaint.id} image ${index + 1}`}
-                        className="rounded-lg w-full h-48 object-cover"
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              <hr className="border-t-2 border-gray-400  mb-4" />
+              <hr className="border-t-2 border-gray-400 mb-4" />
               <div className="flex justify-between items-center text-sm text-gray-500">
-              
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
                   {complaint.date}
@@ -111,7 +123,6 @@ function Complaint() {
           ))}
         </div>
 
-        {/* New Complaint Form Modal */}
         {isFormOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-md w-full p-6">
@@ -124,10 +135,10 @@ function Complaint() {
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
                     <input
                       type="text"
-                      name="title"
+                      name="subject"
                       required
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
@@ -142,15 +153,23 @@ function Complaint() {
                     ></textarea>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                    <select
-                      name="priority"
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                      type="text"
+                      name="date"
+                      required
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
+                      defaultValue={new Date().toLocaleDateString()}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">House ID/Identifier</label>
+                    <input
+                      type="text"
+                      name="byHouse"
+                      required
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
                   </div>
                   <div className="flex justify-end gap-2">
                     <button
@@ -177,9 +196,6 @@ function Complaint() {
   );
 }
 
-
-   
-  
+export default Complaint;
 
 
-export default Complaint
