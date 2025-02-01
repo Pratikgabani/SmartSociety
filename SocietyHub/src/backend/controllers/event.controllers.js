@@ -122,8 +122,15 @@ const toggleResponseToEvent = asyncHandler(async (req, res) => {
 
     // Toggle the isReady field based on current value
     event.isReady = !event.isReady;
+    // const count = 0
     if(event.isReady === true){
+        event.totalHouseReady--;
+        // count++;
+        event.isReady = false
+    }else{
         event.totalHouseReady++;
+        // count++;
+        event.isReady = true
     }
 
     // Save the updated event

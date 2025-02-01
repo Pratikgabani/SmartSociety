@@ -15,4 +15,4 @@ router.route("/getAllEvent").get(verifyJWT, getAllEvents);
 router.route("/deleteEvent").delete(verifyJWT, deleteEvent);
 router.route("/updateEvent/:id").patch(verifyJWT, updateEvent);
 router.route("/toggleResponse/:id").patch(verifyJWT, toggleResponseToEvent);
-export default router
+export default router 
