@@ -11,6 +11,8 @@ import Payment from './components/Payment/Payment.jsx';
 import Visitor from './components/Visitor/Visitor.jsx';
 import Complaint from './components/Complaint/Complaint.jsx';
 import { Toaster } from 'react-hot-toast';
+import Booking from './components/Booking/Booking.jsx';
+import Event from './components/Event/Event.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,8 +26,8 @@ const router = createBrowserRouter(
      <Route path="Visitor" element={<Visitor />} />
 
     <Route path = "Complaint" element= {<Complaint />} />
-    
-    
+    <Route path = "Booking" element = {<Booking/>} />
+    <Route path = "Event" element = {<Event/>} />
 
     </>
      )
