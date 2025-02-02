@@ -1,128 +1,3 @@
-// import axios from "axios";
-// import React, { useEffect, useState } from "react";
-// import { IoLocationOutline } from "react-icons/io5";
-// import { FaRegClock } from "react-icons/fa";
-
-
-// function Event() {
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
-//   const [events, setEvents] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [isReady, setIsReady] = useState(false)
- 
-//   // Check token
-//   useEffect(() => {
-//     const token = localStorage.getItem("user");
-//     setIsLoggedIn(token);
-//   }, []);
-
-//   useEffect(() => {
-//     const getEvents = async () => {
-//       try {
-//         const response = await axios.get(
-//           "http://localhost:8000/api/v1/events/getAllEvent",
-//           { withCredentials: true }
-//         );
-
-//         setEvents(response.data.data);
-//         setLoading(false);
-//       } catch (error) {
-//         console.log("Error in getting events", error);
-//         setLoading(false);
-//       }
-//     };
-//     getEvents();
-//   }, []);
-
-//   const handleToggleReady = async (eventId) => {
-//     try {
-//       const response = await axios.put(
-//         `http://localhost:8000/api/v1/events/toggleResponse/${eventId}`,
-//         {},
-//         { withCredentials: true }
-//       );
-
-//       // Update state with the new event data
-//       setEvents(events.map(event => 
-//         event._id === eventId ? { ...event, totalHouseReady: response.data.data.totalHouseReady } : event
-//       ));
-//     } catch (error) {
-//       console.error("Error toggling response:", error);
-//     }
-//   };
-  
-
-
-//   return (
-//     <div>
-//       {isLoggedIn ? (
-//         <div className="flex flex-col items-center justify-center">
-//           <h1 className="text-3xl font-bold">Events</h1>
-//           <p>Stay updated with society events and celebrations</p>
-//           <h3 className="text-2xl font-semibold">Upcoming Events</h3>
-//           <div className="flex flex-wrap justify-center items-center mt-4">
-//             {loading ? (
-//               <p>Loading...</p>
-//             ) : events.length === 0 ? (
-//               <p>No events found</p>
-//             ) : (
-//               events.map((event) => (
-//                 <div
-//                   key={event._id}
-//                   className="bg-white rounded-lg shadow-md p-4 m-4 w-1/4"
-//                 >
-//                   <div className="flex items-center justify-between text-gray-600 text-sm">
-//                     <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-sm">
-//                       {event.category}
-//                     </span>
-//                     <span>{new Date(event.eventDate).toLocaleDateString()}</span>
-//                   </div>
-//                   <h2 className="text-xl font-bold mt-3">{event.eventName}</h2>
-//                   <p className="text-gray-700 mt-1">{event.description}</p>
-//                   <div className="mt-3 text-gray-600 text-base flex items-center gap-2">
-//                     <span>{new Date(event.eventDate).toLocaleDateString()}</span>
-//                   </div>
-//                   <div className="text-gray-600 text-base flex items-center gap-10">
-//                     <div className="flex items-center gap-1">
-//                       <IoLocationOutline />
-//                       <span>{event.venue}</span>
-//                     </div>
-//                     <div className="flex items-center gap-1">
-//                       <FaRegClock />
-//                       <span>{event.time}</span>
-//                     </div>
-//                   </div>
-//                   <p className="text-gray-600 text-base mt-2">
-//                     <strong>Amount per person:</strong> ₹{event.amtPerPerson}
-//                   </p>
-//                   <div className="mt-2">
-//                     <strong>No. of Houses Ready:</strong> {event.totalHouseReady}
-//                   </div>
-//                   <button
-//                     onClick={() =>
-//                       { 
-//                         handleToggleReady(event._id)
-//                         setIsReady(!isReady)
-//                       }}
-//                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
-//                   >
-//                     {isReady ? "I am not ready" : "I am ready"}
-//                   </button>
-
-//                 </div>
-//               ))
-//             )}
-//           </div>
-//         </div>
-//       ) : (
-//         <p>You are not logged in</p>
-//       )}
-//     </div>
-//   );
-// }
-
-
-// export default Event;
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
@@ -132,9 +7,8 @@ function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [readyState, setReadyState] = useState({}); // Stores individual event states
+  const [readyState, setReadyState] = useState({});
 
-  // Check token
   useEffect(() => {
     const token = localStorage.getItem("user");
     setIsLoggedIn(token);
@@ -151,7 +25,6 @@ function Event() {
         setEvents(response.data.data);
         setLoading(false);
 
-        // Initialize readyState for all events as false
         const initialReadyState = response.data.data.reduce((acc, event) => {
           acc[event._id] = false;
           return acc;
@@ -173,12 +46,10 @@ function Event() {
         { withCredentials: true }
       );
 
-      // Update totalHouseReady in state
       setEvents(events.map(event => 
         event._id === eventId ? { ...event, totalHouseReady: response.data.data.totalHouseReady } : event
       ));
 
-      // Toggle ready state for the clicked button only
       setReadyState(prevState => ({
         ...prevState,
         [eventId]: !prevState[eventId]
@@ -189,57 +60,46 @@ function Event() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4 py-8">
       {isLoggedIn ? (
-        <div className="flex flex-col items-center justify-center">
-          <h1 className="text-3xl font-bold">Events</h1>
-          <p>Stay updated with society events and celebrations</p>
-          <h3 className="text-2xl font-semibold">Upcoming Events</h3>
-          <div className="flex flex-wrap justify-center items-center mt-4">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-800">Events</h1>
+          <p className="text-gray-600 text-lg">Stay updated with society events and celebrations</p>
+          <h3 className="text-3xl font-semibold mt-8">Upcoming Events</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {loading ? (
               <p>Loading...</p>
             ) : events.length === 0 ? (
               <p>No events found</p>
             ) : (
               events.map((event) => (
-                <div
-                  key={event._id}
-                  className="bg-white rounded-lg shadow-md p-4 m-4 w-1/4"
-                >
-                  <div className="flex items-center justify-between text-gray-600 text-sm">
-                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-sm">
+                <div key={event._id} className="bg-white rounded-lg shadow-lg p-6 border">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold">
                       {event.category}
                     </span>
-                    <span>{new Date(event.eventDate).toLocaleDateString()}</span>
+                    <span className="text-gray-500 text-sm">{new Date(event.eventDate).toLocaleDateString()}</span>
                   </div>
-                  <h2 className="text-xl font-bold mt-3">{event.eventName}</h2>
-                  <p className="text-gray-700 mt-1">{event.description}</p>
-                  <div className="mt-3 text-gray-600 text-base flex items-center gap-2">
-                    <span>{new Date(event.eventDate).toLocaleDateString()}</span>
+                  <h2 className="text-xl font-bold text-gray-800">{event.eventName}</h2>
+                  <p className="text-gray-600 mt-2">{event.description}</p>
+                  <div className="mt-4 flex items-center text-gray-600">
+                    <FaRegClock className="mr-2" />
+                    <span>{event.time}</span>
                   </div>
-                  <div className="text-gray-600 text-base flex items-center gap-10">
-                    <div className="flex items-center gap-1">
-                      <IoLocationOutline />
-                      <span>{event.venue}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FaRegClock />
-                      <span>{event.time}</span>
-                    </div>
+                  <div className="mt-2 flex items-center text-gray-600">
+                    <IoLocationOutline className="mr-2" />
+                    <span>{event.venue}</span>
                   </div>
-                  <p className="text-gray-600 text-base mt-2">
-                    <strong>Amount per person:</strong> ₹{event.amtPerPerson}
-                  </p>
-                  <div className="mt-2">
-                    <strong>No. of Houses Ready:</strong> {event.totalHouseReady}
-                  </div>
+                  <p className="mt-3 text-gray-700 font-semibold">Amount per person: ₹{event.amtPerPerson}</p>
+                  <p className="text-gray-700">No. of Houses Ready: {event.totalHouseReady}</p>
                   <button
                     onClick={() => handleToggleReady(event._id)}
-                    className={`${
-                      readyState[event._id] ? "bg-red-500 hover:bg-red-700" : "bg-green-500 hover:bg-green-700"
-                    } text-white font-bold py-2 px-4 rounded mt-2`}
+                    className={`w-full mt-4 py-2 rounded-lg font-bold text-white ${
+                      readyState[event._id] ? "bg-green-500 hover:bg-green-600" : "bg-red-600 hover:bg-red-700"
+                    }`}
                   >
-                    {readyState[event._id] ? "I am not ready" : "I am ready"}
+                    {readyState[event._id] ? "I am ready" : "I am not ready "}
                   </button>
                 </div>
               ))
@@ -247,7 +107,7 @@ function Event() {
           </div>
         </div>
       ) : (
-        <p>You are not logged in</p>
+        <p className="text-gray-600">You are not logged in</p>
       )}
     </div>
   );
