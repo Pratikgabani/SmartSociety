@@ -146,7 +146,7 @@ function Event() {
   const handleIncrementHouseReady = async (eventId, currentTotal) => {
     try {
       // setIsReady(!isReady);
-      const updatedTotal =0;
+      var updatedTotal =0;
       if(!isReady){
          updatedTotal = currentTotal + 1;
       }else{
