@@ -9,7 +9,7 @@ function Event() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isReady, setIsReady] = useState(false)
-
+ 
   // Check token
   useEffect(() => {
     const token = localStorage.getItem("user");
@@ -38,9 +38,10 @@ function Event() {
     try {
       const response = await axios.put(
         `http://localhost:8000/api/v1/events/toggleResponse/${eventId}`,
+        {},
         { withCredentials: true }
       );
-  
+
       // Update state with the new event data
       setEvents(events.map(event => 
         event._id === eventId ? { ...event, totalHouseReady: response.data.data.totalHouseReady } : event
@@ -49,6 +50,7 @@ function Event() {
       console.error("Error toggling response:", error);
     }
   };
+  
   
 
   return (
