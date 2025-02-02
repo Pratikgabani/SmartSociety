@@ -47,11 +47,12 @@ const eventSchema = new Schema({
         type : Date,
         required : true
     },
-    isReady : {
-        type : Boolean,
-        required : true,
-        default : false
-    },
+    readyUsers : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : "User"
+        }
+    ],
     category : {
         type : String,
         required : true

@@ -107,40 +107,71 @@ const updateEvent = asyncHandler(async (req, res) => {
     .json(new ApiResponse("Event updated successfully" , event , true ));
 })
 
-const toggleResponseToEvent = asyncHandler(async (req, res) => {
-    const id = req.params.id;
+// const toggleResponseToEvent = asyncHandler(async (req, res) => {
+//     const id = req.params.id;
+//     const userId = req.user._id
 
-    if(!id){
-        throw new ApiError( 400 ,"Event id not found");
+//     if(!id){
+//         throw new ApiError( 400 ,"Event id not found");
+//     }
+
+//     const event = await Event.find({
+//         _id : id
+        
+//     });
+    
+//     if (!event) {
+//         throw new ApiError(404 ,"Event not found");
+//     }
+
+//     // Toggle the isReady field based on current value
+//     event.isReady = !event.isReady;
+    
+//     // Update the totalHouseReady field
+//     if(event.isReady){
+//         event.totalHouseReady = event.totalHouseReady + 1;
+//     }else{
+//         event.totalHouseReady = event.totalHouseReady - 1;
+//     }
+
+//     // Save the updated event
+//     await event.save();
+
+//     return res
+//     .status(200)
+//     .json(new ApiResponse("Response submitted successfully" , event , true ));
+
+// }) 
+const toggleResponse = asyncHandler(async (req, res) => {
+    const {eventId} = req.params
+    const userId = req.user._id // Get logged-in user
+
+    if (!eventId) {
+        throw new ApiError(400, "Event ID not found");
     }
 
-    const event = await Event.findById(id);
+    const event = await Event.findById(eventId);
     
     if (!event) {
-        throw new ApiError(404 ,"Event not found");
+        throw new ApiError(404, "Event not found");
     }
 
-    // Toggle the isReady field based on current value
-    event.isReady = !event.isReady;
-    // const count = 0
-    if(event.isReady === true){
-        event.totalHouseReady--;
-        // count++;
-        event.isReady = false
-    }else{
-        event.totalHouseReady++;
-        // count++;
-        event.isReady = true
+    // Check if user has already responded
+    const userIndex = event.readyUsers.indexOf(userId);
+    
+    if (userIndex === -1) {
+        event.readyUsers.push(userId);
+        event.totalHouseReady += 1;
+    } else {
+        event.readyUsers.splice(userIndex, 1);
+        event.totalHouseReady -= 1;
     }
 
-    // Save the updated event
     await event.save();
 
-    return res
-    .status(200)
-    .json(new ApiResponse("Response submitted successfully" , event , true ));
-
-}) 
+    return res.status(200).json(new ApiResponse("Response submitted successfully", event, true));
+});
 
 
-export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponseToEvent }
+
+export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse }
