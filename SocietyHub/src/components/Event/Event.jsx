@@ -10,10 +10,14 @@ function Event() {
   const [readyState, setReadyState] = useState({});
   const [isAdmin , setIsAdmin] = useState(false)
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  if(user.data.role === "admin"){
-    setIsAdmin(true)
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("user");
+    if (token) {
+      setIsLoggedIn(true);
+      const user = JSON.parse(token);  
+      setIsAdmin(user.role === "admin");  
+    }
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("user");
