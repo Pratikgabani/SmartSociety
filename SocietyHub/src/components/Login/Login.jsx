@@ -38,7 +38,7 @@ function Login() {
       console.log("Login successful: ", response.data);
       
       localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/Event");
+      navigate("/landing");
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors || "Login failed!!!");
