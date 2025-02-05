@@ -8,6 +8,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
+import { SocietyDetail } from '../models/societyDetail.models.js';
 
 
 
@@ -84,6 +85,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       password,
       societyId,
       email,
+      role,
+      rolePass,
       nameOfPersons,
       phoneNo,
       numberOfVeh,
@@ -104,6 +107,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       });
     }
 
+    // check if role is "admin" or "security" and then check if rolePass is provided and matching with rolePass in database
+    if (role === "admin" || role === "security") {
+      if (!rolePass) {
+        return res.status(400).json({ message: 'Role pass is required' });
+      }
+      const existingRolePass = await SocietyDetail.findOne({ rolePass });
+      if (!existingRolePass) {
+        return res.status(400).json({ message: 'Invalid role pass' });
+      }
+    }
+
     // Hash password
     // const salt = await bcrypt.genSalt(10);
     // const hashedPassword = await bcrypt.hash(password, salt);
@@ -115,26 +129,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       password,
       societyId,
       email,
+      role,
+      rolePass,
       nameOfPersons,
       phoneNo,
       numberOfVeh,
       vehicleNo
     });
     
-    // Return user data without password
-    // const userResponse = {
-    //   _id: newUser._id,
-    //   block: newUser.block,
-    //   houseNo: newUser.houseNo,
-    //   societyId: newUser.societyId,
-    //   email: newUser.email,
-    //   nameOfPersons: newUser.nameOfPersons,
-    //   phoneNo: newUser.phoneNo,
-    //   numberOfVeh: newUser.numberOfVeh,
-    //   vehicleNo: newUser.vehicleNo,
-    //   createdAt: newUser.createdAt,
-    //   refreshToken : newUser.refreshToken
-    // };
     const userResponse = await User.findById(newUser._id).select(
       // selecting the fields that we want to show in the response
         "-password -refreshToken " // This will select all the fields other than password and refreshToken
@@ -146,10 +148,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     return res.status(201).json(
       new ApiResponse(200, userResponse, "User registered Successfully")
-  )
-
-  
-   
+  )  
 })
 
 const loginUser = asyncHandler (async (req, res) => {

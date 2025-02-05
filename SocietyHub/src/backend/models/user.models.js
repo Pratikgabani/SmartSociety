@@ -27,7 +27,25 @@ const userSchema = new Schema({
     type : String,
     required : true
   },
- 
+  role: {
+    type: String,  // ✅ Define type first
+    enum: ["user", "admin", "security"],  // ✅ enum inside the object
+    default: "user",  // ✅ Default value set properly
+    required: true
+  },
+  
+  rolePass: {
+    type: String,
+    validate: {
+      validator: function (value) {
+        // Require rolePass only if role is "admin" or "security"
+        return this.role === "admin" || this.role === "security"
+          ? !!value
+          : true;
+      },
+      message: "rolePass is required for admin and security roles",
+    },
+  },
   nameOfPersons: [
     {
         type : String,
