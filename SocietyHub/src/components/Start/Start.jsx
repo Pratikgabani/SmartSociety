@@ -31,29 +31,29 @@
 
 // export default StartPage;
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Start = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const hasVisited = localStorage.getItem("hasVisited");
-    if (hasVisited) {
-      navigate("/Landing");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   const hasVisited = localStorage.getItem("hasVisited");
+  //   if (hasVisited) {
+  //     navigate("/Landing");
+  //   }
+  // }, [navigate]);
 
   
-  const handleJoinSociety = () => {
-    localStorage.setItem("hasVisited", true);
-    navigate("/landing");
-  };
+  // const handleJoinSociety = () => {
+  //   localStorage.setItem("hasVisited", true);
+  //   navigate("/landing");
+  // };
 
-  const handleCreateSociety = () => {
-    localStorage.setItem("hasVisited", true);
-    navigate("/SocietyDetails");
-  };
+  // const handleCreateSociety = () => {
+  //   localStorage.setItem("hasVisited", true);
+  //   navigate("/SocietyDetails");
+  // };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen text-center">
@@ -64,18 +64,18 @@ const Start = () => {
       
       <div className="flex space-x-8">
         <div className="flex flex-col items-center">
-          <button className="bg-blue-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-blue-600" onClick={handleJoinSociety}>
+          <Link to = "/register" className="bg-blue-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-blue-600">
             Join an Existing Society
-          </button>
+          </Link>
           <p className="text-sm">
             Streamline your experience by joining an already established society.
           </p>
         </div>
         
         <div className="flex flex-col items-center">
-          <button className="bg-green-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-green-600" onClick={handleCreateSociety}>
+          <Link to = "/SocietyDetails"  className="bg-green-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-green-600" >
             Create a New Society
-          </button>
+          </Link>
           <p className="text-sm">
             Start fresh and build a new society with our easy-to-use tools.
           </p>

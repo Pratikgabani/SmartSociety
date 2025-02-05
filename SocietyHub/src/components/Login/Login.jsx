@@ -32,10 +32,13 @@ function Login() {
           },
         }
       );
+      if(response.data.role === "security"){
+        navigate("/Visitor");
+      }
       console.log("Login successful: ", response.data);
       
       localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/");
+      navigate("/Event");
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors || "Login failed!!!");

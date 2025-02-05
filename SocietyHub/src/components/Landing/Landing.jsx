@@ -80,12 +80,7 @@ function Landing() {
                   >
                     Login
                   </Link>
-                  <Link
-                    to={"/register"}
-                    className="bg-transparent text-black text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
-                  >
-                    Signup
-                  </Link>
+                  
                 </>
               )}
             </div>
@@ -105,6 +100,20 @@ function Landing() {
                 <li className='pt-9'>
                   <a href='#' className='text-black text-xl font-semibold cursor-pointer border transition ease-in-out duration-300 border-black py-[14px] px-4 rounded-full hover:bg-[#005B96] hover:text-white'>Let's explore</a>
                 </li>
+                <div className="flex space-x-8">
+                        <div className="flex flex-col items-center">
+                          <Link to = "/register" className="bg-blue-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-blue-600">
+                            Join an Existing Society
+                          </Link>
+                        </div>
+                        
+                        <div className="flex flex-col items-center">
+                          <Link to = "/SocietyDetails"  className="bg-green-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-green-600" >
+                            Create a New Society
+                          </Link>
+
+                        </div>
+                      </div>
               </ul>
             </div>
 

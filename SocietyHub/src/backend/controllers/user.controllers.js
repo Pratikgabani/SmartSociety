@@ -110,11 +110,18 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     // check if role is "admin" or "security" and then check if rolePass is provided and matching with rolePass in database
     if (role === "admin" || role === "security") {
       if (!rolePass) {
-        return res.status(400).json({ message: 'Role pass is required' });
+        throw new ApiError(400, "Role pass is required");
       }
-      const existingRolePass = await SocietyDetail.findOne({ rolePass });
-      if (!existingRolePass) {
-        return res.status(400).json({ message: 'Invalid role pass' });
+      if(role === "admin"){
+        const existingRolePass = await SocietyDetail.findOne({adminPass: rolePass });
+        if (!existingRolePass) {
+          throw new ApiError(400, "Invalid role pass");
+        }
+      }else{
+        const existingRolePass = await SocietyDetail.findOne({securityPass: rolePass });
+        if (!existingRolePass) {
+          throw new ApiError(400, "Invalid role pass");
+        }
       }
     }
 
@@ -153,7 +160,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler (async (req, res) => {
 
-const {email, password} = req.body;
+const {email, password } = req.body;
 
 const user = await User.findOne({email});
 // console.log(user)

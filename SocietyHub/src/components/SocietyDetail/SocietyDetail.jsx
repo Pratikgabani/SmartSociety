@@ -31,7 +31,7 @@ const SocietyDetails = () => {
       );
       console.log("Start successful: ", response.data);
       // toast.success(response.data.message);
-      navigate("/landing");
+      navigate("/register");
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors || "start failed!!!");
