@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-
+import SocietyDetails from './components/SocietyDetail/SocietyDetail.jsx';
 import { createBrowserRouter,createRoutesFromElements } from "react-router-dom";
 import { Route, RouterProvider, BrowserRouter } from "react-router-dom";
 import Login from './components/Login/Login.jsx';
@@ -30,7 +30,7 @@ const router = createBrowserRouter(
     <Route path = "Complaint" element= {<Complaint />} />
     <Route path = "Booking" element = {<Booking/>} />
     <Route path = "Event" element = {<Event/>} />
-
+    <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     </>
      )
 )

@@ -44,6 +44,7 @@ const Start = () => {
     }
   }, [navigate]);
 
+  
   const handleJoinSociety = () => {
     localStorage.setItem("hasVisited", true);
     navigate("/landing");
@@ -51,7 +52,7 @@ const Start = () => {
 
   const handleCreateSociety = () => {
     localStorage.setItem("hasVisited", true);
-    navigate("/visitor");
+    navigate("/SocietyDetails");
   };
 
   return (
