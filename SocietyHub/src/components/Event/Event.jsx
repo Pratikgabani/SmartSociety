@@ -8,6 +8,16 @@ function Event() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [readyState, setReadyState] = useState({});
+  const [isAdmin , setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem("user");
+    if (token) {
+      setIsLoggedIn(true);
+      const user = JSON.parse(token);  
+      setIsAdmin(user.role === "admin");  
+    }
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("user");
@@ -61,6 +71,7 @@ function Event() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Need to add the field for pay now with the option i m ready*/}
       {isLoggedIn ? (
         <div>
           <h1 className="text-4xl font-bold text-gray-800">Events</h1>
