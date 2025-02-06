@@ -38,9 +38,6 @@ const getAllEvents = asyncHandler(async (req, res) => {
     if(!events){
         return new ApiError( 500 ,"No events found" );
     }
-    // if(!events){
-    //     throw new ApiError("No events found", 500);
-    // }
 
     return res
     .status(200)
@@ -107,41 +104,6 @@ const updateEvent = asyncHandler(async (req, res) => {
     .json(new ApiResponse("Event updated successfully" , event , true ));
 })
 
-// const toggleResponseToEvent = asyncHandler(async (req, res) => {
-//     const id = req.params.id;
-//     const userId = req.user._id
-
-//     if(!id){
-//         throw new ApiError( 400 ,"Event id not found");
-//     }
-
-//     const event = await Event.find({
-//         _id : id
-        
-//     });
-    
-//     if (!event) {
-//         throw new ApiError(404 ,"Event not found");
-//     }
-
-//     // Toggle the isReady field based on current value
-//     event.isReady = !event.isReady;
-    
-//     // Update the totalHouseReady field
-//     if(event.isReady){
-//         event.totalHouseReady = event.totalHouseReady + 1;
-//     }else{
-//         event.totalHouseReady = event.totalHouseReady - 1;
-//     }
-
-//     // Save the updated event
-//     await event.save();
-
-//     return res
-//     .status(200)
-//     .json(new ApiResponse("Response submitted successfully" , event , true ));
-
-// }) 
 const toggleResponse = asyncHandler(async (req, res) => {
     const {eventId} = req.params
     const userId = req.user._id // Get logged-in user

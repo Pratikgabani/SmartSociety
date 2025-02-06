@@ -8,22 +8,30 @@ function Event() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [readyState, setReadyState] = useState({});
-  const [isAdmin , setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAddEventForm, setShowAddEventForm] = useState(false); // To toggle form
+  const [newEvent, setNewEvent] = useState({
+    eventName: "",
+    eventDate: "",
+    venue: "",
+    amtPerPerson: "",
+    description: "",
+    time: "",
+    lastDateOfPay: "",
+    category: ""
+  });
 
+  // Fetch user info from localStorage
   useEffect(() => {
     const token = localStorage.getItem("user");
     if (token) {
       setIsLoggedIn(true);
-      const user = JSON.parse(token);  
-      setIsAdmin(user.role === "admin");  
+      const user = JSON.parse(token);
+      setIsAdmin(user.data.user.role === "admin");
     }
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("user");
-    setIsLoggedIn(token);
-  }, []);
-
+  // Fetch events
   useEffect(() => {
     const getEvents = async () => {
       try {
@@ -48,6 +56,7 @@ function Event() {
     getEvents();
   }, []);
 
+  // Toggle readiness for an event
   const handleToggleReady = async (eventId) => {
     try {
       const response = await axios.put(
@@ -56,7 +65,7 @@ function Event() {
         { withCredentials: true }
       );
 
-      setEvents(events.map(event => 
+      setEvents(events.map(event =>
         event._id === eventId ? { ...event, totalHouseReady: response.data.data.totalHouseReady } : event
       ));
 
@@ -69,14 +78,91 @@ function Event() {
     }
   };
 
+  // Handle input changes for the add event form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  // Handle form submission to create a new event
+  const handleAddEvent = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/events/createEvent",
+        newEvent,
+        { withCredentials: true }
+      );
+
+      setEvents([...events, response.data.data]); // Add the new event to the state
+      setShowAddEventForm(false); // Hide form after successful submission
+      setNewEvent({
+        eventName: "",
+        eventDate: "",
+        venue: "",
+        amtPerPerson: "",
+        description: "",
+        time: "",
+        lastDateOfPay: "",
+        category: ""
+      });
+      console.log("Event created successfully")
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Need to add the field for pay now with the option i m ready*/}
       {isLoggedIn ? (
         <div>
           <h1 className="text-4xl font-bold text-gray-800">Events</h1>
           <p className="text-gray-600 text-lg">Stay updated with society events and celebrations</p>
-          <h3 className="text-3xl font-semibold mt-8">Upcoming Events</h3>
+
+          <div className="flex justify-between items-center">
+            <h3 className="text-3xl font-semibold mt-4">Upcoming Events</h3>
+            {isAdmin && (
+              <button
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                onClick={() => setShowAddEventForm(!showAddEventForm)}
+              >
+                {showAddEventForm ? "Cancel" : "Add Event"}
+              </button>
+            )}
+          </div>
+
+          {/* Add Event Form */}
+          {showAddEventForm && (
+            <form className="bg-white p-6 rounded-lg shadow-lg mt-6" onSubmit={handleAddEvent}>
+              <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
+
+              {["eventName", "eventDate", "venue", "amtPerPerson", "description", "time", "lastDateOfPay", "category"].map((field) => (
+                <div className="mb-4" key={field}>
+                  <label className="block text-gray-700 font-semibold capitalize">
+                    {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                  </label>
+                  <input
+                    type={field.includes("Date") ? "text" : field.includes("time") ? "time" : "text"}
+                    name={field}
+                    value={newEvent[field]}
+                    onChange={handleInputChange}
+                    placeholder={field.includes("Date") ? "YYYY-MM-DD" : ""}
+                    className="w-full p-2 border rounded-lg"
+                    pattern={field.includes("Date") ? "\\d{4}-\\d{2}-\\d{2}" : undefined} // Enforce date format
+                    required
+                  />
+
+                </div>
+              ))}
+
+              <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-lg mt-4">
+                Create Event
+              </button>
+            </form>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {loading ? (
@@ -102,15 +188,15 @@ function Event() {
                     <IoLocationOutline className="mr-2" />
                     <span>{event.venue}</span>
                   </div>
-                  <p className="mt-3 text-gray-700 font-semibold">Amount per person: ₹{event.amtPerPerson}</p>
+                  <p className="mt-3 text-gray-700 font-bold">Amount per person: ₹{event.amtPerPerson}</p>
                   <p className="text-gray-700">No. of Houses Ready: {event.totalHouseReady}</p>
+                  <p className="text-gray-700">Last Date to Pay : {new Date(event.lastDateOfPay).toLocaleDateString()}</p>
                   <button
                     onClick={() => handleToggleReady(event._id)}
-                    className={`w-full mt-4 py-2 rounded-lg font-bold text-white ${
-                      readyState[event._id] ? "bg-green-500 hover:bg-green-600" : "bg-red-600 hover:bg-red-700"
-                    }`}
+                    className={`w-full mt-4 py-2 rounded-lg font-bold text-white ${readyState[event._id] ? "bg-green-500 hover:bg-green-600" : "bg-red-600 hover:bg-red-700"
+                      }`}
                   >
-                    {readyState[event._id] ? "I am ready" : "I am not ready "}
+                    {readyState[event._id] ? "I am ready" : "I am not ready"}
                   </button>
                 </div>
               ))
