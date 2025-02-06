@@ -4,8 +4,8 @@ import { registerSecurity, loginSecurity, logoutSecurity} from "../controllers/s
 
 const router = Router();
 
-router.route("/registerSecurity").post(verifyJWT, registerSecurity);
-router.route("/loginSecurity").post(loginSecurity);
+router.route("/registerSecurity").post( registerSecurity);
+router.route("/loginSecurity").post( loginSecurity);
 router.route("/logoutSecurity").post(verifyJWT, logoutSecurity);
 
 export default router

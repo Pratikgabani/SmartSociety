@@ -7,11 +7,11 @@ societyId : {
     type : String,
     required : true
 },
-securityName : {
+securityPass : {
     type : String,
     required : true
 },
-securityPhone : {
+email : {
     type : String,
     required : true
 },

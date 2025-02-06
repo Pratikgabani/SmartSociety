@@ -15,16 +15,24 @@ function Visitor() {
     visitDate: '',
     visitTime: ''
   })
-
+ const token = JSON.parse(localStorage.getItem('user'));
+ console.log(token.data.user.role)
+//  const roles = token.user?.data?.role
+//  console.log(roles)
+const roles = token.data.user.role
+const userId = token.data.user._id
+   
   const [activeVisitors, setActiveVisitors] = useState([])
   const [recentVisitors, setRecentVisitors] = useState([])
-
+if(roles === "security"){
   useEffect(() => {
     // Fetch all visitors when component mounts
+   
     const fetchVisitors = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/visitor/getAllVisitors')
+        const response = await axios.get('http://localhost:8000/api/v1/visitor/getAllVisitors', { withCredentials: true })
         const visitors = response.data.data
+        console.log(visitors)
         setActiveVisitors(visitors.filter(visitor => visitor.isActive))
         setRecentVisitors(visitors.filter(visitor => !visitor.isActive))
       } catch (error) {
@@ -33,7 +41,26 @@ function Visitor() {
     }
     fetchVisitors()
   }, [])
+}
+else {
+useEffect(() => {
+  // Fetch all visitors when component mounts
+  const fetchVisitors = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/v1/visitor/getVisitor/${userId}`, { withCredentials: true })
+      const visitors = response.data
+console.log(visitors)
+      setActiveVisitors(visitors.filter(visitor => visitor.isActive))
+      setRecentVisitors(visitors.filter(visitor => !visitor.isActive))
+    } catch (error) {
+      console.error('Error fetching visitors:', error)
+    }
+  }
+  fetchVisitors()
+}, [])
+}
 
+  
   const handleAddVisitor = async (e) => {
     e.preventDefault()
 
@@ -47,7 +74,7 @@ function Visitor() {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/v1/visitor/createVisitor', newVisitorObj)
+      await axios.post('http://localhost:8000/api/v1/visitor/createVisitor', newVisitorObj, { withCredentials: true })
       setActiveVisitors([...activeVisitors, newVisitorObj])
       setShowAddModal(false)
       setNewVisitor({ visitorName: '', visitorPhone: '', visitingAdd: '', purpose: '', visitDate: '', visitTime: '' })

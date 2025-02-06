@@ -14,6 +14,7 @@ import { Toaster } from 'react-hot-toast';
 import Booking from './components/Booking/Booking.jsx';
 import Event from './components/Event/Event.jsx';
 import Start from './components/Start/Start.jsx';
+import SecurityRegister from './components/Security/Security.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,10 +24,10 @@ const router = createBrowserRouter(
     <Route path="Landing" element={<Landing />} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
-
+   <Route path ="Securityregister" element={<SecurityRegister />} />
      <Route path="Payment" element={<Payment />} />
      <Route path="Visitor" element={<Visitor />} />
-
+    
     <Route path = "Complaint" element= {<Complaint />} />
     <Route path = "Booking" element = {<Booking/>} />
     <Route path = "Event" element = {<Event/>} />

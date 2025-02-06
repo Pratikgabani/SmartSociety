@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken"
+import { SocietyDetail } from "../models/societyDetail.models.js";
 
 
 const generateAccessAndRefereshTokens = async(userId) =>{
@@ -70,49 +71,84 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 
 })
-
-
 const registerSecurity = asyncHandler(async (req, res) => {
-    const {societyId, securityName, securityPhone, password} = req.body;
-    if(!societyId || !securityName || !securityPhone || !password){
-        throw new ApiError(400 , "All fields are required")
-    }
+  const { societyId, securityPass, email, password } = req.body;
+  if (!societyId || !securityPass || !email || !password) {
+    throw new ApiError(400, "All fields are required");
+  }
 
-  const existingSecurity = await Security.findOne({societyId, securityName})
-    if(existingSecurity){
-        throw new ApiError(400 , "Security already registered")
-   }
+  // const existingSecurity = await Security.findOne({ societyId, securityPass });
+  // if (!existingSecurity) {
+  //   throw new ApiError(400, "Security already registered");
+  // }
+  const existingSocietyDetail = await SocietyDetail.findOne({societyId,securityPass})
+  if(!existingSocietyDetail){
+      throw new ApiError(400 , "Society detail not found")
+  }
 
-    const newSecurity = await Security.create({
-        societyId,
-        securityName,
-        securityPhone,
-        password
-    })
+
+  const newSecurity = await Security.create({
+    societyId,
+    securityPass,
+    email,
+    password,
+  });
+
+  const userResponse = await Security.findById(newSecurity._id).select(
+    "-password -refreshToken" // This will select all the fields other than password and refreshToken
+  );
+
+  if (!userResponse) {
+    throw new ApiError(400, "Security registration failed");
+  }
+
+  return res.status(201).json(
+    new ApiResponse(200, userResponse, "Security registered successfully")
+  );
+});
+
+
+// const registerSecurity = asyncHandler(async (req, res) => {
+//     const {societyId, securityPass, email, password} = req.body;
+//     if(!societyId || !securityPass || !email || !password){
+//         throw new ApiError(400 , "All fields are required")
+//     }
+
+//   const existingSecurity = await Security.findOne({societyId, securityPass})
+//     if(existingSecurity){
+//         throw new ApiError(400 , "Security already registered")
+//    }
+
+//     const newSecurity = await Security.create({
+//         societyId,
+//         securityPass,
+//         email,
+//         password
+//     })
 
 
    
-      const userResponse = await Security.findById(newSecurity._id).select(
-          // selecting the fields that we want to show in the response
-            "-password -refreshToken " // This will select all the fields other than password and refreshToken
-         )
+//       const userResponse = await Security.findById(newSecurity._id).select(
+//           // selecting the fields that we want to show in the response
+//             "-password -refreshToken " // This will select all the fields other than password and refreshToken
+//          )
     
-        if(!userResponse){
-          throw new ApiError(400, "security registration failed")
-         }
+//         if(!userResponse){
+//           throw new ApiError(400, "security registration failed")
+//          }
     
-        return res.status(201).json(
-          new ApiResponse(200, userResponse, "security registered Successfully")
-      )
-})
+//         return res.status(201).json(
+//           new ApiResponse(200, userResponse, "security registered Successfully")
+//       )
+// })
 
 const loginSecurity = asyncHandler (async (req, res) =>{
-    const {societyId, securityPhone, password} = req.body;
-if(!societyId || !securityPhone || !password){
+    const { email, password} = req.body;
+if(  !email || !password){
     throw new ApiError(400 , "All fields are required")
 }
 
-    const user = await Security.findOne({securityPhone});
+    const user = await Security.findOne({email});
     // console.log(user)
     if(!user){
       throw new ApiError(400, "User not found")

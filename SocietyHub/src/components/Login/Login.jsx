@@ -10,40 +10,69 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/login",
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+      if(role === "security"){
+        try {
+          const response = await axios.post(
+            "http://localhost:8000/api/v1/security/loginSecurity",
+            {
+              email,
+              password,
+              role
+            },
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          localStorage.setItem("user", JSON.stringify(response.data));
+            navigate("/Visitor");
+          
+          console.log("Login successful: ", response.data);
+         
+          
+        } catch (error) {
+          if (error.response) {
+            setErrorMessage(error.response.data.errors || "Login failed!!!");
+          }
         }
-      );
-      if(response.data.role === "security"){
-        navigate("/Visitor");
       }
-      console.log("Login successful: ", response.data);
-      
-      localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/landing");
-    } catch (error) {
-      if (error.response) {
-        setErrorMessage(error.response.data.errors || "Login failed!!!");
+      else{
+        try {
+          const response = await axios.post(
+            "http://localhost:8000/api/v1/users/login",
+            {
+              email,
+              password,
+              
+            },
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        
+          console.log("Login successful: ", response.data);
+          
+          localStorage.setItem("user", JSON.stringify(response.data));
+          navigate("/landing");
+        } catch (error) {
+          if (error.response) {
+            setErrorMessage(error.response.data.errors || "Login failed!!!");
+          }
+        }
       }
-    }
+   
   };
 
   return (
@@ -83,6 +112,22 @@ function Login() {
               required
             />
           </div>
+          <div className="mb-6">
+  <label className="block font-medium text-gray-700">ROLE</label>
+  <select
+    className="w-full px-3 py-2 border rounded-lg"
+    value={role}
+    onChange={(e) => setRole(e.target.value)}
+    required
+  >
+    <option value="" disabled>Select a role</option>
+    <option value="security">Security</option>
+    <option value="admin">Admin</option>
+    <option value="user">User</option>
+  </select>
+</div>
+
+          
           {errorMessage && (
             <div className="text-red-500 mb-4">{errorMessage}</div>
           )}

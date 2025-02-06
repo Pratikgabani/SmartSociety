@@ -9,7 +9,8 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 import { SocietyDetail } from '../models/societyDetail.models.js';
-
+import { Security } from '../models/security.models.js';
+import { Visitor } from '../models/visitor.models.js';
 
 
 
@@ -108,21 +109,16 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     // check if role is "admin" or "security" and then check if rolePass is provided and matching with rolePass in database
-    if (role === "admin" || role === "security") {
+    if (role === "admin" ) {
       if (!rolePass) {
         throw new ApiError(400, "Role pass is required");
       }
-      if(role === "admin"){
+      
         const existingRolePass = await SocietyDetail.findOne({adminPass: rolePass });
         if (!existingRolePass) {
           throw new ApiError(400, "Invalid role pass");
         }
-      }else{
-        const existingRolePass = await SocietyDetail.findOne({securityPass: rolePass });
-        if (!existingRolePass) {
-          throw new ApiError(400, "Invalid role pass");
-        }
-      }
+      
     }
 
     // Hash password
@@ -162,7 +158,12 @@ const loginUser = asyncHandler (async (req, res) => {
 
 const {email, password } = req.body;
 
-const user = await User.findOne({email});
+const security = await Security.findOne({email});
+if(security){
+  throw new ApiError(400 , "Security already registered")
+}
+
+const user = await User.findOne({email}) 
 // console.log(user)
 if(!user){
   throw new ApiError(400, "User not found")

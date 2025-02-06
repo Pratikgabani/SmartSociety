@@ -64,5 +64,15 @@ const getAllVisitors = asyncHandler(async (req, res) => {
     
 })
 
+const getVisitorById = asyncHandler(async (req, res) => {
+    const {id} = req.params
+    const visitor = await User.findById(id)
+    if(!visitor){
+        throw new ApiError(400 , "Visitor not found")
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200, visitor, "Visitor found successfully"));
+})
 
-export {createVisitor,removeVisitor,getAllVisitors}
+export {createVisitor,removeVisitor,getAllVisitors,getVisitorById}
