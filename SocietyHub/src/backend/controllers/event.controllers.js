@@ -45,30 +45,17 @@ const getAllEvents = asyncHandler(async (req, res) => {
 })
 
 const deleteEvent = asyncHandler(async (req, res) => {
-    const {eventName} = req.body;
-
-   if(!eventName.trim()){
-    throw new ApiError(400 ,"Please enter event name" )
-   }
-
-   const eventExists = await Event.findOne({eventName : eventName})
-    
-    if(!eventExists){
-        throw new ApiError(400 ,"Event does not exist " )
-    }
-    
-    const event = await Event.findByIdAndDelete(eventExists._id);
-
-    console.log(event)
+    const id = req.params.id;
+    const event = await Event.findByIdAndDelete(id)
 
     if(!event){
-        throw new ApiError(400 ,"Event not found" );
+        throw new ApiError(400 , "Event not found");
     }
 
     return res
     .status(200)
-    .json(new ApiResponse("Event deleted successfully", event, true));
-
+    .json(new ApiResponse("Event deleted successfully" , event , true ));
+    
     
 })
 
