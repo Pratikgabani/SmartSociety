@@ -91,6 +91,7 @@ const registerSecurity = asyncHandler(async (req, res) => {
     societyId,
     securityPass,
     email,
+    role : "security",
     password,
   });
 

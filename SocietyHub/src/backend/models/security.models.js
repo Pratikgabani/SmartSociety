@@ -19,6 +19,10 @@ password : {
     type : String,
     required : true
 },
+role : {
+    type : String,
+    default : "security"
+},
 refreshToken: {
     type: String
 }

@@ -40,21 +40,70 @@ const createVisitor = asyncHandler(async (req, res) => {
 })
 
 const removeVisitor = asyncHandler(async (req, res) => {
-    const {id} = req.params
-    const visitor = await Visitor.findByIdAndDelete(id)
-    if(!visitor){
-        throw new ApiError(400 , "Visitor not found")
+    const { id } = req.params;
+
+    const visitor = await Visitor.findById(id);
+    if (!visitor) {
+        throw new ApiError(400, "Visitor not found");
     }
-    return res
-    .status(200)
-    .json(new ApiResponse(200, visitor, "Visitor removed successfully"));
-})
+
+    visitor.isActive = false; // Instead of deleting, mark as inactive
+    await visitor.save();
+
+    return res.status(200).json(new ApiResponse(200, visitor, "Visitor checked out successfully"));
+});
+
+// const removeVisitor = asyncHandler(async (req, res) => {
+//     const { id } = req.params;
+
+//     console.log("Deleting visitor with ID:", id); // Debugging log
+
+//     const visitor = await Visitor.findById(id);
+//     if (!visitor) {
+//         throw new ApiError(400, "Visitor not found");
+//     }
+
+//     await visitor.deleteOne(); // Ensuring deletion
+
+//     return res
+//         .status(200)
+//         .json(new ApiResponse(200, visitor, "Visitor removed successfully"));
+// });
+
+const getRecentVisitors = asyncHandler(async (req, res) => {
+    try {
+        const visitors = await Visitor.find({ isActive: false });
+
+        if (!visitors || visitors.length === 0) {
+            throw new ApiError(404, "No recent visitors found");
+        }
+
+        return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
+    } catch (error) {
+        throw new ApiError(500, "Error fetching recent visitors");
+    }
+});
+
+const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
+    const userHouse = req.user.houseNo
+
+
+    try {
+        const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse});
+
+        if (!visitors || visitors.length === 0) {
+            throw new ApiError(404, "No recent visitors found");
+        }
+
+        return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
+    } catch (error) {
+        throw new ApiError(500, "Error fetching recent visitors");
+    }
+});
 
 const getAllVisitors = asyncHandler(async (req, res) => {
     //get the visiting add from visitors and match it to the users houseNo and then provide all the visitors with same houseNo as visitingAdd
-   const houseNO  = req.user.houseNo
-
-   const visitors = await Visitor.find({visitingAdd : houseNO})
+    const visitors = await Visitor.find({ isActive: true });
    if(!visitors){
     throw new ApiError(400 , "Visitors not found")
    }
@@ -65,8 +114,9 @@ const getAllVisitors = asyncHandler(async (req, res) => {
 })
 
 const getVisitorById = asyncHandler(async (req, res) => {
-    const {id} = req.params
-    const visitor = await User.findById(id)
+    const userHome = req.user.houseNo
+    const visitor = await Visitor.find({visitingAdd : userHome})
+
     if(!visitor){
         throw new ApiError(400 , "Visitor not found")
     }
@@ -75,4 +125,4 @@ const getVisitorById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, visitor, "Visitor found successfully"));
 })
 
-export {createVisitor,removeVisitor,getAllVisitors,getVisitorById}
+export {createVisitor,removeVisitor,getAllVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId}
