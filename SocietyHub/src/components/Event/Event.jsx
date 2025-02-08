@@ -203,7 +203,7 @@ function Event() {
                     <h2 className="text-xl font-bold text-gray-800 line-clamp-1 min-h-[28px]">
                       {event.eventName}
                     </h2>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold">
+                    <span className={`px-3 py-1  ${event.category === "Festival" ? "text-purple-700 bg-purple-100"  : event.category === "Meeting" ? "bg-teal-100 text-teal-700" : "text-pink-700 bg-pink-100"} bg-blue-100 text-blue-800 rounded-full text-sm font-medium`}>
                       {event.category}
                     </span>
 
