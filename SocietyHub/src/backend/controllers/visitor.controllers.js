@@ -85,9 +85,12 @@ const getRecentVisitors = asyncHandler(async (req, res) => {
 });
 
 const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
-    const userHouse = req.user.houseNo
-
-
+    const {userHouse} = req.params
+  
+    if(!userHouse){
+        throw new ApiError(400 , "User not found")
+    }
+ 
     try {
         const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse});
 
@@ -101,7 +104,7 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     }
 });
 
-const getAllVisitors = asyncHandler(async (req, res) => {
+const getActiveVisitors = asyncHandler(async (req, res) => {
     //get the visiting add from visitors and match it to the users houseNo and then provide all the visitors with same houseNo as visitingAdd
     const visitors = await Visitor.find({ isActive: true });
    if(!visitors){
@@ -112,6 +115,27 @@ const getAllVisitors = asyncHandler(async (req, res) => {
    .json(new ApiResponse(200, visitors, "Visitors found successfully"));
     
 })
+
+const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
+    const {userHouse} = req.params
+  
+    if(!userHouse){
+        throw new ApiError(400 , "User not found")
+    }
+ 
+    try {
+        const visitors = await Visitor.find({ isActive: true , visitingAdd : userHouse});
+
+        if (!visitors || visitors.length === 0) {
+            throw new ApiError(404, "No recent visitors found");
+        }
+
+        return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
+    } catch (error) {
+        throw new ApiError(500, "Error fetching active visitors");
+    }
+});
+
 
 const getVisitorById = asyncHandler(async (req, res) => {
     const userHome = req.user.houseNo
@@ -125,4 +149,4 @@ const getVisitorById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, visitor, "Visitor found successfully"));
 })
 
-export {createVisitor,removeVisitor,getAllVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId}
+export {createVisitor,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId , getActiveVisitorsByUserId}

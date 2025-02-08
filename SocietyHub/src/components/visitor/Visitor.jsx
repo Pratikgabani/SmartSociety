@@ -1,114 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import VisitorActive from "./VisitorActive";
-// import VisitorRecent from "./VisitorRecent";
-
-// function Visitor() {
-//   const [activeVisitors, setActiveVisitors] = useState([]);
-//   const [recentVisitors, setRecentVisitors] = useState([]);
-//   const [showAddModal, setShowAddModal] = useState(false);
-//   const [newVisitor, setNewVisitor] = useState({
-//     visitorName: "",
-//     visitorPhone: "",
-//     visitingAdd: "",
-//     purpose: "",
-//     visitDate: "",
-//     visitTime: "",
-//   });
-
-//   const token = JSON.parse(localStorage.getItem("user"));
-//   const roles = token?.data?.user?.role;
-
-//   useEffect(() => {
-//     const fetchVisitors = async () => {
-//       try {
-//         let response;
-//         if (roles === "security") {
-//           response = await axios.get(
-//             "http://localhost:8000/api/v1/visitor/getAllVisitors",
-//             { withCredentials: true }
-//           );
-//         } else {
-//           response = await axios.get(
-//             "http://localhost:8000/api/v1/visitor/getVisitor",
-//             { withCredentials: true }
-//           );
-//         }
-
-//         const visitors = response.data.data || response.data;
-//         setActiveVisitors(visitors.filter((visitor) => visitor.isActive));
-//         setRecentVisitors(visitors.filter((visitor) => !visitor.isActive));
-//       } catch (error) {
-//         console.error("Error fetching visitors:", error);
-//       }
-//     };
-
-//     fetchVisitors();
-//   }, [roles]); // Runs once on mount and when `roles` change
-
-//   const handleCheckOut = async (id) => {
-//     try {
-//       await axios.get(
-//         `http://localhost:8000/api/v1/visitor/removeVisitor/${id}`,
-//         { withCredentials: true }
-//       );
-
-//       setActiveVisitors((prevActive) =>
-//         prevActive.filter((visitor) => visitor._id !== id)
-//       );
-
-//       const checkedOutVisitor = activeVisitors.find((v) => v._id === id);
-//       if (checkedOutVisitor) {
-//         setRecentVisitors((prevRecent) => [...prevRecent, { ...checkedOutVisitor, isActive: false }]);
-//       }
-//     } catch (error) {
-//       console.error("Error checking out visitor:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 min-h-screen bg-gray-100">
-//       <h1 className="text-2xl font-bold text-gray-900">Visitor Management</h1>
-//       <button
-//         onClick={() => setShowAddModal(true)}
-//         className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-//       >
-//         + Add New Visitor
-//       </button>
-
-//       {/* Active Visitors */}
-//       <h2 className="text-xl font-semibold text-gray-700 mb-4">Active Visitors</h2>
-//       {activeVisitors.map((visitor) => (
-//         <VisitorActive
-//           key={visitor._id}
-//           username={visitor.visitorName}
-//           phoneNo={visitor.visitorPhone}
-//           purpose={visitor.purpose}
-//           checkIn={visitor.visitTime}
-//           checkDay={visitor.visitDate}
-//           onCheckOut={() => handleCheckOut(visitor._id)}
-//         />
-//       ))}
-
-//       {/* Recent Visitors */}
-//       <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Visitors</h2>
-//       {recentVisitors.map((visitor) => (
-//         <VisitorRecent
-//           key={visitor._id}
-//           name={visitor.visitorName}
-//           phone={visitor.visitorPhone}
-//           purpose={visitor.purpose}
-//           checkIn={visitor.visitTime}
-//           checkDay={visitor.visitDate}
-//           duration="N/A"
-//         />
-//       ))}
-//     </div>
-//   );
-// }
-
-// export default Visitor;
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import VisitorActive from './VisitorActive';
@@ -129,39 +18,24 @@ function Visitor() {
   const token = JSON.parse(localStorage.getItem('user'));
   const roles = token?.data?.user?.role;
   const userId = token?.data?.user?._id;
-
+  // console.log(userId)
+  const num = token?.data?.user?.houseNo
+  
   const [activeVisitors, setActiveVisitors] = useState([]);
   const [recentVisitors, setRecentVisitors] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchVisitors = async () => {
-  //     try {
-  //       let response;
-  //       if (roles === 'security') {
-  //         // Fetch all visitors for security
-  //         response = await axios.get('http://localhost:8000/api/v1/visitor/getAllVisitors', { withCredentials: true });
-  //       } else {
-  //         // Fetch only the logged-in user's visitors
-  //         response = await axios.get(`http://localhost:8000/api/v1/visitor/getVisitor`, { withCredentials: true });
-  //       }
-
-  //       const visitors = response.data.data || response.data; // Ensure we handle response properly based on role
-
-  //       // Split visitors into active and recent
-  //       setActiveVisitors(visitors.filter(visitor => visitor.isActive));
-  //       setRecentVisitors(visitors.filter(visitor => !visitor.isActive));
-  //     } catch (error) {
-  //       console.error('Error fetching visitors:', error);
-  //     }
-  //   };
-
-  //   fetchVisitors();
-  // }, []);
    const [vari, setVari] = useState(false);
+
+  //  fetch recent visitor for user and security both
   useEffect(() => {
     const fetchRecentVisitors = async () => {
+     let response;
      try {
-   const response = await axios.get('http://localhost:8000/api/v1/visitor/getRecentVisitors', { withCredentials: true });
+      if(roles === "security"){
+         response = await axios.get('http://localhost:8000/api/v1/visitor/getRecentVisitors', { withCredentials: true });
+      }else{
+        response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId/${num}`, { withCredentials: true });
+      }
    const visitors = response.data.data || response.data; 
    // Ensure we handle response properly based on role   
 
@@ -173,11 +47,17 @@ function Visitor() {
 
     fetchRecentVisitors();
   }, [vari]);
-
+  
+  // fetch active visitor 
   useEffect(() => {
     const fetchActiveVisitors = async () => {
+      let response;
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/visitor/getAllVisitors', { withCredentials: true });
+        if(roles === "security"){
+         response = await axios.get('http://localhost:8000/api/v1/visitor/getActiveVisitors', { withCredentials: true });
+        }else{
+          response = await axios.get(`http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId/${num}`, { withCredentials: true });
+        }
         const visitors = response.data.data || response.data; 
         // Ensure we handle response properly based on role   
 
@@ -207,7 +87,7 @@ function Visitor() {
       // Update the visitor list after adding
       if (roles === 'security') {
         // If security, fetch all visitors again
-        const response = await axios.get('http://localhost:8000/api/v1/visitor/getAllVisitors', { withCredentials: true });
+        const response = await axios.get('http://localhost:8000/api/v1/visitor/getActiveVisitors', { withCredentials: true });
         const visitors = response.data.data;
         setActiveVisitors(visitors.filter(visitor => visitor.isActive));
         setRecentVisitors(visitors.filter(visitor => !visitor.isActive));
@@ -253,10 +133,6 @@ function Visitor() {
         console.error('Error checking out visitor:', error);
     }
 };
-
-
-
-
 
   return (
     <div className="p-6 min-h-screen bg-gray-100">
@@ -385,7 +261,11 @@ function Visitor() {
                 phoneNo={visitor.visitorPhone}
                 purpose={visitor.purpose}
                 checkIn={visitor.visitTime}
-                checkDay={visitor.visitDate}
+                checkDay={new Date(visitor.visitDate).toLocaleDateString('en-IN', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
                 onCheckOut={() => handleCheckOut(visitor._id)}
               />
             ))}
@@ -413,8 +293,12 @@ function Visitor() {
                 name={visitor.visitorName}
                 phone={visitor.visitorPhone}
                 purpose={visitor.purpose}
+                checkDay={new Date(visitor.visitDate).toLocaleDateString('en-IN', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
                 checkIn={visitor.visitTime}
-                checkDay={visitor.visitDate}
                 duration="N/A" // Duration can be calculated if needed
               />
             ))}
