@@ -112,7 +112,8 @@ function Visitor() {
   };
 
   const handleCheckOut = async (id) => {
-    try {
+    if(roles === "security"){
+      try {
         await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
 
         const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
@@ -132,12 +133,14 @@ function Visitor() {
     } catch (error) {
         console.error('Error checking out visitor:', error);
     }
+    }
+   
 };
 
   return (
     <div className="p-6 min-h-screen bg-gray-100">
       {/* Add Visitor Modal */}
-      {showAddModal && (
+      {roles=== "security" && showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Visitor</h3>
@@ -231,12 +234,16 @@ function Visitor() {
       </div>
 
       <div className="flex gap-4 mb-8">
-        <button
+       {
+        roles === "security" && (
+          <button
           onClick={() => setShowAddModal(true)}
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
           + Add New Visitor
         </button>
+        )
+       }
         {/* ... rest of the search input */}
       </div>
 
