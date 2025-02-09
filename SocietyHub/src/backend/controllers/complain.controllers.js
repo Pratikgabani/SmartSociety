@@ -8,29 +8,79 @@ import { User } from "../models/user.models.js";
 import {upload} from "./../middlewares/multer.middlewares.js"
 
 
+// const createComplain = asyncHandler(async (req, res, next) => {
+//     const { subject, description } = req.body;
+
+//     console.log(subject, description);
+
+//     if ([subject, description].some((field) => field?.trim() === "")) {
+//         throw new ApiError(400, "All fields are required");
+//     }
+
+//     const existingComplain = await Complain.findOne({ subject });
+//     if (existingComplain) {
+//         throw new ApiError(400, "Complain already exists");
+//     }
+
+//     let proof;
+//     const proofLocalPath = req.file?.path;
+
+//     if (proofLocalPath) {
+//         try {
+//             proof = await uploadOnCloudinary(proofLocalPath);
+//             console.log("Proof uploaded", proof);
+//         } catch (error) {
+//             console.log('Error uploading proof', error);
+//             throw new ApiError(500, "Failed to upload proof");
+//         }
+//     }
+
+//     try {
+//         const complain = await Complain.create({
+//             complainId: req.user._id,
+//             subject,
+//             description,
+//             date : new Date().toLocaleDateString(),
+//             byHouse: req.user?.houseNo,
+//             proof: proof?.url || undefined // Only include if proof exists
+//         });
+
+//         if (!complain) {
+//             throw new ApiError(400, "Complain not created");
+//         }
+
+//         return res
+//             .status(200)
+//             .json(new ApiResponse(200, complain, "Complain created successfully"));
+
+//     } catch (error) {
+//         if (proof) {
+//             await deleteFromCloudinary(proof.public_id);
+//         }
+//         next(new ApiError(500, "Something went wrong"));
+//     }
+// });
 const createComplain = asyncHandler(async (req, res, next) => {
     const { subject, description } = req.body;
 
-    console.log(subject, description);
+    console.log("Received:", subject, description, req.file);
 
-    if ([subject, description].some((field) => field?.trim() === "")) {
+    if (!subject || !description) {
         throw new ApiError(400, "All fields are required");
     }
 
     const existingComplain = await Complain.findOne({ subject });
     if (existingComplain) {
-        throw new ApiError(400, "Complain already exists");
+        throw new ApiError(400, "Complaint already exists");
     }
 
-    let proof;
-    const proofLocalPath = req.file?.path;
-
-    if (proofLocalPath) {
+    let proof = null;
+    if (req.file) {
         try {
-            proof = await uploadOnCloudinary(proofLocalPath);
+            proof = await uploadOnCloudinary(req.file.path);
             console.log("Proof uploaded", proof);
         } catch (error) {
-            console.log('Error uploading proof', error);
+            console.log("Error uploading proof", error);
             throw new ApiError(500, "Failed to upload proof");
         }
     }
@@ -40,18 +90,16 @@ const createComplain = asyncHandler(async (req, res, next) => {
             complainId: req.user._id,
             subject,
             description,
-            date : new Date().toLocaleDateString(),
-            byHouse: req.user?.houseNo,
-            proof: proof?.url || undefined // Only include if proof exists
+            date: new Date().toLocaleDateString(),
+            byHouse: req.user.houseNo,
+            proof : proof?.url // Store Cloudinary URL
         });
 
         if (!complain) {
-            throw new ApiError(400, "Complain not created");
+            throw new ApiError(400, "Complaint not created");
         }
 
-        return res
-            .status(200)
-            .json(new ApiResponse(200, complain, "Complain created successfully"));
+        return res.status(200).json(new ApiResponse(200, complain, "Complaint created successfully"));
 
     } catch (error) {
         if (proof) {
@@ -60,6 +108,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
         next(new ApiError(500, "Something went wrong"));
     }
 });
+
 
 const getAllComplains = asyncHandler(async (req, res) => {
     const complains = await Complain.find();
