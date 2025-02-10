@@ -2,7 +2,11 @@
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs"
 import dotenv from "dotenv"
-dotenv.config()
+
+
+dotenv.config({
+    path : "./.env"
+})
 // configure cloudinary 
 
 cloudinary.config({
@@ -12,11 +16,12 @@ cloudinary.config({
 })
 
 const uploadOnCloudinary = async (localFilePath) =>{
+    console.log("Uploading on cloudinary", localFilePath)
     try {
         if(!localFilePath) return null
       const response = await cloudinary.uploader.upload(
             localFilePath , {
-                resource_type: "image"
+                resource_type: "auto",
                 // This will automatically detect that what type of file is coming 
             }
         )        
