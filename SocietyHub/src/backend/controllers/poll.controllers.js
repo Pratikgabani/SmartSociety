@@ -56,36 +56,46 @@ const deletePoll = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200 , deletedPoll , "Poll deleted successfully"))
 })
 
-const votePoll = asyncHandler(async (req, res) => {
-    const {pollId , optionId} = req.params
-    // Vote poll is remaining 
-    if(!pollId.trim()){
-        throw new ApiError(400 , "All fields are required")
-    }
 
-    if(!optionId.trim()){
-        throw new ApiError(400 , "All fields are required")
+
+const votePoll = asyncHandler(async (req, res) => {
+    const { pollId, optionId } = req.params;
+    const userId = req.user.id; // Ensure req.user is populated (middleware needed)
+
+    if (!pollId.trim() || !optionId.trim()) {
+        throw new ApiError(400, "All fields are required");
     }
 
     const poll = await Poll.findById(pollId);
-    if(!poll){
-        throw new ApiError(404 , "Poll not found")
+    if (!poll) {
+        throw new ApiError(404, "Poll not found");
     }
 
-    const option = await Poll.find({options : {$elemMatch : {_id : optionId}}})
-    if(!option){
-        throw new ApiError(404 , "Option not found")
+    // Check if the user has already voted
+    if (poll.voters.includes(userId)) {
+        throw new ApiError(403, "You have already voted in this poll");
     }
 
-    
-    
-    // await option.save();
+    // Find the selected option
+    const option = poll.options.find((opt) => opt._id.toString() === optionId);
+    if (!option) {
+        throw new ApiError(404, "Option not found");
+    }
+
+    // Update vote count
+    option.votes += 1;
+    poll.totalVotes += 1;
+
+    // Add user to voters list
+    poll.voters.push(userId);
+
     await poll.save();
 
     return res
-    .status(200)
-    .json(new ApiResponse(200 , poll , "Poll voted successfully"))
-})
+        .status(200)
+        .json(new ApiResponse(200, poll, "Poll voted successfully"));
+});
+
 
 const closePoll = asyncHandler(async (req, res) => {
     const {pollId} = req.params
