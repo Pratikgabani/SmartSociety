@@ -5,7 +5,6 @@ const bookingSchema = new Schema({
   bookingOwner: {
     type: Schema.Types.ObjectId,
     ref: "User"
-
   },
   bookingType: {
     type: String,
@@ -16,10 +15,6 @@ const bookingSchema = new Schema({
     type: String,
     required: true
   },
-  capacity: {
-    type: Number,
-    required: true
-  },
   duration: {
     type: String,
     required: true
@@ -28,10 +23,6 @@ const bookingSchema = new Schema({
     type: String,
     required: true,
     unique: true
-  },
-  bookingPrice: {
-    type: Number,
-    required: true
   },
   isAccepted: {
     type: Boolean,

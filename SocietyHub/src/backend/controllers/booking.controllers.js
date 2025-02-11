@@ -6,9 +6,9 @@ import { User } from "../models/user.models.js";
 import { Venue } from "../models/venue.models.js";
 
 const createBooking = asyncHandler(async (req, res) => {
-    const { bookingType, bookDescription, noOfPersons, duration, date} =  req.body;
+    const { bookingType, bookDescription, duration, date} =  req.body;
 
-    if( !bookingType || !bookDescription || !noOfPersons || !duration || !date){
+    if( !bookingType || !bookDescription || !duration || !date){
         throw new ApiError(400 , "All fields are required")
     }
 
@@ -16,13 +16,11 @@ const createBooking = asyncHandler(async (req, res) => {
     if(existingDate){
         throw new ApiError(400 , "Date and bookingType already booked")
     }
-    // const userId = req.user?._id
    
     const newBooking = await Booking.create({
         bookingOwner : req.user?._id,  // here ? is optional chaining for user._id to check if user is logged in or not 
         bookingType, 
         bookDescription,
-        noOfPersons,
         duration,
         date,
     })
@@ -31,7 +29,6 @@ const createBooking = asyncHandler(async (req, res) => {
     if(!newBooking){
         throw new ApiError(500 , "Failed to create booking")
     }
-
 
     return res
     .status(200)
@@ -97,6 +94,23 @@ const getBookings = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200 , allBookings , "Bookings found successfully"))
 })
 
+const getBookingsByUserId = asyncHandler(async (req, res) => {
+    const userId = req.user._id 
+    // console.log(userHouse)
+    console.log(userId)
+    if(!userId){
+        throw new ApiError(400 , "User not found")
+    }
+
+    const allBookings = await Booking.find({bookingOwner : userId})
+    if(!allBookings){
+        throw new ApiError(500 , "Failed to get bookings")
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200 , allBookings , "Bookings found successfully"))
+})
+
 const deleteBooking = asyncHandler(async (req, res) => {
     const {bookingId} = req.params
 
@@ -139,4 +153,4 @@ const bookingStatus = asyncHandler(async (req, res) => {
 
 })
 
-export { createBooking , getBookings , deleteBooking , bookingStatus , createVenue , getVenue}
+export { createBooking , getBookings , deleteBooking , bookingStatus , createVenue , getVenue , getBookingsByUserId}
