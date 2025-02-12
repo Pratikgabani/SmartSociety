@@ -1,15 +1,12 @@
 import mongoose, { Schema } from "mongoose";
-import { User } from "./user.models.js";
-
 const bookingSchema = new Schema({
   bookingOwner: {
     type: Schema.Types.ObjectId,
     ref: "User"
   },
   bookingType: {
-    type: String,
-    required: true,
-    unique: true
+    type : String,
+    required : true
   },
   bookDescription: {
     type: String,
@@ -20,19 +17,18 @@ const bookingSchema = new Schema({
     required: true
   },
   date: {
-    type: String,
-    required: true,
-    unique: true
+    type: Date,
+    required: true
   },
   isAccepted: {
     type: Boolean,
     default: false
-  }
-
-
-
+  } 
 }, {
   timestamps: true
 });
+  
+// Compound unique index to prevent duplicate bookings for the same venue on the same date
+// bookingSchema.index({ bookingType: 1, date: 1 } , { unique: true });
 
 export const Booking = mongoose.model("Booking", bookingSchema);

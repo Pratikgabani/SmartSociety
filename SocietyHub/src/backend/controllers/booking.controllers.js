@@ -6,34 +6,41 @@ import { User } from "../models/user.models.js";
 import { Venue } from "../models/venue.models.js";
 
 const createBooking = asyncHandler(async (req, res) => {
-    const { bookingType, bookDescription, duration, date} =  req.body;
+    const {bookingType , bookDescription, duration, date } = req.body;
+    // const bookingType = req.body.bookingType;  // Extract venue ID from request
 
-    if( !bookingType || !bookDescription || !duration || !date){
-        throw new ApiError(400 , "All fields are required")
+    if (!bookDescription || !duration || !date || !bookingType) {
+        throw new ApiError(400, "All fields are required.");
     }
 
-    const existingDate = await Booking.findOne({date,bookingType})
-    if(existingDate){
-        throw new ApiError(400 , "Date and bookingType already booked")
+    const checkVenue = await Venue.findOne({venue : bookingType});
+
+    if (!checkVenue) {
+        throw new ApiError(404, "Venue not found.");
     }
-   
+
+    // Check if the specific venue is already booked on the same date
+    const existingBooking = await Booking.findOne({ date, bookingType });
+    if (existingBooking) {
+        throw new ApiError(400, "This venue is already booked for the selected date.");
+    }
+    // console.log(existingBooking)
+ 
     const newBooking = await Booking.create({
-        bookingOwner : req.user?._id,  // here ? is optional chaining for user._id to check if user is logged in or not 
-        bookingType, 
+        bookingOwner: req.user?._id,  // Logged-in user's ID
+        bookingType,  // Venue ID from frontend
         bookDescription,
         duration,
         date,
-    })
- 
-    // const bookingRes = await Booking.findById(newBooking._id)
-    if(!newBooking){
-        throw new ApiError(500 , "Failed to create booking")
+    }); 
+    console.log(newBooking) 
+
+    if (!newBooking) {
+        throw new ApiError(500, "Failed to create booking.");
     }
 
-    return res
-    .status(200)
-    .json(new ApiResponse(200 , newBooking , "Booking created successfully"))
-})
+    return res.status(200).json(new ApiResponse(200, newBooking, "Booking created successfully."));
+});
 
 const createVenue = asyncHandler(async (req , res) =>{
     // Check if the user is admin or not 

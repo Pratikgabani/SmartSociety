@@ -103,20 +103,20 @@ const Booking = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/booking/createBooking",
-        { ...formData, bookingType: selectedVenue.venue },
-        { withCredentials: true }
-      );
-      alert("Booking created successfully!");
-      setIsFormOpen(false);
-    } catch (error) {
-      console.error("Error creating booking:", error);
-      alert("Failed to create booking.");
-    }
-  };
+  e.preventDefault();
+  try {
+    // Send the venue's _id as bookingType
+    const response = await axios.post(
+      "http://localhost:8000/api/v1/booking/new-booking",
+      { ...formData, bookingType: selectedVenue.venue },  // Corrected here
+      { withCredentials: true }
+    );
+    alert("Booking created successfully!");
+    setIsFormOpen(false);
+  } catch (error) {
+    console.error("Error creating booking:", error);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
@@ -133,7 +133,7 @@ const Booking = () => {
                 <h3 className="text-lg font-bold text-gray-800">{venue.venue}</h3>
                 <p className="text-sm text-gray-600">{venue.description}</p>
                 <p className="text-sm text-gray-600">Capacity: {venue.capacity}</p>
-                <p className="text-sm text-gray-600">{venue.price}</p>
+                <p className="text-sm text-gray-600">₹{venue.price} per day</p>
                 <div className="mt-2 space-x-2">
                   {venue.amenities.map((amenity, idx) => (
                     <span key={idx} className="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded">
