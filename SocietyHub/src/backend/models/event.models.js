@@ -1,13 +1,4 @@
-// event:
-// eventname
-// eventDate
-// venue,
-// amt.perPerson
-// totalHouseReady
-// description
-// time
-// lastdateOfPay
-// isReady
+
 import mongoose , {Schema} from 'mongoose'
 
 const eventSchema = new Schema({
