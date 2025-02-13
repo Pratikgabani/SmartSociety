@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import img1 from './../../assets/Rectangle95.png';
 import img2 from './../../assets/Rectangle99.png';
 import logo from './../../assets/logo.png';
@@ -26,7 +26,12 @@ const Register = () => {
     vehicleNo: [''],
   });
 
-  
+ useEffect(() => {
+  const token = localStorage.getItem('user');
+  if (token) {
+    navigate('/landing');
+  }
+ })  
 
   const handleArrayChange = (index, e, field) => {
     const newArray = [...formData[field]];

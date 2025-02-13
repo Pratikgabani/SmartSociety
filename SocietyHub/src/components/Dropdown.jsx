@@ -24,6 +24,7 @@ const Dropdown = () => {
           <li><a href="/poll" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Poll</a></li>
           <li><a href="/booking" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">bookings</a></li>
           <li><a href="/event" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">events</a></li>
+          <li><a href="/notice" className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>notices</a></li>
 
         </ul>
       )}

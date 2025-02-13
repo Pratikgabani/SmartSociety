@@ -16,7 +16,7 @@ import PollApp from './components/polls/polls.jsx';
 import Event from './components/Event/Event.jsx';
 import Start from './components/Start/Start.jsx';
 import SecurityRegister from './components/Security/Security.jsx';
-
+import Announcements from './components/Notice/Notice.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -33,6 +33,7 @@ const router = createBrowserRouter(
     <Route path = "Booking" element = {<Booking/>} />
     <Route path = "Event" element = {<Event/>} />
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
+    <Route path = "Notice" element = {<Announcements/>} />
     </>
      )
 )

@@ -18,7 +18,7 @@ import Userfriendly from './../../assets/Userfriendly.png';
 function Landing() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-
+  const token = localStorage.getItem("user");
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -102,9 +102,11 @@ function Landing() {
                 </li>
                 <div className="flex space-x-8">
                         <div className="flex flex-col items-center">
-                          <Link to = "/register" className="bg-blue-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-blue-600">
-                            Join an Existing Society
-                          </Link>
+                         {
+                          !token &&  <Link to = "/register" className="bg-blue-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-blue-600">
+                          Join an Existing Society
+                        </Link>
+                         }
                         </div>
                         
                         <div className="flex flex-col items-center">

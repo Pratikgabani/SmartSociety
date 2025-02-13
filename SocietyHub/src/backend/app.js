@@ -44,7 +44,7 @@ import visitorRouter from "./routes/visitor.routes.js";
 import securityRouter from "./routes/security.routes.js";
 import paymentRouter from "./routes/payment.routes.js";
 import pollRouter from "./routes/poll.routes.js";
-
+import noticeRouter from "./routes/notice.routes.js";
 
 app.use("/api/v1/users" , userRouter)
 app.use("/api/v1/events" , eventRouter)
@@ -55,4 +55,5 @@ app.use("/api/v1/visitor" , visitorRouter)
 app.use("/api/v1/security" , securityRouter)
 app.use("/api/v1/polls" , pollRouter )
 app.use("/api/v1/payments" , paymentRouter)
+app.use("/api/v1/notices" , noticeRouter)
 export default app;
