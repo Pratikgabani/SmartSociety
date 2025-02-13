@@ -189,6 +189,17 @@ const PollApp = () => {
       console.error("Error voting", err);
     }
   };
+  const deletePollOption = async (pollId, optionId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8000/api/v1/polls/deletePollOption/${pollId}/${optionId}`,
+        { withCredentials: true }
+      );
+      setVari(!vari);
+    } catch (err) {
+      console.error("Error deleting poll option", err);
+    }
+  };  
 
   const handleCreatePoll = async (e) => {
     e.preventDefault();
@@ -252,6 +263,9 @@ const PollApp = () => {
                   required
                 />
               ))}
+               <button  className="block w-full p-2 bg-gray-200 rounded mt-2" onClick={() => setOptions(options.slice(0, options.length - 1))}>
+                delete option
+               </button>
               <button
                 type="button"
                 className="bg-green-500 text-white px-4 py-2 rounded mt-4"

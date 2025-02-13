@@ -18,7 +18,7 @@ function Visitor() {
   const token = JSON.parse(localStorage.getItem('user'));
   const roles = token?.data?.user?.role;
   const userId = token?.data?.user?._id;
-  // console.log(userId)
+  console.log(roles)
   const num = token?.data?.user?.houseNo
   
   const [activeVisitors, setActiveVisitors] = useState([]);

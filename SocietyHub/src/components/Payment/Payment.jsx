@@ -92,7 +92,7 @@ const PaymentSection = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
               <h2 className="text-lg font-semibold text-blue-800 mb-4">Admin: Add Payment</h2>
-              <input type="text" name="description" value={newPayment.description} onChange={handleNewPaymentChange} placeholder="Description" className="p-2 border rounded w-full mb-2" />
+              <input type="text" name="description" value={newPayment.description} onChange={handleNewPaymentChange} placeholder="Description" className="p-2  border rounded w-full mb-2" />
               <input type="number" name="amount" value={newPayment.amount} onChange={handleNewPaymentChange} placeholder="Amount" className="p-2 border rounded w-full mb-2" />
               <input type="date" name="dueDate" value={newPayment.dueDate} onChange={handleNewPaymentChange} className="p-2 border rounded w-full mb-2" />
               <div className="flex justify-end space-x-2">
@@ -119,7 +119,7 @@ const PaymentSection = () => {
             <tbody>
               {payments.map((payment) => (
                 <tr key={payment._id} className="border border-gray-300">
-                  <td className="border border-gray-300 px-4 py-2">{payment.description}</td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">{payment.description}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
                   <td className={`border border-gray-300 px-4 py-2 text-center ${payment.status === "Paid" ? "text-green-600" : "text-red-600"}`}>{payment.status}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{payment.paymentDate ? new Date(payment.paymentDate).toLocaleString() : "-"}</td>
@@ -131,12 +131,13 @@ const PaymentSection = () => {
                     {payment.status === "Pending" && (
                       <button onClick={() => markAsPaid(payment._id)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Pay Now</button>
                     )}
-                    {role === "admin" && (
+                   
+                  </td>
+                  {role === "admin" && (
                       <button onClick={() => deletePayment(payment._id)} className="text-red-600 hover:text-red-800">
                         <X size={20} />
                       </button>
                     )}
-                  </td>
                 </tr>
               ))}
             </tbody>

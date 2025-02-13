@@ -1,5 +1,5 @@
 import { Payment } from "../models/payment.models.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 
 // 1. Get all payments (Admin View)

@@ -21,8 +21,10 @@ const Dropdown = () => {
           <li><a href="/Visitor" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Visitor</a></li>
           <li><a href="/Payment" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Payment</a></li>
           <li><a href="/Complaint" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Complaint</a></li>
-          <li><a href="#item2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 2</a></li>
-          <li><a href="#item2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 2</a></li>
+          <li><a href="/poll" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Poll</a></li>
+          <li><a href="/booking" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">bookings</a></li>
+          <li><a href="/event" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">events</a></li>
+
         </ul>
       )}
     </div>
