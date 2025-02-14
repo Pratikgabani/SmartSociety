@@ -6,7 +6,8 @@ const bookingSchema = new Schema({
   },
   bookingType: {
     type : String,
-    required : true
+    required : true,
+    // sparse : true
   },
   bookDescription: {
     type: String,
