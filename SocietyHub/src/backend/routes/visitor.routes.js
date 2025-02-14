@@ -1,6 +1,6 @@
 import {Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
-import { createVisitor, getActiveVisitors,removeVisitor,deleteVisitor, getVisitorById, getRecentVisitors, getRecentVisitorsByUserId , getActiveVisitorsByUserId} from "../controllers/visitor.controllers.js";
+import { updateVisitorDuration,createVisitor, getActiveVisitors,removeVisitor,deleteVisitor, getVisitorById, getRecentVisitors, getRecentVisitorsByUserId , getActiveVisitorsByUserId} from "../controllers/visitor.controllers.js";
 
 const router = Router();
 
@@ -12,6 +12,6 @@ router.route("/getRecentVisitors").get(verifyJWT, getRecentVisitors);
 router.route("/getRecentVisitorsByUserId/:userHouse").get(verifyJWT, getRecentVisitorsByUserId);
 router.route("/getActiveVisitorsByUserId/:userHouse").get(verifyJWT, getActiveVisitorsByUserId);
 router.route("/deleteVisitor/:id").delete(verifyJWT, deleteVisitor);
-
+router.route("/updateVisitorDuration").put(verifyJWT, updateVisitorDuration);
 
 export default router

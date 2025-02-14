@@ -12,6 +12,7 @@ function Visitor() {
     purpose: '',
     visitDate: '',
     visitTime: '',
+    duration: '',
   });
 
   const token = JSON.parse(localStorage.getItem('user'));
@@ -88,6 +89,7 @@ function Visitor() {
       purpose: newVisitor.purpose,
       visitDate: newVisitor.visitDate,
       visitTime: newVisitor.visitTime,
+      duration: ""
     };
 
     try {
@@ -112,6 +114,7 @@ function Visitor() {
         purpose: '',
         visitDate: '',
         visitTime: '',
+        duration: '',
       });
       setVari(!vari);
     } catch (error) {
@@ -119,31 +122,7 @@ function Visitor() {
     }
   };
 
-//   const handleCheckOut = async (id) => {
-//     if(roles === "security"){
-//       try {
-//         await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
 
-//         const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
-//           checkedOutVisitor.isActive = false;
-//         if (!checkedOutVisitor) {
-//             console.warn("Visitor not found in active visitors list"); // Debugging log
-//             return;
-//         }
-
-//         // Remove from active visitors
-//         const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
-//         setActiveVisitors(updatedVisitors);
-
-//         // Add to recent visitors only if it exists
-//         setRecentVisitors(prevRecent => [...prevRecent, checkedOutVisitor]);
-        
-//     } catch (error) {
-//         console.error('Error checking out visitor:', error);
-//     }
-//     }
-   
-// };
 
 const handleCheckOut = async (id) => {
   if (roles === "security") {
@@ -188,6 +167,8 @@ const handleCheckOut = async (id) => {
     }
   }
 };
+
+
 
   return (
     <div className="p-6 min-h-screen bg-gray-100">
@@ -369,7 +350,7 @@ const handleCheckOut = async (id) => {
               <tr key={visitor._id}>
                 <td className="px-6 py-4">{visitor.visitorName}</td>
                 <td className="px-6 py-4">{visitor.purpose}</td>
-                <td className="px-6 py-4">/{visitor.visitorPhone}</td>
+                <td className="px-6 py-4">{visitor.visitorPhone}</td>
                 <td className="px-6 py-4">
         <div>
          {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}

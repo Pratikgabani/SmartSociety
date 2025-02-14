@@ -149,4 +149,31 @@ const getVisitorById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, visitor, "Visitor found successfully"));
 })
 
-export {createVisitor,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId ,deleteVisitor, getActiveVisitorsByUserId}
+// Backend controller example for updating visitor duration
+
+const updateVisitorDuration = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { duration } = req.body;
+    
+   
+    // Find the visitor by ID and update the duration and checkoutDate
+    const updatedVisitor = await Visitor.findByIdAndUpdate(
+      id,
+      { duration,  isActive: false },
+      { new: true }
+    );
+
+    if (!updatedVisitor) {
+      return res.status(404).json({ message: "Visitor not found" });
+    }
+
+    res.status(200).json({ message: "Visitor updated successfully", data: updatedVisitor });
+  } catch (error) {
+    console.error('Error updating visitor:', error);
+    res.status(500).json({ message: "Error updating visitor" });
+  }
+};
+
+
+export {createVisitor,updateVisitorDuration,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId ,deleteVisitor, getActiveVisitorsByUserId}

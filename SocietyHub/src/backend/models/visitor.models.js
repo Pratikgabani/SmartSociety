@@ -27,6 +27,10 @@ const visitorSchema = new Schema({
         type : String,
         required : true
     },
+    duration : {
+        type : String,
+        default : "00:00:00"
+    },
     isActive : {
         type : String,
         default : true
