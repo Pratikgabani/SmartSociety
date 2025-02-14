@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import VisitorActive from './VisitorActive';
-import VisitorRecent from './VisitorRecent';
-import { set } from 'mongoose';
+
+
 
 function Visitor() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -18,7 +17,7 @@ function Visitor() {
   const token = JSON.parse(localStorage.getItem('user'));
   const roles = token?.data?.user?.role;
   const userId = token?.data?.user?._id;
-  console.log(roles)
+  
   const num = token?.data?.user?.houseNo
   
   const [activeVisitors, setActiveVisitors] = useState([]);
@@ -70,6 +69,15 @@ function Visitor() {
     fetchActiveVisitors();
   }, [vari]);
   
+
+  const deleteVisitor = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/visitor/deleteVisitor/${id}`, { withCredentials: true });  
+      setVari(!vari);
+    } catch (error) {
+      console.error('Error deleting visitor:', error);
+    }
+  }
   const handleAddVisitor = async (e) => {
     e.preventDefault();
 
@@ -111,30 +119,74 @@ function Visitor() {
     }
   };
 
-  const handleCheckOut = async (id) => {
-    if(roles === "security"){
-      try {
-        await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
+//   const handleCheckOut = async (id) => {
+//     if(roles === "security"){
+//       try {
+//         await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
 
-        const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
-          checkedOutVisitor.isActive = false;
-        if (!checkedOutVisitor) {
-            console.warn("Visitor not found in active visitors list"); // Debugging log
-            return;
-        }
+//         const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
+//           checkedOutVisitor.isActive = false;
+//         if (!checkedOutVisitor) {
+//             console.warn("Visitor not found in active visitors list"); // Debugging log
+//             return;
+//         }
 
-        // Remove from active visitors
-        const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
-        setActiveVisitors(updatedVisitors);
+//         // Remove from active visitors
+//         const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
+//         setActiveVisitors(updatedVisitors);
 
-        // Add to recent visitors only if it exists
-        setRecentVisitors(prevRecent => [...prevRecent, checkedOutVisitor]);
+//         // Add to recent visitors only if it exists
+//         setRecentVisitors(prevRecent => [...prevRecent, checkedOutVisitor]);
         
-    } catch (error) {
-        console.error('Error checking out visitor:', error);
-    }
-    }
+//     } catch (error) {
+//         console.error('Error checking out visitor:', error);
+//     }
+//     }
    
+// };
+
+const handleCheckOut = async (id) => {
+  if (roles === "security") {
+    try {
+      await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
+
+      const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
+      
+      // Ensure the visitor is found
+      if (!checkedOutVisitor) {
+        console.warn("Visitor not found in active visitors list"); // Debugging log
+        return;
+      }
+
+      // Get the current checkout time
+      const checkoutDate = new Date();
+      const checkInDate = new Date(checkedOutVisitor.visitTime); // Assuming visitTime is the check-in time
+
+      // Calculate the duration in milliseconds
+      const durationMillis = checkoutDate - checkInDate;
+
+      // Convert the duration to hours and minutes
+      const durationHours = Math.floor(durationMillis / (1000 * 60 * 60)); // Convert to hours
+      const durationMinutes = Math.floor((durationMillis % (1000 * 60 * 60)) / (1000 * 60)); // Convert to minutes
+
+      // Add the checkout time and duration to the visitor object
+      checkedOutVisitor.checkoutDate = checkoutDate;
+      checkedOutVisitor.duration = `${durationHours} hours ${durationMinutes} minutes`; // Format the duration
+
+      // Set the visitor as inactive
+      checkedOutVisitor.isActive = false;
+
+      // Remove from active visitors
+      const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
+      setActiveVisitors(updatedVisitors);
+
+      // Add to recent visitors
+      setRecentVisitors(prevRecent => [...prevRecent, checkedOutVisitor]);
+
+    } catch (error) {
+      console.error('Error checking out visitor:', error);
+    }
+  }
 };
 
   return (
@@ -257,26 +309,44 @@ function Visitor() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check In</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Phone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {activeVisitors.map(visitor => (
-              <VisitorActive
-                key={visitor._id}
-                username={visitor.visitorName}
-                phoneNo={visitor.visitorPhone}
-                purpose={visitor.purpose}
-                checkIn={visitor.visitTime}
-                checkDay={new Date(visitor.visitDate).toLocaleDateString('en-IN', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                onCheckOut={() => handleCheckOut(visitor._id)}
-              />
-            ))}
-          </tbody>
+  {activeVisitors.map((visitor) => (
+    <tr key={visitor._id}>
+      <td className="px-6 py-4">{visitor.visitorName}</td>
+      <td className="px-6 py-4">{visitor.purpose}</td>
+      <td className="px-6 py-4">
+        <div>
+         {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}
+        </div>
+        <div>
+          {visitor.visitTime}
+          </div>
+        </td>
+      <td className="px-6 py-4 text-green-600">active</td> 
+      <td className='px-6 py-4 text-black'>{visitor.visitorPhone}</td>
+<td className="px-6 py-4 flex gap-2">
+  <button
+    onClick={() => handleCheckOut(visitor._id)}
+    className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
+  >
+    Check-Out
+  </button>
+  <button
+    onClick={() => deleteVisitor(visitor._id)}
+    className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+  >
+    Delete
+  </button>
+</td>
+
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
 
@@ -288,26 +358,37 @@ function Visitor() {
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor phone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Time</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>duration</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {recentVisitors.map(visitor => (
-              <VisitorRecent
-                key={visitor._id}
-                name={visitor.visitorName}
-                phone={visitor.visitorPhone}
-                purpose={visitor.purpose}
-                checkDay={new Date(visitor.visitDate).toLocaleDateString('en-IN', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                checkIn={visitor.visitTime}
-                duration="N/A" // Duration can be calculated if needed
-              />
+              <tr key={visitor._id}>
+                <td className="px-6 py-4">{visitor.visitorName}</td>
+                <td className="px-6 py-4">{visitor.purpose}</td>
+                <td className="px-6 py-4">/{visitor.visitorPhone}</td>
+                <td className="px-6 py-4">
+        <div>
+         {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}
+        </div>
+        <div>
+          {visitor.visitTime}
+          </div>
+        </td>
+                <td className='px-6 py-4'>{visitor.checkoutDate ? new Date(visitor.checkoutDate).toLocaleString('en-US') : 'Not Checked Out'}</td>
+                
+                <td className="px-6 py-4 flex gap-2">
+                  <button
+                    onClick={() => deleteVisitor(visitor._id)}
+                    className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600" 
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>

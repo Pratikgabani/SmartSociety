@@ -53,22 +53,22 @@ const removeVisitor = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, visitor, "Visitor checked out successfully"));
 });
 
-// const removeVisitor = asyncHandler(async (req, res) => {
-//     const { id } = req.params;
+const deleteVisitor = asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
-//     console.log("Deleting visitor with ID:", id); // Debugging log
+    console.log("Deleting visitor with ID:", id); // Debugging log
 
-//     const visitor = await Visitor.findById(id);
-//     if (!visitor) {
-//         throw new ApiError(400, "Visitor not found");
-//     }
+    const visitor = await Visitor.findById(id);
+    if (!visitor) {
+        throw new ApiError(400, "Visitor not found");
+    }
 
-//     await visitor.deleteOne(); // Ensuring deletion
+    await visitor.deleteOne(); // Ensuring deletion
 
-//     return res
-//         .status(200)
-//         .json(new ApiResponse(200, visitor, "Visitor removed successfully"));
-// });
+    return res
+        .status(200)
+        .json(new ApiResponse(200, visitor, "Visitor removed successfully"));
+});
 
 const getRecentVisitors = asyncHandler(async (req, res) => {
     try {
@@ -149,4 +149,4 @@ const getVisitorById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, visitor, "Visitor found successfully"));
 })
 
-export {createVisitor,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId , getActiveVisitorsByUserId}
+export {createVisitor,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId ,deleteVisitor, getActiveVisitorsByUserId}
