@@ -1,72 +1,7 @@
-// import axios from "axios";
-// import React, { useEffect , useState } from "react";
-
-// const Booking = () => {
-
-//   const [venues, setVenues] = useState([]);
-
-//   useEffect(() => {
-//     const fetchVenues = async () =>{
-//       try {
-//         const response = await axios.get("http://localhost:8000/api/v1/booking/getVenue" , { withCredentials: true });
-//         setVenues(response.data.data);
-//       } catch (error) {
-//         console.error('Error fetching venues:', error);
-//       }
-//     }
-//     fetchVenues();
-//   } , [])
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
-//       <h1 className="text-3xl font-bold text-blue-800 mb-6">Venue Bookings</h1>
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//         {/* Available Venues */}
-//         <div className="lg:col-span-2 bg-white shadow rounded-lg p-6">
-//           <div className="flex justify-between items-center mb-4">
-//             <h2 className="text-xl font-semibold">Available Venues</h2>
-//             <button className="text-blue-600 hover:underline">View Calendar</button>
-//           </div>
-//           {venues.map((venue) => (
-//             <div
-//               key={venue._id}
-//               className="border rounded-lg p-4 mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center"
-//             >
-//               <div>
-//                 <h3 className="text-lg font-bold text-gray-800">{venue.venue}</h3>
-//                 <p className="text-sm text-gray-600">{venue.description}</p>
-//                 <p className="text-sm text-gray-600">Capacity: {venue.capacity}</p>
-//                 <p className="text-sm text-gray-600">{venue.price}</p>
-//                 <div className="mt-2 space-x-2">
-//                   {venue.amenities.map((amenity, idx) => (
-//                     <span
-//                       key={idx}
-//                       className="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded"
-//                     >
-//                       {amenity}
-//                     </span>
-//                   ))}
-//                 </div>
-//               </div>
-//               <button
-//               onClick={() =>{
-
-//               }}
-//               className="mt-4 sm:mt-0 bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">
-//                 Book Now
-//               </button>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Booking; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+import { toast } from "react-hot-toast"; // Import react-hot-toast
+import { Toaster } from "react-hot-toast";
 const Booking = () => {
   const [venues, setVenues] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -77,18 +12,50 @@ const Booking = () => {
     duration: "",
     date: "",
   });
+  const [myBooking, setMyBooking] = useState([]);
 
+  // Fetch venues
   useEffect(() => {
     const fetchVenues = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/v1/booking/getVenue", { withCredentials: true });
         setVenues(response.data.data);
+        // toast.success("Venues fetched successfully!"); // Toast for success
       } catch (error) {
-        console.error('Error fetching venues:', error);
+        console.error("Error fetching venues:", error);
+        toast.error("Failed to fetch venues!"); // Toast for error
       }
     };
     fetchVenues();
   }, []);
+
+  // Fetch my bookings
+  useEffect(() => {
+    const fetchMyBookings = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/v1/booking/getBookingsByUserId", { withCredentials: true });
+        setMyBooking(response.data.data);
+        if(response.data.data.length === 0) toast.error("No bookings found!");
+        // toast.success("Bookings fetched successfully!"); // Toast for success
+      } catch (error) {
+        console.log(error);
+        // toast.error("Failed to fetch bookings!"); // Toast for error
+      }
+    };
+    fetchMyBookings();
+  }, []);
+
+  // Delete booking
+  const handleDelete = async (bookingId) => {
+    try {
+      const response = await axios.delete(`http://localhost:8000/api/v1/booking/delete/${bookingId}`, { withCredentials: true });
+      setMyBooking(myBooking.filter((booking) => booking._id !== bookingId));
+      toast.success("Booking deleted successfully!"); // Toast for success
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      toast.error("Failed to delete booking!"); // Toast for error
+    }
+  };
 
   const handleBookNow = (venue) => {
     setSelectedVenue(venue);
@@ -103,23 +70,27 @@ const Booking = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    // Send the venue's _id as bookingType
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/booking/new-booking",
-      { ...formData, bookingType: selectedVenue.venue },  // Corrected here
-      { withCredentials: true }
-    );
-    alert("Booking created successfully!");
-    setIsFormOpen(false);
-  } catch (error) {
-    console.error("Error creating booking:", error);
-  }
-};
+    e.preventDefault();
+    try {
+      // Send the venue's name as bookingType
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/booking/new-booking",
+        { ...formData, bookingType: selectedVenue.venue }, // Corrected here
+        { withCredentials: true }
+      );
+
+      toast.success("Booking created successfully!"); // Toast for success
+      setMyBooking([...myBooking, response.data.data]);
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      toast.error("Failed to create booking!"); // Toast for error
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
+      <Toaster />
       <h1 className="text-3xl font-bold text-blue-800 mb-6">Venue Bookings</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white shadow rounded-lg p-6">
@@ -148,6 +119,29 @@ const Booking = () => {
               >
                 Book Now
               </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-bold text-blue-800 mt-8 mb-4">My Bookings</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {myBooking.map((booking) => (
+            <div key={booking._id} className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-semibold">{booking.bookingType}</h3>
+              <p className="text-gray-600">{booking.description}</p>
+              <p className="text-gray-600">Duration: {booking.duration} hours</p>
+              <p className="text-gray-600">Date: {new Date(booking.date).toLocaleDateString()}</p>
+              <p className="text-gray-600">Status: {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}</p>
+              {new Date(booking.date) >= Date.now() && (
+                <button
+                  onClick={() => handleDelete(booking._id)}
+                  className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Delete Booking
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -211,6 +205,7 @@ const Booking = () => {
           </div>
         </div>
       )}
+      <div>Booking guidelines</div>
     </div>
   );
 };

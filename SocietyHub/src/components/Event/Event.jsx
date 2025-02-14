@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
+import {Toaster , toast} from 'react-hot-toast'
 function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
@@ -107,6 +108,7 @@ function Event() {
 
       setEvents([...events, response.data.data]); // Add the new event to the state
       setShowAddEventForm(false); // Hide form after successful submission
+      toast.success("Event created successfully");
       setNewEvent({
         eventName: "",
         eventDate: "",
@@ -119,6 +121,7 @@ function Event() {
       });
       console.log("Event created successfully");
     } catch (error) {
+      toast.error("Failed to create event");
       console.error("Error creating event:", error);
     }
   };
@@ -134,15 +137,18 @@ function Event() {
       if (response.status === 200) {
         // Remove the deleted event from the state
         setEvents(events.filter(event => event._id !== eventId));
+        toast.success("Event deleted successfully");
         console.log("Event deleted successfully");
       }
     } catch (error) {
+      toast.error("Failed to delete event");
       console.error("Error deleting event:", error);
     }
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Toaster />
       {isLoggedIn ? (
         <div>
           <h1 className="text-4xl font-bold text-gray-800">Events</h1>

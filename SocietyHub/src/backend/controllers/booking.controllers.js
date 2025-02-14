@@ -4,7 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.models.js";
 import { Venue } from "../models/venue.models.js";
-
+  
 const createBooking = asyncHandler(async (req, res) => {
     const {bookingType , bookDescription, duration, date } = req.body;
     // const bookingType = req.body.bookingType;  // Extract venue ID from request
@@ -24,7 +24,6 @@ const createBooking = asyncHandler(async (req, res) => {
     if (existingBooking) {
         throw new ApiError(400, "This venue is already booked for the selected date.");
     }
-    // console.log(existingBooking)
  
     const newBooking = await Booking.create({
         bookingOwner: req.user?._id,  // Logged-in user's ID
@@ -103,7 +102,6 @@ const getBookings = asyncHandler(async (req, res) => {
 
 const getBookingsByUserId = asyncHandler(async (req, res) => {
     const userId = req.user._id 
-    // console.log(userHouse)
     console.log(userId)
     if(!userId){
         throw new ApiError(400 , "User not found")
@@ -115,7 +113,7 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
     }
     return res
     .status(200)
-    .json(new ApiResponse(200 , allBookings , "Bookings found successfully"))
+    .json(new ApiResponse(200 , allBookings , "My Bookings found successfully"))
 })
 
 const deleteBooking = asyncHandler(async (req, res) => {
