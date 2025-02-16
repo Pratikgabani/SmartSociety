@@ -158,10 +158,12 @@ const handleCheckOut = async (id) => {
       // Remove from active visitors
       const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
       setActiveVisitors(updatedVisitors);
-
+     setVari(!vari);
       // Add to recent visitors
       setRecentVisitors(prevRecent => [...prevRecent, checkedOutVisitor]);
 
+      
+     
     } catch (error) {
       console.error('Error checking out visitor:', error);
     }
@@ -291,7 +293,11 @@ const handleCheckOut = async (id) => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check In</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Phone</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+             {
+              roles === "security" && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              )
+             }
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -309,7 +315,9 @@ const handleCheckOut = async (id) => {
         </td>
       <td className="px-6 py-4 text-green-600">active</td> 
       <td className='px-6 py-4 text-black'>{visitor.visitorPhone}</td>
-<td className="px-6 py-4 flex gap-2">
+         {
+          roles === "security" && (
+            <td className="px-6 py-4 flex gap-2">
   <button
     onClick={() => handleCheckOut(visitor._id)}
     className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
@@ -323,6 +331,8 @@ const handleCheckOut = async (id) => {
     Delete
   </button>
 </td>
+          )
+         }
 
     </tr>
   ))}
@@ -342,7 +352,11 @@ const handleCheckOut = async (id) => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor phone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Time</th>
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>duration</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">actions</th>
+              {
+                roles === "security" && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                )
+              }
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -361,7 +375,9 @@ const handleCheckOut = async (id) => {
         </td>
                 <td className='px-6 py-4'>{visitor.checkoutDate ? new Date(visitor.checkoutDate).toLocaleString('en-US') : 'Not Checked Out'}</td>
                 
-                <td className="px-6 py-4 flex gap-2">
+              {
+                roles === "security" && (
+                  <td className="px-6 py-4 flex gap-2">
                   <button
                     onClick={() => deleteVisitor(visitor._id)}
                     className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600" 
@@ -369,6 +385,8 @@ const handleCheckOut = async (id) => {
                     Delete
                   </button>
                 </td>
+                )
+              }
               </tr>
             ))}
           </tbody>

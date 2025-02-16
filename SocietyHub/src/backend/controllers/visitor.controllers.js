@@ -132,7 +132,7 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
     } catch (error) {
-        throw new ApiError(500, "Error fetching active visitors");
+        return res.status(500).json(new ApiResponse(500, error, "Error fetching recent visitors"));
     }
 });
 
