@@ -131,7 +131,7 @@ const handleSubmit = async (e) => {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-lg font-semibold">{complaint.subject}</h3>
-                  <p className="text-sm text-gray-500">ID: #{complaint._id}</p>
+                  {/* <p className="text-sm text-gray-500">ID: #{complaint._id}</p> */}
                 </div>
                 <span
                   className={`px-3 py-1 rounded-full text-sm ${
