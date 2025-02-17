@@ -26,7 +26,7 @@ const createVisitor = asyncHandler(async (req, res) => {
             visitingAdd ,
             purpose,
             visitDate,  
-            visitTime,
+            visitTime ,
             isActive : true
         })
 
@@ -158,17 +158,16 @@ const updateVisitorDuration = async (req, res) => {
     
    
     // Find the visitor by ID and update the duration and checkoutDate
-    const updatedVisitor = await Visitor.findByIdAndUpdate(
-      id,
-      { duration,  isActive: false },
-      { new: true }
-    );
+    const updatedUser = await Visitor.findById(id);
+    updatedUser.duration = duration;
+    updatedUser.isActive = false;
+    const updatedVisitor = await updatedUser.save();
 
     if (!updatedVisitor) {
       return res.status(404).json({ message: "Visitor not found" });
     }
 
-    res.status(200).json({ message: "Visitor updated successfully", data: updatedVisitor });
+    res.status(200).json(new ApiResponse(200, updatedVisitor, "Visitor duration updated successfully"));
   } catch (error) {
     console.error('Error updating visitor:', error);
     res.status(500).json({ message: "Error updating visitor" });

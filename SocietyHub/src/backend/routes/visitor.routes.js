@@ -12,6 +12,6 @@ router.route("/getRecentVisitors").get(verifyJWT, getRecentVisitors);
 router.route("/getRecentVisitorsByUserId/:userHouse").get(verifyJWT, getRecentVisitorsByUserId);
 router.route("/getActiveVisitorsByUserId/:userHouse").get(verifyJWT, getActiveVisitorsByUserId);
 router.route("/deleteVisitor/:id").delete(verifyJWT, deleteVisitor);
-router.route("/updateVisitorDuration").put(verifyJWT, updateVisitorDuration);
+router.route("/updateVisitorDuration/:id").patch(verifyJWT, updateVisitorDuration);
 
 export default router

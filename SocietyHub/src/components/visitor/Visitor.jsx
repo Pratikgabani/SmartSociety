@@ -123,47 +123,71 @@ function Visitor() {
   };
 
 
+  
+  
 
+// const handleCheckOut = async (id) => {
+//   if (roles === "security") {
+//     try {
+//       await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
+
+//       const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
+      
+//       // Ensure the visitor is found
+//       if (!checkedOutVisitor) {
+//         console.warn("Visitor not found in active visitors list"); // Debugging log
+//         return;
+//       }
+
+     
+    
+//     checkedOutVisitor.duration = new Date().toLocaleTimeString('en-GB');
+
+//     console.log(checkedOutVisitor);
+
+//       checkedOutVisitor.isActive = false;
+
+//       // Remove from active visitors
+//       const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
+//       setActiveVisitors(updatedVisitors);
+     
+//       // Add to recent visitors
+//       setRecentVisitors(prevVisitors =>  [...prevVisitors, checkedOutVisitor]);
+      
+      
+     
+//     } catch (error) {
+//       console.error('Error checking out visitor:', error);
+//     }
+//   }
+// };
 const handleCheckOut = async (id) => {
   if (roles === "security") {
     try {
-      await axios.get(`http://localhost:8000/api/v1/visitor/removeVisitor/${id}`, { withCredentials: true });
+      const checkoutTime = new Date().toLocaleTimeString('en-GB'); // Get current time
+
+      // Send the checkout time to the backend
+      await axios.patch(`http://localhost:8000/api/v1/visitor/updateVisitorDuration/${id}`, 
+        { duration: checkoutTime },  // Send duration in request body
+        { withCredentials: true }
+      );
 
       const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
       
-      // Ensure the visitor is found
       if (!checkedOutVisitor) {
-        console.warn("Visitor not found in active visitors list"); // Debugging log
+        console.warn("Visitor not found in active visitors list");
         return;
       }
 
-      // Get the current checkout time
-      const checkoutDate = new Date();
-      const checkInDate = new Date(checkedOutVisitor.visitTime); // Assuming visitTime is the check-in time
-
-      // Calculate the duration in milliseconds
-      const durationMillis = checkoutDate - checkInDate;
-
-      // Convert the duration to hours and minutes
-      const durationHours = Math.floor(durationMillis / (1000 * 60 * 60)); // Convert to hours
-      const durationMinutes = Math.floor((durationMillis % (1000 * 60 * 60)) / (1000 * 60)); // Convert to minutes
-
-      // Add the checkout time and duration to the visitor object
-      checkedOutVisitor.checkoutDate = checkoutDate;
-      checkedOutVisitor.duration = `${durationHours} hours ${durationMinutes} minutes`; // Format the duration
-
-      // Set the visitor as inactive
+      // Update the visitor's duration
+      checkedOutVisitor.duration = checkoutTime;
       checkedOutVisitor.isActive = false;
 
-      // Remove from active visitors
-      const updatedVisitors = activeVisitors.filter(visitor => visitor._id !== id);
-      setActiveVisitors(updatedVisitors);
-     setVari(!vari);
-      // Add to recent visitors
-      setRecentVisitors(prevRecent => [...prevRecent, checkedOutVisitor]);
+      // Update local state
+      setActiveVisitors(activeVisitors.filter(visitor => visitor._id !== id));
+      setRecentVisitors(prevVisitors => [...prevVisitors, checkedOutVisitor]);
 
-      
-     
+      // setVari(!vari);  // Trigger a re-fetch to update backend data
     } catch (error) {
       console.error('Error checking out visitor:', error);
     }
@@ -373,7 +397,8 @@ const handleCheckOut = async (id) => {
           {visitor.visitTime}
           </div>
         </td>
-                <td className='px-6 py-4'>{visitor.checkoutDate ? new Date(visitor.checkoutDate).toLocaleString('en-US') : 'Not Checked Out'}</td>
+                
+                <td className='px-6 py-4'>{visitor.duration}</td>
                 
               {
                 roles === "security" && (
