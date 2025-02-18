@@ -229,7 +229,17 @@ const Booking = () => {
     date: "",
   });
   const [myBooking, setMyBooking] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {
+      const token = localStorage.getItem("user");
+      if (token) {
+        setIsLoggedIn(true);
+        const user = JSON.parse(token);
+        setIsAdmin(user.data.user.role === "admin");
+        
+      }
+    }, []);
   // Fetch venues
   useEffect(() => {
     const fetchVenues = async () => {
@@ -306,7 +316,9 @@ const Booking = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
       <Toaster position="top-right" />
-      <div className="max-w-7xl mx-auto">
+     {
+      isLoggedIn  ? (
+        <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-8 font-[Poppins] text-center">
           Venue Reservations
         </h1>
@@ -485,6 +497,12 @@ const Booking = () => {
           </ul>
         </section>
       </div>
+      ) : (
+        <div className="flex items-center justify-center h-screen">
+          <p className="text-gray-600">Please log in to view this page.</p>
+        </div>
+      )
+     }
     </div>
   );
 };

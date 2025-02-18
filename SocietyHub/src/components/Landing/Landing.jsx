@@ -59,7 +59,7 @@ function Landing() {
           <div className="container mx-auto flex justify-between items-center px-4">
             <a href="/" className="text-xl font-bold text-black"><img className="h-8" src="#" alt="Resihub" /></a>
             <ul className="flex gap-9 items-center">
-              <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">Home</li>
+              <li className="text-black  hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out ">Home</li>
               <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out"><Dropdown /></li>
               <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">Pricing</li>
               <li className="text-black hover:text-[#005B96] font-medium cursor-pointer transition duration-200 ease-in-out">About Us</li>
@@ -93,14 +93,14 @@ function Landing() {
               <h1 className='text-[48px] font-bold'>Simplify Society Living with</h1>
               <h1 className='text-[#005B96] text-[48px] font-bold '><SplitText text="ResiHub !" className="custom-class" delay={150} /></h1>
               <ul className='flex flex-col gap-3 text-lg'>
-                <li className='flex items-center text-[16px] w-[440px] line-height-[10px]'><img src={tickMark} alt="" />Streamline society communication with instant updates and announcements.</li>
+                <li className='flex items-center text-[16px] w-[440px] line-height-[10px] '><img src={tickMark} alt="" />Streamline society communication with instant updates and announcements.</li>
                 <li className='flex items-center text-[16px] w-[440px] line-height-[10px]'><img src={tickMark} alt="" />Manage finances securely with easy online payment and tracking.</li>
                 <li className='flex items-center text-[16px] w-[440px]'><img src={tickMark} alt="" />Organize and optimize resources efficiently in one centralized system.</li>
                 <li className='flex items-center text-[16px] w-[440px]'><img src={tickMark} alt="" />Simplify everyday management tasks with automation and user-friendly tools.</li>
                 <li className='pt-9'>
                   <a href='#' className='text-black text-xl font-semibold cursor-pointer border transition ease-in-out duration-300 border-black py-[14px] px-4 rounded-full hover:bg-[#005B96] hover:text-white'>Let's explore</a>
                 </li>
-                <div className="flex space-x-8">
+                <div className="flex space-x-8  mt-5">
                         <div className="flex flex-col items-center">
                          {
                           !token &&  <Link to = "/register" className="bg-blue-500 text-white text-lg px-6 py-3 rounded-md mb-2 hover:bg-blue-600">
