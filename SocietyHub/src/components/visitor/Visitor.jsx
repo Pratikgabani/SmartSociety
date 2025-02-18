@@ -418,7 +418,7 @@ function Visitor() {
         if (roles === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getRecentVisitors', { withCredentials: true });
         } else {
-          response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUser Id/${num}`, { withCredentials: true });
+          response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId/${num}`, { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setRecentVisitors(visitors);
@@ -438,7 +438,7 @@ function Visitor() {
         if (roles === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getActiveVisitors', { withCredentials: true });
         } else {
-          response = await axios.get(`http://localhost:8000/api/v1/visitor/getActiveVisitorsByUser Id/${num}`, { withCredentials: true });
+          response = await axios.get(`http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId/${num}`, { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setActiveVisitors(visitors);
@@ -493,7 +493,7 @@ function Visitor() {
   const handleCheckOut = async (id) => {
     if (roles === "security") {
       try {
-        const checkoutTime = new Date().toLocaleTimeString('en-GB');
+        const checkoutTime = new Date().toLocaleTimeString('en-GB', { hour12: false, hour: "2-digit", minute: "2-digit" });
         await axios.patch(`http://localhost:8000/api/v1/visitor/updateVisitorDuration/${id}`, { duration: checkoutTime }, { withCredentials: true });
 
         const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
@@ -682,7 +682,7 @@ function Visitor() {
         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor Phone</th>
         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Time</th>
-        <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Duration</th>
+        <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>checkout</th>
         {roles === "security" && (
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
         )}
