@@ -405,12 +405,18 @@ const Booking = () => {
                     </div>
                   </div>
                   {new Date(booking.date) >= Date.now() && (
-                    <button
+                    <div className="flex justify-between">
+                      <button
                       onClick={() => handleDelete(booking._id)}
-                      className="mt-1 w-full bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                      className="mt-1 w-5/12 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
                     >
                       Cancel Reservation
                     </button>
+                    <button className="mt-1 w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                      Pay now 
+                    </button>
+                      </div>
+                                    
                   )}
                 </div>
               </div>
