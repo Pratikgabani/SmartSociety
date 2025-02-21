@@ -235,9 +235,6 @@ const Booking = () => {
       const token = localStorage.getItem("user");
       if (token) {
         setIsLoggedIn(true);
-        const user = JSON.parse(token);
-        setIsAdmin(user.data.user.role === "admin");
-        
       }
     }, []);
   // Fetch venues
@@ -289,11 +286,20 @@ const Booking = () => {
   };
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+  
+    // If the input field is for "duration", ensure it's 18 or less
+    if (name === "duration" && value > 18) {
+      toast.error("Booking duration cannot exceed 18 hours!");
+      return;
+    }
+  
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -315,7 +321,7 @@ const Booking = () => {
   };
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
-      <Toaster position="top-right" />
+      <Toaster />
      {
       isLoggedIn  ? (
         <div className="max-w-7xl mx-auto">
@@ -325,13 +331,8 @@ const Booking = () => {
 
         {/* Available Venues Section */}
         <section className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-800">Available Spaces</h2>
-            <button className="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition-all">
-              View Calendar 📅
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <h2 className="text-2xl mb-6 font-semibold text-gray-800">Available Spaces</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {venues.map((venue) => (
               <div 
                 key={venue._id}
@@ -342,10 +343,10 @@ const Booking = () => {
                     <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.venue}</h3>
                     <p className="text-gray-600 text-sm mb-3">{venue.description}</p>
                     <div className="flex gap-2 mb-4 flex-wrap">
-                      <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">
+                      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
                         Capacity: {venue.capacity}
                       </span>
-                      <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs">
+                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs">
                         ₹{venue.price}/day
                       </span>
                     </div>
@@ -386,18 +387,18 @@ const Booking = () => {
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">
                       {booking.bookingType}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-3">{booking.description}</p>
+                    <p className="text-gray-600 text-sm mb-2">{booking.bookDescription}</p>
                     <div className="space-y-1 text-sm mb-4">
                       <p className="text-gray-500">
                         ⏳ Duration: {booking.duration} hours
                       </p>
-                      <p className="text-gray-500">
+                      <p className="text-gray-500 pb-2">
                         📅 Date: {new Date(booking.date).toLocaleDateString()}
                       </p>
                       <span className={`inline-block px-2 py-1 rounded-full text-xs ${
                         new Date(booking.date) >= Date.now() 
-                          ? 'bg-green-50 text-green-700' 
-                          : 'bg-gray-100 text-gray-700'
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-800'
                       }`}>
                         {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
                       </span>
@@ -406,7 +407,7 @@ const Booking = () => {
                   {new Date(booking.date) >= Date.now() && (
                     <button
                       onClick={() => handleDelete(booking._id)}
-                      className="mt-3 w-full bg-red-50 text-red-600 py-2 rounded-lg hover:bg-red-100 transition-colors"
+                      className="mt-1 w-full bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
                     >
                       Cancel Reservation
                     </button>
@@ -446,6 +447,8 @@ const Booking = () => {
                     <input
                       type="number"
                       name="duration"
+                      min="1"
+                      max="18"
                       value={formData.duration}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -459,6 +462,7 @@ const Booking = () => {
                     <input
                       type="date"
                       name="date"
+                      min={new Date().toISOString().split("T")[0]}
                       value={formData.date}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -492,7 +496,7 @@ const Booking = () => {
           <ul className="list-disc list-inside space-y-2 text-gray-700">
             <li>All reservations must be made at least 24 hours in advance</li>
             <li>Cancellations require 12 hours notice for full refund</li>
-            <li>Maximum reservation duration is 8 hours</li>
+            <li>Maximum reservation duration is 18 hours</li>
             <li>Please arrive 30 minutes before your scheduled time</li>
           </ul>
         </section>
