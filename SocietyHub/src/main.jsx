@@ -17,11 +17,13 @@ import Event from './components/Event/Event.jsx';
 import Start from './components/Start/Start.jsx';
 import SecurityRegister from './components/Security/Security.jsx';
 import Announcements from './components/Notice/Notice.jsx';
+import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     
-    <Route path="/" element={<Landing/>} />
+    <Route path="/" element={<OrgLanding/>} />
     <Route path="Landing" element={<Landing />} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
