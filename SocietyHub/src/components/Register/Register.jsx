@@ -29,7 +29,7 @@ const Register = () => {
  useEffect(() => {
   const token = localStorage.getItem('user');
   if (token) {
-    navigate('/landing');
+    navigate('/OrgLanding');
   }
  })  
 
