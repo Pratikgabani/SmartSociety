@@ -144,6 +144,7 @@ const PollApp = () => {
 
         <h2 className="text-2xl font-semibold mb-4">Active Polls</h2>
         {polls.map((poll) => (
+          
           <div key={poll._id} className="bg-white rounded-lg shadow-md mb-6 p-6">
             <h3 className="text-xl font-bold mb-4">{poll.question}</h3>
             <div className="space-y-2">
@@ -154,7 +155,7 @@ const PollApp = () => {
                   className="w-full p-3 bg-gray-100 text-left rounded-md hover:bg-gray-200 transition-colors flex justify-between items-center"
                 >
                   <span>{opt.option}</span>
-                  <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">{opt.votes} votes</span>
+                  <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">{opt.percent} %</span>
                 </button>
               ))}
             </div>

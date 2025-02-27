@@ -14,7 +14,14 @@ const pollSchema = new Schema({
             votes : {
                 type : Number,
                 default : 0
-            }
+            },
+            percent : {
+                type : Number,
+                default : 0
+            },
+            voting : [
+                {type : mongoose.Schema.Types.ObjectId, ref : "User"}
+            ]
         }
     ],
     totalVotes : {
@@ -33,6 +40,7 @@ const pollSchema = new Schema({
         type : String,
         required : true
     },
+
     voters: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
     })
 
