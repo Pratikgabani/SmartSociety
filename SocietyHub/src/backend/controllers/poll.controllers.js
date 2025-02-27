@@ -11,6 +11,9 @@ const createPoll = asyncHandler(async (req, res) => {
     if(!question || !options){
         throw new ApiError(400 , "All fields are required")
     }
+    if(options.length < 2){
+    throw new ApiError(400 , "At least two options are required")
+    }
 
     const ownerId = req.user._id
     const ownerName = await User.findById(ownerId)
@@ -60,35 +63,44 @@ const deletePoll = asyncHandler(async (req, res) => {
 
 const votePoll = asyncHandler(async (req, res) => {
     const { pollId, optionId } = req.params;
-    const userId = req.user.id; // Ensure req.user is populated (middleware needed)
-
+    const userId = req.user._id; // Ensure req.user is populated (middleware needed)
+    console.log("hello")
     if (!pollId.trim() || !optionId.trim()) {
         throw new ApiError(400, "All fields are required");
     }
 
     const poll = await Poll.findById(pollId);
+    console.log(poll)
     if (!poll) {
         throw new ApiError(404, "Poll not found");
     }
 
     // Check if the user has already voted
-    if (poll.voters.includes(userId)) {
-        throw new ApiError(403, "You have already voted in this poll");
-    }
+    // if (poll.voters.includes(userId)) {
+    //     throw new ApiError(403, "You have already voted in this poll");
+    // }
 
     // Find the selected option
     const option = poll.options.find((opt) => opt._id.toString() === optionId);
     if (!option) {
         throw new ApiError(404, "Option not found");
     }
-
+     
+    const votedOption =  poll.options.find((opt) => opt.voting.includes(userId))
+    console.log(votedOption)
+    if(votedOption){
+     votedOption.votes -= 1
+     votedOption.voting = votedOption.voting.filter(voter => voter.$oid === userId)
+     poll.totalVotes -= 1
+    }
     // Update vote count
     option.votes += 1;
     poll.totalVotes += 1;
-
-    // Add user to voters list
-    poll.voters.push(userId);
-
+    option.voting.push(userId)
+    poll.options.map((opt) => {
+        opt.percent = (opt.votes/poll.totalVotes) * 100
+    })
+   poll.voters.push(userId);
     await poll.save();
 
     return res
