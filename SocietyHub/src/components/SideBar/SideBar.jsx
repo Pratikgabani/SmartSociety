@@ -6,7 +6,7 @@ function SideBar() {
     const navigate = useNavigate()
      const clickEvent = (item)=>{
         setActiveTab(item)
-        navigate(`/${item}`)
+        navigate(`/layout/${item}`)
      }
     const menuItems = ["Dashboard", "Booking", "Event", "Payment", "Visitor", "Poll", "Complaint", "Profile", "Settings"];
   return (

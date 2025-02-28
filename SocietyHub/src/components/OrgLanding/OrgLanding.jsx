@@ -69,6 +69,7 @@ function OrgLanding() {
               <>
                 <Link
                   to={"/login"}
+                  
                   className="bg-blue-600 text-white font-bold rounded-3xl py-2 px-6 text-xs md:text-lg md:py-3 md:px-6 border-white "
                 >
                   Login
@@ -115,7 +116,7 @@ function OrgLanding() {
       </div>
 
 {/* Second part  */}
-      <div className='text-gray-200 bg-[url("/bgSociety.png")]'>
+      <div className='text-gray-200 bg-[rgb(88,123,193)]'>
         <div className='px-32 py-6'>
           <h2 className='text-center text-4xl font-bold mt-7 text-pretty'>Comprehensive Society Management  Features</h2>
           <p className='text-center text-xl mt-4 text-pretty mb-7'>Everything you need to manage your residential community efficiently</p>

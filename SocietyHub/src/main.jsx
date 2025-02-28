@@ -21,18 +21,21 @@ import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
 import Dashboard from   './components/dashboard/dashboard.jsx';
 import App from './App.jsx';
 import Layout from "./Layout.jsx"
-
+import RequireAuth from './RequireAuth.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+    <Route path='/' element= {< OrgLanding/>} />
+    <Route path="Login" element={<Login />} />
+    <Route path="Register" element={<Register />} />
     
-    <Route path="/" element={<Layout/>} >
+    <Route element={<RequireAuth />}>
+    <Route path="Layout" element={<Layout/>} >
+    <Route index element={<Dashboard />} />
     <Route path="dashboard" element={<Dashboard/>} />
     <Route path='OrgLanding' element={<OrgLanding/>} />
     <Route path="Landing" element={<Landing />} />
-      <Route path="Login" element={<Login />} />
-     <Route path="Register" element={<Register />} />
-   <Route path ="Securityregister" element={<SecurityRegister />} />
+    <Route path ="Securityregister" element={<SecurityRegister />} />
      <Route path="Payment" element={<Payment />} />
      <Route path="Visitor" element={<Visitor />} />
     <Route path = "Poll" element = {<PollApp />} />
@@ -42,6 +45,8 @@ const router = createBrowserRouter(
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     <Route path = "Notice" element = {<Announcements/>} />
     </Route>
+    </Route>
+    <Route path="*" element={<OrgLanding />} />
     </>
      )
 )
