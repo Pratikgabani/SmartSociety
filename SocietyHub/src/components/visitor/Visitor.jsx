@@ -514,7 +514,7 @@ function Visitor() {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
+    <div className="p-6 min-h-screen w-full bg-gray-50">
       {/* Add Visitor Modal */}
       {roles === "security" && showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
