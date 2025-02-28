@@ -18,13 +18,17 @@ import Start from './components/Start/Start.jsx';
 import SecurityRegister from './components/Security/Security.jsx';
 import Announcements from './components/Notice/Notice.jsx';
 import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
+import Dashboard from   './components/dashboard/dashboard.jsx';
+import App from './App.jsx';
+import Layout from "./Layout.jsx"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     
-    <Route path="/" element={<OrgLanding/>} />
-    <Route path='/OrgLanding' element={<OrgLanding/>} />
+    <Route path="/" element={<Layout/>} >
+    <Route path="dashboard" element={<Dashboard/>} />
+    <Route path='OrgLanding' element={<OrgLanding/>} />
     <Route path="Landing" element={<Landing />} />
       <Route path="Login" element={<Login />} />
      <Route path="Register" element={<Register />} />
@@ -37,6 +41,7 @@ const router = createBrowserRouter(
     <Route path = "Event" element = {<Event/>} />
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     <Route path = "Notice" element = {<Announcements/>} />
+    </Route>
     </>
      )
 )
@@ -44,5 +49,73 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')).render(
   <StrictMode>
   <RouterProvider router={router} />
+  
    </StrictMode>
 )
+
+
+
+// import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
+// import Dashboard from "./components/dashboard/dashboard.jsx";
+// import Polls from "./components/polls/polls.jsx";
+// import Payment from "./components/Payment/Payment.jsx"
+
+// export default function App() {
+//     return (
+//         <Router>
+//             <div className="flex">
+//                 {/* Sidebar - Fixed */}
+//                 <div className="w-64 h-screen fixed bg-gray-800 text-white p-4">
+//                     <h2 className="text-xl font-bold mb-4">My Sidebar</h2>
+//                     <ul>
+//                         <li>
+//                             <NavLink 
+//                                 to="/" 
+//                                 className={({ isActive }) => 
+//                                     `block p-3 rounded-lg cursor-pointer transition-colors ${
+//                                         isActive ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"
+//                                     }`
+//                                 }
+//                             >
+//                                 Dashboard
+//                             </NavLink>
+//                         </li>
+//                         <li>
+//                             <NavLink 
+//                                 to="/polls" 
+//                                 className={({ isActive }) => 
+//                                     `block p-3 rounded-lg cursor-pointer transition-colors ${
+//                                         isActive ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"
+//                                     }`
+//                                 }
+//                             >
+//                                 Profile
+//                             </NavLink>
+//                         </li>
+//                         <li>
+//                             <NavLink 
+//                                 to="/payments" 
+//                                 className={({ isActive }) => 
+//                                     `block p-3 rounded-lg cursor-pointer transition-colors ${
+//                                         isActive ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"
+//                                     }`
+//                                 }
+//                             >
+//                                 Settings
+//                             </NavLink>
+//                         </li>
+//                     </ul>
+//                 </div>
+
+//                 {/* Main Content - Page Section */}
+//                 <div className="ml-64 p-6 w-full">
+//                     <Routes>
+//                         <Route path="/" element={<Dashboard />} />
+//                         <Route path="/polls" element={<Polls />} />
+//                         <Route path="/payments" element={<Payment />} />
+//                     </Routes>
+//                 </div>
+//             </div>
+//         </Router>
+//     );
+// }

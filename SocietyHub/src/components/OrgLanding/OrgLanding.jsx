@@ -115,7 +115,7 @@ function OrgLanding() {
       </div>
 
 {/* Second part  */}
-      <div className='text-gray-200 bg-[url("/bgSociety.png")] '>
+      <div className='text-gray-200 bg-[url("/bgSociety.png")]'>
         <div className='px-32 py-6'>
           <h2 className='text-center text-4xl font-bold mt-7 text-pretty'>Comprehensive Society Management  Features</h2>
           <p className='text-center text-xl mt-4 text-pretty mb-7'>Everything you need to manage your residential community efficiently</p>
@@ -203,7 +203,7 @@ function OrgLanding() {
       </div>
 
 {/* Fourth part  */}
-      <div className='px-32 py-20 mb-4 bg-[url("/bgSociety.png")] min-h-screen text-gray-200'>
+      <div className='px-32 py-20 mb-4 bg-[rgb(88,123,193)] min-h-screen text-gray-200'>
         <h1 className='text-center font-bold text-4xl'>Simple & Transparent Pricing</h1>
         <h2 className='text-center text-xl mt-4 text-pretty mb-20'>Choose the perfect plan for you </h2>
         <div className='flex gap-8 justify-center'>
@@ -347,7 +347,7 @@ function OrgLanding() {
       <div className="bg-[url(/bgSociety.png)]">
 
       
-      <div className='bg-[url("/bgSociety.png")] p-7 text-gray-200 '>
+      <div className='bg-[rgb(88,123,193)] p-7 text-gray-200 '>
         <div className='text-center font-bold text-4xl'>Get in touch with us</div>
         <div className='text-center text-xl mt-4 text-pretty mb-20'>Have questions? We'd love to answer that!</div>
         <div className='flex gap-10 justify-center items-center'>
@@ -439,7 +439,7 @@ function OrgLanding() {
         </div>
       </div>
       
-      <div className="pt-16 pb-8 bg-gray-900 text-gray-200">
+      <div className="pt-16 pb-8 bg-[rgb(57,77,105)] text-gray-200">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="grid md:grid-cols-3 gap-8 pb-12 border-b border-neutral-700 text-center md:text-left">
   

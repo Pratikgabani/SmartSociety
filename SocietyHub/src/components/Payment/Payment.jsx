@@ -76,7 +76,7 @@ const PaymentSection = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 p-6">
+    <div className="min-h-screen w-full flex flex-col bg-gray-50 p-6">
       <div className="w-full bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-semibold text-center text-blue-800 mb-6">Payment Section</h1>
 
