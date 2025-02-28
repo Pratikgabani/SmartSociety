@@ -43,7 +43,7 @@ function OrgLanding() {
 
 
   return (
-    <div className='bg-white h-screen w-dvh font-raleway'>
+    <div className='bg-white h-screen w-dvh font-raleway '>
       <div className=' h-6/7 w-dvh flex flex-col justify-center items-center'>
         <div className=' w-[100%] flex justify-between items-center p-8  '>
           <div className=' ml-15 text-4xl text-blue-400 font-raleway '>ResiHub</div>
@@ -69,7 +69,7 @@ function OrgLanding() {
           </div>
         </div>
 
-        <div className=' h-3/4 w-[80%] flex'>
+        <div className=' h-3/4 w-[80%] flex '>
           <div className=' p-5 max-h-[100%] w-1/2'>
             <div className=' mb-5 mt-12'>
               <h1 class="text-4xl md:text-6xl font-bold text-gray-600 ">
@@ -104,11 +104,12 @@ function OrgLanding() {
         </div>
       </div>
 
-      <div className='bg-slate-100 '>
+{/* Second part  */}
+      <div className='text-gray-200 bg-[url("/bgSociety.png")]'>
         <div className='px-32 py-6'>
-          <h2 className='text-center text-4xl font-bold mt-7 text-pretty text-gray-600'>Comprehensive Society Management  Features</h2>
+          <h2 className='text-center text-4xl font-bold mt-7 text-pretty'>Comprehensive Society Management  Features</h2>
           <p className='text-center text-xl mt-4 text-pretty mb-7'>Everything you need to manage your residential community efficiently</p>
-          <div className='grid md:grid-cols-3 gap-8 mt-5 mb-2'>
+          <div className='grid md:grid-cols-3 gap-8 mt-5 mb-2 text-black'>
             <div className='bg-white shadow-xl rounded-xl px-7 py-4 min-h-52'>
               <img src='https://www.svgrepo.com/show/533403/calendar-xmark.svg' className='w-10 h-10 ' alt="" />
               <h2 className='text-xl my-2 font-bold'>Bookings</h2>
@@ -121,8 +122,8 @@ function OrgLanding() {
             </div>
             <div className='bg-white shadow-xl rounded-xl px-7 py-4'>
               <img src='https://www.svgrepo.com/show/263899/announcement-megaphone.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Announcements</h2>
-              <p className='text-lg my-2 '>Broadcast important announcements and notices to residents instantly</p>
+              <h2 className='text-xl my-2 font-bold'>Events & Announcements</h2>
+              <p className='text-lg my-2 '> Organize and manage community events . Broadcast important announcements and notices to residents instantly</p>
             </div>
             <div className='bg-white shadow-xl rounded-xl px-7 py-4'>
               <img src='https://www.svgrepo.com/show/495139/card-tick.svg' className='w-10 h-10 ' alt="" />
@@ -135,11 +136,6 @@ function OrgLanding() {
               <p className='text-lg my-2 '>Proper management of visitors </p>
             </div>
             <div className='bg-white shadow-xl rounded-xl px-7 py-4'>
-              <img src='https://www.svgrepo.com/show/533381/calendar-alt.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Event Management</h2>
-              <p className='text-lg my-2 '>Organize and manage community events </p>
-            </div>
-            <div className='bg-white shadow-xl rounded-xl px-7 py-4'>
               <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
               <h2 className='text-xl my-2 font-bold'>Polls</h2>
               <p className='text-lg my-2 '>Know about your residents interests and thinking </p>
@@ -148,87 +144,99 @@ function OrgLanding() {
         </div>
       </div>
 
-      <div className=''>
+{/* Third part */}
+      <div className='pb-12'>
         <div className='px-32 py-6'>
         <h1 className='text-center text-4xl font-bold mt-7 text-pretty text-gray-600'>Why Choose Our Solutions</h1>
         <p className='text-center text-xl mt-4 text-pretty mb-7'>Transform your society management with these key benefits</p>
         <div className='grid md:grid-cols-3 gap-8'>
-          <div className='border-2 px-6 py-2 rounded-xl'>
-            <div className='flex items-center text-xl'>
+          <div className='border-2 px-6 py-2 rounded-xl flex gap-2 items-start'>
             <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
+            <div>
               <h2 className='text-xl my-2 font-bold'>Increased Efficiency </h2>
-            </div>
-            <div className = 'px-2'>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
-            <ul className='px-5'>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Streamlined processes</li>
+            <div className = ''>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
+            <ul className='flex flex-col gap-3 pb-4'>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Digital payments</li>
             </ul>
+            </ div>
           </div>
-          <div className='border-2 px-6 py-2 rounded-xl'>
-          <div className='flex items-center text-xl'>
-            <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Increased Efficiency </h2>
-            </div>
-            <div className='px-2'>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
-            <ul className='px-5'>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Streamlined processes</li>
+          <div className='border-2 px-6 py-2 rounded-xl flex items-start'>
+          <svg fill="#ffffff" height="50px" width="80px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-57.85 -57.85 329.97 329.97" xml:space="preserve" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-57.85" y="-57.85" width="329.97" height="329.97" rx="49.4955" fill="#2563eb" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M196.926,55.171c-0.11-5.785-0.215-11.25-0.215-16.537c0-4.142-3.357-7.5-7.5-7.5c-32.075,0-56.496-9.218-76.852-29.01 c-2.912-2.832-7.546-2.831-10.457,0c-20.354,19.792-44.771,29.01-76.844,29.01c-4.142,0-7.5,3.358-7.5,7.5 c0,5.288-0.104,10.755-0.215,16.541c-1.028,53.836-2.436,127.567,87.331,158.682c0.796,0.276,1.626,0.414,2.456,0.414 c0.83,0,1.661-0.138,2.456-0.414C199.36,182.741,197.954,109.008,196.926,55.171z M107.131,198.812 c-76.987-27.967-75.823-89.232-74.79-143.351c0.062-3.248,0.122-6.396,0.164-9.482c30.04-1.268,54.062-10.371,74.626-28.285 c20.566,17.914,44.592,27.018,74.634,28.285c0.042,3.085,0.102,6.231,0.164,9.477C182.961,109.577,184.124,170.844,107.131,198.812 z"></path> <path d="M132.958,81.082l-36.199,36.197l-15.447-15.447c-2.929-2.928-7.678-2.928-10.606,0c-2.929,2.93-2.929,7.678,0,10.607 l20.75,20.75c1.464,1.464,3.384,2.196,5.303,2.196c1.919,0,3.839-0.732,5.303-2.196l41.501-41.5 c2.93-2.929,2.93-7.678,0.001-10.606C140.636,78.154,135.887,78.153,132.958,81.082z"></path> </g> </g></svg>
+            <div>
+              <h2 className='text-xl my-2 font-bold'>Enhanced Security</h2>
+            <div className = ''>Robust security features to protect your community and manage access control effectively.</div>
+            <ul className='flex flex-col gap-3 pb-4'>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Digital visitor tracking</li>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Emergency response system</li>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Community forums</li>
             </ul>
+            </ div>
           </div>
-          <div className='border-2 px-6 py-2 rounded-xl'>
-          <div className='flex items-center text-xl'>
-            <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Increased Efficiency</h2>
-            </div>
-            <div className='px-2'>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
-            <ul className='px-5'>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Streamlined processes</li>
+          <div className='border-2 px-6 py-2 rounded-xl flex items-start'>
+          <svg viewBox="-5.4 -5.4 30.80 30.80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-5.4" y="-5.4" width="30.80" height="30.80" rx="4.0040000000000004" fill="#2563eb" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>communication / 8 - communication, account, profile, person, user icon</title> <g id="Free-Icons" stroke-width="1.7600000000000002" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"> <g transform="translate(-1265.000000, -82.000000)" id="Group" stroke="#ffffff" stroke-width="1.7600000000000002"> <g transform="translate(1263.000000, 80.000000)" id="Shape"> <path d="M12,13 C9.23857625,13 7,10.7614237 7,8 C7,5.23857625 9.23857625,3 12,3 C14.7614237,3 17,5.23857625 17,8 C17,10.7614237 14.7614237,13 12,13 Z M12,16 C17.1428571,16 20.1428571,17.6666667 21,21 L3,21 C3.85714286,17.6666667 6.85714286,16 12,16 Z"> </path> </g> </g> </g> </g></svg>
+            <div>
+              <h2 className='text-xl my-2 font-bold'>Better Communication</h2>
+            <div className = ''>Foster community engagement with integrated communication tools.</div>
+            <ul className='flex flex-col gap-3 pb-4'>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Real-time notifications</li>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Event announcements</li>
+              <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Conduct transparent society elections</li>
             </ul>
-          </div>
-          <div className='border-2 px-6 py-2 rounded-xl'>
-          <div className='flex items-center text-xl'>
-            <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Increased Efficiency </h2>
-            </div>
-            <div className='px-2'>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
-            <ul className='px-5'>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Streamlined processes</li>
-            </ul>
-          </div>
-          <div className='border-2 px-6 py-2 rounded-xl'>
-          <div className='flex items-center text-xl'>
-            <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Increased Efficiency </h2>
-            </div>
-            <div className='px-2'>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
-            <ul className='px-5'>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Streamlined processes</li>
-            </ul>
-          </div>
-          <div className='border-2 px-6 py-2 rounded-xl'>
-          <div className='flex items-center text-xl'>
-            <img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-10 h-10 ' alt="" />
-              <h2 className='text-xl my-2 font-bold'>Increased Efficiency </h2>
-            </div>
-            <div className='px-2'>Automate routine tasks and reduce administrative burden with our streamlined digital solutions.</div>
-            <ul className='px-5'>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Reduced paperwork</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Time-Saving Automation</li>
-              <li className='flex items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt = "" />Streamlined processes</li>
-            </ul>
+            </ div>
           </div>
         </div>            
         </div>
       </div>
-      <div className='bg-slate-300 p-5'>
+
+{/* Fourth part  */}
+      <div className='px-32 py-20 mb-4 bg-[url("/bgSociety.png")] min-h-screen text-gray-200'>
+        <h1 className='text-center font-bold text-4xl'>Simple & Transparent Pricing</h1>
+        <h2 className='text-center text-xl mt-4 text-pretty mb-20'>Choose the perfect plan for you </h2>
+        <div className='flex gap-8 justify-center'>
+        <div className='border-2 px-14 py-2 min-h-96 rounded-xl '>
+          <h2 className='text-center font-bold text-2xl py-4'>Basic</h2>
+          <div className='text-center text-5xl font-bold pb-4'>₹999<span className='text-xl font-semibold'>/month</span></div>
+          <div className='text-center pb-4'>Perfect for small societies</div>
+          <ul className='flex flex-col gap-3 pb-4'>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Visitor Management</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Complaint Management</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Basic Announcements</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />5GB Storage</li>
+          </ul>
+          <button className='px-5 py-3 w-full bg-blue-600 text-white rounded-lg mb-4 '>Get Started</button>
+        </div>
+        <div className='border-2 px-14 py-2 min-h-96 rounded-xl'>
+          <h2 className='text-center font-bold text-2xl py-4'>Pro</h2>
+          <div className='text-5xl font-bold pb-4'>₹1999<span className='text-xl font-semibold'>/month</span></div>
+          <div className='text-center pb-4'>Ideal for medium societies</div>
+          <ul className='flex flex-col gap-3 pb-4'>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Everything in Basic</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Facility Booking</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Event Management</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Payment Gateway</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />20GB Storage</li>
+          </ul>
+          <button className='px-5 py-3 w-full bg-blue-600 text-white rounded-lg mb-4  '>Get Started</button>
+        </div>
+        <div className='border-2 px-14 py-2 min-h-96 rounded-xl'>
+          <h2 className='text-center font-bold text-2xl py-4'>Enterprise</h2>
+          <div className='text-5xl font-bold pb-4'>₹2999<span className='text-xl font-semibold'>/month</span></div>
+          <div className='text-center pb-4'>For large societies</div>
+          <ul className='flex flex-col gap-3 pb-4'>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Everything in Pro</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Advanced Analytics</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />24/7 Support</li>
+            <li className='flex gap-1 items-center'><img src='https://www.svgrepo.com/show/334183/poll.svg' className='w-5 h-5' alt="" />Unlimited Storage</li>
+          </ul>
+          <button className='px-5 py-3 w-full bg-blue-600 text-white rounded-lg mb-4 '>Get Started</button>
+        </div>
+        </div>
+      </div >
+
+{/* Fifth part */}
+      <div className=' p-5'>
         <div className='text-4xl font-bold text-center text-pretty text-gray-600 mb-5 mt-5'>What Our Users Say</div>
         <div className='text-center text-xl mt-4 text-pretty mb-7'>Trusted by residential societies across the country</div>
         <div className='flex flex-wrap gap-10 justify-center items-center mt-12 '>
@@ -277,17 +285,21 @@ function OrgLanding() {
               </div>
             </div> 
           </div>
-
         </div>
         <div className='text-center mt-10'>
           <button className='bg-green-400 rounded-lg p-4 text-md  hover:bg-green-500 hover:text-lg'>View more testimonials</button>
         </div>
       </div>
-      <div className='bg-white p-7 '>
-        <div className='text-6xl text-center text-pretty mb-7 mt-7'>Get in touch with us</div>
-        <div className='text-4xl text-pretty text-center mb-7'>have questions? we will love to answer that!</div>
+
+      {/* Sixth part */}
+      <div className="bg-[url(/bgSociety.png)]">
+
+      
+      <div className='bg-[url("/bgSociety.png")] p-7 text-gray-200 '>
+        <div className='text-center font-bold text-4xl'>Get in touch with us</div>
+        <div className='text-center text-xl mt-4 text-pretty mb-20'>Have questions? We'd love to answer that!</div>
         <div className='flex gap-10 justify-center items-center'>
-          <div className="bg-white shadow-black shadow-md rounded-xl p-8 animate__animated animate__fadeInLeft">
+          <div className="shadow-black shadow-md rounded-xl p-8 bg-gray-200">
             <form className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -321,14 +333,14 @@ function OrgLanding() {
             </form>
           </div>
           <div>
-            <div className="max-w-md p-6 bg-white  text-black rounded-lg shadow-md shadow-black">
+            <div className="max-w-md p-6 bg-gray-200  text-black rounded-lg shadow-md shadow-black">
               <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
 
               <div className="space-y-4">
 
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 flex items-center justify-center  rounded-lg">
-                    <img src="https://www.svgrepo.com/show/533288/phone-incoming.svg" className='h-10 w-10' alt="" />
+                    <img src="https://www.svgrepo.com/show/533288/phone-incoming.svg" className='h-7 w-7' alt="" />
                   </div>
                   <div>
                     <p className="font-medium">Phone</p>
@@ -339,7 +351,7 @@ function OrgLanding() {
 
                 <div class="flex items-center space-x-4">
                   <div className="w-10 h-10 flex items-center justify-center rounded-lg">
-                    <img className='h-10 w-10' src="https://www.svgrepo.com/show/511917/email-1572.svg" alt="" />
+                    <img className='h-7 w-7' src="https://www.svgrepo.com/show/511917/email-1572.svg" alt="" />
                   </div>
                   <div>
                     <p class="font-medium">Email</p>
@@ -350,7 +362,7 @@ function OrgLanding() {
 
                 <div class="flex items-center space-x-4">
                   <div class="w-10 h-10 flex items-center justify-center  rounded-lg">
-                    <img className='h-10 w-10' src="https://www.svgrepo.com/show/493957/address.svg" alt="" />
+                    <img className='h-7 w-7' src="https://www.svgrepo.com/show/493957/address.svg" alt="" />
                   </div>
                   <div>
                     <p className="font-medium">Address</p>
@@ -363,7 +375,7 @@ function OrgLanding() {
               </div>
 
             </div>
-            <div className="bg-white shadow-md shadow-black mt-10 rounded-xl p-8">
+            <div className="bg-gray-200 shadow-md shadow-black mt-10 rounded-xl p-8">
               <h3 className="text-xl font-bold text-black mb-6">Business Hours</h3>
               <div className="space-y-2">
                 <p className="text-black">Monday - Friday: 9:00 AM - 6:00 PM</p>
@@ -374,62 +386,63 @@ function OrgLanding() {
           </div>
         </div>
       </div>
-      <footer className="bg-gray-200 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-neutral-700">
-
-            <div>
-              <h3 className="text-xl font-bold text-black mb-4">Society OS</h3>
-              <p className="text-black mb-6">Smart solutions for modern residential societies.</p>
-              <div className="flex space-x-4">
-                <a href="" className="text-black hover:text-[#27AE60]">
-                  <span className="sr-only">Facebook</span>
-                  <img className='h-10 w-10' src="https://www.svgrepo.com/show/521654/facebook.svg" alt="" />
-                </a>
-                <a href="" className="text-black hover:text-[#27AE60]">
-                  <span className="sr-only">Twitter</span>
-                  <img className='h-10 w-10' src="https://www.svgrepo.com/show/521900/twitter.svg" alt="" />
-                </a>
-                <a href="" className="text-gray-400 hover:text-[#27AE60]">
-                  <span className="sr-only">LinkedIn</span>
-                  <img className='h-10 w-10' src="https://www.svgrepo.com/show/458756/insta.svg" alt="" />
-                </a>
-              </div>
-            </div>
-
-
-            <div>
-              <h3 className="text-black font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-3">
-              </ul>
-            </div>
-
-
-            <div>
-              <h3 class="text-black font-semibold mb-4">Features</h3>
-              <ul class="space-y-3">
-                <li><a href="/visitor" className="text-black hover:text-[#27AE60] transition-colors">Visitor Management</a></li>
-                <li><a href="/complaint" className="text-black hover:text-[#27AE60] transition-colors">Complaint System</a></li>
-                <li><a href="/booking" className="text-black hover:text-[#27AE60] transition-colors">Facility Booking</a></li>
-                <li><a href="/event" className="text-black hover:text-[#27AE60] transition-colors">Event Management</a></li>
-                <li><a href="/payment" className="text-black hover:text-[#27AE60] transition-colors">Payment Gateway</a></li>
-                <li><a href="/poll" className="text-black hover:text-[#27AE60] transition-colors">Polls</a></li>
-              </ul>
-            </div>
-
-
-            <div>
-              <h3 className="text-black font-semibold mb-4">Legal</h3>
-              <ul Name="space-y-3">
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 text-center">
-            <p className="text-black">© 2024 Society OS. All rights reserved.</p>
-          </div>
+      
+      <div className="pt-16 pb-8 bg-gray-900 text-gray-200">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="grid md:grid-cols-3 gap-8 pb-12 border-b border-neutral-700 text-center md:text-left">
+  
+      <div className="flex flex-col items-center md:items-start">
+        <h3 className="text-xl font-bold mb-4">ResiHub</h3>
+        <p className="mb-6 text-gray-400 max-w-sm">
+          We are a dedicated platform designed to streamline society management, helping residents 
+          with communication, maintenance requests, and community engagement. Our goal is to make 
+          society living hassle-free and organized.
+        </p>
+        <div className="flex space-x-4">
+          <a href="#" className="hover:text-[#27AE60]">
+            <img className='h-8 w-8' src="https://www.svgrepo.com/show/521654/facebook.svg" alt="Facebook" />
+          </a>
+          <a href="#" className="hover:text-[#27AE60]">
+            <img className='h-8 w-8' src="https://www.svgrepo.com/show/521900/twitter.svg" alt="Twitter" />
+          </a>
+          <a href="#" className="hover:text-[#27AE60]">
+            <img className='h-8 w-8' src="https://www.svgrepo.com/show/458756/insta.svg" alt="Instagram" />
+          </a>
         </div>
-      </footer>
+      </div>
+
+
+      <div className="flex flex-col items-center">
+        <h3 className="font-semibold mb-4">Quick Links</h3>
+        <ul className="space-y-3">
+          <li><a href="/visitor" className="hover:text-[#27AE60] transition-colors">Visitor Management</a></li>
+          <li><a href="/complaint" className="hover:text-[#27AE60] transition-colors">Complaint System</a></li>
+          <li><a href="/booking" className="hover:text-[#27AE60] transition-colors">Facility Booking</a></li>
+          <li><a href="/event" className="hover:text-[#27AE60] transition-colors">Event Management</a></li>
+          <li><a href="/payment" className="hover:text-[#27AE60] transition-colors">Payment Gateway</a></li>
+          <li><a href="/poll" className="hover:text-[#27AE60] transition-colors">Polls</a></li>
+        </ul>
+      </div>
+
+
+      <div className="flex flex-col items-center md:items-start">
+        <h3 className="font-semibold mb-4">Legal</h3>
+        <ul className="space-y-3">
+          <li><a href="#" className="hover:text-[#27AE60]">Privacy Policy</a></li>
+          <li><a href="#" className="hover:text-[#27AE60]">Terms of Service</a></li>
+          <li><a href="#" className="hover:text-[#27AE60]">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+    <div className="pt-8 text-center">
+      <p className="text-gray-400">© 2025 ResiHub. All rights reserved.</p>
+    </div>
+  </div>
+</div>
+
+      </div>
     </div>
   )
 }
