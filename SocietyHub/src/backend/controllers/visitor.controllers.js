@@ -27,7 +27,8 @@ const createVisitor = asyncHandler(async (req, res) => {
             purpose,
             visitDate,  
             visitTime ,
-            isActive : true
+            isActive : true,
+            societyId : securityId.societyId
         })
 
         if(!newVisitor){
@@ -72,7 +73,7 @@ const deleteVisitor = asyncHandler(async (req, res) => {
 
 const getRecentVisitors = asyncHandler(async (req, res) => {
     try {
-        const visitors = await Visitor.find({ isActive: false });
+        const visitors = await Visitor.find({ isActive: false ,societyId : req.user.societyId});
 
         if (!visitors || visitors.length === 0) {
             throw new ApiError(404, "No recent visitors found");
@@ -92,7 +93,7 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     }
  
     try {
-        const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse});
+        const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse, societyId : req.user.societyId});
 
         if (!visitors || visitors.length === 0) {
             throw new ApiError(404, "No recent visitors found");
@@ -106,7 +107,7 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
 
 const getActiveVisitors = asyncHandler(async (req, res) => {
     //get the visiting add from visitors and match it to the users houseNo and then provide all the visitors with same houseNo as visitingAdd
-    const visitors = await Visitor.find({ isActive: true });
+    const visitors = await Visitor.find({ isActive: true, societyId : req.user.societyId});
    if(!visitors){
     throw new ApiError(400 , "Visitors not found")
    }
@@ -124,7 +125,7 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
     }
  
     try {
-        const visitors = await Visitor.find({ isActive: true , visitingAdd : userHouse});
+        const visitors = await Visitor.find({ societyId : req.user.societyId,isActive: true , visitingAdd : userHouse});
 
         if (!visitors || visitors.length === 0) {
             throw new ApiError(404, "No recent visitors found");
@@ -139,7 +140,7 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
 
 const getVisitorById = asyncHandler(async (req, res) => {
     const userHome = req.user.houseNo
-    const visitor = await Visitor.find({visitingAdd : userHome})
+    const visitor = await Visitor.find({visitingAdd : userHome, societyId : req.user.societyId})
 
     if(!visitor){
         throw new ApiError(400 , "Visitor not found")

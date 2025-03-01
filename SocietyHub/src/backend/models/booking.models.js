@@ -24,7 +24,11 @@ const bookingSchema = new Schema({
   isAccepted: {
     type: Boolean,
     default: false
-  } 
+  } ,
+  societyId : {
+    type : String,
+    
+  }
 }, {
   timestamps: true
 });

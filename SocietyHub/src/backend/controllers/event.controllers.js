@@ -20,7 +20,8 @@ const createEvent = asyncHandler(async (req, res) => {
         description,
         time,
         lastDateOfPay,
-        category
+        category,
+        societyId : req.user.societyId
     })
 
     if(!event){
@@ -33,7 +34,7 @@ const createEvent = asyncHandler(async (req, res) => {
 });
 
 const getAllEvents = asyncHandler(async (req, res) => {
-    const events = await Event.find()
+    const events = await Event.find({societyId : req.user.societyId})
     console.log(events)
     if(!events){
         return new ApiError( 500 ,"No events found" );

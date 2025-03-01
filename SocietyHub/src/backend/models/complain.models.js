@@ -31,6 +31,10 @@ byHouse : {
 proof : {
     type : String,
   
+},
+societyId : {
+    type : String,
+    
 }
  
 },{ timestamps : true})

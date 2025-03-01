@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 // 1. Get all payments (Admin View)
  const getPayments = async (req, res) => {
   try {
-    const payments = await Payment.find()
+    const payments = await Payment.find({societyId : req.user.societyId});
     res.status(200).json(new ApiResponse(200, payments, "Payments fetched successfully"));
   } catch (error) {
    throw new ApiError(500, "Failed to fetch payments");
@@ -16,7 +16,7 @@ import { ApiError } from "../utils/ApiError.js";
  const getUserPayments = async (req, res) => {
   const { userId } = req.params;
   try {
-    const payments = await Payment.find({ userId });
+    const payments = await Payment.find({ userId, societyId : req.user.societyId });
     res.status(200).json(new ApiResponse(200, payments, "User payments fetched successfully"));
   } catch (error) {
     throw new ApiError(500, "Failed to fetch user payments");
@@ -33,6 +33,7 @@ import { ApiError } from "../utils/ApiError.js";
       amount,
       dueDate,
       userId : req.user._id,
+      societyId : req.user.societyId
     });
 
     await newPayment.save();

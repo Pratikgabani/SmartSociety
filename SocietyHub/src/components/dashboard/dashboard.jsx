@@ -189,12 +189,12 @@ function dashboard() {
                         </div>
                     </div>
                     <div className='mt-8 relative bg-slate-100 rounded-md p-2'>
-                        <span className='mr-20 ml-3 absolute top-3 left-3 font-medium'>Premises Bookings</span>
+                        <span className='mr-20 ml-3 absolute top-3 left-3 text-xl'>Premises Bookings</span>
                         <span className='rounded-lg absolute top-3 right-3 bg-green-500 px-2 py-0.5'>3 in this week</span>
-                        <ul>
+                        <ul className='mt-16'>
                         {
                             bookings.slice(0, 2).map((booking) => (
-                                <li className='flex gap-2 p-2 mt-16 mx-5 bg-slate-300 rounded-md hover:bg-white'>
+                                <li className='flex gap-2 p-2 mt-3 mx-5 bg-slate-300 rounded-md hover:bg-white'>
                                 
                                 <div>
                                     <div className='text-balance font-semibold'>{booking.bookingType}</div>

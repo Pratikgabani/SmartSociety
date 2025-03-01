@@ -47,6 +47,9 @@ const eventSchema = new Schema({
     category : {
         type : String,
         required : true
+    },
+    societyId : {
+    type : String,
     }
 })
 
