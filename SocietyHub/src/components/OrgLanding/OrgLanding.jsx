@@ -49,12 +49,12 @@ function OrgLanding() {
           <div className=' ml-15 font-bold text-4xl text-blue-600 font-raleway '>ResiHub</div>
           <div>
             <ul className='flex gap-6 text-lg'>
-              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>Home</li>
-              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>Features</li>
-              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>Benefits</li>
-              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>Pricing</li>
-              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>Testimonials</li>
-              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>Contact</li>
+              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#home">Home</a></li>
+              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#features">Features</a></li>
+              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#benefits">Benefits</a></li>
+              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#pricing">Pricing</a></li>
+              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#testimonials">Testimonials</a></li>
+              <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#contact">Contact</a></li>
             </ul>
           </div>
           <div className='space-x-4'>
@@ -80,7 +80,7 @@ function OrgLanding() {
           </div>
         </nav>
 
-        <div className=' h-3/4 w-[80%] flex '>
+        <div id='home' className=' h-3/4 w-[80%] flex '>
           <div className=' p-5 max-h-[100%] w-1/2'>
             <div className=' mb-5 mt-12'>
               <h1 class="text-4xl md:text-6xl font-bold text-gray-600 ">
@@ -116,7 +116,7 @@ function OrgLanding() {
       </div>
 
 {/* Second part  */}
-      <div className='text-gray-200 bg-[rgb(88,123,193)]'>
+      <div id='features' className='text-gray-200 bg-[rgb(88,123,193)]'>
         <div className='px-32 py-6'>
           <h2 className='text-center text-4xl font-bold mt-7 text-pretty'>Comprehensive Society Management  Features</h2>
           <p className='text-center text-xl mt-4 text-pretty mb-7'>Everything you need to manage your residential community efficiently</p>
@@ -156,7 +156,7 @@ function OrgLanding() {
       </div>
 
 {/* Third part */}
-      <div className='pb-12'>
+      <div id='benefits' className='pb-12'>
         <div className='px-32 py-6'>
         <h1 className='text-center text-4xl font-bold mt-7 text-pretty text-gray-600'>Why Choose Our Solutions</h1>
         <p className='text-center text-xl mt-4 text-pretty mb-7'>Transform your society management with these key benefits</p>
@@ -204,7 +204,7 @@ function OrgLanding() {
       </div>
 
 {/* Fourth part  */}
-      <div className='px-32 py-20 mb-4 bg-[rgb(88,123,193)] min-h-screen text-gray-200'>
+      <div id='pricing' className='px-32 py-20 mb-4 bg-[rgb(88,123,193)] min-h-screen text-gray-200'>
         <h1 className='text-center font-bold text-4xl'>Simple & Transparent Pricing</h1>
         <h2 className='text-center text-xl mt-4 text-pretty mb-20'>Choose the perfect plan for you </h2>
         <div className='flex gap-8 justify-center'>
@@ -289,7 +289,7 @@ function OrgLanding() {
       </div >
 
 {/* Fifth part */}
-      <div className=' p-5'>
+      <div id='testimonials' className=' p-5'>
         <div className='text-4xl font-bold text-center text-pretty text-gray-600 mb-5 mt-5'>What Our Users Say</div>
         <div className='text-center text-xl mt-4 text-pretty mb-7'>Trusted by residential societies across the country</div>
         <div className='flex flex-wrap gap-10 justify-center items-center mt-12 '>
@@ -345,7 +345,7 @@ function OrgLanding() {
       </div>
 
       {/* Sixth part */}
-      <div className="bg-[url(/bgSociety.png)]">
+      <div id='contact' className="bg-[url(/bgSociety.png)]">
 
       
       <div className='bg-[rgb(88,123,193)] p-7 text-gray-200 '>

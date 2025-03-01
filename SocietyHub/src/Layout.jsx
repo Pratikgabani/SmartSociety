@@ -5,8 +5,8 @@ import SideBar from './components/SideBar/SideBar.jsx'
 function Layout() {
   return (
     <div className='flex'>
-        <SideBar/>
-        <Outlet/>
+       <div className='fixed'> <SideBar/></div>
+        <div className='ml-64 w-full'><Outlet/></div>
     </div>
   )
 }

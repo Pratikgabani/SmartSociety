@@ -28,7 +28,7 @@ const router = createBrowserRouter(
     <Route path='/' element= {< OrgLanding/>} />
     <Route path="Login" element={<Login />} />
     <Route path="Register" element={<Register />} />
-    
+    <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     <Route element={<RequireAuth />}>
     <Route path="Layout" element={<Layout/>} >
     <Route index element={<Dashboard />} />
@@ -42,8 +42,9 @@ const router = createBrowserRouter(
     <Route path = "Complaint" element= {<Complaint />} />
     <Route path = "Booking" element = {<Booking/>} />
     <Route path = "Event" element = {<Event/>} />
-    <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
+    
     <Route path = "Notice" element = {<Announcements/>} />
+    
     </Route>
     </Route>
     <Route path="*" element={<OrgLanding />} />
