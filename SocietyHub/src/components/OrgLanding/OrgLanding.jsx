@@ -61,7 +61,7 @@ function OrgLanding() {
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="bg-blue-600 text-white font-bold rounded-xl py-2 px-2 text-xs md:text-lg md:py-2 md:px-4 border-white "
+                className="bg-blue-600 text-white font-bold rounded-3xl py-2 px-6 text-xs md:text-lg  border-white"
               >
                 Logout
               </button>

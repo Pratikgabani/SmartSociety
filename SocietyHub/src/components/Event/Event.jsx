@@ -169,25 +169,25 @@ function Event() {
           {/* Add Event Form */}
           {showAddEventForm && (
             <form className="bg-white p-6 rounded-lg shadow-lg mt-6" onSubmit={handleAddEvent}>
-              <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
-
-              {["eventName", "eventDate", "venue", "amtPerPerson", "description", "time", "lastDateOfPay", "category"].map((field) => (
-                <div className="mb-4" key={field}>
-                  <label className="block text-gray-700 font-semibold capitalize">
-                    {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-                  </label>
-                  <input
-                    type={field.includes("Date") ? "text" : field.includes("time") ? "time" : "text"}
-                    name={field}
-                    value={newEvent[field]}
-                    onChange={handleInputChange}
-                    placeholder={field.includes("Date") ? "YYYY-MM-DD" : ""}
-                    className="w-full p-2 border rounded-lg"
-                    pattern={field.includes("Date") ? "\\d{4}-\\d{2}-\\d{2}" : undefined} // Enforce date format
-                    required
-                  />
-                </div>
-              ))}
+            <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
+          
+            {["eventName", "eventDate", "venue", "amtPerPerson", "description", "time", "lastDateOfPay", "category"].map((field) => (
+              <div className="mb-4" key={field}>
+                <label className="block text-gray-700 font-semibold capitalize">
+                  {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                </label>
+                <input
+                  type={field.includes("Date") ? "text" : "text"} // Changed time to text
+                  name={field}
+                  value={newEvent[field]}
+                  onChange={handleInputChange}
+                  placeholder={field === "eventDate" || field === "lastDateOfPay" ? "YYYY-MM-DD" : field === "time" ? "e.g., 6:30 PM" : ""}
+                  className="w-full p-2 border rounded-lg"
+                  pattern={field.includes("Date") ? "\\d{4}-\\d{2}-\\d{2}" : undefined} // Enforce date format for eventDate and lastDateOfPay
+                  required
+                />
+              </div>
+            ))}
 
               <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-lg mt-4">
                 Create Event
@@ -209,7 +209,7 @@ function Event() {
                     <h2 className="text-xl font-bold text-gray-800 line-clamp-1 min-h-[28px]">
                       {event.eventName}
                     </h2>
-                    <span className={`px-3 py-1  ${event.category === "Festival" ? "text-purple-700 bg-purple-100"  : event.category === "Meeting" ? "bg-teal-100 text-teal-700" : "text-pink-700 bg-pink-100"} bg-blue-100 text-blue-800 rounded-full text-sm font-medium`}>
+                    <span className={`px-3 py-1 line-clamp-1  ${event.category === "Festival" ? "text-purple-700 bg-purple-100"  : event.category === "Meeting" ? "bg-teal-100 text-teal-700" : "text-pink-700 bg-pink-100"} bg-blue-100 text-blue-800 rounded-full text-sm font-medium`}>
                       {event.category}
                     </span>
 
