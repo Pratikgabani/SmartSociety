@@ -1,3 +1,4 @@
+import { SourceCode } from "eslint";
 import mongoose from "mongoose";
 
 // Define the Payment Schema
@@ -35,6 +36,9 @@ const paymentSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  societyId : {
+    type : String
   }
 });
 

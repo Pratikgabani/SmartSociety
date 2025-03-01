@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // Get all notices
 export const getNotices = async (req, res) => {
   try {
-    const notices = await Notice.find().sort({ timestamp: -1 });
+    const notices = await Notice.find({ societyId : req.user.societyId}).sort({ timestamp: -1 });
     res.status(200).json(new ApiResponse(200, notices, "Notices found successfully"));
   } catch (error) {
     throw new ApiError(500, "Error fetching notices", error);
@@ -21,7 +21,7 @@ export const addNotice = async (req, res) => {
   }
 
   try {
-    const notice = new Notice({ topic, description });
+    const notice = new Notice({ topic, description, societyId : req.user.societyId });
     await notice.save();
     res.status(201).json(new ApiResponse(201, notice, "Notice added successfully"));
   } catch (error) {

@@ -22,6 +22,7 @@ const createPoll = asyncHandler(async (req, res) => {
         question,
         options,
         date : new Date(),
+        societyId : req.user.societyId,
         owner : ownerName.nameOfPersons[0],
     })
 
@@ -35,7 +36,7 @@ const createPoll = asyncHandler(async (req, res) => {
 })
 
 const getAllPolls = asyncHandler(async (req, res) => {
-    const polls = await Poll.find()
+    const polls = await Poll.find({societyId : req.user.societyId})
     return res
     .status(200)
     .json(new ApiResponse(200 , polls , "Polls found successfully"))

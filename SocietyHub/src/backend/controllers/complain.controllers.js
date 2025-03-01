@@ -92,7 +92,8 @@ const createComplain = asyncHandler(async (req, res, next) => {
             description,
             date: new Date().toLocaleDateString(),
             byHouse: req.user.houseNo,
-            proof : proof?.url // Store Cloudinary URL
+            proof : proof?.url,// Store Cloudinary URL
+            societyId: req.user?.societyId 
         });
 
         if (!complain) {
@@ -111,7 +112,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
 
 
 const getAllComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find();
+    const complains = await Complain.find({societyId: req.user?.societyId});
   
     if (!complains) {
       throw new ApiError(404, "No complains found");

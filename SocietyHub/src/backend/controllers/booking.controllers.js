@@ -31,6 +31,7 @@ const createBooking = asyncHandler(async (req, res) => {
         bookDescription,
         duration,
         date,
+        societyId : req.user?.societyId
     }); 
     console.log(newBooking) 
 
@@ -102,12 +103,13 @@ const getBookings = asyncHandler(async (req, res) => {
 
 const getBookingsByUserId = asyncHandler(async (req, res) => {
     const userId = req.user._id 
+    
     console.log(userId)
     if(!userId){
         throw new ApiError(400 , "User not found")
     }
 
-    const allBookings = await Booking.find({bookingOwner : userId})
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId})
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }

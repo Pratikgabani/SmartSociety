@@ -40,6 +40,9 @@ const pollSchema = new Schema({
         type : String,
         required : true
     },
+    societyId : {
+        type : String
+    },
 
     voters: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
     })

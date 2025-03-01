@@ -34,6 +34,10 @@ const visitorSchema = new Schema({
     isActive : {
         type : String,
         default : true
+    },
+    societyId : {
+        type : String,
+        
     }
 
     
