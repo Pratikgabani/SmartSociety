@@ -1,71 +1,73 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
+import axios from 'axios'
 
-// function dashboard() {
-//   return (
-//     <div className='flex'>
-//         <div className='h-screen w-64 bg-slate-500'>
-//             <div className='text-3xl ml-5 mt-5 font-medium position-relative text-black'>Resident management</div>
-//             <div className='flex mt-12 ml-2 mr-2 p-2.5 rounded-md gap-3 hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/535439/home-1.svg" alt="" />
-//                 <div className='text-xl font-medium'>Dashboard</div>
-//             </div>
-//             <div onClick={} className='flex mt-2  ml-2 mr-2 p-2.5 rounded-md gap-3  hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/533403/calendar-xmark.svg" alt="" />
-//                 <div className='text-xl font-medium'>Bookings</div>
-//             </div>
-//             <div className='flex mt-2  ml-2 mr-2 p-2.5 rounded-md gap-3 hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/533381/calendar-alt.svg" alt="" />
-//                 <div className='text-xl font-medium'>Events</div>
-//             </div>
-//             <div className='flex mt-2  ml-2 mr-2 p-2.5 rounded-md gap-3 hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/263899/announcement-megaphone.svg" alt="" />
-//                 <div className='text-xl font-medium'>Notices</div>
-//             </div>
-//             <div className='flex mt-2  ml-2 mr-2 p-2.5 rounded-md gap-3 hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/498972/people.svg" alt="" />
-//                 <div className='text-xl font-medium'>Visitors</div>
-//             </div>
-//             <div className='flex mt-2  ml-2 mr-2 p-2.5 rounded-md gap-3 hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/495139/card-tick.svg" alt="" />
-//                 <div className='text-xl font-medium'>Payment</div>
-//             </div>
-//             <div className='flex mt-2  ml-2 mr-2 p-2.5 rounded-md gap-3 hover:bg-slate-700'>
-//                 <img className='h-7 w-7' src="https://www.svgrepo.com/show/334183/poll.svg" alt="" />
-//                 <div className='text-xl font-medium'>Polls</div>
-//             </div>
-//         </div>
-//         <div >
-//             helo
-//         </div>
-//     </div>
-//   )
-// }
-
-
-import { useState } from "react";
 
 function dashboard() {
-    
+    const [visitors, setVisitors] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [complaints, setComplaints] = useState([]);
+    const [payments, setPayments] = useState([]);
+    const [bookings, setBookings] = useState([]);
+    const [polls, setPolls] = useState([]);
+       const user = JSON.parse(localStorage.getItem("user"));
+       const houseNo = user?.data?.user?.houseNo
+
+    useEffect(() => {
+        const fetchVisitors = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId/${houseNo}`, { withCredentials: true });
+                console.log(response.data.data)
+                setVisitors(response.data.data);
+            } catch (error) {
+                console.error("Error fetching visitors:", error);
+            }
+        };
+       const fetchComplaints = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/v1/complain/getAllComplains`, { withCredentials: true });
+            console.log(response.data.data)
+            setComplaints(response.data.data);
+        } catch (error) {
+            console.error("Error fetching visitors:", error);
+        }
+       }
+       const fetchEvents = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/v1/events/getAllEvent`, { withCredentials: true });
+            console.log(response.data.data)
+            setEvents(response.data.data);
+        } catch (error) {
+            console.error("Error fetching visitors:", error);
+        }
+       }
+       const fetchPolls = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/v1/polls/getAllPolls`, { withCredentials: true });
+            console.log(response.data.data)
+            setPolls(response.data.data);
+        } catch (error) {
+            console.error("Error fetching visitors:", error);
+        }
+       }
+       const fetchBookings = async () => {
+        try {    
+            const response = await axios.get(`http://localhost:8000/api/v1/booking/getBookingsByUserId`, { withCredentials: true });
+            console.log(response.data.data)
+            setBookings(response.data.data);
+        } catch (error) {
+            console.error("Error fetching visitors:", error);
+        }
+       }
+       fetchBookings();
+       fetchPolls();
+       fetchEvents();
+       fetchComplaints();
+        fetchVisitors();
+        }, []);
 
     return (
         <div >
-            {/* <div className="h-screen w-64 bg-gray-800 text-white p-4">
-                <h2 className="text-3xl font-bold mb-4">Resident Management</h2>
-                <ul>
-                    {menuItems.map((item) => (
-                        <li
-                            key={item}
-                            onClick={() => setActiveTab(item)}
-                            className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === item
-                                ? "bg-gray-600 text-yellow-300" // Active tab color
-                                : "hover:bg-gray-700"
-                                }`}
-                        >
-                            {item}
-                        </li>
-                    ))}
-                </ul>
-            </div> */}
+           
             <div className='p-5'>
                 <div className='font-bold text-3xl'>Dashboard</div>
                 <p className=' text-xl mt-3'>Welcome to your resident management system</p>
@@ -74,25 +76,21 @@ function dashboard() {
                     <div className='mt-8 relative bg-slate-100 rounded-md p-2'>
                         <span className='mr-20 ml-3 absolute top-3 left-3 font-medium'>Visitor Management</span>
                         <span className='rounded-lg absolute top-3 right-3 bg-green-500 px-2 py-0.5'>5 today</span>
-                        <ul>
-                            <li className='flex gap-2 p-2 mt-16 mx-5 bg-slate-300 rounded-md hover:bg-white'>
-                                <img className='h-8 w-8 ml-2' src="https://www.svgrepo.com/show/506667/person.svg" alt="" />
-                                <div>
-                                    <div className='text-balance font-semibold'>John doe</div>
-                                    <div>Arrived at 5:30 - flat 101</div>
-                                </div>
-                            </li>
-                            <li className='flex gap-2 p-2 mt-1 mx-5 bg-slate-300 rounded-md hover:bg-white'>
-                                <img className='h-8 w-8 ml-2' src="https://www.svgrepo.com/show/506667/person.svg" alt="" />
-                                <div>
-                                    <div className='text-balance font-semibold'>Smarth patel</div>
-                                    <div>Arrived at 5:30 - flat 101</div>
-                                </div>
-                            </li>
+                        <ul className='mt-16'>
+                           { visitors.map((visitor) => (
+                               <li className='flex gap-2 p-2 mt-3 mx-5 bg-slate-300 rounded-md hover:bg-white'>
+                               <img className='h-8 w-8 ml-2' src="https://www.svgrepo.com/show/506667/person.svg" alt="" />
+                               <div>
+                                   <div className='text-balance font-semibold'>{visitor.visitorName}</div>
+                                   <div>Arrived at {visitor.visitTime} - phone {visitor.visitorPhone}</div>
+                               </div>
+                           </li>
+                           ))
+                               }
 
                         </ul>
                         <div className='flex gap-2 justify-center items-center mt-4'>
-                            <a href='#' className='text-center font-semibold text-blue-500'>view all Visitors</a>
+                            <a href='/layout/visitor' className='text-center font-semibold text-blue-500'>view all Visitors</a>
                             <img className='h-7 w-7 ' src="https://www.svgrepo.com/show/459575/right-arrow.svg" alt="" />
                         </div>
                     </div>
@@ -115,83 +113,78 @@ function dashboard() {
                     <div className='mt-8 bg-slate-100 relative rounded-md p-2'>
                         <span className='mr-20 ml-3 absolute top-3 left-3 font-medium'>Complains</span>
                         <span className='rounded-lg absolute top-3 right-3 px-2 ml-7 py-0.5 bg-red-400'>1 Unresolved</span>
-                        <ul>
-                            <li className=' p-2 w-80 mt-16 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
+                        <ul className='mt-16'>
+                            {
+                                complaints.slice(0, 2).map((complain) => (
+                                    <li className=' p-2 w-80 mt-3 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
                                 <div>
-                                    <div className='text-balance font-semibold'>Smarth patel</div>
-                                    <div>Arrived at 5:30 - flat 101</div>
+                                    <div className='text-balance font-semibold'>{complain.subject}</div>
+                                    <div>Date: {complain.date} - flat {complain.byHouse}</div>
                                 </div>
                                 <div className='rounded-lg absolute top-3 right-3 px-2 py-0.5  bg-red-400'>
                                     InProgress
                                 </div>
                             </li>
-                            <li className=' p-2 mt-1 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
-
-                                <div>
-                                    <div className='text-balance font-semibold'>Smarth patel</div>
-                                    <div>Arrived at 5:30 - flat 101</div>
-                                </div>
-                                <div className='rounded-lg absolute top-3 right-3 px-2 py-0.5  bg-red-400'>Inprending</div>
-                            </li>
+                                ))
+                            }
+                           
                         </ul>
                         <div className='flex items-center justify-center mt-4'>
-                            <div className='text-center font-semibold text-blue-500'>See all complains</div>
+                            <a href="/layout/complaint" className="text-center font-semibold text-blue-500" >view all complains</a>
                             <img className='h-7 w-7' src="https://www.svgrepo.com/show/459575/right-arrow.svg" alt="" />
                         </div>
                     </div>
                     <div className='mt-8 bg-slate-100 relative rounded-md p-2'>
                         <span className='mr-20 ml-3 absolute top-3 left-3 font-medium'>Upcoming Events</span>
                         <span className='rounded-lg absolute top-3 right-3 px-2 ml-7 py-0.5 bg-red-400'>2 this week</span>
-                        <ul>
-                            <li className=' p-2 w-80 mt-16 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
+                        <ul className='mt-16'>
+                        {
+                            events.slice(0, 2).map((event) => (
+                                <li className=' p-2 w-80 mt-3 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
 
-                                <div className='text-balance font-semibold'>diwali Celebration</div>
-                                <div>October 13,2024 - 5:30pm</div>
+                                <div className='text-balance font-semibold'>{event.eventName}</div>
+                                <div>date : {new Date(event.eventDate).toLocaleDateString("en-GB")} - amt :{event.amtPerPerson}</div>
                                 <div >
-                                    InProgress
+                                    {event.venue}
                                 </div>
                             </li>
-                            <li className=' p-2 mt-1 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
-
-
-                                <div className='text-balance font-semibold'>annual Meeting</div>
-                                <div>October 13,2024 - 5:30pm</div>
-
-                                <div >Inprending</div>
-                            </li>
+                            ))
+                        }
+                            
                         </ul>
                         <div className='flex gap-2 justify-center items-center mt-4'>
-                            <a href='#' className='text-center font-semibold text-blue-500'>view all events</a>
+                            <a href='/layout/event' className='text-center font-semibold text-blue-500'>view all events</a>
                             <img className='h-7 w-7 ' src="https://www.svgrepo.com/show/459575/right-arrow.svg" alt="" />
                         </div>
                     </div>
                     <div className='mt-8 bg-slate-100 relative rounded-md p-2'>
                         <span className='mr-20 ml-3 absolute top-3 left-3 font-medium'>Active Polls </span>
                         <span className='rounded-lg absolute top-3 right-3 px-2 ml-7 py-0.5 bg-red-400'>2 Poll</span>
-                        <ul>
-                            <li className=' p-2 w-80 mt-16 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
+                        <ul className='mt-16'>
+                          {
+                            polls.slice(0, 2).map((poll) => (
+                                <li className=' p-2 w-80 mt-3 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
 
-                                <div className='text-balance font-semibold'>diwali Celebration</div>
-                                <div>October 13,2024 - 5:30pm</div>
+                                <div className='text-balance font-semibold'>{poll.question}</div>
+                                <div>Date : {new Date(poll.date).toLocaleString("en-GB", { 
+                                    day: "2-digit", 
+                                    month: "short", 
+                                    year: "numeric", 
+                                    hour: "2-digit", 
+                                    minute: "2-digit",
+                                    hour12: true
+                                  })} </div>
                                 <div className='relative' >
-                                    <span className='text-green-500 '>your votes :45</span>
-                                    <span className='absolute font-semibold right-1 bottom-1 text-purple-500'>total : 100</span>
+                                    <span className='text-green-500 '>Total votes :{poll.totalVotes}</span>
+                                    
                                 </div>
                             </li>
-                            <li className=' p-2 mt-1 mx-5 relative bg-slate-300 rounded-md hover:bg-white'>
-
-
-                                <div className='text-balance font-semibold'>annual Meeting</div>
-                                <div>October 13,2024 - 5:30pm</div>
-
-                                <div className='relative' >
-                                    <span className='text-green-500 font-semibold'>your votes :45</span>
-                                    <span className='absolute font-semibold right-1 bottom-1 text-purple-500'>total : 100</span>
-                                </div>
-                            </li>
+                            ))
+                          }
+                            
                         </ul>
                         <div className='flex gap-2 justify-center items-center mt-4'>
-                            <a href='#' className='text-center font-semibold text-blue-500'>view all Polls</a>
+                            <a href='/layout/poll' className='text-center font-semibold text-blue-500'>view all Polls</a>
                             <img className='h-7 w-7 ' src="https://www.svgrepo.com/show/459575/right-arrow.svg" alt="" />
                         </div>
                     </div>
@@ -199,24 +192,22 @@ function dashboard() {
                         <span className='mr-20 ml-3 absolute top-3 left-3 font-medium'>Premises Bookings</span>
                         <span className='rounded-lg absolute top-3 right-3 bg-green-500 px-2 py-0.5'>3 in this week</span>
                         <ul>
-                            <li className='flex gap-2 p-2 mt-16 mx-5 bg-slate-300 rounded-md hover:bg-white'>
+                        {
+                            bookings.slice(0, 2).map((booking) => (
+                                <li className='flex gap-2 p-2 mt-16 mx-5 bg-slate-300 rounded-md hover:bg-white'>
                                 
                                 <div>
-                                    <div className='text-balance font-semibold'>birthday party</div>
-                                    <div>October-23 Communityhall flat-202</div>
+                                    <div className='text-balance font-semibold'>{booking.bookingType}</div>
+                                    <div>Date: {new Date(booking.date).toLocaleDateString("en-GB")} duration: {booking.duration} hours</div>
                                 </div>
                             </li>
-                            <li className='flex gap-2 p-2 mt-1 mx-5 bg-slate-300 rounded-md hover:bg-white'>
-                               
-                                <div>
-                                    <div className='text-balance font-semibold'>Engagement</div>
-                                    <div>October-23 Communityhall flat-202</div>
-                                </div>
-                            </li>
+                            ))
+                        }
+                          
 
                         </ul>
                         <div className='flex gap-2 justify-center items-center mt-4'>
-                            <a href='#' className='text-center font-semibold text-blue-500'>view all Bookings</a>
+                            <a href='/layout/booking' className='text-center font-semibold text-blue-500'>view all Bookings</a>
                             <img className='h-7 w-7 ' src="https://www.svgrepo.com/show/459575/right-arrow.svg" alt="" />
                         </div>
                     </div>

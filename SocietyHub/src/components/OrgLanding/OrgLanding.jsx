@@ -44,11 +44,11 @@ function OrgLanding() {
 
   return (
     <div className='bg-white h-screen w-dvh font-raleway '>
-      <div className=' h-6/7 w-dvh flex flex-col justify-center items-center'>
-        <nav className='w-full  mb-3 flex justify-between items-center py-6 px-14 rounded-xl shadow-lg'>
+      <div className=' h-6/7 w-dvh flex flex-col justify-center items-center '>
+        <nav className=' w-full  mb-3 flex justify-between items-center py-6 px-14 rounded-xl shadow-lg'>
           <div className=' ml-15 font-bold text-4xl text-blue-600 font-raleway '>ResiHub</div>
-          <div>
-            <ul className='flex gap-6 text-lg'>
+          <div  >
+            <ul className='flex gap-6 text-lg scroll-smooth'>
               <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#home">Home</a></li>
               <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#features">Features</a></li>
               <li className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2  after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'><a href="#benefits">Benefits</a></li>
