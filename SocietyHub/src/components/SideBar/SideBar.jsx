@@ -1,35 +1,59 @@
-import React,{useState} from 'react'
-import {Link,useNavigate} from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function SideBar() {
-    const [activeTab, setActiveTab] = useState("Dashboard");
-    const navigate = useNavigate()
-     const clickEvent = (item)=>{
-        setActiveTab(item)
-        navigate(`/layout/${item}`)
-     }
-    const menuItems = ["Dashboard", "Booking", "Event", "Payment", "Visitor", "Poll", "Complaint", "Profile", "Settings"];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const menuItems = [
+    "Dashboard",
+    "Booking",
+    "Event",
+    "Payment",
+    "Visitor",
+    "Poll",
+    "Complaint",
+    "Profile",
+    "Settings",
+  ];
+
+  // Extract tab from URL
+  const getTabFromPath = () => {
+    const pathParts = location.pathname.split("/");
+    const tabFromURL = pathParts[pathParts.length - 1]; // Last part of the URL
+    return menuItems.includes(tabFromURL) ? tabFromURL : "Page not found"; // Default to Dashboard if invalid
+  };
+
+  const [activeTab, setActiveTab] = useState(getTabFromPath());
+
+  useEffect(() => {
+    setActiveTab(getTabFromPath());
+  }, [location.pathname]); // Update activeTab whenever the URL changes
+
+  const clickEvent = (item) => {
+    setActiveTab(item);
+    navigate(`/layout/${item}`);
+  };
+
   return (
-    
-      <div className="h-screen  w-64 bg-gray-800 text-white p-4">
-                <h2 className="text-3xl font-bold mb-4">Resident Management</h2>
-                <ul>
-                    {menuItems.map((item) => (
-                        <li
-                            key={item}
-                            onClick={() => clickEvent(item)}
-                            className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === item
-                                ? "bg-gray-600 text-yellow-300" // Active tab color
-                                : "hover:bg-gray-700"
-                                }`}
-                        >
-                            {item}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-    
-  )
+    <div className="h-screen w-64 bg-gray-800 text-white p-4">
+      <h2 className="text-3xl font-bold mb-4">Resident Management</h2>
+      <ul>
+        {menuItems.map((item) => (
+          <li
+            key={item}
+            onClick={() => clickEvent(item)}
+            className={`p-3 rounded-lg cursor-pointer transition-colors ${
+              activeTab === item
+                ? "bg-gray-600 text-yellow-300" // Active tab color
+                : "hover:bg-gray-700"
+            }`}
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-export default SideBar
+export default SideBar;
