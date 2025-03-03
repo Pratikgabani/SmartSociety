@@ -67,7 +67,8 @@ const createVenue = asyncHandler(async (req , res) =>{
         description,
         amenities,
         capacity,
-        price
+        price,
+        societyId: req.user?.societyId
     })
 
     if(!newVenue){

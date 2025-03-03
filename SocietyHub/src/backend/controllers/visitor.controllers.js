@@ -13,7 +13,10 @@ const createVisitor = asyncHandler(async (req, res) => {
       if(!securityId){
         throw new ApiError(404 , "User not found")
       }
-
+           const ifExist = await Visitor.findOne({visitorPhone,visitorName})
+           if(ifExist){
+            throw new ApiError(400 , "Visitor already exist")
+           }
 
 
         if(!visitorName || !visitorPhone || !visitingAdd || !purpose || !visitDate || !visitTime){
@@ -96,7 +99,7 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
         const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse, societyId : req.user.societyId});
 
         if (!visitors || visitors.length === 0) {
-            throw new ApiError(404, "No recent visitors found");
+            return res.status(404).json({ message: "No recent visitors found" });
         }
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
@@ -109,7 +112,9 @@ const getActiveVisitors = asyncHandler(async (req, res) => {
     //get the visiting add from visitors and match it to the users houseNo and then provide all the visitors with same houseNo as visitingAdd
     const visitors = await Visitor.find({ isActive: true, societyId : req.user.societyId});
    if(!visitors){
-    throw new ApiError(400 , "Visitors not found")
+   return res
+   .status(404)
+   .json(new ApiResponse(404, "Visitors not found"));
    }
    return res
    .status(200)
@@ -121,14 +126,14 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
     const {userHouse} = req.params
   
     if(!userHouse){
-        throw new ApiError(400 , "User not found")
+        throw new ApiError(400 , "User house not found")
     }
  
     try {
         const visitors = await Visitor.find({ societyId : req.user.societyId,isActive: true , visitingAdd : userHouse});
 
         if (!visitors || visitors.length === 0) {
-            throw new ApiError(404, "No recent visitors found");
+            return res.status(404).json({ message: "No recent visitors found" });
         }
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
@@ -143,7 +148,9 @@ const getVisitorById = asyncHandler(async (req, res) => {
     const visitor = await Visitor.find({visitingAdd : userHome, societyId : req.user.societyId})
 
     if(!visitor){
-        throw new ApiError(400 , "Visitor not found")
+     return res
+     .status(404) 
+     .json(new ApiResponse(404, "Visitor not found"));
     }
     return res
     .status(200)

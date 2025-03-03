@@ -12,8 +12,7 @@ function SideBar() {
     "Visitor",
     "Poll",
     "Complaint",
-    "Profile",
-    "Settings",
+    
   ];
 
   // Extract tab from URL
@@ -31,14 +30,26 @@ function SideBar() {
 
   const clickEvent = (item) => {
     setActiveTab(item);
-    navigate(`/layout/${item}`);
+    if(item === "logout"){
+      localStorage.removeItem("user");
+      navigate("/");
+    }
+    else{
+      navigate(`/layout/${item}`);
+    }
+
+   
   };
+
+  const secure = localStorage.getItem("user");
+  const role = secure ? JSON.parse(secure).data.user.role : null;
+  
 
   return (
     <div className="h-screen w-64 bg-gray-800 text-white p-4">
       <h2 className="text-3xl font-bold mb-4">Resident Management</h2>
       <ul>
-        {menuItems.map((item) => (
+        { role !== "security" && menuItems.map((item) => (
           <li
             key={item}
             onClick={() => clickEvent(item)}
@@ -51,6 +62,15 @@ function SideBar() {
             {item}
           </li>
         ))}
+        {
+          role === "security" && 
+          <div 
+          key={"Visitor"} onClick={() => clickEvent("Visitor")} className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === "Visitor" ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"}`}>
+            Visitors
+          </div>
+          
+        }
+        <div key={"logout"} onClick={() => clickEvent("logout")} className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === "logout" ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"}`}>Logout</div>
       </ul>
     </div>
   );
