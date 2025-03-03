@@ -88,9 +88,6 @@ const Register = () => {
       <div className="bg-white rounded-lg shadow-lg p-8 md:flex w-11/12 max-w-4xl">
         {/* Left Form Section */}
         <div className="md:w-1/2">
-          <a href="/">
-            <img src={logo} alt="Nova Vista" className="mx-auto mb-4" />
-          </a>
           <h1 className="text-3xl font-bold mb-4">Register</h1>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">

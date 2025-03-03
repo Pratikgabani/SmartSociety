@@ -85,11 +85,7 @@ function Login() {
       <Toaster />
       <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-4xl">
       {/* Left Form Section */}
-        <div className="md:w-1/2">
-          <a href='/'>
-          <img  src={logo} alt="Nova Vista" className="mx-auto mb-4 " />
-          </a>
-          
+        <div className="md:w-1/2">          
           <h1 className="text-3xl font-bold  mb-4 cursor-pointer">Login</h1>
         
         <form onSubmit={handleSubmit}>
