@@ -5,10 +5,10 @@ import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
 const router = Router();
 router.route("/new-booking").post(verifyJWT,createBooking);
-router.route("/all-bookings").get(getBookings);
+router.route("/all-bookings").get(verifyJWT,getBookings);
 router.route("/delete/:bookingId").delete(verifyJWT,deleteBooking); 
 router.route("/bookingStatus/:bookingId").patch(verifyJWT, bookingStatus);
 router.route("/createVenue").post(verifyJWT, createVenue);
-router.route("/getVenue").get(getVenue);
+router.route("/getVenue").get(verifyJWT, getVenue);
 router.route("/getBookingsByUserId").get(verifyJWT, getBookingsByUserId);
 export default router 

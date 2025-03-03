@@ -82,7 +82,7 @@ const createVenue = asyncHandler(async (req , res) =>{
 })
 
 const getVenue = asyncHandler(async (req , res) => {
-    const allVenues = await Venue.find()
+    const allVenues = await Venue.find({societyId: req.user?.societyId})
     if(!allVenues){
         throw new ApiError(500 , "Failed to get venues")
     }
