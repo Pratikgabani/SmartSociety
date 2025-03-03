@@ -27,7 +27,7 @@ const bookingSchema = new Schema({
   } ,
   societyId : {
     type : String,
-    
+    required : true
   }
 }, {
   timestamps: true

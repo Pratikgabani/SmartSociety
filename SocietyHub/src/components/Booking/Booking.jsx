@@ -221,6 +221,7 @@ const Booking = () => {
   // ... [Keep all the existing state and logic the same]
   const [venues, setVenues] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isVenueFormOpen , setIsVenueFormOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [formData, setFormData] = useState({
     bookingType: "",
@@ -228,15 +229,31 @@ const Booking = () => {
     duration: "",
     date: "",
   });
+  const [venueFormData, setVenueFormData] = useState({
+    venue: "",
+    description: "",
+    amenities: [],
+    capacity: "",
+    price: "",
+    societyId: ""
+  })
+  const [amenityInput, setAmenityInput] = useState("");
   const [myBooking, setMyBooking] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  
 
+  // Fetch user info from localStorage
   useEffect(() => {
       const token = localStorage.getItem("user");
       if (token) {
         setIsLoggedIn(true);
+        const user = JSON.parse(token);
+        setIsAdmin(user.data.user.role === "admin");
       }
     }, []);
+
   // Fetch venues
   useEffect(() => {
     const fetchVenues = async () => {
@@ -300,7 +317,45 @@ const Booking = () => {
     });
   };
   
+  const handleVenueInputChange = (e) => {
+    const { name, value } = e.target;
+    setVenueFormData({
+      ...venueFormData,
+      [name]: value,
+    });
+  }
 
+  const handleAddAmenity = () => {
+    if (amenityInput.trim() !== "") {
+      setVenueFormData({
+        ...venueFormData,
+        amenities: [...venueFormData.amenities, amenityInput.trim()], // ✅ Append new amenity
+      });
+      setAmenityInput(""); // Clear input
+    }
+  };
+
+   const handleRemoveAmenity = (index) => {
+    const updatedAmenities = venueFormData.amenities.filter((_, i) => i !== index);
+    setVenueFormData({ ...venueFormData, amenities: updatedAmenities });
+  };
+
+  const handleVenueSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/booking/createVenue",
+        { ...venueFormData },
+        { withCredentials: true }
+      );
+      toast.success("Venue created successfully!"); // Toast for success
+      setVenues([...venues, response.data.data]);
+      setIsVenueFormOpen(false);
+    } catch (error) {
+      console.error("Error creating venue:", error);
+      toast.error("Failed to create venue!"); // Toast for error
+    }
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -328,10 +383,21 @@ const Booking = () => {
         <h1 className="text-4xl font-bold text-gray-800 mb-8 font-[Poppins] text-center">
           Venue Reservations
         </h1>
+        
 
         {/* Available Venues Section */}
         <section className="mb-12">
-            <h2 className="text-2xl mb-6 font-semibold text-gray-800">Available Spaces</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl mb-6 font-semibold text-gray-800">Available Venues</h2>
+            {isAdmin && (
+              <button
+              onClick={() => setIsVenueFormOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mb-4"
+              >
+            Add Venue
+          </button>
+        )}
+        </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {venues.map((venue) => (
               <div 
@@ -494,6 +560,138 @@ const Booking = () => {
               </form>
             </div>
           </div>
+        )}
+
+        {/* Venue List */}
+        {isVenueFormOpen && (
+           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                Add Venue
+              </h2>
+              <form onSubmit={handleVenueSubmit}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Venue Name
+                    </label>
+                    <input
+                      type="text"
+                      name="venue"
+                      value={venueFormData.venue}
+                      onChange={handleVenueInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Venue Description
+                    </label>
+                    <input
+                      type="text"
+                      name="description"
+                      value={venueFormData.description}
+                      onChange={handleVenueInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  {/* amenities */}
+                  <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Venue Amenities
+        </label>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={amenityInput}
+            onChange={(e) => setAmenityInput(e.target.value)}
+            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter an amenity"
+          />
+          <button
+            type="button"
+            onClick={handleAddAmenity}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+      {venueFormData.amenities.length > 0 && (
+        <div className="mb-4">
+          <p className="text-sm font-medium text-gray-700 mb-2">Added Amenities:</p>
+          <div className="flex flex-wrap gap-2">
+            {venueFormData.amenities.map((amenity, index) => (
+              <span
+                key={index}
+                className="flex items-center gap-2 bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm"
+              >
+                {amenity}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAmenity(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  ✕
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Venue Capacity
+                    </label>
+                    <input
+                      type="number"
+                      name="capacity"
+                      value={venueFormData.capacity}
+                      onChange={handleVenueInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  {/* price */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Venue Price
+                    </label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={venueFormData.price}
+                      onChange={handleVenueInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                 
+                  
+
+                </div>
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsVenueFormOpen(false)}
+                    className="px-5 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Add Venue
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+            
         )}
 
         {/* Booking Guidelines */}

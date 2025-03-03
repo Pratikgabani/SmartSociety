@@ -22,8 +22,8 @@ const venueSchema = new Schema({
         required : true
     },
     societyId : {
-        type : Schema.Types.ObjectId,
-        ref : "SocietyDetail"
+        type : String,
+        required : true
     }
 })
 

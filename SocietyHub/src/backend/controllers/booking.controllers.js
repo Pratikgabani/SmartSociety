@@ -49,10 +49,10 @@ const createVenue = asyncHandler(async (req , res) =>{
     if(role !== "admin"){
         throw new ApiError(403 , "You are not authorized to create a venue")
     }
-    console.log(role)
+    // console.log(role)
     const {venue , description ,amenities , capacity , price} = req.body;
     const societyId = req.user?.societyId
-    console.log(societyId)
+    // console.log(societyId)
 
     if(!societyId){
         throw new ApiError(400 , "Society Id is required")
@@ -67,7 +67,8 @@ const createVenue = asyncHandler(async (req , res) =>{
         description,
         amenities,
         capacity,
-        price
+        price,
+        societyId
     })
 
     if(!newVenue){
@@ -81,10 +82,11 @@ const createVenue = asyncHandler(async (req , res) =>{
 })
 
 const getVenue = asyncHandler(async (req , res) => {
-    const allVenues = await Venue.find({societyId : req.user?.societyId})
+    const allVenues = await Venue.find()
     if(!allVenues){
         throw new ApiError(500 , "Failed to get venues")
     }
+    console.log(allVenues)
 
     return res
     .status(200)
@@ -92,7 +94,7 @@ const getVenue = asyncHandler(async (req , res) => {
 })
 
 const getBookings = asyncHandler(async (req, res) => {
-    const allBookings = await Booking.find().populate("bookingType")
+    const allBookings = await Booking.find({societyId: req.user?.societyId})
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -100,6 +102,7 @@ const getBookings = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200 , allBookings , "Bookings found successfully"))
 })
+
 
 const getBookingsByUserId = asyncHandler(async (req, res) => {
     const userId = req.user._id 
