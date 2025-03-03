@@ -5,6 +5,8 @@ import building2 from './../../assets/Rectangle99.png';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { to } from '@react-spring/web';
+import { Toaster,toast } from 'react-hot-toast';
 
 function Login() {
   const navigate = useNavigate();
@@ -34,12 +36,13 @@ function Login() {
             }
           );
           localStorage.setItem("user", JSON.stringify(response.data));
-            navigate("/Visitor");
+            navigate("/layout/Visitor");
           
           console.log("Login successful: ", response.data);
          
           
         } catch (error) {
+          toast.error("error logging in");
           if (error.response) {
             setErrorMessage(error.response.data.errors || "Login failed!!!");
           }
@@ -67,7 +70,9 @@ function Login() {
           localStorage.setItem("user", JSON.stringify(response.data));
           navigate("/layout/dashboard");
         } catch (error) {
+          toast.error("error logging in");
           if (error.response) {
+            
             setErrorMessage(error.response.data.errors || "Login failed!!!");
           }
         }
@@ -77,6 +82,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
+      <Toaster />
       <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-4xl">
       {/* Left Form Section */}
         <div className="md:w-1/2">
@@ -128,9 +134,9 @@ function Login() {
 </div>
 
           
-          {errorMessage && (
+          {/* {errorMessage && (
             <div className="text-red-500 mb-4">{errorMessage}</div>
-          )}
+          )} */}
           <button
             type="submit"
             className="w-full bg-[#005B96] text-white py-2 font-bold rounded-lg hover:bg-[#005B96]"

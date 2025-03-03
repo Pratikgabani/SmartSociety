@@ -77,6 +77,7 @@ const registerSecurity = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
+
   // const existingSecurity = await Security.findOne({ societyId, securityPass });
   // if (!existingSecurity) {
   //   throw new ApiError(400, "Security already registered");
@@ -85,7 +86,10 @@ const registerSecurity = asyncHandler(async (req, res) => {
   if(!existingSocietyDetail){
       throw new ApiError(400 , "Society detail not found")
   }
-
+ const existingEmail = await Security.findOne({email})
+ if(existingEmail){
+    throw new ApiError(400 , "Security already registered")
+}
 
   const newSecurity = await Security.create({
     societyId,
@@ -162,10 +166,7 @@ if(  !email || !password){
       throw new ApiError(400 , "Invalid password")
     }
     
-    // const isMatch = await bcrypt.compare(password, user.password);
-    // if(!isMatch){
-    //   throw new ApiError(400, "Invalid credentials")
-    // }
+   
     
     const {accessToken , refreshToken } = await generateAccessAndRefereshTokens(user._id)
     const loggedInUser = await Security.findById(user._id).select("-password -refreshToken")

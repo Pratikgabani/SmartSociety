@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Clock, X } from "lucide-react";
 import axios from "axios";
-
+import { toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+import { to } from "@react-spring/web";
 function Complaint() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,9 +27,13 @@ function Complaint() {
           }
         );
         setComplaints(response.data.data);
+        if(response.data.data.length === 0){
+          toast.error("No complaints found!");
+        }
       } catch (error) {
         console.error("Error fetching complaints:", error);
         setErrorMessage("Failed to fetch complaints");
+       
       }
     };
     fetchComplaints();
@@ -50,8 +56,10 @@ function Complaint() {
       setVari(!vari);
       setIsFormOpen(false);
       setFile(null);
+      toast.success("Complaint added successfully!");
     } catch (error) {
       console.error("Error adding complaint:", error.response?.data || error.message);
+      toast.error("Failed to add complaint");
     }
   };
 
@@ -66,6 +74,7 @@ function Complaint() {
         { withCredentials: true }
       );
       setVari(!vari);
+      toast.success("Complaint resolved successfully!");
     } catch (error) {
       console.error("Error resolving complaint:", error);
       setErrorMessage("Failed to resolve complaint");
@@ -74,6 +83,7 @@ function Complaint() {
 
   return (
     <div className="min-h-screen w-full bg-gray-100 text-gray-900">
+      <Toaster />
       <header className="bg-blue-800 shadow-md p-6 text-white text-center text-3xl font-bold">
         Complaints Management
       </header>
