@@ -11,7 +11,16 @@ const createEvent = asyncHandler(async (req, res) => {
         res.status(400);
         throw new ApiError("Please fill all the fields");
     }
+    if(new Date(eventDate) <= Date.now()){
+   throw new ApiError(400 , "Event date should be greater than current date")
+    }
+    if(new Date(lastDateOfPay) <= new Date(eventDate)){
 
+            throw new ApiError(400 , "Last date of payment should be greater than event date")
+    }
+    if(time < 0 || time > 24){
+        throw new ApiError(400 , "Time should be in 24 hour format")
+    }
     const event = await Event.create({
         eventName,
         eventDate,

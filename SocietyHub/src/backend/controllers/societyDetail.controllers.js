@@ -33,5 +33,16 @@ const createSocietyDetail = asyncHandler(async (req, res) => {
 
 })
 
+const getSocietyDetail = asyncHandler(async (req, res) => {
+    const societyDetail = await SocietyDetail.find({societyId : req.user.societyId})
+    if(!societyDetail){
+        throw new ApiError(404 , "Society detail not found")
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200 , societyDetail , "Society detail found successfully"))
+}
+)
 
-export {createSocietyDetail}
+
+export {createSocietyDetail, getSocietyDetail}

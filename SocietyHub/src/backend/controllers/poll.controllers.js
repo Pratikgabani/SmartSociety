@@ -99,7 +99,7 @@ const votePoll = asyncHandler(async (req, res) => {
     poll.totalVotes += 1;
     option.voting.push(userId)
     poll.options.map((opt) => {
-        opt.percent = (opt.votes/poll.totalVotes) * 100
+        opt.percent = Math.floor((opt.votes/poll.totalVotes) * 100)
     })
    poll.voters.push(userId);
     await poll.save();
