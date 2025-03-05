@@ -1,25 +1,40 @@
 import React,{ useState} from 'react';
-import logo from './../../assets/logo.png';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle99.png';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-import { to } from '@react-spring/web';
+import * as Yup from "yup";
 import { Toaster,toast } from 'react-hot-toast';
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState({});
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    role: ''
+  })
+  const validationSchema = Yup.object({
+    email : Yup.string().email("Invalid email").required("Email is required"),
+    password : Yup.string().required("Password is required").min(8,"Password must be at least 8 characters").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
+    role : Yup.string().required("Role is required")
+  })
 
-  
+
+  const handleChange = (e) =>{
+    const {name , value} = e.target;
+    setFormData({
+      ...formData,
+      [name] : value
+    })
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-      if(role === "security"){
+    try {
+      await validationSchema.validate(formData , { abortEarly: false });
+      console.log("Form submitted " , formData);
+      if(formData.role === "security"){
         try {
           const response = await axios.post(
             "http://localhost:8000/api/v1/security/loginSecurity",
@@ -53,8 +68,8 @@ function Login() {
           const response = await axios.post(
             "http://localhost:8000/api/v1/users/login",
             {
-              email,
-              password,
+              email : formData.email,
+              password : formData.password,
               
             },
             {
@@ -77,6 +92,15 @@ function Login() {
           }
         }
       }
+    } catch (error) {
+      const newErrors = {};
+      error.inner.forEach((err) =>{
+        newErrors[err.path] = err.message
+      });
+      setErrorMessage(newErrors)
+
+    }
+
    
   };
 
@@ -90,43 +114,46 @@ function Login() {
         
         <form onSubmit={handleSubmit}>
          
-          <div className="mb-4">
-            <label className="block font-medium text-gray-700">email</label>
+          <div className="mb-2">
+            <label className="block font-medium text-gray-700">Email</label>
             <input
+            name='email'
               type="text"
-              placeholder="John@12deo5"
+              placeholder="Enter your email"
               className="w-full px-3 py-2 border rounded-lg"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              onChange={handleChange}
+              value={formData.email}
               id='email'
-              required
             />
+            {errorMessage.email && <div className='text-red-500 mt-1'>{errorMessage.email}</div>}
           </div>
-          <div className="mb-6">
+          <div className="mb-2">
             <label className="block font-medium text-gray-700">Password</label>
             <input
+            name='password'
               type="password"
-              placeholder="John@12deo5"
+              placeholder="Enter your password"
               className="w-full px-3 py-2 border rounded-lg"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
+              onChange={handleChange}
+              value={formData.password}
               id='password'
-              required
             />
+            {errorMessage.password && <div className='text-red-500 mt-1'>{errorMessage.password}</div>}
           </div>
-          <div className="mb-6">
-  <label className="block font-medium text-gray-700">ROLE</label>
+          <div className="mb-2">
+  <label className="block font-medium text-gray-700">Role</label>
   <select
+    name="role"
     className="w-full px-3 py-2 border rounded-lg"
-    value={role}
-    onChange={(e) => setRole(e.target.value)}
-    required
+    value={formData.role}
+    onChange={handleChange}
   >
     <option value="" disabled>Select a role</option>
     <option value="security">Security</option>
     <option value="admin">Admin</option>
     <option value="user">User</option>
   </select>
+  {errorMessage.role && <div className='text-red-500 mt-1'>{errorMessage.role}</div>}
 </div>
 
           
