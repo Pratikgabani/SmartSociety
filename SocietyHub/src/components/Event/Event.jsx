@@ -11,7 +11,7 @@ function Event() {
   const [readyState, setReadyState] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAddEventForm, setShowAddEventForm] = useState(false); // To toggle form
-  const [newEvent, setNewEvent] = useState({
+  const [formData, setFormData] = useState({
     eventName: "",
     eventDate: "",
     venue: "",
@@ -93,26 +93,26 @@ function Event() {
   // Handle input changes for the add event form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewEvent(prevState => ({
+    setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
 
   // Handle form submission to create a new event
-  const handleAddEvent = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
         "http://localhost:8000/api/v1/events/createEvent",
-        newEvent,
+        formData,
         { withCredentials: true }
       );
 
       setEvents([...events, response.data.data]); // Add the new event to the state
       setShowAddEventForm(false); // Hide form after successful submission
       toast.success("Event created successfully");
-      setNewEvent({
+      setFormData({
         eventName: "",
         eventDate: "",
         venue: "",
@@ -123,8 +123,6 @@ function Event() {
         category: ""
       });
       
-      toast.success("Event created successfully");
-    
       console.log("Event created successfully");
     } catch (error) {
       toast.error("Failed to create event");
@@ -157,11 +155,11 @@ function Event() {
       <Toaster />
       {isLoggedIn ? (
         <div>
-          <h1 className="text-4xl font-bold text-gray-800">Events</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Events</h1>
           <p className="text-gray-600 text-lg">Stay updated with society events and celebrations</p>
 
           <div className="flex justify-between items-center">
-            <h3 className="text-3xl font-semibold mt-4">Upcoming Events</h3>
+            <h3 className="text-2xl font-semibold mt-4">Upcoming Events</h3>
             {isAdmin && (
               <button
                 className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
@@ -174,32 +172,148 @@ function Event() {
 
           {/* Add Event Form */}
           {showAddEventForm && (
-            <form className="bg-white p-6 rounded-lg shadow-lg mt-6" onSubmit={handleAddEvent}>
-            <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
-          
-            {["eventName", "eventDate", "venue", "amtPerPerson", "description", "time", "lastDateOfPay", "category"].map((field) => (
-              <div className="mb-4" key={field}>
-                <label className="block text-gray-700 font-semibold capitalize">
-                  {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-                </label>
-                <input
-                  type={field.includes("Date") ? "text" : "text"} // Changed time to text
-                  name={field}
-                  value={newEvent[field]}
-                  onChange={handleInputChange}
-                  placeholder={field === "eventDate" || field === "lastDateOfPay" ? "YYYY-MM-DD" : field === "time" ? "e.g., 6:30 PM" : ""}
-                  className="w-full p-2 border rounded-lg"
-                  pattern={field.includes("Date") ? "\\d{4}-\\d{2}-\\d{2}" : undefined} // Enforce date format for eventDate and lastDateOfPay
-                  required
-                />
-              </div>
-            ))}
-
-              <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-lg mt-4">
-                Create Event
-              </button>
-            </form>
-          )}
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                New Event
+              </h2>
+              <form onSubmit={handleSubmit}>
+                <div className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Event Name
+                    </label>
+                    <input
+                      type="text"
+                      name="eventName"
+                      value={formData.eventName}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div className="flex space-x-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                       Date
+                    </label>
+                    <input
+                      type="date"
+                      name="eventDate"
+                      min={new Date().toISOString().split("T")[0]}
+                      value={formData.eventDate}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Time
+                    </label>
+                    <input
+                      placeholder="06:00 AM - 09:00 AM"
+                      type="text"
+                      name="time"
+                      value={formData.time}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  </div>
+                  <div className="flex space-x-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Venue
+                    </label>
+                    <input
+                      type="text"
+                      name="venue"
+                      value={formData.venue}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Amount Per Person
+                    </label>
+                    <input
+                      type="number"
+                      name="amtPerPerson"
+                      value={formData.amtPerPerson}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  </div>
+                  <div className="flex space-x-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Last Date to Pay
+                    </label>
+                    <input
+                      type="date"
+                      name="lastDateOfPay"
+                      min={new Date().toISOString().split("T")[0]}
+                      max = {formData.eventDate}
+                      value={formData.lastDateOfPay}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Category
+                    </label>
+                    <input
+                      type="text"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddEventForm(false)}
+                    className="px-5 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                  onClick={handleSubmit}
+                    type="submit"
+                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Add Event
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {loading ? (
@@ -262,7 +376,7 @@ function Event() {
                           : "bg-green-500 hover:bg-green-600" // "I am not ready" state
                       }`}
                     >
-                      {readyState[event._id] ? "I am not ready" : "I am ready"}
+                      {readyState[event._id] ? "I'm not ready" : "I'm ready"}
                     </button>
 
                     {/* Show "Pay Now" button only when user is NOT ready */}

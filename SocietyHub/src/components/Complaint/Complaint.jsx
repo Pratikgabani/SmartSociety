@@ -6,7 +6,6 @@ import { Toaster } from "react-hot-toast";
 import { to } from "@react-spring/web";
 function Complaint() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [complaints, setComplaints] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [vari, setVari] = useState(false);
@@ -90,15 +89,12 @@ function Complaint() {
 
       <main className="max-w-5xl mx-auto p-8">
         <div className="flex justify-between items-center mb-6">
-          {roled === "admin" && (
+          
             <button onClick={() => setIsFormOpen(true)} className="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-teal-600 transition duration-200">
               <Plus size={18} /> Add Complaint
             </button>
-          )}
-          <div className="relative w-1/2">
-            <input type="text" placeholder="Search complaints..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"/>
-            <Search className="absolute right-3 top-3 text-gray-400" size={18} />
-          </div>
+          
+          
         </div>
 
         <div className="space-y-4">

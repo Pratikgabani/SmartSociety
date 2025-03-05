@@ -514,7 +514,7 @@ function Visitor() {
   };
 
   return (
-    <div className="p-6 min-h-screen w-full bg-gray-50">
+    <div className="container mx-auto px-4 py-8">
       {/* Add Visitor Modal */}
       {roles === "security" && showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -603,8 +603,8 @@ function Visitor() {
 
       {/* Existing UI */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Visitor Management</h1>
-        <p className="text-gray-600">Manage and track your visitors</p>
+        <h1 className="text-3xl font-bold text-gray-800">Visitor Management</h1>
+        <p className="text-gray-600 text-lg">Manage and track your visitors</p>
       </div>
 
       <div className="flex gap-4 mb-8">

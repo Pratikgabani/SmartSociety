@@ -375,34 +375,35 @@ const Booking = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
+  <div className="container mx-auto px-4 py-8">
       <Toaster />
      {
       isLoggedIn  ? (
-        <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8 font-[Poppins] text-center">
-          Venue Reservations
+        <div className="">
+        <h1 className="text-3xl font-bold text-gray-800 ">
+          Venue Bookings
         </h1>
+        <p className="text-gray-600 text-lg">Easily book society venues for your events and gatherings.</p>
         
 
         {/* Available Venues Section */}
         <section className="mb-12">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl mb-6 font-semibold text-gray-800">Available Venues</h2>
+            <h2 className="text-2xl mt-4 font-semibold text-gray-800">Available Venues</h2>
             {isAdmin && (
               <button
               onClick={() => setIsVenueFormOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mb-4"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mt-4  mb-4"
               >
             Add Venue
           </button>
         )}
         </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {venues.map((venue) => (
               <div 
                 key={venue._id}
-                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
+                className="bg-white rounded-xl shadow-lg border-gray-200 hover:shadow-md transition-shadow p-6 "
               >
                 <div className="flex flex-col h-full">
                   <div className="flex-1">

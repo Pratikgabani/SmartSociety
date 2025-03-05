@@ -1,4 +1,3 @@
-import { User } from "../models/user.models.js";
 import { Event } from "../models/event.models.js";
 import {asyncHandler} from "./../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js";
@@ -11,16 +10,16 @@ const createEvent = asyncHandler(async (req, res) => {
         res.status(400);
         throw new ApiError("Please fill all the fields");
     }
-    if(new Date(eventDate) <= Date.now()){
-   throw new ApiError(400 , "Event date should be greater than current date")
-    }
-    if(new Date(lastDateOfPay) <= new Date(eventDate)){
 
-            throw new ApiError(400 , "Last date of payment should be greater than event date")
-    }
-    if(time < 0 || time > 24){
-        throw new ApiError(400 , "Time should be in 24 hour format")
-    }
+    // Have checked it in frontend
+    // if(new Date(eventDate) < new Date()){
+    //     throw new ApiError(400 , "Event date should be greater than current date");
+    // }
+
+    // if(new Date(lastDateOfPay).toDateString() < new Date(eventDate).toDateString()){
+    //     throw new ApiError(400 , "Last date of payment should be less than event date");
+    // }
+    
     const event = await Event.create({
         eventName,
         eventDate,
