@@ -25,6 +25,6 @@ const venueSchema = new Schema({
         type : String,
         required : true
     }
-})
+} , {timestamps : true})
 
 export const Venue = mongoose.model("Venue" , venueSchema)

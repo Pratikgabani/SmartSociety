@@ -40,7 +40,7 @@ const paymentSchema = new mongoose.Schema({
   societyId : {
     type : String
   }
-});
+} , {timestamps : true});
 
 // Create a model for the Payment schema
 export const Payment = mongoose.model('Payment', paymentSchema);
