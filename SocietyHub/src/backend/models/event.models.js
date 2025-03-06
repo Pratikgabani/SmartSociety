@@ -1,58 +1,62 @@
 
-import mongoose , {Schema} from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 const eventSchema = new Schema({
 
-    eventName : {
-        type : String,
-        required : true,
-        unique : true
+    eventName: {
+        type: String,
+        required: true,
+        unique: true
     },
-    eventDate : {
-        type : Date,
-        required : true,
-        unique : true
+    eventDate: {
+        type: Date,
+        required: true,
+        unique: true
     },
-    venue : {
-        type : String,
-        required : true
+    venue: {
+        type: String,
+        required: true
     },
-    amtPerPerson : {
-        type : Number,
-        required : true
+    amtPerPerson: {
+        type: Number,
+        required: true
     },
-    totalHouseReady : {
-        type : Number,
-        required : true,
-        default : 0
+    totalHouseReady: {
+        type: Number,
+        required: true,
+        default: 0
     },
-    description : {
-        type : String,
-        required : true
+    description: {
+        type: String,
+        required: true
     },
-    time : {
-        type : String,
-        required : true
+    time: {
+        type: String,
+        required: true
     },
-    lastDateOfPay : {
-        type : Date,
-        required : true
+    lastDateOfPay: {
+        type: Date,
+        required: true
     },
-    readyUsers : [
+    readyUsers: [
         {
-            type : Schema.Types.ObjectId,
-            ref : "User"
+            type: Schema.Types.ObjectId,
+            ref: "User"
         }
     ],
-    category : {
-        type : String,
-        required : true
+    category: {
+        type: String,
+        required: true
     },
-    societyId : {
-    type : String,
+    societyId: {
+        type: String,
+    },
+    isActive: {
+        type: Boolean,
+        default: false
     }
-} , {
-    timestamps : true
+}, {
+    timestamps: true
 })
 
-export const Event =  mongoose.model("Event", eventSchema);
+export const Event = mongoose.model("Event", eventSchema);
