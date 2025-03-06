@@ -82,7 +82,7 @@ function dashboard() {
            
             <div className='p-5'>
                 <div className='font-bold text-3xl'>Dashboard</div>
-                <p className=' text-xl mt-3'>Welcome to {society}</p>
+                <p className=' text-xl mt-3'>Welcome to Resident management system</p>
                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-8'>
 
                     <div className='mt-8 relative bg-slate-100 rounded-md p-2'>

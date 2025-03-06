@@ -7,12 +7,24 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle99.png';
-import { toast, ToastContainer } from 'react-toastify';
+import * as Yup from 'yup';
+import { Phone } from 'lucide-react';
 
 
 const Register = () => {
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState([]);
+  const validateObject = Yup.object({
+    block: Yup.string().matches(/^[A-Za-z]$/, "Must be a single alphabet character").required('Block is required'),
+    houseNo : Yup.number().min(1, 'House No must be greater than 0').max(1000, 'House No must be less than 1000').required('House No is required'),
+    password: Yup.string().min(6, 'Password must be at least 6 characters').max(8, 'Password must be at most 8 characters').required('Password is required'),
+    societyId: Yup.string().required('Society ID is required'),
+    email: Yup.string().matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email').email('Invalid email').required('Email is required'),
+    nameOfPersons: Yup.array().of(Yup.string().max(10, 'Name of Person must be at most 10 characters').required('Name of Person is required')),
+    phoneNo  : Yup.array().of(Yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits").required('Phone No is required')),
+    numberOfVeh: Yup.number().min(0, 'Number of Vehicles must be greater than 0').max(10, 'Number of Vehicles must be less than 10').required('Number of Vehicles is required'),
+    vehicleNo: Yup.array().of(Yup.string().max(10, 'Vehicle No must be at most 10 characters').required('Vehicle No is required')),
+  })
   const [formData, setFormData] = useState({
     block: '',
     houseNo: '',
@@ -59,8 +71,9 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
+      await validateObject.validate(formData, { abortEarly: false });
       const response = await axios.post(
         'http://localhost:8000/api/v1/users/register',
         {
@@ -77,12 +90,22 @@ const Register = () => {
       // toast.success(response.data.message);
       navigate('/login');
     } catch (error) {
-      if (error.response) {
-        setErrorMessage(error.response.data.errors || 'Signup failed!!!');
-      }
+      // if (error.response) {
+      //   setErrorMessage(error.response.data.errors || 'Signup failed!!!');
+      // }
+
+      const errors = [];
+      error.inner.forEach((e) => {
+        errors[e.path] = e.message;
+      });
+     
+  setErrorMessage(errors);
+  console.log('Signup failed: ', errorMessage.block);
+      
+      console.log('Signup failed: ', error.inner);
     }
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
       <div className="bg-white rounded-lg shadow-lg p-8 md:flex w-11/12 max-w-4xl">
@@ -102,6 +125,7 @@ const Register = () => {
                   required
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errorMessage && <p className="text-red-500">{errorMessage.block}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">House No</label>
@@ -114,6 +138,7 @@ const Register = () => {
                   required
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errorMessage && <p className="text-red-500">{errorMessage.houseNo}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Password</label>
@@ -126,6 +151,7 @@ const Register = () => {
                   required
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errorMessage && <p className="text-red-500">{errorMessage.password}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Society ID</label>
@@ -138,6 +164,7 @@ const Register = () => {
                   required
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errorMessage && <p className="text-red-500">{errorMessage.societyId}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Email</label>
@@ -150,6 +177,7 @@ const Register = () => {
                   required
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errorMessage && <p className="text-red-500">{errorMessage.email}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Number of Vehicles</label>
@@ -162,6 +190,7 @@ const Register = () => {
                   required
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+                {errorMessage && <p className="text-red-500">{errorMessage.numberOfVeh}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Role</label>
@@ -206,6 +235,7 @@ const Register = () => {
                     required
                     className="w-full p-2 border border-gray-300 rounded"
                   />
+                
                   {formData.nameOfPersons.length > 1 && (
                     <button
                       type="button"
@@ -224,6 +254,7 @@ const Register = () => {
               >
                 Add Another Person
               </button>
+              {errorMessage && <p className="text-red-500">{errorMessage.nameOfPersons}</p>}
             </div>
             <div className="mb-4">
               <label className="block mb-1 font-semibold">Phone No</label>
@@ -237,6 +268,7 @@ const Register = () => {
                     required
                     className="w-full p-2 border border-gray-300 rounded"
                   />
+                      {errorMessage && <p className="text-red-500">{errorMessage.phoneNo}</p>}
                   {formData.phoneNo.length > 1 && (
                     <button
                       type="button"
@@ -248,6 +280,7 @@ const Register = () => {
                   )}
                 </div>
               ))}
+          
               <button
                 type="button"
                 onClick={() => addField('phoneNo')}
@@ -255,6 +288,7 @@ const Register = () => {
               >
                 Add Another Phone No
               </button>
+              
             </div>
             <div className="mb-4">
               <label className="block mb-1 font-semibold">Vehicle No</label>
@@ -268,6 +302,7 @@ const Register = () => {
                     required
                     className="w-full p-2 border border-gray-300 rounded"
                   />
+                  
                   {formData.vehicleNo.length > 1 && (
                     <button
                       type="button"
@@ -279,7 +314,7 @@ const Register = () => {
                   )}
                 </div>
               ))}
-              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+              {errorMessage && <p className="text-red-500">{errorMessage.vehicleNo}</p>}
               <button
                 type="button"
                 onClick={() => addField('vehicleNo')}
