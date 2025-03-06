@@ -51,6 +51,8 @@ const eventSchema = new Schema({
     societyId : {
     type : String,
     }
+} , {
+    timestamps : true
 })
 
 export const Event =  mongoose.model("Event", eventSchema);
