@@ -15,8 +15,12 @@ const visitorSchema = new Schema({
         type: String,
         required: true,
     },
-    visitingAdd : {
+    vistingBlock : {
         type : String,
+        required : true
+    },
+    vistingHouseNo : {
+        type : Number,
         required : true
     },
     visitDate : {
@@ -26,6 +30,10 @@ const visitorSchema = new Schema({
     visitTime : {
         type : String,
         required : true
+    },
+    checkOutDate: {
+        type: Date,
+        default : null
     },
     duration : {
         type : String,
