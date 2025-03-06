@@ -96,7 +96,7 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     }
  
     try {
-        const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse, societyId : req.user.societyId});
+        const visitors = await Visitor.find({ isActive: false , visitingAdd : userHouse, societyId : req.user.societyId}).select("-isActive -societyId -__v -_id -createdAt -updatedAt");
 
         if (!visitors || visitors.length === 0) {
             return res.status(404).json({ message: "No recent visitors found" });

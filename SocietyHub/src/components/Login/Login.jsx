@@ -32,16 +32,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await validationSchema.validate(formData , { abortEarly: false });
+      // await validationSchema.validate(formData , { abortEarly: false });
       console.log("Form submitted " , formData);
       if(formData.role === "security"){
         try {
           const response = await axios.post(
             "http://localhost:8000/api/v1/security/loginSecurity",
             {
-              email,
-              password,
-              role
+              email : formData.email,
+              password : formData.password,
+              role : formData.role
             },
             {
               withCredentials: true,
