@@ -26,6 +26,6 @@ const expenseSchema = new Schema({
         required : true
     }
 
-})
+} , {timestamps : true})
 
 export const Expense = mongoose.model("Expense" , expenseSchema)
