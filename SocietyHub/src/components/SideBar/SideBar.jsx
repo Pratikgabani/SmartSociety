@@ -12,7 +12,7 @@ function SideBar() {
     "Visitor",
     "Poll",
     "Complaint",
-    
+    "Notice",
   ];
 
   // Extract tab from URL

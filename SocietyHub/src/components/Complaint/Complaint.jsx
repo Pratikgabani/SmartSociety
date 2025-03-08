@@ -3,7 +3,8 @@ import { Search, Plus, Clock, X } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import { to } from "@react-spring/web";
+import PreviousDataModal from '../history/PreviousDataModal ';
+
 function Complaint() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [complaints, setComplaints] = useState([]);
@@ -14,7 +15,22 @@ function Complaint() {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
   const roled = user?.data?.user?.role;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previousData, setPreviousData] = useState([]);
 
+  const fetchPreviousData = async () => {
+    
+    try {
+      
+        const response = await axios.get("http://localhost:8000/api/v1/complain/getAllComplains", { withCredentials: true });
+      // Update API URL) // Update API URL
+      setPreviousData(response.data.data);
+      console.log(response.data.data);
+      setIsModalOpen(true); // Open modal after fetching
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
@@ -81,7 +97,7 @@ function Complaint() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 text-gray-900">
+    <div className="min-h-screen relative w-full bg-gray-100 text-gray-900">
       <Toaster />
       <header className="bg-blue-800 shadow-md p-6 text-white text-center text-3xl font-bold">
         Complaints Management
@@ -116,13 +132,17 @@ function Complaint() {
                 <div className="flex items-center gap-2">
                   <Clock size={16} /> {complaint.date}
                 </div>
-                {roled === "admin" && (
-                  <div className="flex gap-2">
-                    <button onClick={() => handleResolve(complaint._id)} className={`px-4 py-2 rounded-lg text-white transition duration-200 ${complaint.isResolved ? "bg-orange-500 hover:bg-orange-600" : "bg-green-500 hover:bg-green-600"}`}>
-                      {complaint.isResolved ? "Mark as Unresolved" : "Mark as Resolved"}
-                    </button>
-                  </div>
-                )}
+                
+                  {
+                    roled === "admin" && (
+                      <div className="flex gap-2">
+                      <button onClick={() => handleResolve(complaint._id)} className={`px-4 py-2 rounded-lg text-white transition duration-200 ${complaint.isResolved ? "bg-orange-500 hover:bg-orange-600" : "bg-green-500 hover:bg-green-600"}`}>
+                        {complaint.isResolved ? "Mark as Unresolved" : "Mark as Resolved"}
+                      </button>
+                    </div>
+                    )
+                  }
+                
               </div>
             </div>
           ))}
@@ -149,6 +169,13 @@ function Complaint() {
           </div>
         )}
       </main>
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+<PreviousDataModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        data={previousData}
+      />
+      </div>
     </div>
   );
 }

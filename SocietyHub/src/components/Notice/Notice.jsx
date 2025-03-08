@@ -64,7 +64,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
-
+import PreviousDataModal from '../history/PreviousDataModal ';
 export default function Announcements() {
   const [notices, setNotices] = useState([]);
   const [topic, setTopic] = useState("");
@@ -73,6 +73,22 @@ export default function Announcements() {
  const roled = token ? JSON.parse(token) : null;
 const role = roled?.data?.user?.role
  console.log(role)
+
+ const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previousData, setPreviousData] = useState([]);
+
+  const fetchPreviousData = async () => {
+    
+    try {
+     const response = await axios.get("http://localhost:8000/api/v1/notices/getNotices",{withCredentials: true});
+      // Update API URL) // Update API URL
+      setPreviousData(response.data.data);
+      console.log(response.data.data);
+      setIsModalOpen(true); // Open modal after fetching
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
  
   // Fetch Notices
   useEffect(() => {
@@ -116,7 +132,7 @@ const role = roled?.data?.user?.role
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl relative mx-auto p-6">
       <h2 className="text-2xl font-semibold mb-4">Announcements & Notices</h2>
       
       {/* Notice Form */}
@@ -169,6 +185,13 @@ const role = roled?.data?.user?.role
            
         ))}
      
+      </div>
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+<PreviousDataModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        data={previousData}
+      />
       </div>
     </div>
   );

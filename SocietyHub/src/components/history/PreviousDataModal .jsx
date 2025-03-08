@@ -39,16 +39,66 @@
 // };
 
 // export default PreviousDataModal;
+// import React from "react";
+
+// const PreviousDataModal = ({ isOpen, onClose, data }) => {
+//   if (!isOpen) return null;
+
+//   return (
+//     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+//       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+//         <h2 className="text-xl font-bold mb-4">Previous Data</h2> 
+//         {data.length === 0 ? (
+//           <p>No data available.</p>
+//         ) : (
+//           <ul>
+//             {data.map((item, index) => (
+//               <li key={index} className="border-b-4 p-2">
+//                 {Object.entries(item).map(([key, value]) => (
+//                   <p key={key} className="p-1">
+//                     <strong>{key}:</strong>{" "}
+//                     {key.includes("Date")
+//                       ? new Date(value).toLocaleDateString() // Format date if key contains 'Date'
+//                       : value.toString()}
+//                   </p>
+//                 ))}
+//               </li>
+//             ))}
+//           </ul>
+//         )}
+
+//         <button
+//           onClick={onClose}
+//           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+//         >
+//           Close
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PreviousDataModal;
 import React from "react";
 
 const PreviousDataModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
 
+  const formatValue = (key, value) => {
+    if (value == null) return "N/A"; // Handle null or undefined values
+  
+    if (typeof value === "number") return value; // Return numbers as they are
+  
+    const isDate = typeof value === "string" && !isNaN(Date.parse(value));
+    
+    return isDate ? new Date(value).toLocaleString() : value; // Convert valid dates, return other strings as is
+  };
+  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">Previous Data</h2>
-
         {data.length === 0 ? (
           <p>No data available.</p>
         ) : (
@@ -57,10 +107,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
               <li key={index} className="border-b-4 p-2">
                 {Object.entries(item).map(([key, value]) => (
                   <p key={key} className="p-1">
-                    <strong>{key}:</strong>{" "}
-                    {key.includes("Date")
-                      ? new Date(value).toLocaleDateString() // Format date if key contains 'Date'
-                      : value.toString()}
+                    <strong>{key}:</strong> {formatValue(key, value)}
                   </p>
                 ))}
               </li>

@@ -93,7 +93,8 @@ const createComplain = asyncHandler(async (req, res, next) => {
             date: new Date().toLocaleDateString(),
             byHouse: req.user.houseNo,
             proof : proof?.url,// Store Cloudinary URL
-            societyId: req.user?.societyId 
+            societyId: req.user?.societyId ,
+            byuser : req.user?.houseNo
         });
 
         if (!complain) {

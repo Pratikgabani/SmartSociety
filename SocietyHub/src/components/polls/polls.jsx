@@ -2,17 +2,35 @@
 
 import { useEffect, useState } from "react"
 import axios from "axios"
-
+import PreviousDataModal from '../history/PreviousDataModal ';
 const PollApp = () => {
   const [polls, setPolls] = useState([])
   const [question, setQuestion] = useState("")
   const [options, setOptions] = useState(["", ""])
   const [vari, setVari] = useState(false)
 
+
   const token = localStorage.getItem("user")
   const user = token ? JSON.parse(token) : null
   const role = user?.data.user.role
+ 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previousData, setPreviousData] = useState([]);
 
+  const fetchPreviousData = async () => {
+    
+    try {
+      
+      const   response = await axios.get("http://localhost:8000/api/v1/polls/getAllPolls", { withCredentials: true });
+      
+         // Update API URL) // Update API URL
+      setPreviousData(response.data.data);
+      console.log(response.data.data);
+      setIsModalOpen(true); // Open modal after fetching
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
     fetchPolls()
   }, [vari]) // Removed unnecessary dependency 'vari'
@@ -78,7 +96,7 @@ const PollApp = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 p-6">
+    <div className="min-h-screen relative w-full bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8">Poll Management</h1>
 
@@ -169,6 +187,13 @@ const PollApp = () => {
             )}
           </div>
         ))}
+      </div>
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+<PreviousDataModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        data={previousData}
+      />
       </div>
     </div>
   )

@@ -26,8 +26,14 @@ function Visitor() {
   const [previousData, setPreviousData] = useState([]);
 
   const fetchPreviousData = async () => {
+    let response;
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId/${num}`, { withCredentials: true }); // Update API URL
+      if(roles === "security") {
+         response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitors", { withCredentials: true });
+      }
+      else{
+         response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId/${num}`, { withCredentials: true });
+      } // Update API URL) // Update API URL
       setPreviousData(response.data.data);
       console.log(response.data.data);
       setIsModalOpen(true); // Open modal after fetching
@@ -314,7 +320,7 @@ function Visitor() {
       </tr>
     </thead>
     <tbody className="divide-y divide-gray-200">
-      {recentVisitors.map(visitor => (
+      {recentVisitors.slice(0, 5).map(visitor => (
         <tr key={visitor._id}>
           <td className="px-6 py-4">{visitor.visitorName}</td>
           <td className="px-6 py-4">{visitor.purpose}</td>

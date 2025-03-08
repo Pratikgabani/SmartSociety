@@ -19,7 +19,7 @@ const visitorSchema = new Schema({
         type : String,
         required : true
     },
-    vistingHouseNo : {
+    vistingAdd : {
         type : Number,
         required : true
     },
@@ -31,10 +31,7 @@ const visitorSchema = new Schema({
         type : String,
         required : true
     },
-    checkOutDate: {
-        type: Date,
-        default : null
-    },
+ 
     duration : {
         type : String,
         default : "00:00:00"

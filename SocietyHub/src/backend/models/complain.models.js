@@ -25,7 +25,7 @@ isResolved : {
     default : false
 },
 byHouse : {
-    type : String,
+    type : Number,
     required : true
 },
 proof : {
@@ -35,7 +35,12 @@ proof : {
 societyId : {
     type : String,
     
+},
+byuser : {
+    type : Schema.Types.ObjectId,
+    ref : "User"
 }
+
  
 },{ timestamps : true})
 

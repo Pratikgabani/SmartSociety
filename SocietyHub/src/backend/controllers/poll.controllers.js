@@ -36,7 +36,7 @@ const createPoll = asyncHandler(async (req, res) => {
 })
 
 const getAllPolls = asyncHandler(async (req, res) => {
-    const polls = await Poll.find({societyId : req.user.societyId})
+    const polls = await Poll.find({societyId : req.user.societyId}).select("-voters -__v -_id -societyId")
     return res
     .status(200)
     .json(new ApiResponse(200 , polls , "Polls found successfully"))
