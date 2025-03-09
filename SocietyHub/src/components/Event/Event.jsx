@@ -4,6 +4,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
 import {Toaster , toast} from 'react-hot-toast'
+import PreviousDataModal from "../history/PreviousDataModal .jsx";
 function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
@@ -21,6 +22,8 @@ function Event() {
     lastDateOfPay: "",
     category: ""
   });
+  const [previousData, setPreviousData] = useState([]);
+  const [isModalOpen , setIsModalOpen] = useState(false);
 
   // Fetch user info from localStorage
   useEffect(() => {
@@ -32,12 +35,12 @@ function Event() {
     }
   }, []);
 
-  // Fetch events
+  // Fetch upcoming events
   useEffect(() => {
-    const getEvents = async () => {
+    const getUpcomingEvents = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/events/getAllEvent",
+          "http://localhost:8000/api/v1/events/getUpcomingEvents",
           { withCredentials: true }
         );
 
@@ -65,8 +68,27 @@ function Event() {
       }
     };
 
-    getEvents();
+    getUpcomingEvents();
   }, []);
+
+  // Fetch past events
+  const fetchPreviousData = async () =>{
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/v1/events/getPastEvents",
+        { withCredentials: true }
+      );
+      setPreviousData(response.data.data);
+      setLoading(false);
+      setIsModalOpen(true);
+      // if(response.data.data.length === 0){
+      //   toast.error("No events found!");
+      // }
+    } catch (error) {
+      console.log("Error in getting events", error);
+      setLoading(false);
+    }
+  }
 
   // Toggle readiness for an event
   const handleToggleReady = async (eventId) => {
@@ -404,6 +426,13 @@ function Event() {
       ) : (
         <p className="text-gray-600">You are not logged in</p>
       )}
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+      <PreviousDataModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              data={previousData}
+            />
+            </div>
     </div>
   );
 }

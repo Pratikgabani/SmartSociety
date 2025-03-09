@@ -20,7 +20,7 @@ const bookingSchema = new Schema({
   date: {
     type: Date,
     required: true
-  },
+  }, 
   isAccepted: {
     type: Boolean,
     default: false

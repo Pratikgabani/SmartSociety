@@ -3,7 +3,9 @@ import {
     getAllEvents,
     deleteEvent,
     updateEvent,
-    toggleResponse
+    toggleResponse,
+    getUpcomingEvents,
+    getPastEvents
 } from "../controllers/event.controllers.js";
 import {Router} from "express";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
@@ -15,4 +17,6 @@ router.route("/getAllEvent").get(verifyJWT, getAllEvents);
 router.route("/deleteEvent/:id").delete(verifyJWT, deleteEvent);
 router.route("/updateEvent/:id").patch(verifyJWT, updateEvent);
 router.route("/toggleResponse/:eventId").put(verifyJWT, toggleResponse);
+router.route("/getUpcomingEvents").get(verifyJWT, getUpcomingEvents);
+router.route("/getPastEvents").get(verifyJWT, getPastEvents);
 export default router 

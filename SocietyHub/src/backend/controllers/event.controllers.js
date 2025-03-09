@@ -41,9 +41,31 @@ const createEvent = asyncHandler(async (req, res) => {
     .json(new ApiResponse("Event created successfully", event, true));
 });
 
+const getUpcomingEvents = asyncHandler(async (req, res) => {
+    const events = await Event.find({eventDate : {$gte : new Date()} , societyId : req.user.societyId})
+    if(!events){
+        return new ApiError( 500 ,"No events found" );
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse("Events found successfully", events, true));
+    })
+
 const getAllEvents = asyncHandler(async (req, res) => {
     const events = await Event.find({societyId : req.user.societyId})
     console.log(events)
+    if(!events){
+        return new ApiError( 500 ,"No events found" );
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse("Events found successfully", events, true));
+})
+
+const getPastEvents = asyncHandler(async (req, res) => {
+    const events = await Event.find({eventDate : {$lt : new Date()} , societyId : req.user.societyId})
     if(!events){
         return new ApiError( 500 ,"No events found" );
     }
@@ -132,4 +154,4 @@ const toggleResponse = asyncHandler(async (req, res) => {
 
 
 
-export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse }
+export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse , getUpcomingEvents , getPastEvents }
