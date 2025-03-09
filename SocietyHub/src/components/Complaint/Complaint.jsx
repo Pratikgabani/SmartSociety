@@ -22,7 +22,7 @@ function Complaint() {
     
     try {
       
-        const response = await axios.get("http://localhost:8000/api/v1/complain/getAllComplains", { withCredentials: true });
+        const response = await axios.get("http://localhost:8000/api/v1/complain/getComplains", { withCredentials: true });
       // Update API URL) // Update API URL
       setPreviousData(response.data.data);
       console.log(response.data.data);
@@ -53,7 +53,17 @@ function Complaint() {
     };
     fetchComplaints();
   }, [vari]);
-
+   
+  const handleDelete = async (complaintId) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/complain/deleteComplain/${complaintId}`, { withCredentials: true });
+      setVari(!vari);
+      toast.success("Complaint deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting complaint:", error);
+      setErrorMessage("Failed to delete complaint");
+    } 
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -84,8 +94,8 @@ function Complaint() {
       return;
     }
     try {
-      await axios.delete(
-        `http://localhost:8000/api/v1/complain/deleteComplain/${complaintId}`,
+      await axios.patch(
+        `http://localhost:8000/api/v1/complain/toggleComplain/${complaintId}`, { isResolved: true } ,
         { withCredentials: true }
       );
       setVari(!vari);
@@ -113,8 +123,8 @@ function Complaint() {
           
         </div>
 
-        <div className="space-y-4">
-          {complaints.map((complaint) => (
+        <div className="space-y-4 relative">
+          {complaints.slice(0,6).map((complaint) => (
             <div key={complaint._id} className="bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">{complaint.subject}</h3>
@@ -128,24 +138,26 @@ function Complaint() {
                   View Proof
                 </a>
               )}
-              <div className="flex justify-between items-center text-sm text-gray-600 mt-4">
+              <div className="flex justify-between items-center text-sm text-gray-600 mt-4 relative">
                 <div className="flex items-center gap-2">
                   <Clock size={16} /> {complaint.date}
                 </div>
                 
                   {
                     roled === "admin" && (
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 absolute bottom-10 right-0">
                       <button onClick={() => handleResolve(complaint._id)} className={`px-4 py-2 rounded-lg text-white transition duration-200 ${complaint.isResolved ? "bg-orange-500 hover:bg-orange-600" : "bg-green-500 hover:bg-green-600"}`}>
                         {complaint.isResolved ? "Mark as Unresolved" : "Mark as Resolved"}
                       </button>
                     </div>
                     )
                   }
+                  <div className="absolute bottom-0 right-0"><button onClick={() => handleDelete(complaint._id)} className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-600 transition duration-200">delete</button></div>
                 
               </div>
             </div>
           ))}
+          
         </div>
 
         {isFormOpen && (

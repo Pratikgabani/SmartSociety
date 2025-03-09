@@ -83,10 +83,15 @@ import React from "react";
 
 const PreviousDataModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
-
-  const formatValue = (key, value) => {
+1
+  const formatValue = (key , value) => {
     if (value == null) return "N/A"; // Handle null or undefined values
-  
+    if(typeof value ==="boolean") return value ? "Yes" : "No"; // Convert boolean values to Yes/No
+    
+    if (typeof value === "string" && value.startsWith("http")) {
+      return <a href={`${value}`} className="text-blue-500 font-medium" target="_blank">link</a>;
+  }
+
     if (typeof value === "number") return value; // Return numbers as they are
   
     const isDate = typeof value === "string" && !isNaN(Date.parse(value));

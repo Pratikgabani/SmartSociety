@@ -36,6 +36,10 @@ societyId : {
     type : String,
     
 },
+isActive : {
+   type  : Boolean,
+   default : true
+},
 byuser : {
     type : Schema.Types.ObjectId,
     ref : "User"

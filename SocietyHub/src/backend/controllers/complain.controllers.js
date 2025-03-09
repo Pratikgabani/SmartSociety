@@ -94,7 +94,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
             byHouse: req.user.houseNo,
             proof : proof?.url,// Store Cloudinary URL
             societyId: req.user?.societyId ,
-            byuser : req.user?.houseNo
+            
         });
 
         if (!complain) {
@@ -113,7 +113,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
 
 
 const getAllComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId});
+    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : false}).select("-__v -_id -societyId -createdAt -updatedAt -complainId -byuser").sort({ createdAt: -1 });
   
     if (!complains) {
       throw new ApiError(404, "No complains found");
@@ -124,6 +124,18 @@ const getAllComplains = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, complains, "Complains fetched successfully"));
 });
 
+const getComplains = asyncHandler(async (req, res) => {
+    const complains = await Complain.find({societyId: req.user?.societyId }).select("-__v -_id -societyId -createdAt -updatedAt -complainId ").sort({ createdAt: -1 });
+  
+    if (!complains) {
+        throw new ApiError(404, "No complains found");
+    }
+  
+    return res
+        .status(200)
+        .json(new ApiResponse(200, complains, "Complains fetched successfully"));
+    }
+);
 const deleteComplain = asyncHandler(async (req, res) => {
     const { complainId } = req.params;
   
@@ -172,4 +184,4 @@ const toggleComplain = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedComplain, `Complain ${updatedComplain.isResolved ? "resolved" : "unresolved"} successfully`));
 })
 
-export { createComplain , deleteComplain , getAllComplains  , toggleComplain}
+export { createComplain , deleteComplain , getAllComplains  , toggleComplain, getComplains};
