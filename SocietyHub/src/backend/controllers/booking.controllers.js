@@ -115,11 +115,11 @@ const getPastBookings = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200 , allBooking , "Past Bookings found successfully"))
 
-    })
+})
 
 const getPastBookingsByUserId = asyncHandler(async (req, res) => {
     const userId = req.user._id 
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $lt: new Date() }}).select("-__v -_id -updatedAt ")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $lt: new Date() }}).select("-__v -_id -updatedAt -bookingOwner -societyId")
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -137,6 +137,17 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
     }
 
     const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId})
+    if(!allBookings){
+        throw new ApiError(500 , "Failed to get bookings")
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200 , allBookings , "My Bookings found successfully"))
+})
+
+const getUpcomingBookingsByUserId = asyncHandler(async (req, res) => {
+    const userId = req.user._id
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $gte: new Date() }}).select("-__v -_id -updatedAt -bookingOwner -societyId")
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -187,4 +198,4 @@ const bookingStatus = asyncHandler(async (req, res) => {
 
 })
 
-export { createBooking , getBookings , deleteBooking , bookingStatus , createVenue , getVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId}
+export { createBooking , getBookings , deleteBooking , bookingStatus , createVenue , getVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId}

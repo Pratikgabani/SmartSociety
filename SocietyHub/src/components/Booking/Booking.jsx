@@ -27,6 +27,7 @@ const Booking = () => {
   })
   const [amenityInput, setAmenityInput] = useState("");
   const [myBooking, setMyBooking] = useState([]);
+  const [myPastBooking , setMyPastBooking] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [previousData, setPreviousData] = useState([]);
@@ -61,7 +62,7 @@ const Booking = () => {
   useEffect(() => {
     const fetchMyBookings = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/booking/getBookingsByUserId", { withCredentials: true });
+        const response = await axios.get("http://localhost:8000/api/v1/booking/getUpcomingBookingsByUserId", { withCredentials: true });
         setMyBooking(response.data.data);
         
         // toast.success("Bookings fetched successfully!"); // Toast for success
@@ -71,6 +72,22 @@ const Booking = () => {
       }
     };
     fetchMyBookings();
+  }, []);
+
+  // Past bookings
+  useEffect(() => {
+    const fetchMyPastBookings = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/v1/booking/getPastBookingsByUserId", { withCredentials: true });
+        setMyPastBooking(response.data.data);
+        
+        // toast.success("Bookings fetched successfully!"); // Toast for success
+      } catch (error) {
+        console.log(error);
+        // toast.error("Failed to fetch bookings!"); // Toast for error
+      }
+    };
+    fetchMyPastBookings();
   }, []);
 
   const fetchPreviousData = async () => {
@@ -288,6 +305,56 @@ const Booking = () => {
             ))}
           </div>
         </section>
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">My Past Reservations</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {myPastBooking.map((booking) => (
+              <div 
+                key={booking._id}
+                className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                      {booking.bookingType}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">{booking.bookDescription}</p>
+                    <div className="space-y-1 text-sm mb-4">
+                      <p className="text-gray-500">
+                        ⏳ Duration: {booking.duration} hours
+                      </p>
+                      <p className="text-gray-500 pb-2">
+                        📅 Date: {new Date(booking.date).toLocaleDateString()}
+                      </p>
+                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${
+                        new Date(booking.date) >= Date.now() 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
+                      </span>
+                    </div>
+                  </div>
+                  {new Date(booking.date) >= Date.now() && (
+                    <div className="flex justify-between">
+                      <button
+                      onClick={() => handleDelete(booking._id)}
+                      className="mt-1 w-5/12 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                    >
+                      Cancel Reservation
+                    </button>
+                    <button className="mt-1 w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                      Pay now 
+                    </button>
+                      </div>
+                                    
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
 
         {/* Booking Form Modal */}
         {isFormOpen && (
