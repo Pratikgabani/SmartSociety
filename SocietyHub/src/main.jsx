@@ -28,6 +28,7 @@ const router = createBrowserRouter(
     <>
     <Route path='/' element= {< OrgLanding/>} />
     <Route path="Login" element={<Login />} />
+    <Route path ="Securityregister" element={<SecurityRegister />} />
     <Route path="Register" element={<Register />} />
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     <Route element={<RequireAuth />}>
@@ -36,7 +37,7 @@ const router = createBrowserRouter(
     <Route path="dashboard" element={<Dashboard/>} />
     <Route path='OrgLanding' element={<OrgLanding/>} />
     <Route path="Landing" element={<Landing />} />
-    <Route path ="Securityregister" element={<SecurityRegister />} />
+   
      <Route path="Payment" element={<Payment />} />
      <Route path="Visitor" element={<Visitor />} />
     <Route path = "Poll" element = {<PollApp />} />

@@ -4,7 +4,7 @@ import { updateVisitorDuration,createVisitor, getActiveVisitors,removeVisitor,de
 
 const router = Router();
 
-router.route("/createVisitor").post( createVisitor);
+router.route("/createVisitor").post( verifyJWT,createVisitor);
 router.route("/getActiveVisitors").get( verifyJWT,getActiveVisitors);
 router.route("/removeVisitor/:id").get(verifyJWT, removeVisitor);
 router.route("/getVisitor").get(verifyJWT, getVisitorById);

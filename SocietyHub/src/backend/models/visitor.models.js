@@ -8,7 +8,7 @@ const visitorSchema = new Schema({
     },
     
     visitorPhone: {
-        type: String,
+        type: Number,
         required: true,
     },
     purpose: {
