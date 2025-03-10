@@ -90,6 +90,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
   
    else if(typeof value ==="boolean") return value ? "Yes" : "No"; // Convert boolean values to Yes/No
     
+   else if(typeof value === "string" && !isNaN(value)) return value;
    else if (typeof value === "string" && value.startsWith("http")) {
       return <a href={`${value}`} className="text-blue-500 font-medium" target="_blank">link</a>;
   }

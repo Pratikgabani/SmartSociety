@@ -22,10 +22,11 @@ const bookingSchema = new Schema({
     type: Date,
     required: true
   }, 
-  isAccepted: {
-    type: Boolean,
-    default: false
-  } ,
+  // isAccepted: {
+  //   type: Boolean,
+  //   default: false
+  // } ,
+  // Not keeping it because assuming that there will be a automatic booking acceptance if a venue is available at a particular date otherwise it will be rejected
   societyId : {
     type : String,
     required : true

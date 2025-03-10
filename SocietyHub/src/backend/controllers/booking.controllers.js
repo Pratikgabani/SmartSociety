@@ -174,28 +174,28 @@ const deleteBooking = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200 , deletedBooking , "Booking deleted successfully"))
 }); 
 
-const bookingStatus = asyncHandler(async (req, res) => {
-    const {bookingId} = req.params
+// const bookingStatus = asyncHandler(async (req, res) => {
+//     const {bookingId} = req.params
 
-    if(!bookingId.trim()){
-        throw new ApiError(400 , "All fields are required")
-    }
+//     if(!bookingId.trim()){
+//         throw new ApiError(400 , "All fields are required")
+//     }
 
-    const booking = await Booking.findById(bookingId);
-    if(!booking){
-        throw new ApiError(404 , "Booking not found")
-    }
+//     const booking = await Booking.findById(bookingId);
+//     if(!booking){
+//         throw new ApiError(404 , "Booking not found")
+//     }
 
-    const updatedBooking = await Booking.findByIdAndUpdate(bookingId , 
-        {
-            isAccepted : !booking.isAccepted
-        }
-    )
+//     const updatedBooking = await Booking.findByIdAndUpdate(bookingId , 
+//         {
+//             isAccepted : !booking.isAccepted
+//         }
+//     )
 
-    return res
-    .status(200)
-    .json(new ApiResponse(200 , updatedBooking , `Booking ${updatedBooking.isAccepted ? "accepted" : "rejected"} successfully`))
+//     return res
+//     .status(200)
+//     .json(new ApiResponse(200 , updatedBooking , `Booking ${updatedBooking.isAccepted ? "accepted" : "rejected"} successfully`))
 
-})
+// })
 
-export { createBooking , getBookings , deleteBooking , bookingStatus , createVenue , getVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId}
+export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId}

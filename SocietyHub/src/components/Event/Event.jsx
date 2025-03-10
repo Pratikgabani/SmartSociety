@@ -11,6 +11,7 @@ function Event() {
   const [loading, setLoading] = useState(true);
   const [readyState, setReadyState] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
+  const [pastData , setPastData] = useState([]);
   const [showAddEventForm, setShowAddEventForm] = useState(false); // To toggle form
   const [formData, setFormData] = useState({
     eventName: "",
@@ -72,24 +73,36 @@ function Event() {
   }, []);
 
   // Fetch past events
-  const fetchPreviousData = async () =>{
-    try {
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/events/getPastEvents",
-        { withCredentials: true }
-      );
-      setPreviousData(response.data.data);
-      setLoading(false);
-      setIsModalOpen(true);
-      // if(response.data.data.length === 0){
-      //   toast.error("No events found!");
-      // }
-    } catch (error) {
-      console.log("Error in getting events", error);
-      setLoading(false);
-    }
-  }
+    useEffect(() => {
+      const fetchPastEvents = async () =>{
+        try {
+          const response = await axios.get(
+            "http://localhost:8000/api/v1/events/getPastEvents",
+            { withCredentials: true }
+          );
+          setPastData(response.data.data);
+          setLoading(false);
+          // if(response.data.data.length === 0){
+          //   toast.error("No events found!");
+          // }
+        } catch (error) {
+          console.log("Error in getting events", error);
+          setLoading(false);
+        }
+      }
+      fetchPastEvents();
+    } , [])
 
+  // Fetch previous events
+  const fetchPreviousData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/v1/events/getAllEvent", { withCredentials: true })
+      setPreviousData(response.data.data)
+      setIsModalOpen(true)
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
   // Toggle readiness for an event
   const handleToggleReady = async (eventId) => {
     try {
@@ -336,7 +349,7 @@ function Event() {
             </div>
           </div>
         )}
-
+          {/* Upcoming Events */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {loading ? (
               <p>Loading...</p>
@@ -357,13 +370,13 @@ function Event() {
 
                     </div>
 
-                    <p className="text-gray-600 line-clamp-2 min-h-[40px]">
+                    <p className="text-gray-600 line-clamp-2 min-h-[48px]">
                       {event.description}
                     </p>
 
                     <div className="flex items-center text-gray-600">
                       <BsCalendar2Date className="mr-2" />
-                      <span>{new Date(event.eventDate).toLocaleDateString()}</span>
+                      <span>{new Date(event.eventDate).toLocaleDateString('en-GB')}</span>
                     </div>
                     <div className="flex items-center text-gray-600">
                       <FaRegClock className="mr-2" />
@@ -384,7 +397,7 @@ function Event() {
                     </p>
 
                     <p className="text-gray-700 min-h-[20px]">
-                      Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString()}
+                      Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString('en-GB')}
                     </p>
                   </div>
 
@@ -422,17 +435,98 @@ function Event() {
               ))
             )}
           </div>
+
+          {/* Past events */}
+          <h3 className="text-2xl font-semibold mt-8">Past Events</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            {loading ? (
+              <p>Loading...</p>
+            ) : pastData.length === 0 ? (
+              <p>No events found</p>
+            ) : (
+              pastData.map((event) => (
+                <div key={event._id} className="bg-white rounded-lg shadow-lg p-6 border h-[330px] grid grid-rows-[auto,1fr,auto] gap-4">      
+                  {/* Main Content Section */}
+                  <div className="space-y-2 ">
+                    <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold text-gray-800 line-clamp-1 min-h-[28px]">
+                      {event.eventName}
+                    </h2>
+                    <span className={`px-3 py-1 line-clamp-1  ${event.category === "Festival" ? "text-purple-700 bg-purple-100"  : event.category === "Meeting" ? "bg-teal-100 text-teal-700" : "text-pink-700 bg-pink-100"} bg-blue-100 text-blue-800 rounded-full text-sm font-medium`}>
+                      {event.category}
+                    </span>
+
+                    </div>
+
+                    <p className="text-gray-600 line-clamp-2 min-h-[40px]">
+                      {event.description}
+                    </p>
+
+                    <div className="flex items-center text-gray-600">
+                      <BsCalendar2Date className="mr-2" />
+                      <span>{new Date(event.eventDate).toLocaleDateString('en-GB')}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <FaRegClock className="mr-2" />
+                      <span>{event.time}</span>
+                    </div>
+
+                    <div className="flex items-center text-gray-600">
+                      <IoLocationOutline className="mr-2" />
+                      <span className="truncate">{event.venue}</span>
+                    </div>
+
+                    <p className="text-gray-700 font-bold min-h-[20px]">
+                      Amount per person: ₹{event.amtPerPerson}
+                    </p>
+
+                    <p className="text-gray-700 min-h-[20px]">
+                      No. of Houses Ready: {event.totalHouseReady}
+                    </p>
+
+                    <p className="text-gray-700 min-h-[20px]">
+                      Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString('en-GB')}
+                    </p>
+                  </div>
+
+                  {/* Buttons Section */}
+                  {/* <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleToggleReady(event._id)}
+                      className={`flex-1 py-2 rounded-lg font-bold text-white ${
+                        readyState[event._id]
+                          ? "bg-red-600 hover:bg-red-700" // "I am ready" state
+                          : "bg-green-500 hover:bg-green-600" // "I am not ready" state
+                      }`}
+                    >
+                      {readyState[event._id] ? "I'm not ready" : "I'm ready"}
+                    </button> */}
+
+                    {/* Show "Pay Now" button only when user is NOT ready */}
+                    {/* {readyState[event._id] && (
+                      <button className="flex-1 py-2 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700">
+                        Pay Now
+                      </button>
+                    )} */}
+                  {/* </div> */}
+                </div>
+              ))
+            )}
+          </div>
         </div>
       ) : (
         <p className="text-gray-600">You are not logged in</p>
       )}
-      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-      <PreviousDataModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              data={previousData}
-            />
-            </div>
+      {/* History */}
+      {isAdmin && (
+            <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+            <PreviousDataModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    data={previousData}
+                  />
+                  </div>
+           )}   
     </div>
   );
 }
