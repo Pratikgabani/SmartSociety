@@ -169,7 +169,7 @@ const {email, password } = req.body;
 //   throw new ApiError(400, "User not found")
 // }
 
-const user = await    User.findOne({email}) || await Security.findOne({email})
+const user = await User.findOne({email}) || await Security.findOne({email})
 if(!user){
   throw new ApiError(400, "User not found")
 }

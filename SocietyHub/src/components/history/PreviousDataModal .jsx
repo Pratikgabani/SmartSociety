@@ -86,9 +86,6 @@
 //   </div>
 // );
 // }
-
-
-// export default PreviousDataModal;
 import React, { useState } from "react";
 
 const PreviousDataModal = ({ isOpen, onClose, data }) => {
@@ -109,6 +106,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
     if (value == null) return "N/A"; 
     if (typeof value === "number") return value;
     if (typeof value === "boolean") return value ? "Yes" : "No"; 
+    if( typeof value === "string" && !isNaN(value)) return value
     if (typeof value === "string" && value.startsWith("http")) {
       return (
         <a href={value} className="text-blue-500 font-medium" target="_blank" rel="noopener noreferrer">
