@@ -21,7 +21,7 @@ const PollApp = () => {
     
     try {
       
-      const   response = await axios.get("http://localhost:8000/api/v1/polls/getAllPolls", { withCredentials: true });
+      const   response = await axios.get("http://localhost:8000/api/v1/polls/getPolls", { withCredentials: true });
       
          // Update API URL) // Update API URL
       setPreviousData(response.data.data);
@@ -74,7 +74,16 @@ const PollApp = () => {
       console.error("Error creating poll", err)
     }
   }
-
+  const handleClosePoll = async (pollId) => {
+    try {
+      await axios.patch(`http://localhost:8000/api/v1/polls/closePoll/${pollId}`,{}, {
+        withCredentials: true,
+      })
+      setVari(!vari)
+    } catch (err) {
+      console.error("Error closing poll", err)
+    }
+  }
   const handleDeletePoll = async (pollId) => {
     try {
       await axios.delete(`http://localhost:8000/api/v1/polls/deletePoll/${pollId}`, {
@@ -163,7 +172,7 @@ const PollApp = () => {
         <h2 className="text-2xl font-semibold mb-4">Active Polls</h2>
         {polls.map((poll) => (
           
-          <div key={poll._id} className="bg-white rounded-lg shadow-md mb-6 p-6">
+          <div key={poll._id} className="bg-white rounded-lg relative shadow-md mb-6 p-6">
             <h3 className="text-xl font-bold mb-4">{poll.question}</h3>
             <div className="space-y-2">
               {poll.options.map((opt) => (
@@ -185,6 +194,16 @@ const PollApp = () => {
                 Delete Poll
               </button>
             )}
+            {
+              role === "admin" && (
+                <button
+                onClick={() => handleClosePoll(poll._id)}
+                className="mt-4 px-4 py-2 bg-green-500 absolute bottom-4 right-2 text-white rounded-md hover:bg-green-600 transition-colors"
+              >
+                close Poll
+              </button>
+              )
+            }
           </div>
         ))}
       </div>
