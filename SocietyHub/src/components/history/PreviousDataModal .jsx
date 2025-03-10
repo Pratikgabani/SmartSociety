@@ -86,25 +86,34 @@
 //   </div>
 // );
 // }
-
-
-// export default PreviousDataModal;
 import React, { useState } from "react";
 
 const PreviousDataModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
 
-  const formatValue = (key , value) => {
-    if (value == null) return "N/A"; // Handle null or undefined values
-   else if (typeof value === "number") return value; // Return numbers as they are
-  
-   else if(typeof value ==="boolean") return value ? "Yes" : "No"; // Convert boolean values to Yes/No
-    
-   else if (typeof value === "string" && value.startsWith("http")) {
-      return <a href={`${value}`} className="text-blue-500 font-medium" target="_blank">link</a>;
-  }
+  const [searchTerm, setSearchTerm] = useState("");
 
-     else{
+  // Filter data based on search input
+  const filteredData = data.filter((item) =>
+ //one thing to notice is its only applicable to objects..so if in polls..you have array of objects..it will not work,
+ //so if u search for some option..thn it will not work..so u need to modify it accordingly...for now i have kept it simple
+    Object.values(item).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const formatValue = (key, value) => {
+    if (value == null) return "N/A"; 
+    if (typeof value === "number") return value;
+    if (typeof value === "boolean") return value ? "Yes" : "No"; 
+    if( typeof value === "string" && !isNaN(value)) return value
+    if (typeof value === "string" && value.startsWith("http")) {
+      return (
+        <a href={value} className="text-blue-500 font-medium" target="_blank" rel="noopener noreferrer">
+          link
+        </a>
+      );
+    }
 
     // Handle Dates
     const isDate = typeof value === "string" && !isNaN(Date.parse(value));
