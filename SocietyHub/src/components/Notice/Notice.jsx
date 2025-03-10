@@ -72,7 +72,7 @@ export default function Announcements() {
  const token = localStorage.getItem("user");
  const roled = token ? JSON.parse(token) : null;
 const role = roled?.data?.user?.role
- console.log(role)
+
 
  const [isModalOpen, setIsModalOpen] = useState(false);
   const [previousData, setPreviousData] = useState([]);
@@ -83,7 +83,7 @@ const role = roled?.data?.user?.role
      const response = await axios.get("http://localhost:8000/api/v1/notices/getNotices",{withCredentials: true});
       // Update API URL) // Update API URL
       setPreviousData(response.data.data);
-      console.log(response.data.data);
+      
       setIsModalOpen(true); // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -165,12 +165,12 @@ const role = roled?.data?.user?.role
      }
       {/* Notices List */}
       <div className="space-y-4">
-        {notices.map((notice) => (
+        {notices.slice(0, 5).map((notice) => (
           <div key={notice._id} className="bg-white shadow-md border rounded-lg p-4">
             <h3 className="text-lg font-semibold">{notice.topic}</h3>
             <p className="text-gray-700 mt-1">{notice.description}</p>
            
-            <span className="text-sm text-gray-500 block mt-2">Announced on: {format(new Date(notice.timestamp), "PPP p")}</span>
+            <span className="text-sm text-gray-500 block mt-2">Announced on: {format(new Date(notice.Date), "PPP p")}</span>
             {
                 role === "admin" && (
                     <button

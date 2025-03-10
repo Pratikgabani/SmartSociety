@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const noticeSchema = new mongoose.Schema({
   topic: { type: String, required: true },
   description: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
+  Date: { type: Date, default: Date.now },
   societyId : {
     type : String,
   }

@@ -18,6 +18,11 @@ function Visitor() {
   const roles = token?.data?.user?.role;
   const userId = token?.data?.user?._id;
   const num = token?.data?.user?.houseNo;
+  const num2 = token?.data?.user?.block;
+  const data = {
+    num ,
+    num2
+  }
 
   const [activeVisitors, setActiveVisitors] = useState([]);
   const [recentVisitors, setRecentVisitors] = useState([]);
@@ -32,7 +37,7 @@ function Visitor() {
          response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitors", { withCredentials: true });
       }
       else{
-         response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId/${num}`, { withCredentials: true });
+         response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId",data, { withCredentials: true });
       } // Update API URL) // Update API URL
       setPreviousData(response.data.data);
       console.log(response.data.data);
@@ -49,7 +54,7 @@ function Visitor() {
         if (roles === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getRecentVisitors', { withCredentials: true });
         } else {
-          response = await axios.get(`http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId/${num}`, { withCredentials: true });
+          response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId",data, { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setRecentVisitors(visitors);
@@ -69,7 +74,7 @@ function Visitor() {
         if (roles === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getActiveVisitors', { withCredentials: true });
         } else {
-          response = await axios.get(`http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId/${num}`, { withCredentials: true });
+          response = await axios.get("http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId",data, { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setActiveVisitors(visitors);
@@ -98,6 +103,7 @@ function Visitor() {
       visitorPhone: newVisitor.visitorPhone,
       visitingAdd: newVisitor.visitingAdd,
       purpose: newVisitor.purpose,
+      visitingBlock: newVisitor.visitingBlock,
       visitDate: newVisitor.visitDate,
       visitTime: newVisitor.visitTime,
       duration: ""
@@ -111,6 +117,7 @@ function Visitor() {
         visitorPhone: '',
         visitingAdd: '',
         purpose: '',
+        visitingBlock: '',
         visitDate: '',
         visitTime: '',
         duration: '',
@@ -173,13 +180,23 @@ function Visitor() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Visiting Address *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Visiting House *</label>
                 <input
                   type="text"
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={newVisitor.visitingAdd}
                   onChange={(e) => setNewVisitor({ ...newVisitor, visitingAdd: e.target.value })}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Visiting Block *</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={newVisitor.visitingBlock}
+                  onChange={(e) => setNewVisitor({ ...newVisitor, visitingBlock: e.target.value })}
                 />
               </div>
               <div className="mb-4">
@@ -199,7 +216,7 @@ function Visitor() {
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={newVisitor.visitDate}
-                  onChange={(e) => setNewVisitor({ ...newVisitor, visitDate: new Date(e.target.value).toISOString() })}
+                  onChange={(e) => setNewVisitor({ ...newVisitor, visitDate: e.target.value })}
                 />
               </div>
               <div className="mb-4">

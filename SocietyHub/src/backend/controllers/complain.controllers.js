@@ -113,7 +113,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
 
 
 const getAllComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : false}).select("-__v -_id -societyId -createdAt -updatedAt -complainId -byuser").sort({ createdAt: -1 });
+    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : false}).select("-__v  -societyId -createdAt -updatedAt -complainId -byuser").sort({ createdAt: -1 });
   
     if (!complains) {
       throw new ApiError(404, "No complains found");
@@ -125,7 +125,7 @@ const getAllComplains = asyncHandler(async (req, res) => {
 });
 
 const getComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId }).select("-__v -_id -societyId -createdAt -updatedAt -complainId ").sort({ createdAt: -1 });
+    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true }).select("-__v  -societyId -createdAt -updatedAt -complainId -byuser ").sort({ createdAt: -1 });
   
     if (!complains) {
         throw new ApiError(404, "No complains found");
@@ -138,7 +138,7 @@ const getComplains = asyncHandler(async (req, res) => {
 );
 const deleteComplain = asyncHandler(async (req, res) => {
     const { complainId } = req.params;
-  
+  console.log('complainId' + complainId);
     if (!complainId) {
       throw new ApiError(400, "Complain ID is required");
     }

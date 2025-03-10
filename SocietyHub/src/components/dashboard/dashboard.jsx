@@ -90,7 +90,7 @@ function dashboard() {
                         {/* <span className='rounded-lg absolute top-3 right-3 bg-green-500 px-2 py-0.5'>5 today</span> */}
                         <ul className='mt-9 h-48 overflow-y-auto hidden-scrollbar'>
                            { visitors.map((visitor) => (
-                               <li className=' flex gap-2 p-2 mt-3 bg-[#F4E1D2] text-gray-800 rounded-md border-l-4 border-[#E2B887] hover:bg-white transition duration-300 shadow-sm'>
+                               <li className=' flex gap-2 p-2 mt-3 bg-[#b1c7ec] text-gray-800 rounded-md border-l-4 border-[#879be2] hover:bg-white transition duration-300 shadow-sm'>
                                <img className='h-8 mt-2 w-8 ml-2' src="https://www.svgrepo.com/show/506667/person.svg" alt="" />
                                <div>
                                    <div className='text-lg text-gray-600 font-medium'>{visitor.visitorName}</div>
@@ -128,7 +128,7 @@ function dashboard() {
                         <ul className='mt-9 h-48 overflow-y-auto hidden-scrollbar'>
                             {
                                 complaints.slice(0, 2).map((complain) => (
-                                    <li className=' p-4 mt-3 bg-[#F4E1D2] text-gray-800 rounded-md border-l-4 border-[#E2B887] hover:bg-white transition duration-300 shadow-sm'>
+                                    <li className=' p-4 mt-3 bg-[#b1c7ec] text-gray-800 rounded-md border-l-4 border-[#879be2] hover:bg-white transition duration-300 shadow-sm'>
                                 <div>
                                     <div className='text-lg text-gray-600 font-medium'>{complain.subject}</div>
                                     <div className='text-sm text-gray-600 font-medium'>Date: {complain.date} - flat {complain.byHouse}</div>
@@ -153,7 +153,7 @@ function dashboard() {
                         <ul className='mt-9 h-48 overflow-y-auto hidden-scrollbar'>
                         {
                             events.slice(0, 2).map((event) => (
-                                <li className=' p-4 mt-3 bg-[#F4E1D2] text-gray-800 rounded-md border-l-4 border-[#E2B887] hover:bg-white transition duration-300 shadow-sm'>
+                                <li className=' p-4 mt-3 bg-[#b1c7ec] text-gray-800 rounded-md border-l-4 border-[#879be2] hover:bg-white transition duration-300 shadow-sm'>
 
                                 <div className='text-lg text-gray-600 font-medium'>{event.eventName}</div>
                                 <div className='text-sm text-gray-600 font-medium'>date : {new Date(event.eventDate).toLocaleDateString("en-GB")} - amt :{event.amtPerPerson}</div>
@@ -210,7 +210,7 @@ function dashboard() {
         {polls.slice(0, 2).map((poll, index) => (
             <li 
                 key={index} 
-                className="p-4 mt-3 bg-[#F4E1D2] text-gray-800 rounded-md border-l-4 border-[#E2B887] hover:bg-white transition duration-300 shadow-sm"
+                className="p-4 mt-3 bg-[#b1c7ec] text-gray-800 rounded-md border-l-4 border-[#879be2] hover:bg-white transition duration-300 shadow-sm"
             >
                 <div className="text-lg text-gray-600 font-medium">{poll.question}</div>
                 <div className="text-sm text-gray-600 font-medium">
@@ -247,7 +247,7 @@ function dashboard() {
                         <ul className='mt-9 h-48 overflow-y-scroll hidden-scrollbar'>
                         {
                             bookings.slice(0, 2).map((booking) => (
-                                <li className='p-4 mt-3 bg-[#F4E1D2] text-gray-800 rounded-md border-l-4 border-[#E2B887] hover:bg-white transition duration-300 shadow-sm'>
+                                <li className='p-4 mt-3 bg-[#b1c7ec] text-gray-800 rounded-md border-l-4 border-[#879be2] hover:bg-white transition duration-300 shadow-sm'>
                                 
                                 <div>
                                     <div className='text-lg text-gray-600 font-medium'>{booking.bookingType}</div>

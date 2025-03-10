@@ -15,11 +15,11 @@ const visitorSchema = new Schema({
         type: String,
         required: true,
     },
-    vistingBlock : {
+    visitingBlock : {
         type : String,
         required : true
     },
-    vistingAdd : {
+    visitingAdd : {
         type : Number,
         required : true
     },
@@ -34,7 +34,8 @@ const visitorSchema = new Schema({
  
     duration : {
         type : String,
-        default : "00:00:00"
+        default : "00:00:00",
+        required : true
     },
     isActive : {
         type : String,

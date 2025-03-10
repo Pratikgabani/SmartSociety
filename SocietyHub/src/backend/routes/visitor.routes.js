@@ -4,13 +4,13 @@ import { updateVisitorDuration,createVisitor, getActiveVisitors,removeVisitor,de
 
 const router = Router();
 
-router.route("/createVisitor").post(verifyJWT, createVisitor);
+router.route("/createVisitor").post( createVisitor);
 router.route("/getActiveVisitors").get( verifyJWT,getActiveVisitors);
 router.route("/removeVisitor/:id").get(verifyJWT, removeVisitor);
 router.route("/getVisitor").get(verifyJWT, getVisitorById);
 router.route("/getRecentVisitors").get(verifyJWT, getRecentVisitors);
-router.route("/getRecentVisitorsByUserId/:userHouse").get(verifyJWT, getRecentVisitorsByUserId);
-router.route("/getActiveVisitorsByUserId/:userHouse").get(verifyJWT, getActiveVisitorsByUserId);
+router.route("/getRecentVisitorsByUserId").get(verifyJWT, getRecentVisitorsByUserId);
+router.route("/getActiveVisitorsByUserId").get(verifyJWT, getActiveVisitorsByUserId);
 router.route("/deleteVisitor/:id").delete(verifyJWT, deleteVisitor);
 router.route("/updateVisitorDuration/:id").patch(verifyJWT, updateVisitorDuration);
 

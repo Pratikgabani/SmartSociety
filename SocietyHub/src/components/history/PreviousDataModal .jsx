@@ -83,26 +83,29 @@ import React from "react";
 
 const PreviousDataModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
-1
+
   const formatValue = (key , value) => {
     if (value == null) return "N/A"; // Handle null or undefined values
-    if(typeof value ==="boolean") return value ? "Yes" : "No"; // Convert boolean values to Yes/No
+   else if (typeof value === "number") return value; // Return numbers as they are
+  
+   else if(typeof value ==="boolean") return value ? "Yes" : "No"; // Convert boolean values to Yes/No
     
-    if (typeof value === "string" && value.startsWith("http")) {
+   else if (typeof value === "string" && value.startsWith("http")) {
       return <a href={`${value}`} className="text-blue-500 font-medium" target="_blank">link</a>;
   }
 
-    if (typeof value === "number") return value; // Return numbers as they are
-  
+     else{
+
+     
     const isDate = typeof value === "string" && !isNaN(Date.parse(value));
     
     return isDate ? new Date(value).toLocaleString() : value; // Convert valid dates, return other strings as is
-  };
+  }};
   
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+    <div className="fixed inset-0 flex  items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white h-700px w-auto p-6 rounded-lg shadow-lg relative overflow-y-auto ">
         <h2 className="text-xl font-bold mb-4">Previous Data</h2>
         {data.length === 0 ? (
           <p>No data available.</p>
@@ -122,7 +125,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
 
         <button
           onClick={onClose}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+          className="mt-4 absolute top-0 right-0 bg-red-500  text-white px-4 py-2 rounded"
         >
           Close
         </button>

@@ -158,18 +158,21 @@ const loginUser = asyncHandler (async (req, res) => {
 
 const {email, password } = req.body;
 
-const security = await Security.findOne({email});
-if(security){
-  throw new ApiError(400 , "Security already registered")
-}
+// const security = await Security.findOne({email});
+// if(security){
+//   throw new ApiError(400 , "Security already registered")
+// }
 
-const user = await User.findOne({email}) 
-// console.log(user)
+// const user = await User.findOne({email}) 
+// // console.log(user)
+// if(!user){
+//   throw new ApiError(400, "User not found")
+// }
+
+const user = await    User.findOne({email}) || await Security.findOne({email})
 if(!user){
   throw new ApiError(400, "User not found")
 }
-
-
 const isPasswordValid = await user.isPasswordCorrect(password)
 // console.log(password)
 if(!isPasswordValid){

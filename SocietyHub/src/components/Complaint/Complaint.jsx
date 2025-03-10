@@ -42,6 +42,7 @@ function Complaint() {
           }
         );
         setComplaints(response.data.data);
+        console.log("usetate" +complaints.map((complaint) => ( console.log( 'map' + complaint._id) )) );
         if(response.data.data.length === 0){
           toast.error("No complaints found!");
         }
@@ -56,6 +57,7 @@ function Complaint() {
    
   const handleDelete = async (complaintId) => {
     try {
+      console.log("handledelete" + complaintId);
       await axios.delete(`http://localhost:8000/api/v1/complain/deleteComplain/${complaintId}`, { withCredentials: true });
       setVari(!vari);
       toast.success("Complaint deleted successfully!");
@@ -124,7 +126,7 @@ function Complaint() {
         </div>
 
         <div className="space-y-4 relative">
-          {complaints.slice(0,6).map((complaint) => (
+          {complaints.map((complaint) => (
             <div key={complaint._id} className="bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">{complaint.subject}</h3>
@@ -145,14 +147,14 @@ function Complaint() {
                 
                   {
                     roled === "admin" && (
-                      <div className="flex gap-2 absolute bottom-10 right-0">
+                      <div className="flex gap-2 absolute bottom-0 right-20">
                       <button onClick={() => handleResolve(complaint._id)} className={`px-4 py-2 rounded-lg text-white transition duration-200 ${complaint.isResolved ? "bg-orange-500 hover:bg-orange-600" : "bg-green-500 hover:bg-green-600"}`}>
                         {complaint.isResolved ? "Mark as Unresolved" : "Mark as Resolved"}
                       </button>
                     </div>
                     )
                   }
-                  <div className="absolute bottom-0 right-0"><button onClick={() => handleDelete(complaint._id)} className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-600 transition duration-200">delete</button></div>
+                  <button  onClick={() => handleDelete(complaint._id)} className=" absolute bottom-0 right-0 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-600 transition duration-200">delete</button>
                 
               </div>
             </div>
