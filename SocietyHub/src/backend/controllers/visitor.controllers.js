@@ -6,7 +6,7 @@ import { Security } from "../models/security.models.js";
 import { User } from "../models/user.models.js";
 
 const createVisitor = asyncHandler(async (req, res) => {
-    const {visitorName, visitorPhone, visitingAdd, purpose,visitDate,visitTime,duration,visitingBlock} = req.body;
+    const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,visitDate,visitTime,duration} = req.body;
     const userId = req.user?._id
   console.log("user"+ userId)
     //   const userId =  req.data.user?._id
@@ -29,12 +29,13 @@ const createVisitor = asyncHandler(async (req, res) => {
             visitorPhone,   
             visitingAdd ,
             purpose,
-            visitDate, 
             visitingBlock , 
+            visitDate, 
             visitTime ,
+            duration : duration || "00:00:00",
             isActive : true,
             societyId : securityId.societyId,
-            duration : duration || "00:00:00"
+            
         })
 
         if(!newVisitor){
@@ -79,7 +80,7 @@ const deleteVisitor = asyncHandler(async (req, res) => {
 
 const getRecentVisitors = asyncHandler(async (req, res) => {
     try {
-        const visitors = await Visitor.find({ isActive: false ,societyId : req.user.societyId});
+        const visitors = await Visitor.find({ isActive: false });
 
         if (!visitors || visitors.length === 0) {
             throw new ApiError(404, "No recent visitors found");
