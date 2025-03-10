@@ -125,7 +125,7 @@ const getAllComplains = asyncHandler(async (req, res) => {
 });
 
 const getComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true }).select("-__v  -societyId -createdAt -updatedAt -complainId -byuser ").sort({ createdAt: -1 });
+    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true }).select("-__v -_id  -societyId -createdAt -updatedAt -complainId -byuser ").sort({ createdAt: -1 });
   
     if (!complains) {
         throw new ApiError(404, "No complains found");

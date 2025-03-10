@@ -6,6 +6,10 @@ const noticeSchema = new mongoose.Schema({
   Date: { type: Date, default: Date.now },
   societyId : {
     type : String,
+  },
+  isActive : {
+    type : Boolean,
+    default : true
   }
 });
 

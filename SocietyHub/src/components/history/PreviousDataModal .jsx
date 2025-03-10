@@ -156,7 +156,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white max-h-96 w-auto p-6 rounded-lg shadow-lg relative overflow-y-auto">
+      <div className="bg-white h-1/2 w-1/2 p-6 rounded-lg shadow-lg relative overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Previous Data</h2>
 
         {/* Search Input */}

@@ -80,7 +80,7 @@ const role = roled?.data?.user?.role
   const fetchPreviousData = async () => {
     
     try {
-     const response = await axios.get("http://localhost:8000/api/v1/notices/getNotices",{withCredentials: true});
+     const response = await axios.get("http://localhost:8000/api/v1/notices/getAllNotices",{withCredentials: true});
       // Update API URL) // Update API URL
       setPreviousData(response.data.data);
       
@@ -122,14 +122,16 @@ const role = roled?.data?.user?.role
   };
   const deleteNotice = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/notices/deleteNotice/${id}`,{
+      await axios.patch(`http://localhost:8000/api/v1/notices/deleteNotice/${id}`,{},{
         withCredentials: true,});
-      setNotices(notices.filter((notice) => notice._id !== id));
+     setNotices(notices.filter((notice) => notice._id !== id));
       
     } catch (error) {
       console.error("Error deleting notice", error);
     }
   };
+
+  
 
   return (
     <div className="max-w-3xl relative mx-auto p-6">
