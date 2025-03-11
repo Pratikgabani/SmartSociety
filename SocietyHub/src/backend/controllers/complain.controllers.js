@@ -90,7 +90,7 @@ const createComplain = asyncHandler(async (req, res, next) => {
             complainId: req.user._id,
             subject,
             description,
-            date: new Date().toLocaleDateString(),
+            date: new Date(),
             byHouse: req.user.houseNo,
             proof : proof?.url,// Store Cloudinary URL
             societyId: req.user?.societyId ,
@@ -125,7 +125,7 @@ const getAllComplains = asyncHandler(async (req, res) => {
 });
 
 const getComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true }).select("-__v -_id  -societyId -createdAt -updatedAt -complainId -byuser ").sort({ createdAt: -1 });
+    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true }).select("-__v -_id -isResolved -isActive -societyId -createdAt -updatedAt -complainId -byuser ").sort({ createdAt: -1 });
   
     if (!complains) {
         throw new ApiError(404, "No complains found");
@@ -156,7 +156,6 @@ const deleteComplain = asyncHandler(async (req, res) => {
 });
 
 const toggleComplain = asyncHandler(async (req, res) => {
-
     const { complainId } = req.params;
 
     if (!complainId) {
@@ -169,19 +168,27 @@ const toggleComplain = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Complain not found");
     }
 
-    const updatedComplain = await Complain.findByIdAndUpdate(complainId, {
-         isResolved: !complain.isResolved
-         }, { 
-            new: true 
-        });
+    // Toggle isResolved and update resolvedDate accordingly
+    const updatedComplain = await Complain.findByIdAndUpdate(
+        complainId,
+        {
+            isResolved: !complain.isResolved,
+            resolvedDate: complain.isResolved ? null : new Date()
+        },
+        { new: true }
+    );
 
     if (!updatedComplain) {
         throw new ApiError(500, "Failed to toggle complain");
     }
 
-    return res
-    .status(200)
-    .json(new ApiResponse(200, updatedComplain, `Complain ${updatedComplain.isResolved ? "resolved" : "unresolved"} successfully`));
-})
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            updatedComplain,
+            `Complain ${updatedComplain.isResolved ? "resolved" : "unresolved"} successfully`
+        )
+    );
+});
 
 export { createComplain , deleteComplain , getAllComplains  , toggleComplain, getComplains};

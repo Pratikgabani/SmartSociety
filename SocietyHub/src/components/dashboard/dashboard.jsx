@@ -206,7 +206,7 @@ function dashboard() {
     <span className="text-lg font-semibold text-gray-700">Active Polls</span>
 
     {/* Polls List */}
-    <ul className="mt-8 h-48 overflow-y-scroll hidden-scrollbar">
+    <ul className="mt-9 h-48 overflow-y-scroll hidden-scrollbar">
         {polls.slice(0, 2).map((poll, index) => (
             <li 
                 key={index} 

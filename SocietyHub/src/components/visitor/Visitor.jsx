@@ -18,10 +18,15 @@ function Visitor() {
   const token = JSON.parse(localStorage.getItem('user'));
   const roles = token?.data?.user?.role;
   const userId = token?.data?.user?._id;
-const data = {
-  visitingAdd : newVisitor.visitingAdd,
-  visitingBlock : newVisitor.visitingBlock,
-}
+// const data = {
+//   visitingAdd : newVisitor.visitingAdd,
+//   visitingBlock : newVisitor.visitingBlock,
+// }
+// const data = {
+//   visitingAdd : token.data.user.houseNo,
+//   visitingBlock : token.data.user.block,
+// }
+// console.log(data);
 
   const [activeVisitors, setActiveVisitors] = useState([]);
   const [recentVisitors, setRecentVisitors] = useState([]);
@@ -33,10 +38,10 @@ const data = {
     let response;
     try {
       if (roles === "security") {
-        response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitors", { withCredentials: true });
+        response = await axios.get("http://localhost:8000/api/v1/visitor/getHisAllRecentVisitors", { withCredentials: true });
       }
       else {
-        response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId", data, { withCredentials: true });
+        response = await axios.get("http://localhost:8000/api/v1/visitor/getHisRecentVisitorsByUserId",  { withCredentials: true });
       } // Update API URL) // Update API URL
       setPreviousData(response.data.data);
       console.log(response.data.data);
@@ -53,7 +58,7 @@ const data = {
         if (roles === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getRecentVisitors', { withCredentials: true });
         } else {
-          response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId", data, { withCredentials: true });
+          response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId",  { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setRecentVisitors(visitors);
@@ -73,7 +78,7 @@ const data = {
         if (roles === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getActiveVisitors', { withCredentials: true });
         } else {
-          response = await axios.get("http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId", data, { withCredentials: true });
+          response = await axios.get("http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId", { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setActiveVisitors(visitors);
@@ -103,8 +108,8 @@ const data = {
       visitingAdd: newVisitor.visitingAdd,
       purpose: newVisitor.purpose,
       visitingBlock: newVisitor.visitingBlock,
-      visitDate: newVisitor.visitDate,
-      visitTime: newVisitor.visitTime,
+      // visitDate: newVisitor.visitDate,
+      // visitTime: newVisitor.visitTime,
       duration: ""
     };
 
@@ -117,8 +122,8 @@ const data = {
         visitingAdd: '',
         purpose: '',
         visitingBlock: '',
-        visitDate: '',
-        visitTime: '',
+        // visitDate: '',
+        // visitTime: '',
         duration: '',
       });
       setVari(!vari);
@@ -130,7 +135,12 @@ const data = {
   const handleCheckOut = async (id) => {
     if (roles === "security") {
       try {
-        const checkoutTime = new Date().toLocaleTimeString('en-GB', { hour12: false, hour: "2-digit", minute: "2-digit" });
+        const checkoutTime = new Date().toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true
+      });
         await axios.patch(`http://localhost:8000/api/v1/visitor/updateVisitorDuration/${id}`, { duration: checkoutTime }, { withCredentials: true });
 
         const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
@@ -208,7 +218,7 @@ const data = {
                   onChange={(e) => setNewVisitor({ ...newVisitor, purpose: e.target.value })}
                 />
               </div>
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Visit Date *</label>
                 <input
                   type="date"
@@ -217,8 +227,8 @@ const data = {
                   value={newVisitor.visitDate}
                   onChange={(e) => setNewVisitor({ ...newVisitor, visitDate: e.target.value })}
                 />
-              </div>
-              <div className="mb-4">
+              </div> */}
+              {/* <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Visit Time *</label>
                 <input
                   type="time"
@@ -227,7 +237,7 @@ const data = {
                   value={newVisitor.visitTime}
                   onChange={(e) => setNewVisitor({ ...newVisitor, visitTime: e.target.value })}
                 />
-              </div>
+              </div> */}
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
@@ -287,14 +297,15 @@ const data = {
               <tr key={visitor._id}>
                 <td className="px-6 py-4">{visitor.visitorName}</td>
                 <td className="px-6 py-4">{visitor.purpose}</td>
-                <td className="px-6 py-4">
+                {/* <td className="px-6 py-4">
                   <div>
                     {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}
                   </div>
                   <div>
                     {visitor.visitTime}
                   </div>
-                </td>
+                </td> */}
+                <td className='px-6 py-4'>{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-" }</td>
                 <td className="px-6 py-4 text-green-600">Active</td>
                 <td className='px-6 py-4 text-black'>{visitor.visitorPhone}</td>
                 {roles === "security" && (
@@ -341,14 +352,15 @@ const data = {
                 <td className="px-6 py-4">{visitor.visitorName}</td>
                 <td className="px-6 py-4">{visitor.purpose}</td>
                 <td className="px-6 py-4">{visitor.visitorPhone}</td>
-                <td className="px-6 py-4">
+                {/* <td className="px-6 py-4">
                   <div>
                     {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}
                   </div>
                   <div>
                     {visitor.visitTime}
                   </div>
-                </td>
+                </td> */}
+                <td className='px-6 py-4'>{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-" }</td>
                 <td className='px-6 py-4'>{visitor.duration}</td>
                 {roles === "security" && (
                   <td className="px-6 py-4 flex gap-2">

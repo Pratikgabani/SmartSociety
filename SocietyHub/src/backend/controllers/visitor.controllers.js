@@ -6,7 +6,7 @@ import { Security } from "../models/security.models.js";
 import { User } from "../models/user.models.js";
 
 const createVisitor = asyncHandler(async (req, res) => {
-    const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,visitDate,visitTime,duration} = req.body;
+    const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,duration} = req.body;
     const userId = req.user?._id
   console.log("user"+ userId)
     //   const userId =  req.data.user?._id
@@ -20,7 +20,7 @@ const createVisitor = asyncHandler(async (req, res) => {
            }
 
 
-        if(!visitorName || !visitorPhone || !visitingAdd || !purpose || !visitDate || !visitTime){
+        if(!visitorName || !visitorPhone || !visitingAdd || !purpose ){
             throw new ApiError(400 , "All fields are required")
         }
 
@@ -30,8 +30,8 @@ const createVisitor = asyncHandler(async (req, res) => {
             visitingAdd ,
             purpose,
             visitingBlock , 
-            visitDate, 
-            visitTime ,
+            visitDate : new Date(), 
+            
             duration : duration || "00:00:00",
             isActive : true,
             societyId : securityId.societyId,
@@ -80,7 +80,7 @@ const deleteVisitor = asyncHandler(async (req, res) => {
 
 const getRecentVisitors = asyncHandler(async (req, res) => {
     try {
-        const visitors = await Visitor.find({ isActive: false });
+        const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -createdAt -updatedAt");
 
         if (!visitors || visitors.length === 0) {
             throw new ApiError(404, "No recent visitors found");
@@ -93,13 +93,14 @@ const getRecentVisitors = asyncHandler(async (req, res) => {
 });
 
 const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
-    const {userHouse,visitingBlock} = req.body
+    const userHouse = req.user.houseNo
+    const visitingBlock = req.user.block
     if(!userHouse){
         throw new ApiError(400 , "User not found")
     }
  
     try {
-        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v -_id -createdAt -updatedAt");
+        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v  -createdAt -updatedAt");
 
         if (!visitors || visitors.length === 0) {
             return res.status(404).json({ message: "No recent visitors found" });
@@ -111,6 +112,38 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     }
 });
 
+const getHisRecentVisitorsByUserId = asyncHandler(async (req, res) => {
+    const userHouse = req.user.houseNo
+    const visitingBlock = req.user.block
+    if(!userHouse){
+        throw new ApiError(400 , "User not found")
+    }
+ 
+    try {
+        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v -_id -isActive -createdAt -updatedAt");
+
+        if (!visitors || visitors.length === 0) {
+            return res.status(404).json({ message: "No recent visitors found" });
+        }
+
+        return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
+    } catch (error) {
+        throw new ApiError(500, "Error fetching recent visitors");
+    }
+});
+    const getHisAllRecentVisitors = asyncHandler(async (req, res) => {
+        try {
+            const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -_id -isActive  -createdAt -updatedAt");
+    
+            if (!visitors || visitors.length === 0) {
+                throw new ApiError(404, "No recent visitors found");
+            }
+    
+            return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
+        } catch (error) {
+            throw new ApiError(500, "Error fetching recent visitors");
+        }
+    });
 const getActiveVisitors = asyncHandler(async (req, res) => {
     //get the visiting add from visitors and match it to the users houseNo and then provide all the visitors with same houseNo as visitingAdd
     const visitors = await Visitor.find({ isActive: true, societyId : req.user.societyId});
@@ -126,7 +159,9 @@ const getActiveVisitors = asyncHandler(async (req, res) => {
 })
 
 const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
-  const {userHouse,visitingBlock} = req.body
+//   const {userHouse,visitingBlock} = req.body
+   const userHouse = req.user.houseNo
+    const visitingBlock = req.user.block
     if(!userHouse){
         throw new ApiError(400 , "User house not found")
     }
@@ -148,6 +183,8 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
 const getVisitorById = asyncHandler(async (req, res) => {
     const userHome = req.user.houseNo
     const visitingBlock = req.user.block
+    console.log("userHome"+ userHome)
+    console.log("visitingBlock"+ visitingBlock)
     const visitor = await Visitor.find({visitingAdd : userHome, visitingBlock : visitingBlock, societyId : req.user.societyId})
 
     if(!visitor){
@@ -186,4 +223,4 @@ const updateVisitorDuration = async (req, res) => {
 };
 
 
-export {createVisitor,updateVisitorDuration,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getRecentVisitorsByUserId ,deleteVisitor, getActiveVisitorsByUserId}
+export {createVisitor,updateVisitorDuration,removeVisitor,getActiveVisitors,getVisitorById,getRecentVisitors,getHisRecentVisitorsByUserId ,getHisAllRecentVisitors,getRecentVisitorsByUserId ,deleteVisitor, getActiveVisitorsByUserId}

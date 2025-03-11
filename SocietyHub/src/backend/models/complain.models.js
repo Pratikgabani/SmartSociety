@@ -40,6 +40,10 @@ isActive : {
    type  : Boolean,
    default : true
 },
+resolvedDate : {
+    type : Date,
+    default : null
+},
 byuser : {
     type : Schema.Types.ObjectId,
     ref : "User"

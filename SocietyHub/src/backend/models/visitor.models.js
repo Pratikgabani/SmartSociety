@@ -20,17 +20,14 @@ const visitorSchema = new Schema({
         required : true
     },
     visitingAdd : {
-        type : Number,
+        type : String,
         required : true
     },
     visitDate : {
         type : Date,
-        required : true
+        
     },
-    visitTime : {
-        type : String,
-        required : true
-    },
+    
  
     duration : {
         type : String,

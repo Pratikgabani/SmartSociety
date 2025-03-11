@@ -142,7 +142,7 @@ function Complaint() {
               )}
               <div className="flex justify-between items-center text-sm text-gray-600 mt-4 relative">
                 <div className="flex items-center gap-2">
-                  <Clock size={16} /> {complaint.date}
+                  <Clock size={16} /> {new Date(complaint.date).toLocaleDateString()}
                 </div>
                 
                   {

@@ -42,6 +42,9 @@ const getPolls = asyncHandler(async (req, res) => {
                 voters: 0, 
                 __v: 0, 
                 _id: 0, 
+                createdAt: 0,
+                updatedAt: 0,
+                isClosed: 0,
                 societyId: 0, 
                 "options._id": 0 // Removes _id from options array
             } 

@@ -11,4 +11,15 @@ function Layout() {
   )
 }
 
+// function Layout() {
+//   return (
+//     <div className="flex">
+//       <SideBar />
+//       <div className="ml-0 md:ml-64 w-full transition-all">
+//         <Outlet />
+//       </div>
+//     </div>
+//   );
+// }
+
 export default Layout
