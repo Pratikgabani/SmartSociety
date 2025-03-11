@@ -34,27 +34,34 @@ const createPoll = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200 , newPoll , "Poll created successfully"))
 })
-const getPolls = asyncHandler(async (req, res) => {
-    const polls = await Poll.aggregate([
-        { $match: { societyId: req.user.societyId, isClosed: true } }, // Filter closed polls
-        { 
-            $project: { 
-                voters: 0, 
-                __v: 0, 
-                _id: 0, 
-                createdAt: 0,
-                updatedAt: 0,
-                isClosed: 0,
-                societyId: 0, 
-                "options._id": 0 // Removes _id from options array
-            } 
-        }
-    ]);
+// const getPolls = asyncHandler(async (req, res) => {
+//     const polls = await Poll.aggregate([
+//         { $match: { societyId: req.user.societyId, isClosed: true } }, // Filter closed polls
+//         { 
+//             $project: { 
+//                 voters: 0, 
+//                 __v: 0, 
+//                 _id: 0, 
+//                 createdAt: 0,
+//                 updatedAt: 0,
+//                 isClosed: 0,
+//                 societyId: 0, 
+//                 "options._id": 0 // Removes _id from options array
+//             } 
+//         }
+//     ]);
 
+//     return res
+//         .status(200)
+//         .json(new ApiResponse(200, polls, "Polls found successfully"));
+// });
+
+const getPolls = asyncHandler(async (req, res) => {
+    const polls = await Poll.find({societyId : req.user.societyId}).select(" -__v  -societyId -createdAt -updatedAt -isClosed -voters -_id -options._id").populate("options.voting" , " block houseNo -_id") 
     return res
-        .status(200)
-        .json(new ApiResponse(200, polls, "Polls found successfully"));
-});
+    .status(200)
+    .json(new ApiResponse(200 , polls , "Polls found successfully"))
+})
 
 const getAllPolls = asyncHandler(async (req, res) => {
     const polls = await Poll.find({societyId : req.user.societyId,isClosed : false}).select(" -__v  -societyId")
@@ -86,52 +93,55 @@ const deletePoll = asyncHandler(async (req, res) => {
 const votePoll = asyncHandler(async (req, res) => {
     const { pollId, optionId } = req.params;
     const userId = req.user._id;
-    const house = req.user.houseNo // Ensure req.user is populated (middleware needed)
-    console.log("hello")
+    const house = req.user.houseNo; // Ensure req.user is populated (middleware needed)
+
     if (!pollId.trim() || !optionId.trim()) {
         throw new ApiError(400, "All fields are required");
     }
 
     const poll = await Poll.findById(pollId);
-    console.log(poll)
     if (!poll) {
         throw new ApiError(404, "Poll not found");
     }
 
-    // Check if the user has already voted
-    // if (poll.voters.includes(userId)) {
-    //     throw new ApiError(403, "You have already voted in this poll");
-    // }
+    // Find if the user already voted in any option
+    const previousOption = poll.options.find((opt) =>
+        opt.voting.some((voter) => voter.toString() === userId.toString())
+    );
 
-    // Find the selected option
-    const option = poll.options.find((opt) => opt._id.toString() === optionId);
-    if (!option) {
+    if (previousOption) {
+        // Remove user's previous vote
+        previousOption.votes -= 1;
+        previousOption.voting = previousOption.voting.filter(
+            (voter) => voter.toString() !== userId.toString()
+        );
+        poll.totalVotes -= 1;
+    }
+
+    // Find the new option to vote for
+    const newOption = poll.options.find((opt) => opt._id.toString() === optionId);
+    if (!newOption) {
         throw new ApiError(404, "Option not found");
     }
-     
-    const votedOption =  poll.options.find((opt) => opt.voting.includes(house))
-    console.log(votedOption)
-    if(votedOption){
-     votedOption.votes -= 1
-     votedOption.voting = votedOption.voting.filter(voter => voter.house === house)
-     poll.voters = poll.voters.filter(voter => voter.house === house)
-     poll.totalVotes -= 1
-    }
-    // Update vote count
-    option.votes += 1;
+
+    // Add vote to the new option
+    newOption.votes += 1;
+    newOption.voting.push(userId);
     poll.totalVotes += 1;
-    option.voting.push(house)
-    poll.voters.push(house);
-    poll.options.map((opt) => {
-        opt.percent = Math.floor((opt.votes/poll.totalVotes) * 100)
-    })
-   
+
+    // Ensure poll.voters only contains unique voters
+    poll.voters = poll.options.flatMap((opt) => opt.voting);
+
+    // Update percentages
+    poll.options.forEach((opt) => {
+        opt.percent = poll.totalVotes > 0 ? Math.floor((opt.votes / poll.totalVotes) * 100) : 0;
+    });
+
     await poll.save();
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, poll, "Poll voted successfully"));
+    return res.status(200).json(new ApiResponse(200, poll, "Poll voted successfully"));
 });
+
 
 
 const closePoll = asyncHandler(async (req, res) => {

@@ -20,7 +20,7 @@ const pollSchema = new Schema({
                 default : 0
             },
             voting : [
-                {type : Number}
+                {type : Schema.Types.ObjectId, ref : "User"} 
             ]
         }
     ],
@@ -44,7 +44,7 @@ const pollSchema = new Schema({
         type : String
     },
 
-    voters: [{ type: Number }]
+    voters: [{ type: Schema.Types.ObjectId, ref: "User" }] // Track voters
     } , {timestamps : true})
 
     export const Poll = mongoose.model("Poll" , pollSchema)
