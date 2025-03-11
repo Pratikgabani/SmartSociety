@@ -35,7 +35,4 @@ const bookingSchema = new Schema({
   timestamps: true
 });
   
-// Compound unique index to prevent duplicate bookings for the same venue on the same date
-// bookingSchema.index({ bookingType: 1, date: 1 } , { unique: true });
-
 export const Booking = mongoose.model("Booking", bookingSchema);

@@ -94,14 +94,55 @@ const getVenue = asyncHandler(async (req , res) => {
 })
 
 const getBookings = asyncHandler(async (req, res) => {
-    const allBookings = await Booking.find({societyId: req.user?.societyId})
-    if(!allBookings){
-        throw new ApiError(500 , "Failed to get bookings")
+    const allBookings = await Booking.find({ societyId: req.user?.societyId })
+        .select("-__v -_id -updatedAt -societyId")
+        .populate("bookingOwner", "houseNo block -_id" ); // Populating houseNo & block from User model
+
+    if (!allBookings) {
+        throw new ApiError(500, "Failed to get bookings");
     }
+
     return res
-    .status(200)
-    .json(new ApiResponse(200 , allBookings , "Bookings found successfully"))
-})
+        .status(200)
+        .json(new ApiResponse(200, allBookings, "Bookings found successfully"));
+});
+
+// const getBookings = asyncHandler(async (req, res) => {
+//     const allBookings = await Booking.aggregate([
+//         {
+//             $match: { societyId: req.user?.societyId } // Match bookings for the user's society
+//         },
+//         {
+//             $lookup: {
+//                 from: "users", // The name of the User collection in MongoDB
+//                 localField: "bookingOwner",
+//                 foreignField: "_id",
+//                 as: "bookingOwnerDetails"
+//             }
+//         },
+//         {
+//             $unwind: "$bookingOwnerDetails" // Convert array to object
+//         },
+//         {
+//             $project: {
+//                 _id: 0, // Remove _id from booking
+//                 bookingType: 1,
+//                 bookDescription: 1,
+//                 duration: 1,
+//                 date: 1,
+//                 createdAt: 1,
+//                 "bookingOwner.block": "$bookingOwnerDetails.block",
+//                 "bookingOwner.houseNo": "$bookingOwnerDetails.houseNo"
+//             }
+//         }
+//     ]);
+
+//     if (!allBookings) {
+//         throw new ApiError(500, "Failed to get bookings");
+//     }
+
+//     return res.status(200).json(new ApiResponse(200, allBookings, "Bookings found successfully"));
+// });
 
 const getPastBookings = asyncHandler(async (req, res) => {
     const allBooking = await Booking.find({
