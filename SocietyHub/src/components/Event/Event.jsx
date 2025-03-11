@@ -12,7 +12,7 @@ function Event() {
   const [readyState, setReadyState] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [pastData , setPastData] = useState([]);
-  const [showAddEventForm, setShowAddEventForm] = useState(false); // To toggle form
+  const [showAddEventForm, setShowAddEventForm] = useState(false); 
   const [formData, setFormData] = useState({
     eventName: "",
     eventDate: "",
@@ -488,27 +488,6 @@ function Event() {
                       Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString('en-GB')}
                     </p>
                   </div>
-
-                  {/* Buttons Section */}
-                  {/* <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleToggleReady(event._id)}
-                      className={`flex-1 py-2 rounded-lg font-bold text-white ${
-                        readyState[event._id]
-                          ? "bg-red-600 hover:bg-red-700" // "I am ready" state
-                          : "bg-green-500 hover:bg-green-600" // "I am not ready" state
-                      }`}
-                    >
-                      {readyState[event._id] ? "I'm not ready" : "I'm ready"}
-                    </button> */}
-
-                    {/* Show "Pay Now" button only when user is NOT ready */}
-                    {/* {readyState[event._id] && (
-                      <button className="flex-1 py-2 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700">
-                        Pay Now
-                      </button>
-                    )} */}
-                  {/* </div> */}
                 </div>
               ))
             )}

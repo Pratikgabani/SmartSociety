@@ -152,7 +152,7 @@ const Booking = () => {
     if (amenityInput.trim() !== "") {
       setVenueFormData({
         ...venueFormData,
-        amenities: [...venueFormData.amenities, amenityInput.trim()], // ✅ Append new amenity
+        amenities: [...venueFormData.amenities, amenityInput.trim()],
       });
       setAmenityInput(""); // Clear input
     }
@@ -173,12 +173,12 @@ const Booking = () => {
         { ...venueFormData },
         { withCredentials: true }
       );
-      toast.success("Venue created successfully!"); // Toast for success
+      toast.success("Venue created successfully!"); 
       setVenues([...venues, response.data.data]);
       setIsVenueFormOpen(false);
     } catch (error) {
       console.error("Error creating venue:", error);
-      toast.error("Failed to create venue!"); // Toast for error
+      toast.error("Failed to create venue!"); 
     }
   }
 
@@ -229,6 +229,8 @@ const Booking = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                 {loading ? (
                   <p>Loading...</p>
+                ) : venues.length === 0 ? (
+                  <p>No venues available.</p>
                 ) :
                   (venues.map((venue) => (
                     <div
@@ -275,7 +277,14 @@ const Booking = () => {
             <section className="mb-12">
               <h2 className="text-2xl font-semibold text-gray-800 mb-6">Upcoming Bookings</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {myBooking.map((booking) => (
+                {loading ? (
+                  <p>Loading...</p>
+
+                ) : myBooking.length === 0 ? (
+                  <p>No upcoming bookings.</p>
+
+                ):
+                (myBooking.map((booking) => (
                   <div
                     key={booking._id}
                     className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
@@ -317,7 +326,7 @@ const Booking = () => {
                       )}
                     </div>
                   </div>
-                ))}
+                )))}
               </div>
             </section>
 
