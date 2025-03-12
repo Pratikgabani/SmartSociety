@@ -93,20 +93,27 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter data based on search input
-  const filteredData = data.filter((item) =>
- //one thing to notice is its only applicable to objects..so if in polls..you have array of objects..it will not work,
- //so if u search for some option..thn it will not work..so u need to modify it accordingly...for now i have kept it simple
-    Object.values(item).some((value) =>
-      String(value).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  // Function to highlight matching text
+  const highlightText = (text) => {
+    if (!searchTerm.trim()) return text; // If no search term, return original text
+    const regex = new RegExp(`(${searchTerm})`, "gi"); // Case-insensitive match
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} className="bg-yellow-300 text-black font-bold">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
 
+  // Function to format values (including highlighting search results)
   const formatValue = (key, value) => {
     if (value == null) return "N/A"; 
     if (typeof value === "number") return value;
     if (typeof value === "boolean") return value ? "Yes" : "No"; 
-    if( typeof value === "string" && !isNaN(value)) return value
+    if (typeof value === "string" && !isNaN(value)) return highlightText(value);
     if (typeof value === "string" && value.startsWith("http")) {
       return (
         <a href={value} className="text-blue-500 font-medium" target="_blank" rel="noopener noreferrer">
@@ -117,7 +124,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
 
     // Handle Dates
     const isDate = typeof value === "string" && !isNaN(Date.parse(value));
-    if (isDate) return new Date(value).toLocaleString();
+    if (isDate) return highlightText(new Date(value).toLocaleString("en-UK"));
 
     // Handle Arrays
     if (Array.isArray(value)) {
@@ -126,7 +133,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
           {value.length > 0 ? (
             value.map((item, index) => (
               <li key={index} className="p-1">
-                {typeof item === "object" ? formatValue("", item) : item}
+                {typeof item === "object" ? formatValue("", item) : highlightText(item)}
               </li>
             ))
           ) : (
@@ -149,8 +156,15 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
       );
     }
 
-    return value; 
+    return highlightText(value);
   };
+
+  // Filter data based on search input
+  const filteredData = data.filter((item) =>
+    Object.values(item).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -173,7 +187,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
             {filteredData.map((item, index) => (
               <li key={index} className="border-b-4 p-2">
                 {Object.entries(item).map(([key, value]) => (
-                  <p key={key} className="p-1">
+                  <p key={key} className="p-1 ">
                     <strong>{key}:</strong> {formatValue(key, value)}
                   </p>
                 ))}
