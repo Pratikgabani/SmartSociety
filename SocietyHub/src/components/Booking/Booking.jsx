@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import PreviousDataModal from "../history/PreviousDataModal .jsx";
+import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 
 const Booking = () => {
   const [venues, setVenues] = useState([]);
@@ -332,7 +333,7 @@ const Booking = () => {
 
             {/* Past Bookings */}
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Past Reservations</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Past Bookings</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {myPastBooking.map((booking) => (
                   <div
@@ -605,7 +606,7 @@ const Booking = () => {
       {/* History */}
       {isAdmin && (
         <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-          <PreviousDataModal
+          <PratikPreviousDataModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             data={previousData}

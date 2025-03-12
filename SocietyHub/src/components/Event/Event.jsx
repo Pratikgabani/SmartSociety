@@ -5,6 +5,7 @@ import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
 import {Toaster , toast} from 'react-hot-toast'
 import PreviousDataModal from "../history/PreviousDataModal .jsx";
+import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
@@ -499,7 +500,7 @@ function Event() {
       {/* History */}
       {isAdmin && (
             <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-            <PreviousDataModal
+            <PratikPreviousDataModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     data={previousData}
