@@ -86,34 +86,19 @@
 //   </div>
 // );
 // }
-import React, { useState } from "react";
+import { useState } from "react";
 
 const PreviousDataModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Function to highlight matching text
-  const highlightText = (text) => {
-    if (!searchTerm.trim()) return text; // If no search term, return original text
-    const regex = new RegExp(`(${searchTerm})`, "gi"); // Case-insensitive match
-    return text.split(regex).map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase() ? (
-        <span key={index} className="bg-yellow-300 text-black font-bold">
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  };
-
-  // Function to format values (including highlighting search results)
+  // Function to format values
   const formatValue = (key, value) => {
-    if (value == null) return "N/A"; 
+    if (value == null) return "N/A";
     if (typeof value === "number") return value;
-    if (typeof value === "boolean") return value ? "Yes" : "No"; 
-    if (typeof value === "string" && !isNaN(value)) return highlightText(value);
+    if (typeof value === "boolean") return value ? "Yes" : "No";
+    if (typeof value === "string" && !isNaN(value)) return value;
     if (typeof value === "string" && value.startsWith("http")) {
       return (
         <a href={value} className="text-blue-500 font-medium" target="_blank" rel="noopener noreferrer">
@@ -124,7 +109,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
 
     // Handle Dates
     const isDate = typeof value === "string" && !isNaN(Date.parse(value));
-    if (isDate) return highlightText(new Date(value).toLocaleString("en-UK"));
+    if (isDate) return new Date(value).toLocaleString("en-UK");
 
     // Handle Arrays
     if (Array.isArray(value)) {
@@ -133,7 +118,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
           {value.length > 0 ? (
             value.map((item, index) => (
               <li key={index} className="p-1">
-                {typeof item === "object" ? formatValue("", item) : highlightText(item)}
+                {typeof item === "object" ? formatValue("", item) : item}
               </li>
             ))
           ) : (
@@ -156,7 +141,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
       );
     }
 
-    return highlightText(value);
+    return value;
   };
 
   // Filter data based on search input
@@ -187,7 +172,7 @@ const PreviousDataModal = ({ isOpen, onClose, data }) => {
             {filteredData.map((item, index) => (
               <li key={index} className="border-b-4 p-2">
                 {Object.entries(item).map(([key, value]) => (
-                  <p key={key} className="p-1 ">
+                  <p key={key} className="p-1">
                     <strong>{key}:</strong> {formatValue(key, value)}
                   </p>
                 ))}
