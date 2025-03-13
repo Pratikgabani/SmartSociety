@@ -1,19 +1,51 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { X } from "lucide-react"; // Import cross icon
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
   const [newPayment, setNewPayment] = useState({ description: "", amount: "", dueDate: "" });
   const [loading, setLoading] = useState(false);
-
+  const [clientSecret, setClientSecret] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
   const role = user?.data?.user?.role;
+  const stripe = useStripe();
+  const elements = useElements();
+  const [cardError, setCardError] = useState("");
 
   useEffect(() => {
     fetchPayments();
   }, []);
+
+  useEffect(() => {
+    const fetchPayData = async () => {
+      try {
+        const response = await axios.patch(
+          `http://localhost:8000/api/v1/payments/payPayments/${payId}`,
+          {},
+          {
+           
+            withCredentials: true, // Include cookies if needed
+          }
+        );
+        console.log(response.data);
+       
+        setClientSecret(response.data.clientSecret);
+        
+      } catch (error) {
+      
+        if (error?.response?.status === 404) {
+          setError("you have already purchased this course");
+          navigate("/purchases");
+        } else {
+          setError(error?.response?.data?.errors);
+        }
+      }
+    };
+    fetchBuyCourseData();
+  }, [courseId]);
 
   const fetchPayments = async () => {
     setLoading(true);
