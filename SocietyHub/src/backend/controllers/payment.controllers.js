@@ -2,6 +2,9 @@ import { Payment } from "../models/payment.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 
+
+
+
 // 1. Get all payments (Admin View)
  const getPayments = async (req, res) => {
   try {
@@ -32,7 +35,6 @@ import { ApiError } from "../utils/ApiError.js";
       description,
       amount,
       dueDate,
-      userId : req.user._id,
       societyId : req.user.societyId
     });
 
@@ -52,8 +54,8 @@ import { ApiError } from "../utils/ApiError.js";
     if (!payment) return res.status(404).json({ error: "Payment not found" });
 
     payment.status = "Paid";
-    payment.paymentDate = new Date();
-    payment.receipt = `#${Math.floor(Math.random() * 100000)}`; // Generate a random receipt number
+    payment.paidOn = new Date();
+    payment.paymentId = `#${Math.floor(Math.random() * 100000)}`; //todo Generate a random receipt number
 
     await payment.save();
     res.status(200).json(new ApiResponse(200, payment, "Payment marked as paid successfully"));
@@ -96,4 +98,41 @@ if(!paymentId) return res.status(400).json({ error: "Payment ID is required" });
   }
 };
 
-export { getPayments, getUserPayments, createPayment, markPaymentAsPaid, deletePayment, updatePayment };
+import Stripe from "stripe";
+import dotenv from "dotenv";
+import { asyncHandler } from "../utils/asyncHandler.js";
+
+dotenv.config({
+    path : "./.env"
+})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+  const payPayment = asyncHandler(async (req, res) => {
+    const { paymentId } = req.params;
+      const payment = await Payment.findById( {societyId : req.user.societyId ,  paymentId});
+      if (!payment){
+        throw new ApiError(404, "Payment not found");
+      }
+  
+      // // if (payment.status === "Paid") {
+      //   throw new ApiError(400, "Payment already paid");
+      // }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: payment.amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+
+      if(!paymentIntent) {
+        throw new ApiError(500, "Failed to create payment intent");
+      }
+
+      res.status(201).json({
+        message: "Course purchased successfully",
+        payment,
+        clientSecret: paymentIntent.client_secret,
+      });
+  });  
+
+export { getPayments, getUserPayments, createPayment, markPaymentAsPaid, deletePayment, updatePayment  , payPayment};
