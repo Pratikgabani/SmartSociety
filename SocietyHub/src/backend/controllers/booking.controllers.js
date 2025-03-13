@@ -95,6 +95,7 @@ const getVenue = asyncHandler(async (req , res) => {
 
 const getBookings = asyncHandler(async (req, res) => {
     const allBookings = await Booking.find({ societyId: req.user?.societyId })
+        .sort({ date: -1 }) // Sort by date in descending order
         .select("-__v -_id -updatedAt -societyId")
         .populate("bookingOwner", "houseNo block -_id" ); // Populating houseNo & block from User model
 
