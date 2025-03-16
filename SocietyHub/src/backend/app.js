@@ -47,6 +47,7 @@ import pollRouter from "./routes/poll.routes.js";
 import noticeRouter from "./routes/notice.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import expenseRouter from "./routes/expense.routes.js" 
+import purchaseRouter from "./routes/purchase.routes.js"
 app.use("/api/v1/users" , userRouter)
 app.use("/api/v1/events" , eventRouter)
 app.use("/api/v1/booking" , bookingRouter)
@@ -59,4 +60,5 @@ app.use("/api/v1/payment" , paymentRouter)
 app.use("/api/v1/notices" , noticeRouter)
 app.use("/api/v1/expense" , expenseRouter)
 app.use("/api/v1/order",orderRouter)
+app.use("/api/v1/purchase",purchaseRouter)
 export default app;

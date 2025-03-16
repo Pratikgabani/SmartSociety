@@ -8,8 +8,11 @@ import  {Purchase}  from "../models/purchase.models .js";
     console.log(orderInfo);
     const userId = orderInfo?.userId;
     const paymentId = orderInfo?.paymentId;
+    const paidOn = orderInfo?.paidOn;
+   
+    const paymentDoneId = orderInfo?.paymentDoneId;
     if (orderInfo) {
-    const purchase =  await Purchase.create({ userId, paymentId });
+    const purchase =  await Purchase.create({ userId, paymentId, paidOn, paymentDoneId });
     if (!purchase) {
       throw new ApiError(500, "Failed to create purchase");
     }

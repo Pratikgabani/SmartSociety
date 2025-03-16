@@ -8,7 +8,15 @@ const purchaseSchema = new mongoose.Schema({
   paymentId : {
     type : Schema.Types.ObjectId,
     ref : "Payment",
+  },
+  paymentDoneId  : {
+    type: String
+  },
+  paidOn : {
+    type : Date,
+    default : Date.now()
   }
+
 });
 
 export const Purchase = mongoose.model('Purchase', purchaseSchema);
