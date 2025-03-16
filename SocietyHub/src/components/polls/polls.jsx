@@ -105,12 +105,12 @@ const PollApp = () => {
   }
 
   return (
-    <div className="min-h-screen relative w-full bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Poll Management</h1>
-
+    <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
+      <div className="w-[80%] ">
+        <h1 className="text-3xl font-bold ">Polls & Voting</h1>
+        <p className="text-gray-600 text-lg">Effortlessly create and participate in society polls for collective decision-making</p>
         {role === "admin" && (
-          <div className="bg-white rounded-lg shadow-md mb-8 p-6">
+          <div className="bg-white rounded-lg shadow-md mt-4 mb-8 p-6">
             <h2 className="text-xl font-semibold mb-4">Create a Poll</h2>
             <form onSubmit={handleCreatePoll} className="space-y-4">
               <input
@@ -169,7 +169,7 @@ const PollApp = () => {
           </div>
         )}
 
-        <h2 className="text-2xl font-semibold mb-4">Active Polls</h2>
+        <h2 className="text-2xl mt-4 font-semibold text-gray-800 mb-2">Active Polls</h2>
         {polls.map((poll) => (
           
           <div key={poll._id} className="bg-white rounded-lg relative shadow-md mb-6 p-6">
@@ -200,7 +200,7 @@ const PollApp = () => {
                 onClick={() => handleClosePoll(poll._id)}
                 className="mt-4 px-4 py-2 bg-green-500 absolute bottom-4 right-2 text-white rounded-md hover:bg-green-600 transition-colors"
               >
-                close Poll
+                Close Poll
               </button>
               )
             }
