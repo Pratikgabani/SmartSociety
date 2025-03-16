@@ -35,7 +35,7 @@ import { Purchase } from "../models/purchase.models .js";
     const newPayment = new Payment({
       description,
       amount,
-      dueDate,
+      dueDate : new Date(dueDate),
       societyId : req.user.societyId
     });
 
