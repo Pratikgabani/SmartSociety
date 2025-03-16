@@ -1,44 +1,38 @@
 import { SourceCode } from "eslint";
-import {mongoose, Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 // Define the Payment Schema
 const paymentSchema = new mongoose.Schema({
   societyId : {
     type : String,
-    required : true
+    // required : true
   },
-  amount : {
+  
+   amount : {
     type : Number,
     required : true
   },
-  paidBy : [{
-    type : Schema.Types.ObjectId,
-    ref : "User"
-  }],
-  dueDate : {
-    type : Date,
-    required : true
-  },
-  paidOn : {
-    type : Date,
-    required : true
-  },
+
   description : {
     type : String,
     required : true
   },
-  paymentId: {
-    type: String,
-    required: true
+  
+  dueDate : {
+    type : Date,
+    required : true
   },
-  status : {
-    type : String,
-    required : true,
-    default : "Pending"
-  }
+
+  paidBy : [{
+    type :Schema.Types.ObjectId,
+    ref : "User",
+  }],
+   
+
+ 
 
 });
-// Create a model for the Payment schema
+
 export const Payment = mongoose.model('Payment', paymentSchema);
 
 

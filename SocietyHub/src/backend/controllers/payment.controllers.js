@@ -1,14 +1,15 @@
 import { Payment } from "../models/payment.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { Purchase } from "../models/purchase.models .js";
 
 
-
+ 
 
 // 1. Get all payments (Admin View)
  const getPayments = async (req, res) => {
   try {
-    const payments = await Payment.find({societyId : req.user.societyId});
+    const payments = await Payment.find({societyId : req.user.societyId,});
     res.status(200).json(new ApiResponse(200, payments, "Payments fetched successfully"));
   } catch (error) {
    throw new ApiError(500, "Failed to fetch payments");
@@ -46,23 +47,23 @@ import { ApiError } from "../utils/ApiError.js";
 };
 
 // 4. Mark a payment as paid
- const markPaymentAsPaid = async (req, res) => {
-  const { id } = req.params;
+//  const markPaymentAsPaid = async (req, res) => {
+//   const { id } = req.params;
 
-  try {
-    const payment = await Payment.findById(id);
-    if (!payment) return res.status(404).json({ error: "Payment not found" });
+//   try {
+//     const payment = await Payment.findById(id);
+//     if (!payment) return res.status(404).json({ error: "Payment not found" });
 
-    payment.status = "Paid";
-    payment.paidOn = new Date();
-    payment.paymentId = `#${Math.floor(Math.random() * 100000)}`; //todo Generate a random receipt number
+//     payment.status = "Paid";
+//     payment.paidOn = new Date();
+//     payment.paymentId = `#${Math.floor(Math.random() * 100000)}`; //todo Generate a random receipt number
 
-    await payment.save();
-    res.status(200).json(new ApiResponse(200, payment, "Payment marked as paid successfully"));
-  } catch (error) {
-   throw new ApiError(500, "Failed to mark payment as paid");
-  }
-};
+//     await payment.save();
+//     res.status(200).json(new ApiResponse(200, payment, "Payment marked as paid successfully"));
+//   } catch (error) {
+//    throw new ApiError(500, "Failed to mark payment as paid");
+//   }
+// };
 
 // 5. Delete a payment (Admin only)
  const deletePayment = async (req, res) => {
@@ -101,22 +102,32 @@ if(!paymentId) return res.status(400).json({ error: "Payment ID is required" });
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import toast from "react-hot-toast";
 
 dotenv.config({
     path : "./.env"
 })
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
+console.log(process.env.STRIPE_SECRET_KEY);
   const payPayment = asyncHandler(async (req, res) => {
     const { paymentId } = req.params;
-      const payment = await Payment.findById( {societyId : req.user.societyId ,  paymentId});
-      if (!payment){
+    const userId = req.user._id;
+     const payment =await Payment.findById(paymentId);
+      if(!payment) {
         throw new ApiError(404, "Payment not found");
       }
-  
-      // // if (payment.status === "Paid") {
-      //   throw new ApiError(400, "Payment already paid");
-      // }
+      const existingPurchase = await Purchase.findOne({ userId, paymentId });
+      if (existingPurchase) {
+        console.log("bas bhai kitna pay krega")
+        toast.error("User has already done payment !");
+        return res
+          .status(400)
+          .json({ errors: "User has already done payment !" });
+      }
+   
+    
+   payment.paidBy.push(userId);
+      await payment.save();
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: payment.amount,
@@ -135,4 +146,4 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
       });
   });  
 
-export { getPayments, getUserPayments, createPayment, markPaymentAsPaid, deletePayment, updatePayment  , payPayment};
+export { getPayments, getUserPayments, createPayment,  deletePayment, updatePayment  , payPayment};

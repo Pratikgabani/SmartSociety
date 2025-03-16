@@ -21,7 +21,12 @@ import Dashboard from   './components/dashboard/dashboard.jsx';
 import App from './App.jsx';
 import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
-
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import Buy from './components/Buy/Buy.jsx';
+const stripePromise = loadStripe(
+  "pk_test_51R1h8oFjDw8IkcOQVn7UvbMIuiNBki2KBzh7mjuUS5EhTAmnAksY48vDtDxrXHy7YWOQZeJ0lrozJIfDuzraVVeR00ve6RdDcA"
+);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +34,7 @@ const router = createBrowserRouter(
     <Route path='/' element= {< OrgLanding/>} />
     <Route path="Login" element={<Login />} />
     <Route path ="Securityregister" element={<SecurityRegister />} />
+    
     <Route path="Register" element={<Register />} />
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     <Route element={<RequireAuth />}>
@@ -39,6 +45,9 @@ const router = createBrowserRouter(
     <Route path="Landing" element={<Landing />} />
    
      <Route path="Payment" element={<Payment />} />
+     <Route path="payPayment/:paymentId" element={<Buy />} />
+  
+  
      <Route path="Visitor" element={<Visitor />} />
     <Route path = "Poll" element = {<PollApp />} />
     <Route path = "Complaint" element= {<Complaint />} />
@@ -55,10 +64,12 @@ const router = createBrowserRouter(
 )
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <Elements stripe={stripePromise}>
+    <StrictMode>
   <RouterProvider router={router} />
   
    </StrictMode>
+   </Elements>
 )
 
 

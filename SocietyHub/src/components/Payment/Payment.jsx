@@ -1,82 +1,185 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import axios from "axios";
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { X } from "lucide-react"; // Import cross icon
+
+import {  X } from "lucide-react"; // Import cross icon
+import toast from "react-hot-toast";
+import {Link } from "react-router-dom";
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
   const [newPayment, setNewPayment] = useState({ description: "", amount: "", dueDate: "" });
   const [loading, setLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState("");
+  const [isPaid, setIsPaid] = useState(false);
+
+ 
+  
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
   const role = user?.data?.user?.role;
-  const stripe = useStripe();
-  const elements = useElements();
-  const [cardError, setCardError] = useState("");
 
   useEffect(() => {
     fetchPayments();
   }, []);
 
-  useEffect(() => {
-    const fetchPayData = async () => {
-      try {
-        const response = await axios.patch(
-          `http://localhost:8000/api/v1/payments/payPayments/${payId}`,
-          {},
-          {
+//  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const fetchPayData = async () => {
+  //     try {
+  //       const response = await axios.patch(
+  //         `http://localhost:8000/api/v1/payments/payPayment/${paymentId}`,
+  //         {},
+  //         {
            
-            withCredentials: true, // Include cookies if needed
-          }
-        );
-        console.log(response.data);
-       
-        setClientSecret(response.data.clientSecret);
-        
-      } catch (error) {
+  //           withCredentials: true, // Include cookies if needed
+  //         }
+  //       );
+  //       console.log(response.data);
+  //       setPayments(response.data.data);
+  //       setClientSecret(response.data.clientSecret);
+  //       setIsPaid(true);
+  //     } catch (errorsa) {
       
-        if (error?.response?.status === 404) {
-          setError("you have already purchased this course");
-          navigate("/purchases");
-        } else {
-          setError(error?.response?.data?.errors);
-        }
-      }
-    };
-    fetchBuyCourseData();
-  }, [courseId]);
+  //       // if (error?.response?.status === 400) {
+  //       //   setError("you have already paid this payment");
+  //       //   navigate("/purchases");
+  //       // } else {
+  //         setError(errorsa?.response?.data?.errors);
+  //         console.log(error)
+  //       // }
+  //     }
+  //   };
+  //   fetchPayData();
+  // }, [paymentId]);
+
+  // const handlePurchase = async (event) => {
+  //   event.preventDefault();
+
+  //   if (!stripe || !elements) {
+  //     console.log("Stripe or Element not found");
+  //     return;
+  //   }
+
+    
+  //   const card = elements.getElement(CardElement);
+
+  //   if (card == null) {
+  //     console.log("Cardelement not found");
+      
+  //     return;
+  //   }
+
+  //   // Use your card Element with other Stripe.js APIs
+  //   const { error, paymentMethod } = await stripe.createPaymentMethod({
+  //     type: "card",
+  //     card,
+  //   });
+
+  //   if (error) {
+  //     console.log("Stripe PaymentMethod Error: ", error);
+      
+  //     setCardError(error.message);
+  //   } else {
+  //     console.log("[PaymentMethod Created]", paymentMethod);
+  //   }
+  //   if (!clientSecret) {
+  //     console.log("No client secret found");
+      
+  //     return;
+  //   }
+  //   const { paymentIntent, error: confirmError } =
+  //     await stripe.confirmCardPayment(clientSecret, {
+  //       payment_method: {
+  //         card: card,
+  //         billing_details: {
+  //           house: user?.user?.houseNo,
+  //           block : user?.user?.block,
+  //           email: user?.user?.email,
+  //         },
+  //       },
+  //     });
+  //   if (confirmError) {
+  //     setCardError(confirmError.message);
+  //   } else if (paymentIntent.status === "succeeded") {
+  //     console.log("Payment succeeded: ", paymentIntent);
+  //     setCardError("your payment id: ", paymentIntent.id);
+  //     const paymentInfo = {
+  //       email: user?.user?.email,
+  //       paidBy: user.user._id,
+  //       payId : payId,
+  //       paymentId: paymentIntent.id,
+  //       amount: paymentIntent.amount,
+  //       status: paymentIntent.status,
+        
+  //       societyId : user?.user?.societyId,
+  //       paidOn : new Date(),
+
+  //     };
+  //     console.log("Payment info: ", paymentInfo);
+  //     await axios
+  //       .post("http://localhost:8000/api/v1/order", paymentInfo, {
+         
+  //         withCredentials: true,
+  //       })
+  //       .then((response) => {
+  //         console.log(response.data);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         toast.error("Error in making payment");
+  //       });
+  //     toast.success("Payment Successful");
+  //     navigate("/purchases");
+  //   }
+  //   setLoading(false);
+  // };
 
   const fetchPayments = async () => {
     setLoading(true);
     try {
     
 
-      const response = await axios.get("http://localhost:8000/api/v1/payments/getPayments", {
+      const response = await axios.get("http://localhost:8000/api/v1/payment/getPayments", {
         headers: { Authorization: "Bearer " + token },
         withCredentials: true,
       });
       setPayments(response.data.data);
+      // if(payments.paidBy.includes(user.data.user._id)){
+      //   setIsPaid(true);
+      // }
     } catch (error) {
       console.error("Error fetching payments:", error);
     }
     setLoading(false);
   };
 
-  const markAsPaid = async (paymentId) => {
-    try {
-      await axios.patch(`http://localhost:8000/api/v1/payments/markPaymentAsPaid/${paymentId}`, {}, {
-        headers: { Authorization: "Bearer " + token },
-        withCredentials: true,
-      });
-      fetchPayments();
-    } catch (error) {
-      console.error("Error marking payment as paid:", error);
-    }
-  };
+  // const handlePay = async (paymentId) => {
+  //   try {
+  //      const response = await axios.patch(`http://localhost:8000/api/v1/payments/payPayment/${paymentId}`, {}, {
+  //       withCredentials: true,
+  //     });
+  //     console.log(response.data);
+  //     fetchPayments();
+  //   } catch (error) {
+  //     console.error("Error marking payment as paid:", error);
+  //   }
+  // };
+    
+
+  // const markAsPaid = async (paymentId) => {
+  //   try {
+  //     await axios.patch(`http://localhost:8000/api/v1/payments/markPaymentAsPaid/${paymentId}`, {}, {
+  //       headers: { Authorization: "Bearer " + token },
+  //       withCredentials: true,
+  //     });
+  //     fetchPayments();
+  //   } catch (error) {
+  //     console.error("Error marking payment as paid:", error);
+  //   }
+  // };
   const deletePayment = async (paymentId) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/payments/deletePayment/${paymentId}`, {
+      await axios.delete(`http://localhost:8000/api/v1/payment/deletePayment/${paymentId}`, {
         withCredentials: true,
       });
       setPayments(payments.filter((payment) => payment._id !== paymentId));
@@ -92,7 +195,7 @@ const PaymentSection = () => {
 
   const addPayment = async () => {
     try {
-      await axios.post("http://localhost:8000/api/v1/payments/createPayment", newPayment, {
+      await axios.post("http://localhost:8000/api/v1/payment/createPayment", newPayment, {
         headers: { Authorization: "Bearer " + token },
         withCredentials: true,
       });
@@ -157,16 +260,26 @@ const PaymentSection = () => {
                     {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-center">
-                    {payment.status === "Pending" && (
+                    {/* {payment.status === "Pending" && (
                       <button onClick={() => markAsPaid(payment._id)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Pay Now</button>
-                    )}
-                   
-                  </td>
-                  {role === "admin" && (
+                    )} */}
+                    {role === "admin" && (
                       <button onClick={() => deletePayment(payment._id)} className="text-red-600 hover:text-red-800">
                         <X size={20} />
                       </button>
                     )}
+                    {
+                     isPaid===false &&
+                     <Link 
+                     to={`/layout/payPayment/${payment._id}`}
+                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                     Pay
+                     </Link>
+                    }
+                  </td>
+                 {/* <div className="flex flex-col items-center justify-center ">
+                
+                 </div> */}
                 </tr>
               ))}
             </tbody>
