@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 // import { X } from "lucide-react"; // Import cross icon
-import toast from "react-hot-toast";
+import {toast, Toaster} from "react-hot-toast";
 import { Link,useNavigate,useParams } from "react-router-dom";
 
 const Buy = () => {
@@ -127,13 +127,14 @@ const Buy = () => {
         })
         .then((response) => {
           console.log(response.data);
+          toast.success("Payment Successful");
           navigate("/layout/payment");
         })
         .catch((error) => {
           console.log(error);
           toast.error("Error in making payment");
         });
-      toast.success("Payment Successful");
+      // toast.success("Payment Successful");
       // navigate("/purchases");
     }
     setLoading(false);
@@ -141,6 +142,7 @@ const Buy = () => {
 
   return (
     <>
+    <Toaster/>
     {error ? (
       <div className="flex justify-center items-center h-screen">
         <div className="bg-red-100 text-red-700 px-6 py-4 rounded-lg">
