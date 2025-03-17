@@ -177,7 +177,7 @@ const Register = () => {
               <div>
                 <label className="block mb-1 font-semibold">Email</label>
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   value={formData.email}
                   onChange={(e) => { setFormData({ ...formData, email: e.target.value }) }}
