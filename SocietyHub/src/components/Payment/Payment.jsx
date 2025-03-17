@@ -2,6 +2,7 @@ import React, { useEffect, useState} from "react";
 import axios from "axios";
 import PreviousDataModal from '../history/PreviousDataModal ';
 import {  X } from "lucide-react"; // Import cross icon
+import { RiDeleteBin6Fill, RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import {Link } from "react-router-dom";
 const PaymentSection = () => {
@@ -63,6 +64,7 @@ const PaymentSection = () => {
       await axios.delete(`http://localhost:8000/api/v1/payment/deletePayment/${paymentId}`, {
         withCredentials: true,
       });
+      toast.success("Payment deleted successfully!");
       setPayments(payments.filter((payment) => payment._id !== paymentId));
       fetchPayments();
     } catch (error) {
@@ -89,10 +91,10 @@ const PaymentSection = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col relative bg-gray-50 p-6">
-      <div className="w-full bg-white p-6 rounded-lg shadow-md">
-        <h1 className="text-2xl font-semibold text-center text-blue-800 mb-6">Payment Section</h1>
-
+    <div className="container mx-auto px-4 py-8">
+      <div className="w-full  ">
+        <h1 className="text-3xl font-bold text-gray-800">Payments </h1>
+        <p className="text-gray-600 text-lg">Securely pay society maintenance and other charges online with ease</p>
         {role === "admin" && (
           <div className="mb-4 text-right">
             <button onClick={() => setShowAdminForm(true)} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -140,23 +142,23 @@ const PaymentSection = () => {
                   {/* <td className="border border-gray-300 px-4 py-2 text-center">
                     {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
                   </td> */}
-                  <td className="border border-gray-300 px-4 py-2 text-center">
+                  <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
                     {/* {payment.status === "Pending" && (
                       <button onClick={() => markAsPaid(payment._id)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Pay Now</button>
                     )} */}
+                        {
+                         isPaid===false &&
+                         <Link 
+                         to={`/layout/payPayment/${payment._id}`}
+                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                         Pay
+                         </Link>
+                        }
                     {role === "admin" && (
                       <button onClick={() => deletePayment(payment._id)} className="text-red-600 hover:text-red-800">
-                        <X size={20} />
+                        <RiDeleteBin6Fill size={20} />
                       </button>
                     )}
-                    {
-                     isPaid===false &&
-                     <Link 
-                     to={`/layout/payPayment/${payment._id}`}
-                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                     Pay
-                     </Link>
-                    }
                   </td>
                 </tr>
               ))}

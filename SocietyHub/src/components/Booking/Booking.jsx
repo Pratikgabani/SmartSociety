@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import PreviousDataModal from "../history/PreviousDataModal .jsx";
 import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
+import { RiDeleteBin6Fill } from "react-icons/ri";
 
 const Booking = () => {
   const [venues, setVenues] = useState([]);
@@ -174,14 +175,26 @@ const Booking = () => {
         { ...venueFormData },
         { withCredentials: true }
       );
-      toast.success("Venue created successfully!"); 
+      toast.success("Venue created successfully!");
       setVenues([...venues, response.data.data]);
       setIsVenueFormOpen(false);
     } catch (error) {
       console.error("Error creating venue:", error);
-      toast.error("Failed to create venue!"); 
+      toast.error("Failed to create venue!");
     }
   }
+
+  // Delete venue
+  const handleDeleteVenue = async (venueId) => {
+    try {
+      const response = await axios.delete(`http://localhost:8000/api/v1/booking/deleteVenue/${venueId}`, { withCredentials: true });
+      setVenues(venues.filter((venue) => venue._id !== venueId));
+      toast.success("Venue deleted successfully!"); // Toast for success
+    } catch (error) {
+      console.error("Error deleting venue:", error);
+      toast.error("Failed to delete venue!"); // Toast for error
+    }
+  };
 
   // Handle form submit
   const handleSubmit = async (e) => {
@@ -194,12 +207,12 @@ const Booking = () => {
         { withCredentials: true }
       );
 
-      toast.success("Booking created successfully!"); 
+      toast.success("Booking created successfully!");
       setMyBooking([...myBooking, response.data.data]);
       setIsFormOpen(false);
     } catch (error) {
       console.error("Error creating booking:", error);
-      toast.error("Failed to create booking!"); 
+      toast.error("Failed to create booking!");
     }
   };
   return (
@@ -236,11 +249,18 @@ const Booking = () => {
                   (venues.map((venue) => (
                     <div
                       key={venue._id}
-                      className="bg-white rounded-xl shadow-lg border-gray-200 hover:shadow-md transition-shadow p-6 "
+                      className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
                     >
                       <div className="flex flex-col h-full">
                         <div className="flex-1">
+                          <div className="flex justify-between items-center mb-3">
                           <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.venue}</h3>
+                          {isAdmin && (
+                            <button onClick={() => handleDeleteVenue(venue._id)} className="text-red-600 hover:text-red-800">
+                              <RiDeleteBin6Fill size={20} />
+                            </button>
+                          )}
+                          </div>
                           <p className="text-gray-600 text-sm mb-3">{venue.description}</p>
                           <div className="flex gap-2 mb-4 flex-wrap">
                             <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
@@ -284,50 +304,50 @@ const Booking = () => {
                 ) : myBooking.length === 0 ? (
                   <p>No upcoming bookings.</p>
 
-                ):
-                (myBooking.map((booking) => (
-                  <div
-                    key={booking._id}
-                    className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
-                  >
-                    <div className="flex flex-col h-full">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                          {booking.bookingType}
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-2">{booking.bookDescription}</p>
-                        <div className="space-y-1 text-sm mb-4">
-                          <p className="text-gray-500">
-                            ⏳ Duration: {booking.duration} hours
-                          </p>
-                          <p className="text-gray-500 pb-2">
-                            📅 Date: {new Date(booking.date).toLocaleDateString('en-GB')}
-                          </p>
-                          <span className={`inline-block px-2 py-1 rounded-full text-xs ${new Date(booking.date) >= Date.now()
+                ) :
+                  (myBooking.map((booking) => (
+                    <div
+                      key={booking._id}
+                      className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
+                    >
+                      <div className="flex flex-col h-full">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-gray-800 mb-2">
+                            {booking.bookingType}
+                          </h3>
+                          <p className="text-gray-600 text-sm mb-2">{booking.bookDescription}</p>
+                          <div className="space-y-1 text-sm mb-4">
+                            <p className="text-gray-500">
+                              ⏳ Duration: {booking.duration} hours
+                            </p>
+                            <p className="text-gray-500 pb-2">
+                              📅 Date: {new Date(booking.date).toLocaleDateString('en-GB')}
+                            </p>
+                            <span className={`inline-block px-2 py-1 rounded-full text-xs ${new Date(booking.date) >= Date.now()
                               ? 'bg-green-100 text-green-800'
                               : 'bg-gray-100 text-gray-800'
-                            }`}>
-                            {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
-                          </span>
+                              }`}>
+                              {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      {new Date(booking.date) >= Date.now() && (
-                        <div className="flex justify-between">
-                          <button
-                            onClick={() => handleDelete(booking._id)}
-                            className="mt-1 w-5/12 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
-                          >
-                            Cancel Reservation
-                          </button>
-                          <button className="mt-1 w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                            Pay now
-                          </button>
-                        </div>
+                        {new Date(booking.date) >= Date.now() && (
+                          <div className="flex justify-between">
+                            <button
+                              onClick={() => handleDelete(booking._id)}
+                              className="mt-1 w-5/12 px-1 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                            >
+                              Cancel Reservation
+                            </button>
+                            <button className="mt-1 w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                              Pay now
+                            </button>
+                          </div>
 
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )))}
+                  )))}
               </div>
             </section>
 
@@ -354,8 +374,8 @@ const Booking = () => {
                             📅 Date: {new Date(booking.date).toLocaleDateString()}
                           </p>
                           <span className={`inline-block px-2 py-1 rounded-full text-xs ${new Date(booking.date) >= Date.now()
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
                             }`}>
                             {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
                           </span>
@@ -420,7 +440,7 @@ const Booking = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Event Date
+                          Booking Date
                         </label>
                         <input
                           type="date"

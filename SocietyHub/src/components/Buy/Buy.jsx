@@ -156,19 +156,19 @@ const Buy = () => {
         </div>
       </div>
     ) : (
-      <div className="flex flex-col sm:flex-row my-40 container mx-auto">
+      <div className="flex flex-col justify-center sm:flex-row my-40 container ">
         <div className="w-full ml-64 mt-10 md:w-1/2">
           <h1 className="text-xl font-semibold underline">Order Details</h1>
           <div className="flex items-center text-center space-x-2 mt-4">
-            <h2 className="text-gray-600 text-sm">Total Price</h2>
+            <h2 className="text-gray-600 text-md">Total Price</h2>
             <p className="text-red-500 font-bold">${payment.amount}</p>
           </div>
           <div className="flex items-center text-center space-x-2">
-            <h1 className="text-gray-600 text-sm">payment name</h1>
+            <h1 className="text-gray-600 text-md">Payment name : </h1>
             <p className="text-red-500 font-bold">{payment.description}</p>
           </div>
         </div>
-        <div className="w-full md:w-1/2 flex justify-center items-center">
+        <div className="w-full">
           <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
             <h2 className="text-lg font-semibold mb-4">
               Process your Payment!

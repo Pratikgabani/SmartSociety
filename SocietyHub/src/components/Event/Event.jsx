@@ -74,7 +74,7 @@ function Event() {
   }, []);
 
   // Fetch past events
-    useEffect(() => {
+  useEffect(() => {
       const fetchPastEvents = async () =>{
         try {
           const response = await axios.get(
@@ -394,7 +394,7 @@ function Event() {
                     </p>
 
                     <p className="text-gray-700 min-h-[20px]">
-                      No. of Houses Ready: {event.totalHouseReady}
+                      Houses Ready: {event.totalHouseReady}
                     </p>
 
                     <p className="text-gray-700 min-h-[20px]">
@@ -412,7 +412,7 @@ function Event() {
                           : "bg-green-500 hover:bg-green-600" // "I am not ready" state
                       }`}
                     >
-                      {readyState[event._id] ? "I'm not ready" : "I'm ready"}
+                      {readyState[event._id] ? "I'm Not Ready" : "I'm ready"}
                     </button>
 
                     {/* Show "Pay Now" button only when user is NOT ready */}
@@ -508,6 +508,7 @@ function Event() {
                   </div>
            )}   
     </div>
+    
   );
 }
 

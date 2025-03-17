@@ -93,6 +93,37 @@ const getVenue = asyncHandler(async (req , res) => {
     .json(new ApiResponse(200 , allVenues , "Venues found successfully"))
 })
 
+const deleteVenue = asyncHandler(async (req , res) => {
+    const {venueId} = req.params;
+
+    if(!venueId.trim()){
+        throw new ApiError(400 , "Venue Id is required")
+    }
+
+    const role = req.user?.role
+
+    if(role !== "admin"){
+        throw new ApiError(403 , "You are not authorized to delete a venue")
+    }
+
+    // Check if the venue exists
+    const venue = await Venue.findOne({_id : venueId , societyId: req.user?.societyId});
+
+    if(!venue){
+        throw new ApiError(404 , "Venue not found")
+    }
+
+    const deletedVenue = await Venue.findByIdAndDelete(venueId);
+
+    if(!deletedVenue){
+        throw new ApiError(500 , "Failed to delete venue")
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200 , deletedVenue , "Venue deleted successfully"))
+})
+
 const getBookings = asyncHandler(async (req, res) => {
     const allBookings = await Booking.find({ societyId: req.user?.societyId })
         .sort({ date: -1 }) // Sort by date in descending order
@@ -240,4 +271,4 @@ const deleteBooking = asyncHandler(async (req, res) => {
 
 // })
 
-export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId}
+export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , deleteVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId}
