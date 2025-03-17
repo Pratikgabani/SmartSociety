@@ -10,10 +10,10 @@ const createSocietyDetail = asyncHandler(async (req, res) => {
         throw new ApiError(400 , "All fields are required")
     }
 
-    // const existingSocietyDetail = await SocietyDetail.findOne({societyId})
-    // if(existingSocietyDetail){
-    //     throw new ApiError(400 , "Society detail already exists")
-    // }
+    const existingSocietyDetail = await SocietyDetail.findOne({societyId})
+    if(existingSocietyDetail){
+        throw new ApiError(400 , "Society ID already exists")
+    }
 
     const newSocietyDetail = await SocietyDetail.create({
         societyId,

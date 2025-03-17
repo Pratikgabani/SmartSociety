@@ -1,6 +1,3 @@
-
-
-
 import bcrypt from 'bcrypt';
 import {User}  from '../models/user.models.js'; // Adjust the import path
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -79,20 +76,29 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 })
 
- const registerUser = asyncHandler (async (req, res) => {
+const registerUser = asyncHandler (async (req, res) => {
     const {
       block,
       houseNo,
       password,
       societyId,
       email,
+      name,
       role,
       rolePass,
-      nameOfPersons,
       phoneNo,
-      numberOfVeh,
-      vehicleNo
+      phoneNo2
     } = req.body;
+
+    if (!block || !houseNo || !password || !societyId || !email || !name || !role || !phoneNo) {
+      throw new ApiError(400, "All fields are required");
+    }
+
+    // Check if society exists
+    const existingSociety = await SocietyDetail.findOne({ societyId });
+    if (!existingSociety) {
+      throw new ApiError(400, "Society not found");
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -101,7 +107,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     // Check if house number is unique within the society
-    const existingHouse = await User.findOne({ societyId, houseNo });
+    const existingHouse = await User.findOne({ societyId, houseNo , block });
     if (existingHouse) {
       return res.status(400).json({ 
         message: 'House number already registered in this society' 
@@ -132,12 +138,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       password,
       societyId,
       email,
+      name,
       role,
       rolePass,
-      nameOfPersons,
       phoneNo,
-      numberOfVeh,
-      vehicleNo
+      phoneNo2
     });
     
     const userResponse = await User.findById(newUser._id).select(
@@ -163,20 +168,15 @@ const {email, password } = req.body;
 //   throw new ApiError(400 , "Security already registered")
 // }
 
-// const user = await User.findOne({email}) 
-// // console.log(user)
-// if(!user){
-//   throw new ApiError(400, "User not found")
-// }
-
 const user = await User.findOne({email}) || await Security.findOne({email})
 if(!user){
   throw new ApiError(400, "User not found")
 }
+
 const isPasswordValid = await user.isPasswordCorrect(password)
 // console.log(password)
 if(!isPasswordValid){
-  throw new ApiError(400 , "Invalid password")
+  throw new ApiError(401 , "Invalid password")
 }
 
 // const isMatch = await bcrypt.compare(password, user.password);
@@ -201,9 +201,6 @@ return res
 .cookie("refreshToken" , refreshToken , options)
 .json(new ApiResponse(200 , {user : loggedInUser , accessToken, refreshToken} , "User Logged in successfully")
 )
-
-
-
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -256,8 +253,7 @@ const changeCurrentPassword = asyncHandler(async (req , res) =>{
   
 })
 
-
-  const updateAccountDetails = asyncHandler(async(req, res) => {
+const updateAccountDetails = asyncHandler(async(req, res) => {
     const {phoneNo , vehicleNo , numberOfVeh} = req.body
 
     if (!vehicleNo || !numberOfVeh || !phoneNo) {

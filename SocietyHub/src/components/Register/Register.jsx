@@ -13,7 +13,18 @@ import { Phone } from 'lucide-react';
 const Register = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState({});
-  const validateObject = Yup.object({
+  const [formData, setFormData] = useState({
+    block: '',
+    houseNo: '',
+    password: '',
+    societyId: '',
+    email: '',
+    role: 'user', // Default role
+    name:'',
+    phoneNo: '',
+    phoneNo2: '',
+  });
+  const validationSchema = Yup.object({
     block: Yup.string()
       .max(1, 'Block must be at most 1 character')
       .matches(/^[A-Za-z]$/, "Must be a single alphabet character")
@@ -57,18 +68,6 @@ const Register = () => {
 
   });
 
-  const [formData, setFormData] = useState({
-    block: '',
-    houseNo: '',
-    password: '',
-    societyId: '',
-    email: '',
-    role: 'user', // Default role
-    name:'',
-    phoneNo: '',
-    phoneNo2: '',
-  });
-
   useEffect(() => {
     const token = localStorage.getItem('user');
     if (token) {
@@ -80,7 +79,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await validateObject.validate(formData, { abortEarly: false });
+      await validationSchema.validate(formData, { abortEarly: false });
       const response = await axios.post(
         'http://localhost:8000/api/v1/users/register',
         {
@@ -97,20 +96,20 @@ const Register = () => {
       // toast.success(response.data.message);
       navigate('/login');
     } catch (error) {
-      // if (error.response) {
-      //   setErrorMessage(error.response.data.errors || 'Signup failed!!!');
-      // }
+      if (error.response) {
+        setErrorMessage(error.response.data.errors || 'Signup failed!!!');
+      }
 
-      const errors = {};
-      error.inner.forEach((e) => {
-        errors[e.path] = e.message;
-      });
+      // const errors = {};
+      // error.inner.forEach((e) => {
+      //   errors[e.path] = e.message;
+      // });
 
-      setErrorMessage(errors);
+      setErrorMessage(error);
 
       console.log('Signup failed:a ', errorMessage);
 
-      console.log('Signup failed: ', error.inner);
+      console.log('Signup failed: ', error);
     }
   };
 
@@ -262,7 +261,7 @@ const Register = () => {
             </div>
             <button
               type="submit"
-              className="mt-4 bg-blue-500 text-white py-2 font-bold rounded-lg w-full"
+              className="mt-4 bg-blue-600 text-white py-2 font-bold rounded-lg w-full hover:bg-blue-700"
             >
               Register
             </button>

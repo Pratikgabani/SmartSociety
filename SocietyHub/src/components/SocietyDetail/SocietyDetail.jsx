@@ -33,9 +33,10 @@ const SocietyDetails = () => {
       // toast.success(response.data.message);
       navigate("/register");
     } catch (error) {
-      if (error.response) {
-        setErrorMessage(error.response.data.errors || "start failed!!!");
-      }
+      // if (error.response) {
+      //   setErrorMessage(error.response.data.errors || "start failed!!!");
+      // }
+      console.log(error);
     }
   };
 
@@ -99,7 +100,7 @@ const SocietyDetails = () => {
             required
           />
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded font-semibold">
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded font-semibold">
           Submit
         </button>
       </form>
