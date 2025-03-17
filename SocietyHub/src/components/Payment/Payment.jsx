@@ -125,7 +125,7 @@ const PaymentSection = () => {
                 <th className="border border-gray-300 px-4 py-2">Status</th>
                 <th className="border border-gray-300 px-4 py-2">Payment Date</th>
                 <th className="border border-gray-300 px-4 py-2">Due Date</th>
-                <th className="border border-gray-300 px-4 py-2">Receipt</th>
+                {/* <th className="border border-gray-300 px-4 py-2">Receipt</th> */}
                 <th className="border border-gray-300 px-4 py-2">Action</th>
               </tr>
             </thead>
@@ -137,9 +137,9 @@ const PaymentSection = () => {
                   <td className={`border border-gray-300 px-4 py-2 text-center ${payment.status === "Paid" ? "text-green-600" : "text-red-600"}`}>{payment.status}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{payment.paymentDate ? new Date(payment.paymentDate).toLocaleString() : "-"}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
+                  {/* <td className="border border-gray-300 px-4 py-2 text-center">
                     {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
-                  </td>
+                  </td> */}
                   <td className="border border-gray-300 px-4 py-2 text-center">
                     {/* {payment.status === "Pending" && (
                       <button onClick={() => markAsPaid(payment._id)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Pay Now</button>
@@ -158,9 +158,6 @@ const PaymentSection = () => {
                      </Link>
                     }
                   </td>
-                 {/* <div className="flex flex-col items-center justify-center ">
-                
-                 </div> */}
                 </tr>
               ))}
             </tbody>

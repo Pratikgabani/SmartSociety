@@ -1,7 +1,7 @@
 import { SourceCode } from "eslint";
 import mongoose, { Schema } from "mongoose";
 
-// Define the Payment Schema
+
 const paymentSchema = new mongoose.Schema({
   societyId : {
     type : String,
@@ -34,7 +34,3 @@ const paymentSchema = new mongoose.Schema({
 });
 
 export const Payment = mongoose.model('Payment', paymentSchema);
-
-
-
-
