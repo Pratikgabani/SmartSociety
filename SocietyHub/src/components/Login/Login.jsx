@@ -192,8 +192,8 @@ function Login() {
 
         {/* Right Image Section */}
         <div className="hidden md:flex md:w-1/2 md:flex-col md:gap-4 md:pl-6">
-          <img src={building1} alt="Building 1" className=" rounded-lg " />
-          <img src={building2} alt="Building 2" className=" rounded-lg" />
+          <img src={building1} alt="Building 1" className=" rounded-lg h-72" />
+          <img src={building2} alt="Building 2" className=" rounded-lg h-72" />
         </div>
       </div>
     </div>
