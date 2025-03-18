@@ -1,10 +1,10 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PreviousDataModal from '../history/PreviousDataModal ';
-import {  X } from "lucide-react"; // Import cross icon
+import { X } from "lucide-react"; // Import cross icon
 import { RiDeleteBin6Fill, RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
@@ -12,33 +12,53 @@ const PaymentSection = () => {
   const [loading, setLoading] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
 
- 
-  
+
+
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
   const role = user?.data?.user?.role;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [previousData, setPreviousData] = useState([]);
+  const [kaam, setKaam] = useState([]);
   useEffect(() => {
+
+    const fetchTimeAndDate = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/v1/purchase/getAllPurchases", { withCredentials: true });
+        // Update API URL) // Update API URL
+        setKaam(response.data.data);
+
+        // Open modal after fetching
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchTimeAndDate();
     fetchPayments();
+
   }, []);
 
 
 
- 
+
   const fetchPayments = async () => {
     setLoading(true);
     try {
-    
+
 
       const response = await axios.get("http://localhost:8000/api/v1/payment/getPayments", {
-       
+
         withCredentials: true,
       });
       setPayments(response.data.data);
-      // if(payments.paidBy.includes(user.data.user._id)){
+      // console.log(payments[0].paidBy.includes(user.data.user._id));
+      // if(payments[0].paidBy.includes(user.data.user._id)){
       //   setIsPaid(true);
       // }
+      // if(payments.paidBy.some(id => id.$oid === user.data.user._Id)){
+
+      // }
+
     } catch (error) {
       console.error("Error fetching payments:", error);
     }
@@ -47,13 +67,13 @@ const PaymentSection = () => {
 
 
 
-  const fetchPreviousData = async () => {
-    
+  const fetchPreviousData = async (a) => {
+
     try {
-     const response = await axios.get("http://localhost:8000/api/v1/purchase/getAllPurchases",{withCredentials: true});
+      const response = await axios.get("http://localhost:8000/api/v1/purchase/getAllPurchases", { withCredentials: true });
       // Update API URL) // Update API URL
       setPreviousData(response.data.data);
-      
+
       setIsModalOpen(true); // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -75,6 +95,22 @@ const PaymentSection = () => {
   const handleNewPaymentChange = (e) => {
     setNewPayment({ ...newPayment, [e.target.name]: e.target.value });
   };
+
+  const paymentStatus = (payId) => {
+    if (kaam.length > 0) {
+      if (kaam.some(purchase => purchase.paymentId._id === payId)) {
+        return "Paid";
+      }
+    }
+  }
+  const paymentDateLaao = (payId) => {
+    if (kaam.length > 0) {
+      if (kaam.some(purchase => purchase.paymentId._id === payId)) {
+        const date = kaam.find(purchase => purchase.paymentId._id === payId).paidOn;
+        return new Date(date).toLocaleDateString("en-GB");
+      }
+    }
+  }
 
   const addPayment = async () => {
     try {
@@ -136,8 +172,8 @@ const PaymentSection = () => {
                 <tr key={payment._id} className="border border-gray-300">
                   <td className="border border-gray-300 px-4 py-2 text-center">{payment.description}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
-                  <td className={`border border-gray-300 px-4 py-2 text-center ${payment.status === "Paid" ? "text-green-600" : "text-red-600"}`}>{payment.status}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">{payment.paymentDate ? new Date(payment.paymentDate).toLocaleString() : "-"}</td>
+                  <td className="border border-gray-300 px-4 py-2 text-center ">{paymentStatus(payment._id)}</td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
                   {/* <td className="border border-gray-300 px-4 py-2 text-center">
                     {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
@@ -146,14 +182,14 @@ const PaymentSection = () => {
                     {/* {payment.status === "Pending" && (
                       <button onClick={() => markAsPaid(payment._id)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Pay Now</button>
                     )} */}
-                        {
-                         isPaid===false &&
-                         <Link 
-                         to={`/layout/payPayment/${payment._id}`}
-                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                         Pay
-                         </Link>
-                        }
+                    {
+
+                      <Link
+                        to={`/layout/payPayment/${payment._id}`}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Pay
+                      </Link>
+                    }
                     {role === "admin" && (
                       <button onClick={() => deletePayment(payment._id)} className="text-red-600 hover:text-red-800">
                         <RiDeleteBin6Fill size={20} />
@@ -167,12 +203,13 @@ const PaymentSection = () => {
         )}
       </div>
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-<PreviousDataModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        data={previousData}
-      />
+        <PreviousDataModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          data={previousData}
+        />
       </div>
+      
     </div>
   );
 };
