@@ -146,4 +146,13 @@ console.log(process.env.STRIPE_SECRET_KEY);
       });
   });  
 
-export { getPayments, getUserPayments, createPayment,  deletePayment, updatePayment  , payPayment};
+  const getAdminData = async (req, res) => {
+    try {
+      const payments = await Payment.find({societyId : req.user.societyId}).populate("paidBy" , "name email");
+      res.status(200).json(new ApiResponse(200, payments, "Payments fetched successfully"));
+    } catch (error) {
+      throw new ApiError(500, "Failed to fetch payments");
+    }
+  };
+
+export { getPayments, getUserPayments, createPayment,  deletePayment, updatePayment, getAdminData  , payPayment};

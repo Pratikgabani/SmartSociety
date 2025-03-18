@@ -11,14 +11,16 @@ const PaymentSection = () => {
   const [newPayment, setNewPayment] = useState({ description: "", amount: "", dueDate: "" });
   const [loading, setLoading] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
-
+  
 
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
   const role = user?.data?.user?.role;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [previousData, setPreviousData] = useState([]);
+  const [fetchAgain, setFetchAgain] = useState([]);
   const [kaam, setKaam] = useState([]);
   useEffect(() => {
 
@@ -65,7 +67,18 @@ const PaymentSection = () => {
     setLoading(false);
   };
 
+  const fetchAgainData = async (a) => {
 
+    try {
+      const response = await axios.get("http://localhost:8000/api/v1/payment/getAdminData", { withCredentials: true });
+      // Update API URL) // Update API URL
+      setFetchAgain(response.data.data);
+
+      setIsAdminModalOpen(true); // Open modal after fetching
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const fetchPreviousData = async (a) => {
 
@@ -174,7 +187,7 @@ const PaymentSection = () => {
                   <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center ">{paymentStatus(payment._id)}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString()}</td>
                   {/* <td className="border border-gray-300 px-4 py-2 text-center">
                     {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
                   </td> */}
@@ -209,7 +222,13 @@ const PaymentSection = () => {
           data={previousData}
         />
       </div>
-      
+      <div><button onClick={fetchAgainData} className='absolute top-8 right-32 rounded-lg px-3 py-2 bg-blue-400'>All data</button>
+        <PreviousDataModal
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+          data={fetchAgain}
+        />
+      </div>
     </div>
   );
 };
