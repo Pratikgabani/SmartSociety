@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import axios from "axios"
-import PreviousDataModal from '../history/PreviousDataModal ';
+import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 const PollApp = () => {
   const [polls, setPolls] = useState([])
   const [question, setQuestion] = useState("")
@@ -208,7 +208,7 @@ const PollApp = () => {
         ))}
       </div>
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-<PreviousDataModal
+<PratikPreviousDataModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         data={previousData}

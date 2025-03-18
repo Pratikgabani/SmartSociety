@@ -23,6 +23,14 @@ const createVisitor = asyncHandler(async (req, res) => {
         if(!visitorName || !visitorPhone || !visitingAdd || !purpose ){
             throw new ApiError(400 , "All fields are required")
         }
+        const haiKiNai = await User.find({ houseNo: visitingAdd, block: visitingBlock });
+
+console.log("user", haiKiNai); // Log properly for debugging
+
+if (haiKiNai.length === 0) {  // Check if the array is empty
+    throw new ApiError(400, "User not found");
+}
+
 
         const newVisitor = await Visitor.create({
             visitorName,

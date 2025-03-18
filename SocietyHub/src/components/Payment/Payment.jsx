@@ -140,10 +140,10 @@ const PaymentSection = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto  px-4 py-8">
       <div className="w-full  ">
-        <h1 className="text-3xl font-bold text-gray-800">Payments </h1>
-        <p className="text-gray-600 text-lg">Securely pay society maintenance and other charges online with ease</p>
+        <h1 className="text-3xl font-bold text-gray-800 ">Payments </h1>
+        <p className="text-gray-600 text-lg mt-1">Securely pay society maintenance and other charges online with ease</p>
         {role === "admin" && (
           <div className="mb-4 text-right">
             <button onClick={() => setShowAdminForm(true)} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -168,7 +168,7 @@ const PaymentSection = () => {
         )}
 
         {loading ? <p className="text-center text-gray-500">Loading...</p> : (
-          <table className="w-full border-collapse border border-gray-300">
+          <table className="w-full border-collapse border border-gray-300 mt-10">
             <thead>
               <tr className="bg-blue-100">
                 <th className="border border-gray-300 px-4 py-2">Description</th>

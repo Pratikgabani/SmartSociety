@@ -8,7 +8,7 @@ function Visitor() {
     visitorName: '',
     visitorPhone: '',
     visitingBlock: '',
-    visitingAdd: '',
+    visitingAdd: null,
     purpose: '',
     visitDate: '',
     visitTime: '',
