@@ -187,7 +187,7 @@ const PaymentSection = () => {
                   <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center ">{paymentStatus(payment._id)}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString()}</td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
                   {/* <td className="border border-gray-300 px-4 py-2 text-center">
                     {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
                   </td> */}
@@ -222,13 +222,17 @@ const PaymentSection = () => {
           data={previousData}
         />
       </div>
-      <div><button onClick={fetchAgainData} className='absolute top-8 right-32 rounded-lg px-3 py-2 bg-blue-400'>All data</button>
+     {
+      role === "admin" && (
+        <div><button onClick={fetchAgainData} className='absolute top-8 right-32 rounded-lg px-3 py-2 bg-blue-400'>All data</button>
         <PreviousDataModal
           isOpen={isAdminModalOpen}
           onClose={() => setIsAdminModalOpen(false)}
           data={fetchAgain}
         />
       </div>
+      )
+     }
     </div>
   );
 };

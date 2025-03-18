@@ -96,16 +96,17 @@ const Register = () => {
       // toast.success(response.data.message);
       navigate('/login');
     } catch (error) {
+    
       if (error.response) {
         setErrorMessage(error.response.data.errors || 'Signup failed!!!');
       }
 
-      // const errors = {};
-      // error.inner.forEach((e) => {
-      //   errors[e.path] = e.message;
-      // });
+      const errors = {};
+      error.inner.forEach((e) => {
+        errors[e.path] = e.message;
+      });
 
-      setErrorMessage(error);
+      setErrorMessage(errors);
 
       console.log('Signup failed:a ', errorMessage);
 
@@ -145,7 +146,7 @@ const Register = () => {
 
                   className="w-full p-2 border border-gray-300 rounded"
                 />
-                {errorMessage && <p className="text-red-500">{errorMessage.houseNo}</p>}
+                {errorMessage.houseNo && <p className="text-red-500">{errorMessage.houseNo}</p>}
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Password</label>
