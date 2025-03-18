@@ -134,13 +134,14 @@ const role = roled?.data?.user?.role
   
 
   return (
-    <div className="max-w-3xl relative mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4">Announcements & Notices</h2>
-      
+    <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
+      <h2 className="text-3xl font-bold mb-2">Announcements & Notices</h2>
+      {/* One liner for announcements and notices */}
+      <p className="text-gray-600 text-lg"> Stay informed with important society announcements and notices at one place. </p>
       {/* Notice Form */}
      {
         role === "admin" && (
-            <div className="bg-white shadow-lg rounded-xl p-4 mb-6">
+            <div className="bg-white shadow-lg rounded-xl p-4 mb-6 mt-4">
             <h3 className="text-lg font-medium mb-2">Add a Notice</h3>
             <input 
               type="text" 
@@ -157,7 +158,7 @@ const role = roled?.data?.user?.role
             />
             <button 
               onClick={handleAddNotice} 
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
               Add Notice
             </button>

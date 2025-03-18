@@ -106,8 +106,8 @@ const PollApp = () => {
 
   return (
     <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
-      <div className="w-[80%] ">
-        <h1 className="text-3xl font-bold ">Polls & Voting</h1>
+      <div className=" ">
+        <h1 className="text-3xl font-bold mb-2">Polls & Voting</h1>
         <p className="text-gray-600 text-lg">Effortlessly create and participate in society polls for collective decision-making</p>
         {role === "admin" && (
           <div className="bg-white rounded-lg shadow-md mt-4 mb-8 p-6">
@@ -160,7 +160,7 @@ const PollApp = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                 >
                   Create Poll
                 </button>
@@ -173,7 +173,7 @@ const PollApp = () => {
         {polls.map((poll) => (
           
           <div key={poll._id} className="bg-white rounded-lg relative shadow-md mb-6 p-6">
-            <h3 className="text-xl font-bold mb-4">{poll.question}</h3>
+            <h3 className="text-xl font-semibold mb-4">{poll.question}</h3>
             <div className="space-y-2">
               {poll.options.map((opt) => (
                 <button
@@ -182,10 +182,11 @@ const PollApp = () => {
                   className="w-full p-3 bg-gray-100 text-left rounded-md hover:bg-gray-200 transition-colors flex justify-between items-center"
                 >
                   <span>{opt.option}</span>
-                  <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">{opt.percent} %</span>
+                  <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs">{opt.percent} %</span>
                 </button>
               ))}
             </div>
+            <div className="flex justify-between">
             {role === "admin" && (
               <button
                 onClick={() => handleDeletePoll(poll._id)}
@@ -198,12 +199,14 @@ const PollApp = () => {
               role === "admin" && (
                 <button
                 onClick={() => handleClosePoll(poll._id)}
-                className="mt-4 px-4 py-2 bg-green-500 absolute bottom-4 right-2 text-white rounded-md hover:bg-green-600 transition-colors"
+                className="mt-4 px-4 py-2 bg-green-500  text-white rounded-md hover:bg-green-600 transition-colors"
               >
                 Close Poll
               </button>
               )
             }
+
+            </div>
           </div>
         ))}
       </div>

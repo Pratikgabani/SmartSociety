@@ -187,18 +187,18 @@ function Event() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50">
       <Toaster />
       {isLoggedIn ? (
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Events</h1>
+          <h1 className="text-3xl font-bold text-gray-800  mb-2">Events</h1>
           <p className="text-gray-600 text-lg">Stay updated with society events and celebrations</p>
 
           <div className="flex justify-between items-center">
             <h3 className="text-2xl font-semibold mt-4">Upcoming Events</h3>
             {isAdmin && (
               <button
-                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+                className="bg-blue-600 text-white font-semibold py-2 px-4 rounded mt-4"
                 onClick={() => setShowAddEventForm(!showAddEventForm)}
               >
                 {showAddEventForm ? "Cancel" : "Add Event"}
@@ -406,18 +406,18 @@ function Event() {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleToggleReady(event._id)}
-                      className={`flex-1 py-2 rounded-lg font-bold text-white ${
+                      className={`flex-1 py-2 rounded-lg font-semibold text-white ${
                         readyState[event._id]
                           ? "bg-red-600 hover:bg-red-700" // "I am ready" state
                           : "bg-green-500 hover:bg-green-600" // "I am not ready" state
                       }`}
                     >
-                      {readyState[event._id] ? "I'm Not Ready" : "I'm ready"}
+                      {readyState[event._id] ? "Not Ready" : "I'm ready"}
                     </button>
 
                     {/* Show "Pay Now" button only when user is NOT ready */}
                     {readyState[event._id] && (
-                      <button className="flex-1 py-2 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700">
+                      <button className="flex-1 py-2 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700">
                         Pay Now
                       </button>
                     )}
@@ -426,7 +426,7 @@ function Event() {
                     {isAdmin && (
                       <button
                         onClick={() => handleDeleteEvent(event._id)}
-                        className="flex-1 py-2 rounded-lg font-bold text-white bg-red-600 hover:bg-red-700"
+                        className="flex-1 py-2 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700"
                       >
                         Delete Event
                       </button>

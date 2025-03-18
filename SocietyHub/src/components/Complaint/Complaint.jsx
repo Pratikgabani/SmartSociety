@@ -109,25 +109,24 @@ function Complaint() {
   };
 
   return (
-    <div className="min-h-screen relative w-full bg-gray-100 text-gray-900">
+    <div className="min-h-screen relative px-4 py-8 w-full text-gray-900 bg-gray-50 ">
       <Toaster />
-      <header className="bg-blue-800 shadow-md p-6 text-white text-center text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">
         Complaints Management
-      </header>
+      </h1>
+      <p className="text-gray-600 text-lg">Easily submit, track, and resolve resident complaints for a hassle-free living experience.</p>
 
-      <main className="max-w-5xl mx-auto p-8">
-        <div className="flex justify-between items-center mb-6">
+      <main className="max-w-5xl">
+        <div className="flex justify-between items-center m-6">
           
-            <button onClick={() => setIsFormOpen(true)} className="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-teal-600 transition duration-200">
-              <Plus size={18} /> Add Complaint
+            <button onClick={() => setIsFormOpen(true)} className="bg-blue-600 font-semibold text-white px-4 py-2 rounded shadow-lg hover:bg-blue-700 transition duration-200">
+              Add Complaint
             </button>
-          
-          
         </div>
 
         <div className="space-y-4 relative">
           {complaints.map((complaint) => (
-            <div key={complaint._id} className="bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            <div key={complaint._id} className="bg-white p-6 rounded-xl shadow-md">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">{complaint.subject}</h3>
                 <span className={`px-3 py-1 text-sm rounded-full ${complaint.isResolved ? "bg-green-200 text-green-800" : "bg-orange-200 text-orange-800"}`}>
@@ -136,7 +135,7 @@ function Complaint() {
               </div>
               <p className="text-gray-700 mt-2">{complaint.description}</p>
               {complaint.proof && (
-                <a href={complaint.proof} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline block mt-2">
+                <a href={complaint.proof} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-semibold hover:underline block mt-2">
                   View Proof
                 </a>
               )}
@@ -154,7 +153,7 @@ function Complaint() {
                     </div>
                     )
                   }
-                  <button  onClick={() => handleDelete(complaint._id)} className=" absolute bottom-0 right-0 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-600 transition duration-200">delete</button>
+                  <button  onClick={() => handleDelete(complaint._id)} className=" absolute bottom-0 right-0 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-600 transition duration-200">Delete</button>
                 
               </div>
             </div>
@@ -175,7 +174,7 @@ function Complaint() {
                 <input type="text" name="subject" placeholder="Subject" required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"/>
                 <textarea name="description" placeholder="Description" required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"></textarea>
                 <input type="file" name="proof" accept="image/*,video/*" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" onChange={(e) => setFile(e.target.files[0])}/>
-                <button type="submit" className="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition duration-200">
+                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">
                   Submit
                 </button>
               </form>

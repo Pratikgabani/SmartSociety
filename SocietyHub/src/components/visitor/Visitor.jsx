@@ -260,7 +260,7 @@ function Visitor() {
 
       {/* Existing UI */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Visitor Management</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Visitor Management</h1>
         <p className="text-gray-600 text-lg">Manage and track your visitors</p>
       </div>
 
@@ -306,7 +306,7 @@ function Visitor() {
                   </div>
                 </td> */}
                 <td className='px-6 py-4'>{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-" }</td>
-                <td className="px-6 py-4 text-green-600">Active</td>
+                <td className="px-6 py-4 text-green-600 font-semibold">Active</td>
                 <td className='px-6 py-4 text-black'>{visitor.visitorPhone}</td>
                 {roles === "security" && (
                   <td className="px-6 py-4 flex gap-2">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PreviousDataModal from '../history/PreviousDataModal ';
-import { X } from "lucide-react"; // Import cross icon
+import { Plus, X } from "lucide-react"; // Import cross icon
 import { RiDeleteBin6Fill, RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -113,7 +113,7 @@ const PaymentSection = () => {
     if (kaam.length > 0) {
       if (kaam.some(purchase => purchase.paymentId._id === payId)) {
         return "Paid";
-      }
+      }else return "Pending"
     }
   }
   const paymentDateLaao = (payId) => {
@@ -142,12 +142,13 @@ const PaymentSection = () => {
   return (
     <div className="container mx-auto  px-4 py-8">
       <div className="w-full  ">
-        <h1 className="text-3xl font-bold text-gray-800 ">Payments </h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Payments </h1>
         <p className="text-gray-600 text-lg mt-1">Securely pay society maintenance and other charges online with ease</p>
         {role === "admin" && (
-          <div className="mb-4 text-right">
-            <button onClick={() => setShowAdminForm(true)} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-              Create New Payment
+          <div className="mb-4 flex justify-between items-center">
+            <h3 className="text-2xl font-semibold mt-4">My Payments</h3>
+            <button onClick={() => setShowAdminForm(true)} className="bg-blue-600 font-semibold text-white px-4 py-2 rounded hover:bg-blue-700">
+                 New Payment
             </button>
           </div>
         )}
@@ -185,7 +186,7 @@ const PaymentSection = () => {
                 <tr key={payment._id} className="border border-gray-300">
                   <td className="border border-gray-300 px-4 py-2 text-center">{payment.description}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center ">{paymentStatus(payment._id)}</td>
+                  <td className = {paymentStatus(payment._id)==="Paid" ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold" : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"}>{paymentStatus(payment._id)}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
                   <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
                   {/* <td className="border border-gray-300 px-4 py-2 text-center">
@@ -199,12 +200,12 @@ const PaymentSection = () => {
 
                       <Link
                         to={`/layout/payPayment/${payment._id}`}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700">
                         Pay
                       </Link>
                     }
                     {role === "admin" && (
-                      <button onClick={() => deletePayment(payment._id)} className="text-red-600 hover:text-red-800">
+                      <button onClick={() => deletePayment(payment._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
                         <RiDeleteBin6Fill size={20} />
                       </button>
                     )}

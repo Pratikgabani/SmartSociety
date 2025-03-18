@@ -216,12 +216,12 @@ const Booking = () => {
     }
   };
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50">
       <Toaster />
       {
         isLoggedIn ? (
           <div className="">
-            <h1 className="text-3xl font-bold text-gray-800 ">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
               Venue Bookings
             </h1>
             <p className="text-gray-600 text-lg">Easily book society venues for your events and gatherings.</p>
@@ -234,7 +234,7 @@ const Booking = () => {
                 {isAdmin && (
                   <button
                     onClick={() => setIsVenueFormOpen(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mt-4  mb-4"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded mt-4  mb-4"
                   >
                     Add Venue
                   </button>
@@ -256,8 +256,8 @@ const Booking = () => {
                           <div className="flex justify-between items-center mb-3">
                           <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.venue}</h3>
                           {isAdmin && (
-                            <button onClick={() => handleDeleteVenue(venue._id)} className="text-red-600 hover:text-red-800">
-                              <RiDeleteBin6Fill size={20} />
+                            <button onClick={() => handleDeleteVenue(venue._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
+                              <RiDeleteBin6Fill  size={20} />
                             </button>
                           )}
                           </div>

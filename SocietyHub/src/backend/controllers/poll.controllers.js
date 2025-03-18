@@ -23,7 +23,7 @@ const createPoll = asyncHandler(async (req, res) => {
         options,
         date : new Date(),
         societyId : req.user.societyId,
-        owner : ownerName.nameOfPersons[0],
+        owner : ownerName.name,
     })
 
     if(!newPoll){
