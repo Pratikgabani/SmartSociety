@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import img1 from './../../assets/Rectangle95.png';
-import img2 from './../../assets/Rectangle99.png';
-import logo from './../../assets/logo.png';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import building1 from './../../assets/Rectangle95.png';
-import building2 from './../../assets/Rectangle99.png';
+import building2 from './../../assets/Rectangle97.jpg';
 import * as Yup from 'yup';
-import { Phone } from 'lucide-react';
+import toast from 'react-hot-toast';
+
 
 
 const Register = () => {
@@ -20,7 +18,7 @@ const Register = () => {
     societyId: '',
     email: '',
     role: 'user', // Default role
-    name:'',
+    name: '',
     phoneNo: '',
     phoneNo2: '',
   });
@@ -44,27 +42,27 @@ const Register = () => {
     societyId: Yup.string().required('Society ID is required'),
 
     email: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      'Invalid email format'
-    )
-    .required('Email is required'),
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        'Invalid email format'
+      )
+      .required('Email is required'),
 
     name: Yup.string()
-    .matches(/^[a-zA-Z]+( [a-zA-Z]+)+$/, 'Please enter your full name (first and last name required)')
-    .required('Full name is required'),
+      .matches(/^[a-zA-Z]+( [a-zA-Z]+)+$/, 'Please enter your full name (first and last name required)')
+      .required('Full name is required'),
 
 
     phoneNo: Yup.string()
-    .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits')
-    .required('Phone No is required'),
+      .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits')
+      .required('Phone No is required'),
 
-      // Optional
+    // Optional
     phoneNo2: Yup.string()
-    .transform((value) => (value === '' ? null : value))
-    .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits')
-    .notRequired() // Allows the field to be empty
-    .nullable(), 
+      .transform((value) => (value === '' ? null : value))
+      .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits')
+      .notRequired() // Allows the field to be empty
+      .nullable(),
 
   });
 
@@ -92,11 +90,12 @@ const Register = () => {
           },
         }
       );
+      toast.success("Signup successful!");
       console.log('Signup successful: ', response.data);
       // toast.success(response.data.message);
       navigate('/login');
     } catch (error) {
-    
+
       if (error.response) {
         setErrorMessage(error.response.data.errors || 'Signup failed!!!');
       }
@@ -149,19 +148,6 @@ const Register = () => {
                 {errorMessage.houseNo && <p className="text-red-500">{errorMessage.houseNo}</p>}
               </div>
               <div>
-                <label className="block mb-1 font-semibold">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={(e) => { setFormData({ ...formData, password: e.target.value }) }}
-                  placeholder="Password"
-
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-                {errorMessage && <p className="text-red-500">{errorMessage.password}</p>}
-              </div>
-              <div>
                 <label className="block mb-1 font-semibold">Society ID</label>
                 <input
                   type="text"
@@ -173,6 +159,20 @@ const Register = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
                 {errorMessage && <p className="text-red-500">{errorMessage.societyId}</p>}
+              </div>
+              <div className="">
+                <label className="block mb-1 font-semibold">Full Name </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={(e) => { setFormData({ ...formData, name: e.target.value }) }}
+                  placeholder="Full Name"
+
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+                {errorMessage && <p className="text-red-500">{errorMessage.name}</p>}
+
               </div>
               <div>
                 <label className="block mb-1 font-semibold">Email</label>
@@ -188,20 +188,19 @@ const Register = () => {
                 {errorMessage && <p className="text-red-500">{errorMessage.email}</p>}
 
               </div>
-              <div className="">
-              <label className="block mb-1 font-semibold">Full Name </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={(e) => { setFormData({ ...formData, name: e.target.value }) }}
-                placeholder="Full Name"
+              <div>
+                <label className="block mb-1 font-semibold">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={(e) => { setFormData({ ...formData, password: e.target.value }) }}
+                  placeholder="Password"
 
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-              {errorMessage && <p className="text-red-500">{errorMessage.name}</p>}
-
-            </div>
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+                {errorMessage && <p className="text-red-500">{errorMessage.password}</p>}
+              </div>
               <div>
                 <label className="block mb-1 font-semibold">Role</label>
                 <select
@@ -267,6 +266,14 @@ const Register = () => {
               Register
             </button>
           </form>
+          <div className="text-center mt-4">
+            <p>
+              Already have an account?{' '}
+              <a href="/login" className="text-blue-600 font-bold">
+                Login
+              </a>
+            </p>
+          </div>
         </div>
         {/* Right Image Section */}
         <div className="hidden md:flex md:w-1/2 md:flex-col md:gap-4 md:pl-6">

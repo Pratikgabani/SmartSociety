@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-// import { X } from "lucide-react"; // Import cross icon
 import {toast, Toaster} from "react-hot-toast";
 import { Link,useNavigate,useParams } from "react-router-dom";
 
@@ -20,12 +19,7 @@ const Buy = () => {
   const [cardError, setCardError] = useState("");
   const [error, setError] = useState("");
  ;
- const navigate = useNavigate();
-//  if(!token){
-//   navigate("/register");
-//  }
-
- 
+ const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchPayData = async () => {
