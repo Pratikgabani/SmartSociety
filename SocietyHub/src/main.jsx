@@ -6,7 +6,6 @@ import { createBrowserRouter,createRoutesFromElements } from "react-router-dom";
 import { Route, RouterProvider, BrowserRouter } from "react-router-dom";
 import Login from './components/Login/Login.jsx';
 import Register from './components/Register/Register.jsx';
-import Landing from './components/Landing/Landing.jsx';
 import Payment from './components/Payment/Payment.jsx';
 import Visitor from './components/Visitor/Visitor.jsx';
 import Complaint from './components/Complaint/Complaint.jsx';
@@ -42,7 +41,6 @@ const router = createBrowserRouter(
     <Route index element={<Dashboard />} />
     <Route path="dashboard" element={<Dashboard/>} />
     <Route path='OrgLanding' element={<OrgLanding/>} />
-    <Route path="Landing" element={<Landing />} />
    
      <Route path="Payment" element={<Payment />} />
      <Route path="payPayment/:paymentId" element={<Buy />} />
@@ -72,69 +70,3 @@ createRoot(document.getElementById('root')).render(
    </Elements>
 )
 
-
-
-// import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
-// import Dashboard from "./components/dashboard/dashboard.jsx";
-// import Polls from "./components/polls/polls.jsx";
-// import Payment from "./components/Payment/Payment.jsx"
-
-// export default function App() {
-//     return (
-//         <Router>
-//             <div className="flex">
-//                 {/* Sidebar - Fixed */}
-//                 <div className="w-64 h-screen fixed bg-gray-800 text-white p-4">
-//                     <h2 className="text-xl font-bold mb-4">My Sidebar</h2>
-//                     <ul>
-//                         <li>
-//                             <NavLink 
-//                                 to="/" 
-//                                 className={({ isActive }) => 
-//                                     `block p-3 rounded-lg cursor-pointer transition-colors ${
-//                                         isActive ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"
-//                                     }`
-//                                 }
-//                             >
-//                                 Dashboard
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink 
-//                                 to="/polls" 
-//                                 className={({ isActive }) => 
-//                                     `block p-3 rounded-lg cursor-pointer transition-colors ${
-//                                         isActive ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"
-//                                     }`
-//                                 }
-//                             >
-//                                 Profile
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink 
-//                                 to="/payments" 
-//                                 className={({ isActive }) => 
-//                                     `block p-3 rounded-lg cursor-pointer transition-colors ${
-//                                         isActive ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"
-//                                     }`
-//                                 }
-//                             >
-//                                 Settings
-//                             </NavLink>
-//                         </li>
-//                     </ul>
-//                 </div>
-
-//                 {/* Main Content - Page Section */}
-//                 <div className="ml-64 p-6 w-full">
-//                     <Routes>
-//                         <Route path="/" element={<Dashboard />} />
-//                         <Route path="/polls" element={<Polls />} />
-//                         <Route path="/payments" element={<Payment />} />
-//                     </Routes>
-//                 </div>
-//             </div>
-//         </Router>
-//     );
-// }
