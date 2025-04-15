@@ -97,9 +97,16 @@ const Booking = () => {
   // Fetch previous data (for admin only)
   const fetchPreviousData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/booking/all-Bookings", { withCredentials: true })
-      setPreviousData(response.data.data)
-      setIsModalOpen(true)
+      if(isAdmin) {
+        const response = await axios.get("http://localhost:8000/api/v1/booking/getPastBookings", { withCredentials: true });
+        setPreviousData(response.data.data);
+        setIsModalOpen(true); // Open modal after fetching
+      }
+      else {
+        const response = await axios.get("http://localhost:8000/api/v1/booking/getBookingsByUserId", { withCredentials: true });
+        setPreviousData(response.data.data);
+        setIsModalOpen(true); // Open modal after fetching
+      }
     } catch (error) {
       console.log("Error fetching data:", error);
     }
@@ -623,7 +630,7 @@ const Booking = () => {
       }
 
       {/* History */}
-      {isAdmin && (
+      {/* {isAdmin && ( */}
         <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
           <PratikPreviousDataModal
             isOpen={isModalOpen}
@@ -631,7 +638,7 @@ const Booking = () => {
             data={previousData}
           />
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 };

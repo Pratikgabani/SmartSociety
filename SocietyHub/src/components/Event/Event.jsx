@@ -97,9 +97,17 @@ function Event() {
   // Fetch previous events
   const fetchPreviousData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/events/getAllEvent", { withCredentials: true })
-      setPreviousData(response.data.data)
-      setIsModalOpen(true)
+      if(isAdmin){
+        const response = await axios.get("http://localhost:8000/api/v1/events/getAllEvent", { withCredentials: true });
+        setPreviousData(response.data.data);
+        setIsModalOpen(true); // Open modal after fetching
+      }
+      else{
+        const response = await axios.get("http://localhost:8000/api/v1/events/getPastEvents", { withCredentials: true });
+        setPreviousData(response.data.data);
+        setIsModalOpen(true); // Open modal after fetching
+
+      }
     } catch (error) {
       console.log("Error fetching data:", error);
     }
@@ -498,7 +506,7 @@ function Event() {
         <p className="text-gray-600">You are not logged in</p>
       )}
       {/* History */}
-      {isAdmin && (
+      {/* {isAdmin && ( */}
             <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
             <PratikPreviousDataModal
                     isOpen={isModalOpen}
@@ -506,7 +514,7 @@ function Event() {
                     data={previousData}
                   />
                   </div>
-           )}   
+           {/* )}    */}
     </div>
     
   );

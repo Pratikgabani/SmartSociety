@@ -38,7 +38,7 @@ function Layout() {
         <button onClick={toggleSidebar}>
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-        <h1 className='text-lg font-semibold'>ResiHub</h1>
+        <h1 className='text-3xl font-bold'>ResiHub</h1>
       </div>
 
       {/* Sidebar */}

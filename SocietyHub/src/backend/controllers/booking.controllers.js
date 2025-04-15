@@ -180,7 +180,7 @@ const getPastBookings = asyncHandler(async (req, res) => {
     const allBooking = await Booking.find({
         societyId: req.user?.societyId,
         date: { $lt: new Date() },
-      });
+      }).select("-__v -_id -updatedAt -societyId").populate("bookingOwner" , "houseNo block -_id" )
     if(!allBooking){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -209,7 +209,7 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
         throw new ApiError(400 , "User not found")
     }
 
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId})
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId}).select("-__v -_id -updatedAt -bookingOwner -societyId")
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }

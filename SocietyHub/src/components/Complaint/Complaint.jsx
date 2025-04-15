@@ -109,11 +109,21 @@ function Complaint() {
   };
 
   return (
-    <div className="min-h-screen relative px-4 py-8 w-full text-gray-900 bg-gray-50 ">
+    <div className="min-h-screen  px-4 py-8 w-full text-gray-900 bg-gray-50 ">
       <Toaster />
+      <div className="flex justify-between items-center">
+
       <h1 className="text-3xl font-bold text-gray-800 mb-2">
         Complaints Management
       </h1>
+      <div><button onClick={fetchPreviousData} className=' top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+<PreviousDataModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        data={previousData}
+        />
+      </div>
+        </div>
       <p className="text-gray-600 text-lg">Easily submit, track, and resolve resident complaints for a hassle-free living experience.</p>
 
       <main className="max-w-5xl">
@@ -182,13 +192,7 @@ function Complaint() {
           </div>
         )}
       </main>
-      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-<PreviousDataModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        data={previousData}
-      />
-      </div>
+     
     </div>
   );
 }
