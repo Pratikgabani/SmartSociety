@@ -140,7 +140,7 @@ const PaymentSection = () => {
   };
 
   return (
-    <div className="container mx-auto  px-4 py-8">
+    <div className="container relative mx-auto  px-4 py-8">
       <div className="w-full  ">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Payments </h1>
         <p className="text-gray-600 text-lg mt-1">Securely pay society maintenance and other charges online with ease</p>
@@ -169,51 +169,44 @@ const PaymentSection = () => {
         )}
 
         {loading ? <p className="text-center text-gray-500">Loading...</p> : (
-          <table className="w-full border-collapse border border-gray-300 mt-10">
-            <thead>
-              <tr className="bg-blue-100">
-                <th className="border border-gray-300 px-4 py-2">Description</th>
-                <th className="border border-gray-300 px-4 py-2">Amount</th>
-                <th className="border border-gray-300 px-4 py-2">Status</th>
-                <th className="border border-gray-300 px-4 py-2">Payment Date</th>
-                <th className="border border-gray-300 px-4 py-2">Due Date</th>
-                {/* <th className="border border-gray-300 px-4 py-2">Receipt</th> */}
-                <th className="border border-gray-300 px-4 py-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {payments.map((payment) => (
-                <tr key={payment._id} className="border border-gray-300">
-                  <td className="border border-gray-300 px-4 py-2 text-center">{payment.description}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
-                  <td className = {paymentStatus(payment._id)==="Paid" ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold" : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"}>{paymentStatus(payment._id)}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
-                  {/* <td className="border border-gray-300 px-4 py-2 text-center">
-                    {payment.receipt ? <a href={payment.receipt} target="_blank" className="text-blue-600 underline">View</a> : "-"}
-                  </td> */}
-                  <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
-                    {/* {payment.status === "Pending" && (
-                      <button onClick={() => markAsPaid(payment._id)} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Pay Now</button>
-                    )} */}
-                    {
-
-                      <Link
-                        to={`/layout/payPayment/${payment._id}`}
-                        className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700">
-                        Pay
-                      </Link>
-                    }
-                    {role === "admin" && (
-                      <button onClick={() => deletePayment(payment._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
-                        <RiDeleteBin6Fill size={20} />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+         <div className="overflow-x-auto mt-10">
+         <table className="min-w-full border-collapse border border-gray-300">
+           <thead>
+             <tr className="bg-blue-100">
+               <th className="border border-gray-300 px-4 py-2">Description</th>
+               <th className="border border-gray-300 px-4 py-2">Amount</th>
+               <th className="border border-gray-300 px-4 py-2">Status</th>
+               <th className="border border-gray-300 px-4 py-2">Payment Date</th>
+               <th className="border border-gray-300 px-4 py-2">Due Date</th>
+               <th className="border border-gray-300 px-4 py-2">Action</th>
+             </tr>
+           </thead>
+           <tbody>
+             {payments.map((payment) => (
+               <tr key={payment._id} className="border border-gray-300">
+                 <td className="border border-gray-300 px-4 py-2 text-center">{payment.description}</td>
+                 <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
+                 <td className={paymentStatus(payment._id) === "Paid" ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold" : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"}>{paymentStatus(payment._id)}</td>
+                 <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
+                 <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
+                 <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
+                   <Link
+                     to={`/layout/payPayment/${payment._id}`}
+                     className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700">
+                     Pay
+                   </Link>
+                   {role === "admin" && (
+                     <button onClick={() => deletePayment(payment._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
+                       <RiDeleteBin6Fill size={20} />
+                     </button>
+                   )}
+                 </td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
+       </div>
+       
         )}
       </div>
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>

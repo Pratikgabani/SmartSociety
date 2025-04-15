@@ -136,86 +136,77 @@ const Buy = () => {
 
   return (
     <>
-    <Toaster/>
-    {error ? (
-      <div className="flex justify-center items-center h-screen">
-        <div className="bg-red-100 text-red-700 px-6 py-4 rounded-lg">
-          <p className="text-lg font-semibold">{error}</p>
-          {/* <Link
-            className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition duration-200 mt-3 flex items-center justify-center"
-            to={"/layout/purchases"}
-          >
-            Purchases
-          </Link> */}
-        </div>
-      </div>
-    ) : (
-      <div className="flex flex-col justify-center sm:flex-row my-40 container ">
-        <div className="w-full ml-64 mt-10 md:w-1/2">
-          <h1 className="text-xl font-semibold underline">Order Details</h1>
-          <div className="flex items-center text-center space-x-2 mt-4">
-            <h2 className="text-gray-600 text-md">Total Price</h2>
-            <p className="text-red-500 font-bold">${payment.amount}</p>
-          </div>
-          <div className="flex items-center text-center space-x-2">
-            <h1 className="text-gray-600 text-md">Payment name : </h1>
-            <p className="text-red-500 font-bold">{payment.description}</p>
+      <Toaster />
+      {error ? (
+        <div className="flex justify-center items-center min-h-screen p-4">
+          <div className="bg-red-100 text-red-700 px-6 py-4 rounded-lg max-w-xs w-full">
+            <p className="text-lg font-semibold">{error}</p>
           </div>
         </div>
-        <div className="w-full">
-          <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
-            <h2 className="text-lg font-semibold mb-4">
-              Process your Payment!
-            </h2>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm mb-2"
-                htmlFor="card-number"
-              >
-                Credit/Debit Card
-              </label>
-              <form onSubmit={handlePurchase}>
-                <CardElement
-                  options={{
-                    style: {
-                      base: {
-                        fontSize: "16px",
-                        color: "#424770",
-                        "::placeholder": {
-                          color: "#aab7c4",
+      ) : (
+        <div className="flex flex-col sm:flex-row justify-center items-center my-20 mx-auto max-w-7xl px-4">
+          {/* Order Details Section */}
+          <div className="w-full sm:w-1/2 lg:w-1/3 mt-10">
+            <h1 className="text-xl font-semibold underline">Order Details</h1>
+            <div className="flex items-center text-center space-x-2 mt-4">
+              <h2 className="text-gray-600 text-md">Total Price</h2>
+              <p className="text-red-500 font-bold">${payment.amount}</p>
+            </div>
+            <div className="flex items-center text-center space-x-2 mt-2">
+              <h1 className="text-gray-600 text-md">Payment name :</h1>
+              <p className="text-red-500 font-bold">{payment.description}</p>
+            </div>
+          </div>
+  
+          {/* Payment Form Section */}
+          <div className="w-full sm:w-1/2 lg:w-1/3 mt-10">
+            <div className="bg-white shadow-md rounded-lg p-6 w-full">
+              <h2 className="text-lg font-semibold mb-4">Process your Payment!</h2>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm mb-2" htmlFor="card-number">
+                  Credit/Debit Card
+                </label>
+                <form onSubmit={handlePurchase}>
+                  <CardElement
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: '16px',
+                          color: '#424770',
+                          "::placeholder": {
+                            color: '#aab7c4',
+                          },
+                        },
+                        invalid: {
+                          color: '#9e2146',
                         },
                       },
-                      invalid: {
-                        color: "#9e2146",
-                      },
-                    },
-                  }}
-                />
-
-                <button
-                  type="submit"
-                  disabled={!stripe || loading} // Disable button when loading
-                  className="mt-8 w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200"
-                >
-                  {loading ? "Processing..." : "Pay"}
-                </button>
-              </form>
-              {cardError && (
-                <p className="text-red-500 font-semibold text-xs">
-                  {cardError}
-                </p>
-              )}
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!stripe || loading} // Disable button when loading
+                    className="mt-8 w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200"
+                  >
+                    {loading ? 'Processing...' : 'Pay'}
+                  </button>
+                </form>
+                {cardError && (
+                  <p className="text-red-500 font-semibold text-xs mt-2">
+                    {cardError}
+                  </p>
+                )}
+              </div>
+              <button className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition duration-200 mt-3 flex items-center justify-center">
+                <span className="mr-2">🅿️</span> Other Payments Method
+              </button>
             </div>
-
-            <button className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition duration-200 mt-3 flex items-center justify-center">
-              <span className="mr-2">🅿️</span> Other Payments Method
-            </button>
           </div>
         </div>
-      </div>
-    )}
-  </>
-  )
+      )}
+    </>
+  );
+  
 }
 
 export default Buy

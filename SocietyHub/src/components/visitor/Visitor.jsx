@@ -250,7 +250,7 @@ function Visitor() {
 
       {/* Existing UI */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Visitor Management</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Visitors</h1>
         <p className="text-gray-600 text-lg">Manage and track your visitors</p>
       </div>
 
@@ -269,104 +269,100 @@ function Visitor() {
       {/* Active Visitors Section */}
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Active Visitors</h2>
       <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
-        <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check In</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Phone</th>
-              {roles === "security" && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {activeVisitors.map((visitor) => (
-              <tr key={visitor._id}>
-                <td className="px-6 py-4">{visitor.visitorName}</td>
-                <td className="px-6 py-4">{visitor.purpose}</td>
-                {/* <td className="px-6 py-4">
-                  <div>
-                    {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}
-                  </div>
-                  <div>
-                    {visitor.visitTime}
-                  </div>
-                </td> */}
-                <td className='px-6 py-4'>{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-" }</td>
-                <td className="px-6 py-4 text-green-600 font-semibold">Active</td>
-                <td className='px-6 py-4 text-black'>{visitor.visitorPhone}</td>
-                {roles === "security" && (
-                  <td className="px-6 py-4 flex gap-2">
-                    <button
-                      onClick={() => handleCheckOut(visitor._id)}
-                      className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
-                    >
-                      Check-Out
-                    </button>
-                    <button
-                      onClick={() => deleteVisitor(visitor._id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <div className="overflow-x-auto">
+  <table className="min-w-full divide-y divide-gray-200">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Visitor</th>
+      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Purpose</th>
+      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Phone</th>
+      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Check IN</th>
+      {roles === "security" && (
+        <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Action</th>
+      )}
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-gray-200">
+    {activeVisitors.map((visitor) => (
+      <tr key={visitor._id} className="hover:bg-gray-50 transition">
+        <td className="px-4 md:px-6 py-4 text-sm text-gray-800">{visitor.visitorName}</td>
+        <td className="px-4 md:px-6 py-4 text-sm text-gray-800">{visitor.purpose}</td>
+        <td className="px-4 md:px-6 py-4 text-sm text-black">{visitor.visitorPhone}</td>
+        
+        <td className="px-4 md:px-6 py-4 text-sm font-semibold text-green-600">Active</td>
+        <td className="px-4 md:px-6 py-4 text-sm text-gray-800">
+          {visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-"}
+        </td>
+        {roles === "security" && (
+          <td className="px-4 md:px-6 py-4 text-sm flex justify-start gap-2">
+            <button
+              onClick={() => handleCheckOut(visitor._id)}
+              className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 text-sm"
+            >
+              Check-Out
+            </button>
+            <button
+              onClick={() => deleteVisitor(visitor._id)}
+              className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm"
+            >
+              Delete
+            </button>
+          </td>
+        )}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+  </div>
+</div>
+
 
       {/* Recent Visitors Section */}
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Visitors</h2>
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor Phone</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Time</th>
-              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>checkout</th>
-              {roles === "security" && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {recentVisitors.slice(0, 5).map(visitor => (
-              <tr key={visitor._id}>
-                <td className="px-6 py-4">{visitor.visitorName}</td>
-                <td className="px-6 py-4">{visitor.purpose}</td>
-                <td className="px-6 py-4">{visitor.visitorPhone}</td>
-                {/* <td className="px-6 py-4">
-                  <div>
-                    {visitor.visitDate ? new Date(visitor.visitDate).toLocaleDateString() : "-"}
-                  </div>
-                  <div>
-                    {visitor.visitTime}
-                  </div>
-                </td> */}
-                <td className='px-6 py-4'>{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-" }</td>
-                <td className='px-6 py-4'>{visitor.duration}</td>
-                {roles === "security" && (
-                  <td className="px-6 py-4 flex gap-2">
-                    <button
-                      onClick={() => deleteVisitor(visitor._id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
+  <div className="overflow-x-auto">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Visitor</th>
+          <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Purpose</th>
+          <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Visitor Phone</th>
+          <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Visit Time</th>
+          <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Checkout</th>
+          {roles === "security" && (
+            <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Action</th>
+          )}
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-200">
+        {recentVisitors.slice(0, 5).map(visitor => (
+          <tr key={visitor._id} className="hover:bg-gray-50 transition">
+            <td className="px-4 md:px-6 py-4 text-sm text-gray-800">{visitor.visitorName}</td>
+            <td className="px-4 md:px-6 py-4 text-sm text-gray-800">{visitor.purpose}</td>
+            <td className="px-4 md:px-6 py-4 text-sm text-gray-800">{visitor.visitorPhone}</td>
+            <td className="px-4 md:px-6 py-4 text-sm text-gray-800">
+              {visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-"}
+            </td>
+            <td className="px-4 md:px-6 py-4 text-sm text-gray-800">{visitor.duration}</td>
+            {roles === "security" && (
+              <td className="px-4 md:px-6 py-4">
+                <button
+                  onClick={() => deleteVisitor(visitor._id)}
+                  className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm"
+                >
+                  Delete
+                </button>
+              </td>
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
         <PreviousDataModal
           isOpen={isModalOpen}

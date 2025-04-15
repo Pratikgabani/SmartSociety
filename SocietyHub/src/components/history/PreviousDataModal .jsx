@@ -186,51 +186,52 @@ const PreviousDataModal = ({ isOpen, onClose, data = [] }) => {
       )
     : [];
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white max-h-[80vh] w-1/2 p-6 rounded-lg shadow-lg relative overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Previous Data</h2>
-
-        {/* Search Input */}
-        <input
-          type="text"
-          placeholder="Search..."
-          className="p-2 border-black text-black font-medium border rounded w-full mb-4"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        {/* Data Display */}
-        {filteredData.length === 0 ? (
-          <p className="text-gray-500">No matching data found.</p>
-        ) : (
-          <ul>
-            {filteredData.map((item, index) => (
-              <li key={index} className="border-b-4 p-2">
-                {Object.keys(item).length === 0 ? (
-                  <p className="text-gray-500">No data available</p>
-                ) : (
-                  Object.entries(item).map(([key, value]) => (
-                    <p key={key} className="p-1">
-                      <strong>{key}:</strong> {formatValue(key, value)}
-                    </p>
-                  ))
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="mt-4 absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Close
-        </button>
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+        <div className="bg-white w-full max-w-3xl max-h-[80vh] p-4 sm:p-6 rounded-lg shadow-lg relative overflow-y-auto">
+          <h2 className="text-lg sm:text-xl font-bold mb-4">Previous Data</h2>
+    
+          {/* Search Input */}
+          <input
+            type="text"
+            placeholder="Search..."
+            className="p-2 border-black text-black font-medium border rounded w-full mb-4"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+    
+          {/* Data Display */}
+          {filteredData.length === 0 ? (
+            <p className="text-gray-500">No matching data found.</p>
+          ) : (
+            <ul>
+              {filteredData.map((item, index) => (
+                <li key={index} className="border-b-4 p-2">
+                  {Object.keys(item).length === 0 ? (
+                    <p className="text-gray-500">No data available</p>
+                  ) : (
+                    Object.entries(item).map(([key, value]) => (
+                      <p key={key} className="p-1 text-sm sm:text-base">
+                        <strong>{key}:</strong> {formatValue(key, value)}
+                      </p>
+                    ))
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+    
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-red-600 text-sm sm:text-base"
+          >
+            Close
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+    
 };
 
 export default PreviousDataModal;
