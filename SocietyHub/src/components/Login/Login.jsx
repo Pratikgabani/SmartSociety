@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import building1 from './../../assets/Rectangle95.png';
-import building2 from './../../assets/Rectangle99.png';
+import building2 from './../../assets/Rectangle97.jpg';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from "yup";
@@ -124,7 +124,7 @@ function Login() {
           <form onSubmit={handleSubmit}>
 
             <div className="mb-2">
-              <label className="block font-medium text-gray-700">Email</label>
+              <label className="block font-medium text-gray-700 font-semibold">Email</label>
               <input
                 name='email'
                 type="text"
@@ -137,7 +137,7 @@ function Login() {
               {errorMessage.email && <div className='text-red-500 mt-1'>{errorMessage.email}</div>}
             </div>
             <div className="mb-2">
-              <label className="block font-medium text-gray-700">Password</label>
+              <label className="block font-medium text-gray-700 font-semibold">Password</label>
               <input
                 name='password'
                 type="password"
@@ -150,7 +150,7 @@ function Login() {
               {errorMessage.password && <div className='text-red-500 mt-1'>{errorMessage.password}</div>}
             </div>
             <div className="mb-2">
-              <label className="block font-medium text-gray-700">Role</label>
+              <label className="block font-medium text-gray-700 font-semibold">Role</label>
               <select
                 name="role"
                 className="w-full px-3 py-2 border rounded-lg"
