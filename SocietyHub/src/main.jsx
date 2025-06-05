@@ -22,6 +22,7 @@ import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import PageNotFound from "./components/PageNotFound/PageNotFound.jsx"
 import Buy from './components/Buy/Buy.jsx';
 const stripePromise = loadStripe(
   "pk_test_51R1h8oFjDw8IkcOQVn7UvbMIuiNBki2KBzh7mjuUS5EhTAmnAksY48vDtDxrXHy7YWOQZeJ0lrozJIfDuzraVVeR00ve6RdDcA"
@@ -56,7 +57,7 @@ const router = createBrowserRouter(
     
     </Route>
     </Route>
-    <Route path="*" element={<OrgLanding />} />
+    <Route path="*" element={<PageNotFound />} />
     </>
      )
 )
