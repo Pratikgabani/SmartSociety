@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 const PollApp = () => {
   const [polls, setPolls] = useState([])
   const [question, setQuestion] = useState("")
   const [options, setOptions] = useState(["", ""])
   const [vari, setVari] = useState(false)
-
+const navigate = useNavigate()
 
   const token = localStorage.getItem("user")
   const user = token ? JSON.parse(token) : null
   const role = user?.data.user.role
  
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [previousData, setPreviousData] = useState([]);
+ 
 
   const fetchPreviousData = async () => {
     
@@ -22,9 +22,9 @@ const PollApp = () => {
       const   response = await axios.get("http://localhost:8000/api/v1/polls/getPolls", { withCredentials: true });
       
          // Update API URL) // Update API URL
-      setPreviousData(response.data.data);
+      navigate("/history", { state: { data: response.data.data } });
       console.log(response.data.data);
-      setIsModalOpen(true); // Open modal after fetching
+       // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -209,11 +209,7 @@ const PollApp = () => {
         ))}
       </div>
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-<PratikPreviousDataModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        data={previousData}
-      />
+
       </div>
     </div>
   )

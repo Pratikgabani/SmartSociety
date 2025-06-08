@@ -4,8 +4,8 @@ import { IoLocationOutline } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
 import {Toaster , toast} from 'react-hot-toast'
-import PreviousDataModal from "../history/PreviousDataModal .jsx";
-import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
+;
+import { useNavigate } from "react-router-dom";
 function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
@@ -26,7 +26,7 @@ function Event() {
   });
   const [previousData, setPreviousData] = useState([]);
   const [isModalOpen , setIsModalOpen] = useState(false);
-
+   const navigate = useNavigate();
   // Fetch user info from localStorage
   useEffect(() => {
     const token = localStorage.getItem("user");
@@ -99,6 +99,7 @@ function Event() {
     try {
       const response = await axios.get("http://localhost:8000/api/v1/events/getAllEvent", { withCredentials: true })
       setPreviousData(response.data.data)
+      navigate("/history", { state: { data: response.data.data } });
       setIsModalOpen(true)
     } catch (error) {
       console.log("Error fetching data:", error);
@@ -500,11 +501,7 @@ function Event() {
       {/* History */}
       {isAdmin && (
             <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-            <PratikPreviousDataModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    data={previousData}
-                  />
+           
                   </div>
            )}   
     </div>

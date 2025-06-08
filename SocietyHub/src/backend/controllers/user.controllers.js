@@ -9,6 +9,11 @@ import { SocietyDetail } from '../models/societyDetail.models.js';
 import { Security } from '../models/security.models.js';
 import { Visitor } from '../models/visitor.models.js';
 
+import axios from 'axios';
+
+import { oauth2Client } from '../utils/googleConfig.js';
+
+
 
 
 const generateAccessAndRefereshTokens = async(userId) =>{
@@ -278,4 +283,35 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, user, "Account details updated successfully"))
 });
 
-export { registerUser, loginUser, refreshAccessToken , generateAccessAndRefereshTokens , logoutUser , getUserDetail ,changeCurrentPassword, updateAccountDetails};
+const googleAuth = asyncHandler(async (req, res) => {
+  const code = req.query.code;
+  const { tokens } = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+
+  const { data: { email} } = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`
+  );
+
+  // ✅ Check if user exists (was already registered manually)
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(404, "User not registered. Please register manually first.");
+  }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+  const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production"
+  };
+
+  return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Google Login successful"));
+});
+
+export {googleAuth, registerUser, loginUser, refreshAccessToken , generateAccessAndRefereshTokens , logoutUser , getUserDetail ,changeCurrentPassword, updateAccountDetails};

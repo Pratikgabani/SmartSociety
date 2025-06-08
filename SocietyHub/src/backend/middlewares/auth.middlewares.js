@@ -6,6 +6,9 @@ import { Security } from "../models/security.models.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
     try {
+      console.log("Verifying JWT...");
+      console.log("Request cookies:", req.cookies);
+      console.log("Request headers:", req.headers);
       const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
       console.log("Received token:", token);
   

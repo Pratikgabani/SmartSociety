@@ -16,24 +16,39 @@ import Event from './components/Event/Event.jsx';
 import SecurityRegister from './components/Security/Security.jsx';
 import Announcements from './components/Notice/Notice.jsx';
 import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
-import Dashboard from   './components/dashboard/dashboard.jsx';
+import Dashboard from   './components/Dashboard/dashboard.jsx';
 import App from './App.jsx';
 import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import GoogleLogin from './components/Login/Login.jsx';
 import Buy from './components/Buy/Buy.jsx';
+import PreviousDataModal from './components/history/PreviousDataModal .jsx';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 const stripePromise = loadStripe(
   "pk_test_51R1h8oFjDw8IkcOQVn7UvbMIuiNBki2KBzh7mjuUS5EhTAmnAksY48vDtDxrXHy7YWOQZeJ0lrozJIfDuzraVVeR00ve6RdDcA"
 );
+
+
+ const GoogleAuthWrapper = ()=>(
+  
+    <GoogleOAuthProvider clientId="553666257708-alafbipbuj60kpj25j56n3hu0l4lmld9.apps.googleusercontent.com">
+      {/* <GoogleLogin></GoogleLogin> */}
+      <Login />
+    </GoogleOAuthProvider>
+ )
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path='/' element= {< OrgLanding/>} />
-    <Route path="Login" element={<Login />} />
+    {/* <Route path="Login" element={<Login />} /> */}
+    <Route path="Login" element={<GoogleAuthWrapper />} />
+    {/* <Route path="google-login" element={<GoogleAuthWrapper />} /> */}
     <Route path ="Securityregister" element={<SecurityRegister />} />
-    
+    <Route path="history" element={<PreviousDataModal  />} />
+
     <Route path="Register" element={<Register />} />
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
     <Route element={<RequireAuth />}>

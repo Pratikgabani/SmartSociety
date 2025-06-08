@@ -2,8 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import PreviousDataModal from "../history/PreviousDataModal .jsx";
-import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
+import { useNavigate } from "react-router-dom";
+// import PreviousDataModal from "../history/PreviousDataModal .jsx";
+// import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
 const Booking = () => {
@@ -33,7 +34,7 @@ const Booking = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [previousData, setPreviousData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const navigate = useNavigate();
   // Fetch user info from localStorage
   useEffect(() => {
     const token = localStorage.getItem("user");
@@ -99,6 +100,7 @@ const Booking = () => {
     try {
       const response = await axios.get("http://localhost:8000/api/v1/booking/all-Bookings", { withCredentials: true })
       setPreviousData(response.data.data)
+      navigate("/history", { state: { data: response.data.data } });
       setIsModalOpen(true)
     } catch (error) {
       console.log("Error fetching data:", error);
@@ -625,11 +627,7 @@ const Booking = () => {
       {/* History */}
       {isAdmin && (
         <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-          <PratikPreviousDataModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            data={previousData}
-          />
+         
         </div>
       )}
     </div>

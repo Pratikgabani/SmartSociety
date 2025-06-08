@@ -11,6 +11,7 @@ function OrgLanding() {
     const user = localStorage.getItem("user");
     if (user) {
       setIsLoggedIn(true);
+      navigate('/layout/dashboard');
     } else {
       setIsLoggedIn(false);
     }
@@ -59,7 +60,8 @@ function OrgLanding() {
             </ul>
           </div>
           <div className='space-x-4'>
-            {isLoggedIn ? (
+            {/* {isLoggedIn ? (
+             
               <button
                 onClick={handleLogout}
                 className="bg-blue-600 text-white font-bold rounded-3xl py-2 px-6 text-xs md:text-lg  border-white"
@@ -77,7 +79,12 @@ function OrgLanding() {
                 </ button>
 
               </>
-            )}
+            )} */}
+               {!isLoggedIn && (
+        <button className='bg-blue-600 text-white font-bold rounded-3xl py-2 px-6 text-xs md:text-lg border-white'>
+          <Link to="/login">Login</Link>
+        </button>
+      )}
           </div>
         </nav>
             {/* First part */}

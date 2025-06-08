@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PreviousDataModal from '../history/PreviousDataModal ';
+import { useNavigate } from 'react-router-dom';
 function Visitor() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newVisitor, setNewVisitor] = useState({
@@ -21,8 +21,7 @@ function Visitor() {
   const [activeVisitors, setActiveVisitors] = useState([]);
   const [recentVisitors, setRecentVisitors] = useState([]);
   const [vari, setVari] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [previousData, setPreviousData] = useState([]);
+const navigate = useNavigate();
 
   const fetchPreviousData = async () => {
     let response;
@@ -33,9 +32,7 @@ function Visitor() {
       else {
         response = await axios.get("http://localhost:8000/api/v1/visitor/getHisRecentVisitorsByUserId",  { withCredentials: true });
       } // Update API URL) // Update API URL
-      setPreviousData(response.data.data);
-      console.log(response.data.data);
-      setIsModalOpen(true); // Open modal after fetching
+      navigate("/history", { state: { data: response.data.data } }); // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -364,11 +361,7 @@ function Visitor() {
 </div>
 
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-        <PreviousDataModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          data={previousData}
-        />
+        
       </div>
     </div>
   );

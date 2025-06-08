@@ -5,6 +5,7 @@ import { Plus, X } from "lucide-react"; // Import cross icon
 import { RiDeleteBin6Fill, RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
@@ -12,7 +13,7 @@ const PaymentSection = () => {
   const [loading, setLoading] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   
-
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
@@ -73,7 +74,7 @@ const PaymentSection = () => {
       const response = await axios.get("http://localhost:8000/api/v1/payment/getAdminData", { withCredentials: true });
       // Update API URL) // Update API URL
       setFetchAgain(response.data.data);
-
+     navigate("/history", { state: { data: response.data.data } });
       setIsAdminModalOpen(true); // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -86,7 +87,7 @@ const PaymentSection = () => {
       const response = await axios.get("http://localhost:8000/api/v1/purchase/getAllPurchases", { withCredentials: true });
       // Update API URL) // Update API URL
       setPreviousData(response.data.data);
-
+    navigate("/history", { state: { data: response.data.data } });
       setIsModalOpen(true); // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -210,20 +211,12 @@ const PaymentSection = () => {
         )}
       </div>
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-        <PreviousDataModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          data={previousData}
-        />
+        
       </div>
      {
       role === "admin" && (
         <div><button onClick={fetchAgainData} className='absolute top-8 right-32 rounded-lg px-3 py-2 bg-blue-400'>All data</button>
-        <PreviousDataModal
-          isOpen={isAdminModalOpen}
-          onClose={() => setIsAdminModalOpen(false)}
-          data={fetchAgain}
-        />
+       
       </div>
       )
      }

@@ -5,7 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from "yup";
 import { Toaster, toast } from 'react-hot-toast';
-
+import { useGoogleLogin } from '@react-oauth/google'
+import { googleAuth } from '../../api';
 function Login() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState({});
@@ -37,7 +38,34 @@ function Login() {
       [name]: value
     })
   }
+   
+    const responseGoogle = async (authResult) => {
+      try {
+        if (authResult["code"]) {
+          const result = await googleAuth(authResult.code);
+                   console.log(result);
+          const {email} = result.data.data.user;
+          const token = result.data.token;
+          const obj = {email, token};
+          // localStorage.setItem('user-info',JSON.stringify(obj));
+                   localStorage.setItem("user", JSON.stringify(result.data));
+          toast.success("Google Login Successful");
+          navigate('/layout/dashboard');
+        } else {
+          console.log(authResult);
+          throw new Error(authResult);
+        }
+      } catch (e) {
+        toast.error("Google email not registered");
+        console.log('Error while Google Login...', e);
+      }
+    };
 
+  const googleLogin = useGoogleLogin({
+		onSuccess: responseGoogle,
+		onError: responseGoogle,
+		flow: "auth-code",
+	});
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -114,6 +142,7 @@ function Login() {
   };
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
       <Toaster />
       <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-5xl">
@@ -124,7 +153,7 @@ function Login() {
           <form onSubmit={handleSubmit}>
 
             <div className="mb-2">
-              <label className="block font-medium text-gray-700 font-semibold">Email</label>
+              <label className="block  text-gray-700 font-semibold">Email</label>
               <input
                 name='email'
                 type="text"
@@ -184,9 +213,12 @@ function Login() {
             <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300">
               Continue with Mobile
             </button>
-            <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300">
+            {/* <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300" onClick={() =>navigate("/google-login")}> 
               Continue with Google
-            </button>
+            </button > */}
+            <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300" onClick={googleLogin}> 
+              Continue with Google
+            </button >
           </div>
         </div>
 

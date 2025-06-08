@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "date-fns";
-import PreviousDataModal from '../history/PreviousDataModal ';
+import { useNavigate } from "react-router-dom";
+
 export default function Announcements() {
   const [notices, setNotices] = useState([]);
   const [topic, setTopic] = useState("");
@@ -11,17 +12,16 @@ export default function Announcements() {
 const role = roled?.data?.user?.role
 
 
- const [isModalOpen, setIsModalOpen] = useState(false);
-  const [previousData, setPreviousData] = useState([]);
 
+  const navigate = useNavigate();
   const fetchPreviousData = async () => {
     
     try {
      const response = await axios.get("http://localhost:8000/api/v1/notices/getAllNotices",{withCredentials: true});
       // Update API URL) // Update API URL
-      setPreviousData(response.data.data);
       
-      setIsModalOpen(true); // Open modal after fetching
+      navigate("/history", { state: { data: response.data.data } });
+       // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -127,11 +127,8 @@ const role = roled?.data?.user?.role
      
       </div>
       <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-<PreviousDataModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        data={previousData}
-      />
+
+      
       </div>
     </div>
   );

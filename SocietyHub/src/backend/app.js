@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors";
 import cookieParser from "cookie-parser"
 import dotenv from "dotenv";
-
+import authRoutes from "./routes/authRoutes.js";
 dotenv.config({
     path : "./.env"
 })
@@ -19,7 +19,6 @@ app.use(
     })
 )
 
-
 app.use(express.json({
     limit: "16kb" 
 }))
@@ -35,6 +34,7 @@ app.use(express.static("public"));
 app.use(cookieParser())
 
 
+
 import userRouter from "./routes/user.routes.js";
 import eventRouter from "./routes/event.routes.js";
 import bookingRouter from "./routes/booking.routes.js";
@@ -48,6 +48,9 @@ import noticeRouter from "./routes/notice.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import expenseRouter from "./routes/expense.routes.js" 
 import purchaseRouter from "./routes/purchase.routes.js"
+
+app.use('/auth', authRoutes);
+
 app.use("/api/v1/users" , userRouter)
 app.use("/api/v1/events" , eventRouter)
 app.use("/api/v1/booking" , bookingRouter)
