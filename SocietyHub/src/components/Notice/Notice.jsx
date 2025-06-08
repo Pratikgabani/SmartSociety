@@ -72,7 +72,13 @@ const role = roled?.data?.user?.role
 
   return (
     <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
+      <div className="flex justify-between items-center">
+        
       <h2 className="text-3xl font-bold mb-2">Announcements & Notices</h2>
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+
+        </div>
+      </div>
       {/* One liner for announcements and notices */}
       <p className="text-gray-600 text-lg"> Stay informed with important society announcements and notices at one place. </p>
       {/* Notice Form */}

@@ -71,7 +71,7 @@ const router = createBrowserRouter(
     
     </Route>
     </Route>
-    <Route path="*" element={<OrgLanding />} />
+    {/* <Route path="*" element={<PageNotFound />} /> */}
     </>
      )
 )

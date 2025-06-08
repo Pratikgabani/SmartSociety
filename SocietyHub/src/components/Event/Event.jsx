@@ -499,11 +499,11 @@ function Event() {
         <p className="text-gray-600">You are not logged in</p>
       )}
       {/* History */}
-      {isAdmin && (
+      {/* {isAdmin && ( */}
             <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
            
                   </div>
-           )}   
+           {/* )}    */}
     </div>
     
   );
