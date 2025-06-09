@@ -54,6 +54,7 @@ const PaymentSection = () => {
         withCredentials: true,
       });
       setPayments(response.data.data);
+      console.log(response.data.data);
       // console.log(payments[0].paidBy.includes(user.data.user._id));
       // if(payments[0].paidBy.includes(user.data.user._id)){
       //   setIsPaid(true);
@@ -110,21 +111,40 @@ const PaymentSection = () => {
     setNewPayment({ ...newPayment, [e.target.name]: e.target.value });
   };
 
-  const paymentStatus = (payId) => {
-    if (kaam.length > 0) {
-      if (kaam.some(purchase => purchase.paymentId._id === payId)) {
-        return "Paid";
-      }else return "Pending"
+  // const paymentStatus = (payId) => {
+  //   if (kaam.length > 0) {
+      
+  //     if (kaam.some(purchase => purchase.paymentId._id === payId)) {
+  //       return "Paid";
+  //     }else return "Pending"
+  //   }
+  // }
+  // const paymentDateLaao = (payId) => {
+  //   if (kaam.length > 0) {
+  //     console.log(kaam);
+  //     if (kaam.some(purchase => purchase.paymentId_id === payId)) {
+  //       const date = kaam.find(purchase => purchase.paymentId._id === payId).paidOn;
+  //       return new Date(date).toLocaleDateString("en-GB");
+  //     }
+  //   }
+  // }
+const paymentStatus = (payId) => {
+  if (kaam.length > 0) {
+    return kaam.some(purchase => purchase.paymentId && purchase.paymentId._id === payId)
+      ? "Paid"
+      : "Pending";
+  }
+  return "Pending";
+};
+const paymentDateLaao = (payId) => {
+  if (kaam.length > 0) {
+    const found = kaam.find(purchase => purchase.paymentId && purchase.paymentId._id === payId);
+    if (found) {
+      return new Date(found.paidOn).toLocaleDateString("en-GB");
     }
   }
-  const paymentDateLaao = (payId) => {
-    if (kaam.length > 0) {
-      if (kaam.some(purchase => purchase.paymentId._id === payId)) {
-        const date = kaam.find(purchase => purchase.paymentId._id === payId).paidOn;
-        return new Date(date).toLocaleDateString("en-GB");
-      }
-    }
-  }
+  return "N/A";
+};
 
   const addPayment = async () => {
     try {

@@ -126,8 +126,12 @@ console.log(process.env.STRIPE_SECRET_KEY);
       }
    
     
-   payment.paidBy.push(userId);
-      await payment.save();
+   // After checking existingPurchase
+if (!payment.paidBy.includes(userId)) {
+  payment.paidBy.push(userId);
+}
+await payment.save();
+
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: payment.amount,
