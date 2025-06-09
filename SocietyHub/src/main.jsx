@@ -22,6 +22,7 @@ import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import PageNotFound from './components/PageNotFound/PageNotFound.jsx';
 import GoogleLogin from './components/Login/Login.jsx';
 import Buy from './components/Buy/Buy.jsx';
 import PreviousDataModal from './components/history/PreviousDataModal .jsx';
@@ -71,7 +72,7 @@ const router = createBrowserRouter(
     
     </Route>
     </Route>
-    {/* <Route path="*" element={<PageNotFound />} /> */}
+    <Route path="*" element={<PageNotFound />} />
     </>
      )
 )

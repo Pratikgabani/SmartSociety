@@ -14,29 +14,95 @@ const PreviousDataPage = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const formatValue = (key, value) => {
-    if (value == null) return "N/A";
+  // this formatValue was not working properly on the date and some other stuff so i commented it down
+  
+  
+  // const formatValue = (key, value) => {
+  //   if (value == null) return "N/A";
+  //   if (typeof value === "number") return value;
+  //   if (typeof value === "boolean") return value ? "Yes" : "No";
+
+  //   if (typeof value === "string" && !isNaN(Date.parse(value))) {
+  //     return new Date(value).toLocaleString("en-UK");
+  //   }
+
+  //   if (Array.isArray(value)) {
+  //     return value.length > 0 ? (
+  //       <ul className="list-disc pl-4">
+  //         {value.map((item, index) => (
+  //           <li key={index} className="p-1">
+  //             {typeof item === "object" ? formatValue("", item) : item}
+  //           </li>
+  //         ))}
+  //       </ul>
+  //     ) : (
+  //       <span>No items</span>
+  //     );
+  //   }
+
+  //   if (typeof value === "object") {
+  //     return (
+  //       <ul className="border p-2 rounded-md bg-gray-100">
+  //         {Object.entries(value).map(([subKey, subValue]) => (
+  //           <li key={subKey} className="p-1">
+  //             <strong>{subKey}:</strong> {formatValue(subKey, subValue)}
+  //           </li>
+  //         ))}
+  //       </ul>
+  //     );
+  //   }
+
+  //   if (typeof value === "string" && value.startsWith("http")) {
+  //     return (
+  //       <a
+  //         href={value}
+  //         className="text-blue-500 font-medium"
+  //         target="_blank"
+  //         rel="noopener noreferrer"
+  //       >
+  //         Link
+  //       </a>
+  //     );
+  //   }
+
+  //   return value;
+  // };
+
+const formatValue = (key, value) => {
+    if (value == null) return "N/A"; 
     if (typeof value === "number") return value;
-    if (typeof value === "boolean") return value ? "Yes" : "No";
-
-    if (typeof value === "string" && !isNaN(Date.parse(value))) {
-      return new Date(value).toLocaleString("en-UK");
-    }
-
-    if (Array.isArray(value)) {
-      return value.length > 0 ? (
-        <ul className="list-disc pl-4">
-          {value.map((item, index) => (
-            <li key={index} className="p-1">
-              {typeof item === "object" ? formatValue("", item) : item}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <span>No items</span>
+    if (typeof value === "boolean") return value ? "Yes" : "No"; 
+    if( typeof value === "string" && !isNaN(value)) return value
+    if (typeof value === "string" && value.startsWith("http")) {
+      return (
+        <a href={value} className="text-blue-500 font-medium" target="_blank" rel="noopener noreferrer">
+          link
+        </a>
       );
     }
 
+    // Handle Dates
+    const isDate = typeof value === "string" && !isNaN(Date.parse(value));
+    if (isDate) return new Date(value).toLocaleDateString("en-GB");
+
+    // Handle Arrays
+    if (Array.isArray(value)) {
+      return (
+        <ul className="list-disc pl-4">
+          {value.length > 0 ? (
+            value.map((item, index) => (
+              <li key={index} className="p-1">
+                {typeof item === "object" ? formatValue("", item) : item}
+              </li>
+            ))
+          ) : (
+            <li>No data</li>
+          )}
+        </ul>
+      );
+    }
+
+    // Handle Objects (Display Key-Value Pairs)
     if (typeof value === "object") {
       return (
         <ul className="border p-2 rounded-md bg-gray-100">
@@ -49,20 +115,7 @@ const PreviousDataPage = () => {
       );
     }
 
-    if (typeof value === "string" && value.startsWith("http")) {
-      return (
-        <a
-          href={value}
-          className="text-blue-500 font-medium"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Link
-        </a>
-      );
-    }
-
-    return value;
+    return value; 
   };
 
   // === Sort, then filter ===
@@ -73,8 +126,8 @@ const PreviousDataPage = () => {
       )
     )
     .sort((a, b) => {
-      const dateA = new Date(a.date || 0);
-      const dateB = new Date(b.date || 0);
+      const dateA = new Date(a.date || a.eventDate || a.visitDate ||a.dueDate || a.paidOn || 0);
+      const dateB = new Date(b.date || b.eventDate || b.visitDate || b.dueDate || b.paidOn || 0);
       return sortOrder === "asc"
         ? dateA - dateB
         : dateB - dateA;

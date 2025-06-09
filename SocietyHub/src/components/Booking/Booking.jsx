@@ -98,7 +98,10 @@ const Booking = () => {
   // Fetch previous data (for admin only)
   const fetchPreviousData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/booking/all-Bookings", { withCredentials: true })
+      let response
+      if(isAdmin)
+      response = await axios.get("http://localhost:8000/api/v1/booking/all-Bookings", { withCredentials: true })
+      else response = await axios.get("http://localhost:8000/api/v1/booking/getBookingsByUserId", { withCredentials: true })
       setPreviousData(response.data.data)
       navigate("/history", { state: { data: response.data.data } });
       setIsModalOpen(true)
