@@ -6,6 +6,7 @@ import { RiDeleteBin6Fill, RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { HashLoader } from 'react-spinners'
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
@@ -160,88 +161,173 @@ const paymentDateLaao = (payId) => {
     }
   };
 
+  if (loading) {
   return (
-    <div className="container relative mx-auto  px-4 py-8">
-      <div className="w-full  ">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Payments </h1>
-        <p className="text-gray-600 text-lg mt-1">Securely pay society maintenance and other charges online with ease</p>
-        {role === "admin" && (
-          <div className="mb-4 flex justify-between items-center">
-            <h3 className="text-2xl font-semibold mt-4">My Payments</h3>
-            <button onClick={() => setShowAdminForm(true)} className="bg-blue-600 font-semibold text-white px-4 py-2 rounded hover:bg-blue-700">
-                 New Payment
-            </button>
-          </div>
-        )}
-
-        {showAdminForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-              <h2 className="text-lg font-semibold text-blue-800 mb-4">Admin: Add Payment</h2>
-              <input type="text" name="description" value={newPayment.description} onChange={handleNewPaymentChange} placeholder="Description" className="p-2  border rounded w-full mb-2" />
-              <input type="number" name="amount" value={newPayment.amount} onChange={handleNewPaymentChange} placeholder="Amount" className="p-2 border rounded w-full mb-2" />
-              <input type="date" name="dueDate" value={newPayment.dueDate} onChange={handleNewPaymentChange} className="p-2 border rounded w-full mb-2" />
-              <div className="flex justify-end space-x-2">
-                <button onClick={() => setShowAdminForm(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
-                <button onClick={addPayment} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Payment</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {loading ? <p className="text-center text-gray-500">Loading...</p> : (
-         <div className="overflow-x-auto mt-10">
-         <table className="min-w-full border-collapse border border-gray-300">
-           <thead>
-             <tr className="bg-blue-100">
-               <th className="border border-gray-300 px-4 py-2">Description</th>
-               <th className="border border-gray-300 px-4 py-2">Amount</th>
-               <th className="border border-gray-300 px-4 py-2">Status</th>
-               <th className="border border-gray-300 px-4 py-2">Payment Date</th>
-               <th className="border border-gray-300 px-4 py-2">Due Date</th>
-               <th className="border border-gray-300 px-4 py-2">Action</th>
-             </tr>
-           </thead>
-           <tbody>
-             {payments.map((payment) => (
-               <tr key={payment._id} className="border border-gray-300">
-                 <td className="border border-gray-300 px-4 py-2 text-center">{payment.description}</td>
-                 <td className="border border-gray-300 px-4 py-2 text-center">₹{payment.amount}</td>
-                 <td className={paymentStatus(payment._id) === "Paid" ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold" : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"}>{paymentStatus(payment._id)}</td>
-                 <td className="border border-gray-300 px-4 py-2 text-center">{paymentDateLaao(payment._id)}</td>
-                 <td className="border border-gray-300 px-4 py-2 text-center">{new Date(payment.dueDate).toLocaleDateString("en-GB")}</td>
-                 <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
-                   <Link
-                     to={`/layout/payPayment/${payment._id}`}
-                     className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700">
-                     Pay
-                   </Link>
-                   {role === "admin" && (
-                     <button onClick={() => deletePayment(payment._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
-                       <RiDeleteBin6Fill size={20} />
-                     </button>
-                   )}
-                 </td>
-               </tr>
-             ))}
-           </tbody>
-         </table>
-       </div>
-       
-        )}
-      </div>
-      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-        
-      </div>
-     {
-      role === "admin" && (
-        <div><button onClick={fetchAgainData} className='absolute top-8 right-32 rounded-lg px-3 py-2 bg-blue-400'>All data</button>
-       
-      </div>
-      )
-     }
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <HashLoader size={60} color="#2563eb" loading={loading} />
+      <p className="mt-4 text-lg text-gray-700">Loading...</p>
     </div>
   );
+}
+
+return (
+  <div className="container relative mx-auto px-4 py-8 bg-gray-50">
+    <div className="w-full">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Payments </h1>
+      <p className="text-gray-600 text-lg mt-1">
+        Securely pay society maintenance and other charges online with ease
+      </p>
+
+      {role === "admin" && (
+        <div className="mb-4 flex justify-between items-center">
+          <h3 className="text-2xl font-semibold mt-4">My Payments</h3>
+          <button
+            onClick={() => setShowAdminForm(true)}
+            className="bg-blue-600 font-semibold text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            New Payment
+          </button>
+        </div>
+      )}
+
+      {showAdminForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 className="text-lg font-semibold text-blue-800 mb-4">
+               Add Payment
+            </h2>
+            <div>
+
+            <label htmlFor="description"> Description</label>
+            <input
+              type="text"
+              name="description"
+              value={newPayment.description}
+              onChange={handleNewPaymentChange}
+              placeholder="Description"
+              className="p-2 border rounded w-full mb-2"
+              />
+              </div>
+              <div>
+            <label htmlFor="amount"> Amount</label>
+            <input
+              type="number"
+              name="amount"
+              value={newPayment.amount}
+              onChange={handleNewPaymentChange}
+              placeholder="Amount"
+              className="p-2 border rounded w-full mb-2"
+              />
+              </div>
+              <div>
+            <label htmlFor="dueDate"> Due Date</label>
+            <input
+              type="date"
+              name="dueDate"
+              value={newPayment.dueDate}
+              onChange={handleNewPaymentChange}
+              className="p-2 border rounded w-full mb-2"
+              />
+              </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowAdminForm(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={addPayment}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Add Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="overflow-x-auto mt-10">
+        <table className="min-w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-blue-100">
+              <th className="border border-gray-300 px-4 py-2">Description</th>
+              <th className="border border-gray-300 px-4 py-2">Amount</th>
+              <th className="border border-gray-300 px-4 py-2">Status</th>
+              <th className="border border-gray-300 px-4 py-2">Payment Date</th>
+              <th className="border border-gray-300 px-4 py-2">Due Date</th>
+              <th className="border border-gray-300 px-4 py-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payments.map((payment) => (
+              <tr key={payment._id} className="border border-gray-300">
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {payment.description}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  ₹{payment.amount}
+                </td>
+                <td
+                  className={
+                    paymentStatus(payment._id) === "Paid"
+                      ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold"
+                      : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"
+                  }
+                >
+                  {paymentStatus(payment._id)}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {paymentDateLaao(payment._id)}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {new Date(payment.dueDate).toLocaleDateString("en-GB")}
+                </td>
+                <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
+                  <Link
+                    to={`/layout/payPayment/${payment._id}`}
+                    className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700"
+                  >
+                    Pay
+                  </Link>
+                  {role === "admin" && (
+                    <button
+                      onClick={() => deletePayment(payment._id)}
+                      className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors"
+                    >
+                      <RiDeleteBin6Fill size={20} />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <button
+        onClick={fetchPreviousData}
+        className="absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400"
+      >
+        History
+      </button>
+    </div>
+
+    {role === "admin" && (
+      <div>
+        <button
+          onClick={fetchAgainData}
+          className="absolute top-8 right-32 rounded-lg px-3 py-2 bg-blue-400"
+        >
+          All data
+        </button>
+      </div>
+    )}
+  </div>
+);
+
 };
 
 export default PaymentSection;

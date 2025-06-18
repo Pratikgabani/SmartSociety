@@ -594,17 +594,22 @@ function OrgLanding() {
             </ul>
             <div className='mt-4 md:mt-0 md:ml-6 w-full md:w-auto'>
               {!isLoggedIn && (
-                <button className='bg-blue-600 text-white font-bold rounded-3xl py-2 px-4 sm:px-6 text-sm md:text-base lg:text-lg border-white w-full md:w-auto'>
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link>
-                </button>
-              )}
+  <div className="w-full flex justify-center md:justify-end">
+    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+      <button className="bg-blue-600 text-white font-bold rounded-3xl py-2 px-4 sm:px-6 text-sm md:text-base lg:text-lg border-white w-full md:w-auto">
+        Login
+      </button>
+    </Link>
+  </div>
+)}
+
               {/* Logout button can be added here if needed, using similar logic as the original commented out code */}
             </div>
           </div>
         </nav>
 
         {/* First part - Hero Section */}
-        <div id='home' className='w-full max-w-6xl mx-auto my-10 lg:my-16 px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center min-h-[calc(100vh-120px)] pt-8 pb-8'> {/* Adjusted min-height calculation */}
+        <div id='home' className='w-full max-w-6xl mx-auto my-10 lg:my-16 px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center  pt-8 pb-8'> {/* Adjusted min-height calculation */}
           <div className='p-2 sm:p-5 w-full lg:w-1/2 text-center lg:text-left'>
             <div className='mb-5 mt-8 sm:mt-12'>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-700 ">
@@ -627,9 +632,10 @@ function OrgLanding() {
               </Link>
             </div>
           </div>
-          <div className='mt-8 lg:mt-0 lg:ml-4 w-full max-w-lg mx-auto lg:w-1/2'>
-            <ImageSlider />
-          </div>
+          <div className='hidden lg:block mt-8 lg:mt-0 lg:ml-4 w-full max-w-lg mx-auto lg:w-1/2'>
+  <ImageSlider />
+</div>
+
         </div>
       </div>
 
@@ -870,7 +876,7 @@ function OrgLanding() {
                 <h3 className="font-semibold text-white mb-4">Quick Links</h3>
                 <ul className="space-y-2 text-sm">
                   {['Visitor Management', 'Complaint System', 'Facility Booking', 'Event Management', 'Payment Gateway', 'Polls'].map(link =>(
-                     <li key={link}><a href={`#${link.split(' ')[0].toLowerCase()}`} className="hover:text-blue-400 transition-colors">{link}</a></li>
+                     <li key={link}><a href="/login" className="hover:text-blue-400 transition-colors">{link}</a></li>
                   ))}
                 </ul>
               </div>
