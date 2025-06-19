@@ -147,7 +147,6 @@ const DashboardSection = ({ title, icon, children, link }) => (
           </div>
         );
       }
-      
    return (
   <div className='bg-gray-50 min-h-screen'>
     <div className='p-5 max-w-7xl mx-auto'>
