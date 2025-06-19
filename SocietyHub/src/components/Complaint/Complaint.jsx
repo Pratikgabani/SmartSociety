@@ -29,12 +29,12 @@ function Complaint() {
         );
         setLoading(false);
         setComplaints(response.data.data);
-        if (response.data.data.length === 0) {
-          toast.error("No complaints found!");
-        }
+        // if (response.data.data.length === 0) {
+        //   toast.error("No complaints found!");
+        // }
       } catch (error) {
         console.error("Error fetching complaints:", error);
-        toast.error("Failed to fetch complaints");
+        // toast.error("Failed to fetch complaints");
       }
     };
 
@@ -51,7 +51,7 @@ function Complaint() {
       navigate("/history", { state: { data: response.data.data } });
     } catch (error) {
       console.error("Error fetching history:", error);
-      toast.error("Failed to fetch history");
+      // toast.error("Failed to fetch history");
     }
   };
 

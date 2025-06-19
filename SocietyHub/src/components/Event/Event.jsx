@@ -48,9 +48,9 @@ function Event() {
 
         setEvents(response.data.data);
         setLoading(false);
-        if (response.data.data.length === 0) {
-          toast.error("No events found!");
-        }
+        // if (response.data.data.length === 0) {
+        //   toast.error("No events found!");
+        // }
 
         // Get user ID from localStorage
         const token = localStorage.getItem("user");

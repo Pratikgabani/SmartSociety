@@ -52,10 +52,10 @@ const Booking = () => {
         const response = await axios.get("http://localhost:8000/api/v1/booking/getVenue", { withCredentials: true });
         setVenues(response.data.data);
         setLoading(false);
-        if (response.data.data.length === 0) toast.error("No Venues found!");
+        // if (response.data.data.length === 0) toast.error("No Venues found!");
       } catch (error) {
         console.error("Error fetching venues:", error);
-        toast.error("Failed to fetch venues!"); // Toast for error
+        // toast.error("Failed to fetch venues!"); // Toast for error
       }
     };
     fetchVenues();

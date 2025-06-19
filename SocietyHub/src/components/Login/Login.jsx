@@ -209,10 +209,8 @@ function Login() {
             </p>
           </div>
           <div className="text-center mt-4 cursor-pointer">
-            <p>Or with</p>
-            <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300">
-              Continue with Mobile
-            </button>
+            <p>Or</p>
+            
             {/* <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300" onClick={() =>navigate("/google-login")}> 
               Continue with Google
             </button > */}
