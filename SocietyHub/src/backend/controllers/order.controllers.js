@@ -5,7 +5,7 @@ import  {Purchase}  from "../models/purchase.models .js";
   const order = req.body;
   try {
     const orderInfo = await Order.create(order);
-    console.log(orderInfo);
+    // console.log(orderInfo);
     const userId = orderInfo?.userId;
     const paymentId = orderInfo?.paymentId;
     const paidOn = orderInfo?.paidOn;
@@ -21,7 +21,7 @@ import  {Purchase}  from "../models/purchase.models .js";
     res.status(201).json({ message: "Order Details: ", orderInfo });
    
   } catch (error) {
-    console.log("Error in order: ", error);
+    // console.log("Error in order: ", error);
     res.status(401).json({ errors: "Error in order creation" });
   }
 };

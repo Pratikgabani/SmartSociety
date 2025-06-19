@@ -108,7 +108,7 @@ dotenv.config({
     path : "./.env"
 })
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-console.log(process.env.STRIPE_SECRET_KEY);
+// console.log(process.env.STRIPE_SECRET_KEY);
   const payPayment = asyncHandler(async (req, res) => {
     const { paymentId } = req.params;
     const userId = req.user._id;
@@ -118,7 +118,7 @@ console.log(process.env.STRIPE_SECRET_KEY);
       }
       const existingPurchase = await Purchase.findOne({ userId, paymentId });
       if (existingPurchase) {
-        console.log("bas bhai kitna pay krega")
+        // console.log("bas bhai kitna pay krega")
         toast.error("User has already done payment !");
         return res
           .status(400)

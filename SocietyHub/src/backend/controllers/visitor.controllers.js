@@ -8,7 +8,7 @@ import { User } from "../models/user.models.js";
 const createVisitor = asyncHandler(async (req, res) => {
     const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,duration} = req.body;
     const userId = req.user?._id
-  console.log("user"+ userId)
+//   console.log("user"+ userId)
     //   const userId =  req.data.user?._id
       const securityId = await Security.findById(userId)
       if(!securityId){
@@ -25,7 +25,7 @@ const createVisitor = asyncHandler(async (req, res) => {
         }
         const haiKiNai = await User.find({ houseNo: visitingAdd, block: visitingBlock });
 
-console.log("user", haiKiNai); // Log properly for debugging
+// console.log("user", haiKiNai); // Log properly for debugging
 
 if (haiKiNai.length === 0) {  // Check if the array is empty
     throw new ApiError(400, "User not found");
@@ -72,7 +72,7 @@ const removeVisitor = asyncHandler(async (req, res) => {
 const deleteVisitor = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    console.log("Deleting visitor with ID:", id); // Debugging log
+    // console.log("Deleting visitor with ID:", id); // Debugging log
 
     const visitor = await Visitor.findById(id);
     if (!visitor) {
@@ -191,8 +191,8 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
 const getVisitorById = asyncHandler(async (req, res) => {
     const userHome = req.user.houseNo
     const visitingBlock = req.user.block
-    console.log("userHome"+ userHome)
-    console.log("visitingBlock"+ visitingBlock)
+    // console.log("userHome"+ userHome)
+    // console.log("visitingBlock"+ visitingBlock)
     const visitor = await Visitor.find({visitingAdd : userHome, visitingBlock : visitingBlock, societyId : req.user.societyId})
 
     if(!visitor){
@@ -225,7 +225,7 @@ const updateVisitorDuration = async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, updatedVisitor, "Visitor duration updated successfully"));
   } catch (error) {
-    console.error('Error updating visitor:', error);
+    // console.error('Error updating visitor:', error);
     res.status(500).json({ message: "Error updating visitor" });
   }
 };

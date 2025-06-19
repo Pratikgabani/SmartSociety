@@ -16,15 +16,15 @@ const createExpense = asyncHandler(async(req , res , next) =>{
     if (req.file) {
         try {
             proof = await uploadOnCloudinary(req.file.path);
-            console.log("Proof uploaded", proof);
+            // console.log("Proof uploaded", proof);
         } catch (error) {
-            console.log("Error uploading proof", error);
+            // console.log("Error uploading proof", error);
             throw new ApiError(500, "Failed to upload proof");
         }
     }
   
     try {
-        console.log("helll")
+        // console.log("helll")
         const expense = await Expense.create({
             subject,
             proof : proof?.url,
@@ -33,7 +33,7 @@ const createExpense = asyncHandler(async(req , res , next) =>{
             paidOn : new Date().toLocaleDateString(),
             societyId : req.user?.societyId 
         })
-        console.log("hwlwjf"); 
+        // console.log("hwlwjf"); 
         if(!expense){
             throw new ApiError(400 , "Can't create expense")
         }
