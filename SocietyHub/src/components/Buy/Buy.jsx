@@ -32,7 +32,7 @@ const Buy = () => {
             withCredentials: true, // Include cookies if needed
           }
         );
-        console.log(response.data.payment);
+        // console.log(response.data.payment);
         setPayment(response.data.payment);
         setClientSecret(response.data.clientSecret);
         setLoading(false);
@@ -98,7 +98,7 @@ const Buy = () => {
     if (confirmError) {
       setCardError(confirmError.message);
     } else if (paymentIntent.status === "succeeded") {
-      console.log("Payment succeeded: ", paymentIntent);
+      // console.log("Payment succeeded: ", paymentIntent);
       setCardError("your payment id: ", paymentIntent.id);
       const paymentInfo = {
         email: user?.data.user.email,
@@ -113,14 +113,14 @@ const Buy = () => {
 
       
       };
-      console.log("Payment info: ", paymentInfo);
+      // console.log("Payment info: ", paymentInfo);
       await axios
         .post("http://localhost:8000/api/v1/order", paymentInfo, {
          
           withCredentials: true,
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           toast.success("Payment Successful");
           navigate("/layout/payment");
         })

@@ -52,7 +52,7 @@ function Login() {
           toast.success("Google Login Successful");
           navigate('/layout/dashboard');
         } else {
-          console.log(authResult);
+          // console.log(authResult);
           throw new Error(authResult);
         }
       } catch (e) {
@@ -90,7 +90,7 @@ function Login() {
           localStorage.setItem("user", JSON.stringify(response.data));
           navigate("/layout/Visitor");
 
-          console.log("Login successful: ", response.data);
+          // console.log("Login successful: ", response.data);
         } catch (error) {
           console.log(error)
           toast.error("error logging in");
@@ -117,7 +117,7 @@ function Login() {
             }
           );
 
-          console.log("Login successful: ", response.data);
+          // console.log("Login successful: ", response.data);
 
           localStorage.setItem("user", JSON.stringify(response.data));
           navigate("/layout/dashboard");

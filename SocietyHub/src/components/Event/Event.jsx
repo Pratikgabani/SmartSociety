@@ -160,7 +160,7 @@ function Event() {
         category: ""
       });
 
-      console.log("Event created successfully");
+      // console.log("Event created successfully");
     } catch (error) {
       toast.error("Failed to create event");
       console.error("Error creating event:", error);
@@ -179,7 +179,7 @@ function Event() {
         // Remove the deleted event from the state
         setEvents(events.filter(event => event._id !== eventId));
         toast.success("Event deleted successfully");
-        console.log("Event deleted successfully");
+        // console.log("Event deleted successfully");
       }
     } catch (error) {
       toast.error("Failed to delete event");

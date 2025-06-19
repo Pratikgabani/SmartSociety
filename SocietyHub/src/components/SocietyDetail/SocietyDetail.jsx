@@ -29,7 +29,7 @@ const SocietyDetails = () => {
           },
         }
       );
-      console.log("Start successful: ", response.data);
+      // console.log("Start successful: ", response.data);
       // toast.success(response.data.message);
       navigate("/register");
     } catch (error) {

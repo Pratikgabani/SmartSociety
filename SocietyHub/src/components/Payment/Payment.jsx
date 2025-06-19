@@ -55,7 +55,7 @@ const PaymentSection = () => {
         withCredentials: true,
       });
       setPayments(response.data.data);
-      console.log(response.data.data);
+      // console.log(response.data.data);
       // console.log(payments[0].paidBy.includes(user.data.user._id));
       // if(payments[0].paidBy.includes(user.data.user._id)){
       //   setIsPaid(true);

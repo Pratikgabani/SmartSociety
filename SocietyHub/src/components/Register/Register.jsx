@@ -91,7 +91,7 @@ const Register = () => {
         }
       );
       toast.success("Signup successful!");
-      console.log('Signup successful: ', response.data);
+      // console.log('Signup successful: ', response.data);
       // toast.success(response.data.message);
       navigate('/login');
     } catch (error) {
