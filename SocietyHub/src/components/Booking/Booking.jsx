@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 // import PreviousDataModal from "../history/PreviousDataModal .jsx";
 // import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-
+import { HashLoader } from 'react-spinners'
 const Booking = () => {
   const [venues, setVenues] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -99,8 +99,8 @@ const Booking = () => {
   const fetchPreviousData = async () => {
     try {
       let response
-      if(isAdmin)
-      response = await axios.get("http://localhost:8000/api/v1/booking/all-Bookings", { withCredentials: true })
+      if (isAdmin)
+        response = await axios.get("http://localhost:8000/api/v1/booking/all-Bookings", { withCredentials: true })
       else response = await axios.get("http://localhost:8000/api/v1/booking/getBookingsByUserId", { withCredentials: true })
       setPreviousData(response.data.data)
       navigate("/history", { state: { data: response.data.data } });
@@ -219,11 +219,19 @@ const Booking = () => {
       toast.error("Failed to create booking!");
     }
   };
+
+    if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <HashLoader size={60} color="#2563eb" loading={loading} />
+        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-50">
       <Toaster />
-      {
-        isLoggedIn ? (
+      
           <div className="">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               Venue Bookings
@@ -244,9 +252,13 @@ const Booking = () => {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 ">
                 {loading ? (
-                  <p>Loading...</p>
+                  <div className="flex flex-col items-center justify-center text-center min-h-[200px]">
+                    <HashLoader size={50} color="#000000" loading={loading} />
+                    <p className="mt-4 text-lg text-black">Loading...</p>
+                  </div>
+
                 ) : venues.length === 0 ? (
                   <p>No venues available.</p>
                 ) :
@@ -258,12 +270,12 @@ const Booking = () => {
                       <div className="flex flex-col h-full">
                         <div className="flex-1">
                           <div className="flex justify-between items-center mb-3">
-                          <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.venue}</h3>
-                          {isAdmin && (
-                            <button onClick={() => handleDeleteVenue(venue._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
-                              <RiDeleteBin6Fill  size={20} />
-                            </button>
-                          )}
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.venue}</h3>
+                            {isAdmin && (
+                              <button onClick={() => handleDeleteVenue(venue._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
+                                <RiDeleteBin6Fill size={20} />
+                              </button>
+                            )}
                           </div>
                           <p className="text-gray-600 text-sm mb-3">{venue.description}</p>
                           <div className="flex gap-2 mb-4 flex-wrap">
@@ -461,7 +473,7 @@ const Booking = () => {
                       <button
                         type="button"
                         onClick={() => setIsFormOpen(false)}
-                        className="px-5 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                       >
                         Cancel
                       </button>
@@ -591,7 +603,7 @@ const Booking = () => {
                       <button
                         type="button"
                         onClick={() => setIsVenueFormOpen(false)}
-                        className="px-5 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                       >
                         Cancel
                       </button>
@@ -620,18 +632,14 @@ const Booking = () => {
               </ul>
             </section>
           </div>
-        ) : (
-          <div className="flex items-center justify-center h-screen">
-            <p className="text-gray-600">Please log in to view this page.</p>
-          </div>
-        )
-      }
+        
+      
 
       {/* History */}
       {/* {isAdmin && ( */}
-        <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-         
-        </div>
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+
+      </div>
       {/* )} */}
     </div>
   );
