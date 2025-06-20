@@ -171,7 +171,7 @@ const paymentDateLaao = (payId) => {
 }
 
 return (
-  <div className="container relative mx-auto px-4 py-8 bg-gray-50">
+  <div className="container relative mx-auto px-4 py-8 bg-gray-100">
     <div className="w-full">
       <h1 className="text-3xl font-bold text-gray-800 mb-2">Payments </h1>
       <p className="text-gray-600 text-lg mt-1">

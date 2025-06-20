@@ -130,7 +130,7 @@ function Complaint() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 w-full bg-gray-50 text-gray-900">
+    <div className="container relative mx-auto px-4 py-8 bg-gray-100">
       <Toaster />
       <h1 className="text-3xl font-bold mb-2">Complaints </h1>
       <p className="text-gray-600 mb-6 text-lg">
@@ -210,7 +210,7 @@ function Complaint() {
   {complaints.map((complaint) => (
     <div
       key={complaint._id}
-      className="bg-white p-6 rounded shadow-md h-full flex flex-col justify-between"
+      className="bg-white p-6 rounded-md shadow-md h-full flex flex-col justify-between"
     >
       <div>
         <div className="flex justify-between items-center">

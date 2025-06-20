@@ -39,7 +39,7 @@ const SummaryCard = ({ title, value, icon, link }) => (
 );
 
 const DashboardSection = ({ title, icon, children, link }) => (
-  <div className='bg-white rounded-xl shadow-sm p-5'>
+  <div className='bg-white rounded-xl shadow-sm p-5 max-h-[300px] overflow-auto'>
     <div className='flex justify-between items-center mb-5'>
       <div className='flex items-center'>
         <span className='text-blue-600'>{icon}</span>
@@ -148,13 +148,13 @@ const DashboardSection = ({ title, icon, children, link }) => (
         );
       }
    return (
-  <div className='bg-gray-50 min-h-screen'>
+  <div className='bg-gray-100 min-h-screen'>
     <div className='p-5 max-w-7xl mx-auto'>
       {/* Header Section */}
       <div className='flex justify-between items-start mb-8'>
         <div>
-          <h1 className='text-3xl font-bold text-gray-900'>Society Dashboard</h1>
-          <p className='text-gray-600 mt-2'>Welcome to {society}</p>
+          <h1 className='text-3xl font-bold text-gray-900'>Dashboard</h1>
+          <p className='text-gray-600 text-lg mt-2'>Welcome to <span className='font-semibold'>{society}</span></p>
         </div>
       </div>
 

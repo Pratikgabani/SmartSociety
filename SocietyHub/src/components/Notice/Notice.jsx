@@ -55,7 +55,7 @@ export default function Announcements() {
       setTopic("");
       setDescription("");
       setIsNoticeModalOpen(false);
-      toast.success("Venue created successfully!");
+      toast.success("Notice added successfully!");
     } catch (error) {
       console.error("Error adding notice", error);
     }
@@ -84,7 +84,7 @@ if (loading) {
   }
 
   return (
-    <div className="min-h-screen relative w-full bg-gray-50 px-4 py-8">
+    <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
       <Toaster />
       <div className="flex justify-between items-center">
 
@@ -134,12 +134,13 @@ if (loading) {
                       <button
                         type="button"
                         onClick={() => setIsNoticeModalOpen(false)}
-                        className="px-5 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
+                        onClick={handleAddNotice}
                         className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         Add Venue

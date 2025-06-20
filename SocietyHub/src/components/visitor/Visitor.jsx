@@ -156,10 +156,10 @@ function Visitor() {
 }
 
 return (
-  <div className="container relative mx-auto px-4 py-8 bg-gray-50">
+  <div className="container relative mx-auto px-4 py-8 bg-gray-100">
     {/* Add Visitor Modal */}
     {roles === "security" && showAddModal && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
           <h3 className="text-xl font-semibold text-blue-800 mb-4">Add New Visitor</h3>
           <form onSubmit={handleAddVisitor}>
@@ -197,90 +197,138 @@ return (
     </div>
 
     {/* Buttons */}
-    <div className="flex gap-4 mb-8">
+    {/*  */}
+
+    {/* Active Visitors */}
+    <div className='flex justify-between items-center'>
+    <h2 className="text-xl font-semibold text-gray-800 mb-4">Active Visitors</h2>
+    <div className="mb-4">
       {roles === "security" && (
         <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
           + Add New Visitor
         </button>
       )}
+      </div>
     </div>
-
-    {/* Active Visitors */}
-    <h2 className="text-xl font-semibold text-gray-800 mb-4">Active Visitors</h2>
     <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Visitor</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Purpose</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Check IN</th>
-              {roles === "security" && <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {activeVisitors.map((visitor) => (
-              <tr key={visitor._id} className="hover:bg-gray-50 transition">
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.visitorName}</td>
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.purpose}</td>
-                <td className="px-4 py-4 text-sm text-black">{visitor.visitorPhone}</td>
-                <td className="px-4 py-4 text-sm font-semibold text-green-600">Active</td>
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-"}</td>
-                {roles === "security" && (
-                  <td className="px-4 py-4 text-sm flex gap-2">
-                    <button onClick={() => handleCheckOut(visitor._id)} className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 text-sm">
-                      Check-Out
-                    </button>
-                    <button onClick={() => deleteVisitor(visitor._id)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm">
-                      Delete
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <table className="min-w-full border-collapse border border-gray-300">
+    <thead>
+      <tr className="bg-blue-100">
+        <th className="border border-gray-300 px-4 py-2 text-center">Visitor</th>
+        <th className="border border-gray-300 px-4 py-2 text-center">Purpose</th>
+        <th className="border border-gray-300 px-4 py-2 text-center">Phone</th>
+        <th className="border border-gray-300 px-4 py-2 text-center">Status</th>
+        <th className="border border-gray-300 px-4 py-2 text-center">Check IN</th>
+        {roles === "security" && (
+          <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
+        )}
+      </tr>
+    </thead>
+    <tbody>
+      {activeVisitors.map((visitor) => (
+        <tr
+          key={visitor._id}
+          className="border border-gray-300 hover:bg-gray-50 transition"
+        >
+          <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+            {visitor.visitorName}
+          </td>
+          <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+            {visitor.purpose}
+          </td>
+          <td className="border border-gray-300 px-4 py-2 text-center text-black">
+            {visitor.visitorPhone}
+          </td>
+          <td className="border border-gray-300 px-4 py-2 text-center font-semibold text-green-600">
+            Active
+          </td>
+          <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+            {visitor.visitDate
+              ? new Date(visitor.visitDate).toLocaleString("en-GB")
+              : "-"}
+          </td>
+          {roles === "security" && (
+            <td className="border border-gray-300 px-4 py-2 text-center flex justify-center gap-2">
+              <button
+                onClick={() => handleCheckOut(visitor._id)}
+                className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 text-sm"
+              >
+                Check-Out
+              </button>
+              <button
+                onClick={() => deleteVisitor(visitor._id)}
+                className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 text-sm"
+              >
+                Delete
+              </button>
+            </td>
+          )}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
     </div>
 
     {/* Recent Visitors */}
     <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Visitors</h2>
-    <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Visitor</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Purpose</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Visitor Phone</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Visit Time</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Checkout</th>
-              {roles === "security" && <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {recentVisitors.slice(0, 5).map(visitor => (
-              <tr key={visitor._id} className="hover:bg-gray-50 transition">
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.visitorName}</td>
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.purpose}</td>
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.visitorPhone}</td>
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.visitDate ? new Date(visitor.visitDate).toLocaleString() : "-"}</td>
-                <td className="px-4 py-4 text-sm text-gray-800">{visitor.duration}</td>
-                {roles === "security" && (
-                  <td className="px-4 py-4">
-                    <button onClick={() => deleteVisitor(visitor._id)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm">
-                      Delete
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <div className="bg-white rounded-lg shadow overflow-hidden mb-8 mt-4">
+  <div className="overflow-x-auto">
+    <table className="min-w-full border-collapse border border-gray-300">
+      <thead>
+        <tr className="bg-blue-100">
+          <th className="border border-gray-300 px-4 py-2 text-center">Visitor</th>
+          <th className="border border-gray-300 px-4 py-2 text-center">Purpose</th>
+          <th className="border border-gray-300 px-4 py-2 text-center">Visitor Phone</th>
+          <th className="border border-gray-300 px-4 py-2 text-center">Visit Time</th>
+          <th className="border border-gray-300 px-4 py-2 text-center">Checkout</th>
+          {roles === "security" && (
+            <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
+          )}
+        </tr>
+      </thead>
+      <tbody>
+        {recentVisitors.slice(0, 5).map((visitor) => (
+          <tr
+            key={visitor._id}
+            className="border border-gray-300 hover:bg-gray-50 transition"
+          >
+            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+              {visitor.visitorName}
+            </td>
+            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+              {visitor.purpose}
+            </td>
+            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+              {visitor.visitorPhone}
+            </td>
+            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+              {visitor.visitDate
+                ? new Date(visitor.visitDate).toLocaleString("en-GB")
+                : "-"}
+            </td>
+            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+              {visitor.duration || "-"}
+            </td>
+            {roles === "security" && (
+              <td className="border border-gray-300 px-4 py-2 text-center">
+                <button
+                  onClick={() => deleteVisitor(visitor._id)}
+                  className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 text-sm"
+                >
+                  Delete
+                </button>
+              </td>
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
     {/* History Button */}
     <div>

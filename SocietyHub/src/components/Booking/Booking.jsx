@@ -229,7 +229,7 @@ const Booking = () => {
     );
   }
   return (
-    <div className="container mx-auto px-4 py-8 bg-gray-50">
+    <div className="container relative mx-auto px-4 py-8 bg-gray-100">
       <Toaster />
       
           <div className="">

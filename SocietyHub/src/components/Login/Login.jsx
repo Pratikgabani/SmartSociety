@@ -182,7 +182,7 @@ function Login() {
               <label className="block font-medium text-gray-700 font-semibold">Role</label>
               <select
                 name="role"
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg cursor-pointer"
                 value={formData.role}
                 onChange={handleChange}
               >
@@ -195,28 +195,24 @@ function Login() {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 font-bold rounded-lg hover:bg-blue-700"
+              className="w-full bg-blue-600 text-white mt-5 py-2 font-bold rounded-lg hover:bg-blue-700"
             >
               Login
             </button>
           </form>
-          <div className="text-center mt-4">
-            <p>
-              Don't have an account?{' '}
-              <a href="/register" className="text-blue-600 font-bold">
-                Register
-              </a>
-            </p>
-          </div>
-          <div className="text-center mt-4 cursor-pointer">
+          <div className="text-center mt-2 cursor-pointer">
             <p>Or</p>
-            
-            {/* <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300" onClick={() =>navigate("/google-login")}> 
-              Continue with Google
-            </button > */}
-            <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg mt-2 hover:bg-gray-300" onClick={googleLogin}> 
+            <button className="w-full bg-gray-200 text-gray-600 py-2 font-bold rounded-lg mt-2 hover:bg-gray-300" onClick={googleLogin}> 
               Continue with Google
             </button >
+              <div className="text-center mt-4">
+                <p>
+                  Don't have an account?{' '}
+                  <a href="/register" className="text-blue-600 font-bold">
+                    Register
+                  </a>
+                </p>
+              </div>
           </div>
         </div>
 
