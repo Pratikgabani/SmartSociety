@@ -31,7 +31,9 @@ const PollApp = () => {
   useEffect(() => {
     fetchPolls();
   }, [vari]);
-
+  // useEffect(() => {
+  //   toast.success("toast is working")
+  // })
   const fetchPolls = async () => {
     try {
       const res = await axios.get("http://localhost:8000/api/v1/polls/getAllPolls", {
@@ -51,6 +53,7 @@ const PollApp = () => {
         {},
         { withCredentials: true }
       );
+      toast.success("Vote cast successfully");
       setVari(!vari);
     } catch (err) {
       console.error("Error voting", err);
