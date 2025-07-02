@@ -1,4 +1,5 @@
 import { Event } from "../models/event.models.js";
+// import { EventOrder } from "../models/eventOrder.model.js";
 import {asyncHandler} from "./../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
@@ -228,5 +229,25 @@ const toggleResponse = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, event, "Response toggled successfully"));
 });
 
-
-export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse , getUpcomingEvents , getPastEvents , payEvent , saveEventOrder }
+const paymentStatus = asyncHandler(async (req, res) => {
+    // const eventId = await Event.findById(req.params.id);
+    const {eventId} = req.params;
+    if(!eventId){
+        throw new ApiError(400, "Event ID not found");
+    }
+    // const event = await Event.findById(eventId);
+    // if (!event) {
+    //     throw new ApiError(404, "Event not found");
+    // }
+    const payStatus = await EventOrder.find({ eventId: eventId , userId : req.user._id , status:"succeeded"});
+    // console.log(payStatus.length ==0)
+    if(payStatus.length === 0){
+        return res
+        .status(200)
+        .json(new ApiResponse(200, false, "Payment status fetched successfully"));
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200, true, "Payment status fetched successfully"));
+});
+export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse , getUpcomingEvents , getPastEvents , payEvent , saveEventOrder , paymentStatus }

@@ -312,60 +312,58 @@ const Booking = () => {
             {/* My Bookings Section */}
             {/* Upcoming Bookings */}
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Upcoming Bookings</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {loading ? (
-                  <p>Loading...</p>
+  <h2 className="text-2xl font-semibold text-gray-800 mb-6">Upcoming Bookings</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 sm:px-2">
+    {loading ? (
+      <p className="col-span-full text-center text-gray-500 py-10">Loading...</p>
+    ) : myBooking.length === 0 ? (
+      <p className="col-span-full text-center text-gray-500 py-10">No upcoming bookings.</p>
+    ) : (
+      myBooking.map((booking) => (
+        <div
+          key={booking._id}
+          className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100 flex flex-col h-full relative"
+        >
+          {/* Status badge at top-right */}
+          <span
+            className={`absolute top-4 right-4 px-2 py-1 rounded-full text-xs  ${
+              new Date(booking.date) >= Date.now()
+                ? 'bg-green-100 text-green-800'
+                : 'bg-gray-100 text-gray-800'
+            }`}
+          >
+            {new Date(booking.date) >= Date.now() ? 'Upcoming' : 'Completed'}
+          </span>
 
-                ) : myBooking.length === 0 ? (
-                  <p>No upcoming bookings.</p>
+          <div className="flex-1 space-y-2">
+            <h3 className="text-xl font-bold text-gray-800">{booking.bookingType}</h3>
+            <p className="text-gray-600 text-sm">{booking.bookDescription}</p>
+            <div className="space-y-1 text-sm">
+              <p className="text-gray-500">⏳ Duration: {booking.duration} hours</p>
+              <p className="text-gray-500">📅 Date: {new Date(booking.date).toLocaleDateString('en-GB')}</p>
+            </div>
+          </div>
 
-                ) :
-                  (myBooking.map((booking) => (
-                    <div
-                      key={booking._id}
-                      className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
-                    >
-                      <div className="flex flex-col h-full">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-800 mb-2">
-                            {booking.bookingType}
-                          </h3>
-                          <p className="text-gray-600 text-sm mb-2">{booking.bookDescription}</p>
-                          <div className="space-y-1 text-sm mb-4">
-                            <p className="text-gray-500">
-                              ⏳ Duration: {booking.duration} hours
-                            </p>
-                            <p className="text-gray-500 pb-2">
-                              📅 Date: {new Date(booking.date).toLocaleDateString('en-GB')}
-                            </p>
-                            <span className={`inline-block px-2 py-1 rounded-full text-xs ${new Date(booking.date) >= Date.now()
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                              }`}>
-                              {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
-                            </span>
-                          </div>
-                        </div>
-                        {new Date(booking.date) >= Date.now() && (
-                          <div className="flex justify-between">
-                            <button
-                              onClick={() => handleDelete(booking._id)}
-                              className="mt-1 w-5/12 px-1 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
-                            >
-                              Cancel Reservation
-                            </button>
-                            <button className="mt-1 w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                              Pay now
-                            </button>
-                          </div>
+          {new Date(booking.date) >= Date.now() && (
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => handleDelete(booking._id)}
+                className=" px-1 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
+              >
+                Cancel Reservation
+              </button>
+              {/* Future Pay Now Button Placeholder */}
+              {/* <button className="w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Pay now
+              </button> */}
+            </div>
+          )}
+        </div>
+      ))
+    )}
+  </div>
+</section>
 
-                        )}
-                      </div>
-                    </div>
-                  )))}
-              </div>
-            </section>
 
             {/* Past Bookings */}
             <section className="mb-12">

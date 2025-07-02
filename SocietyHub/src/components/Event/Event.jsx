@@ -11,10 +11,11 @@ function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [readyState, setReadyState] = useState({});
+  // const [readyState, setReadyState] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [pastData, setPastData] = useState([]);
   const [showAddEventForm, setShowAddEventForm] = useState(false);
+  const [paymentStatusMap, setPaymentStatusMap] = useState({});
   const [formData, setFormData] = useState({
     eventName: "",
     eventDate: "",
@@ -28,6 +29,31 @@ function Event() {
   const [previousData, setPreviousData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+// Fetch payment statuses
+  useEffect(() => {
+  const fetchPaymentStatuses = async () => {
+    const statusMap = {};
+    for (let event of events) {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/events/paymentStatus/${event._id}`,
+          { withCredentials: true }
+        );
+        statusMap[event._id] = response.data.data; // true or false
+      } catch (error) {
+        console.log("Error fetching payment status for event", event._id, error);
+        statusMap[event._id] = false; // default to unpaid on error
+      }
+    }
+    setPaymentStatusMap(statusMap);
+  };
+
+  if (events.length > 0) {
+    fetchPaymentStatuses();
+  }
+}, [events]);
+
   // Fetch user info from localStorage
   useEffect(() => {
     const token = localStorage.getItem("user");
@@ -58,13 +84,6 @@ function Event() {
         const user = token ? JSON.parse(token) : null;
         const userId = user?.data.user._id;
 
-        // Initialize readyState based on whether the user is in readyUsers
-        const initialReadyState = response.data.data.reduce((acc, event) => {
-          acc[event._id] = event.readyUsers.includes(userId);
-          return acc;
-        }, {});
-
-        setReadyState(initialReadyState);
       } catch (error) {
         console.log("Error in getting events", error);
         setLoading(false);
@@ -105,28 +124,7 @@ function Event() {
     } catch (error) {
       console.log("Error fetching data:", error);
     }
-  };
-  // Toggle readiness for an event
-  const handleToggleReady = async (eventId) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8000/api/v1/events/toggleResponse/${eventId}`,
-        {},
-        { withCredentials: true }
-      );
-
-      setEvents(events.map(event =>
-        event._id === eventId ? { ...event, totalHouseReady: response.data.data.totalHouseReady } : event
-      ));
-
-      setReadyState(prevState => ({
-        ...prevState,
-        [eventId]: !prevState[eventId]
-      }));
-    } catch (error) {
-      console.error("Error toggling response:", error);
-    }
-  };
+  };  
 
   // Handle input changes for the add event form
   const handleInputChange = (e) => {
@@ -333,92 +331,159 @@ function Event() {
         )}
 
         {/* Upcoming Events */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-              <HashLoader size={60} color="#2563eb" loading={loading} />
-              <p className="mt-4 text-lg text-gray-700">Loading...</p>
+       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mt-6 px-4 sm:px-6">
+  {loading ? (
+    <div className="col-span-full flex flex-col items-center justify-center min-h-[50vh]">
+      <HashLoader size={60} color="#2563eb" loading={loading} />
+      <p className="mt-4 text-lg text-gray-700">Loading...</p>
+    </div>
+  ) : events.length === 0 ? (
+    <p className="col-span-full text-center text-gray-500 py-10">No events found</p>
+  ) : (
+    events.map((event) => (
+      <div
+        key={event._id}
+        className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 md:p-6 border h-full flex flex-col"
+      >
+        <div className="flex-grow space-y-3">
+          <div className="flex justify-between items-start gap-2">
+            <h2 className="text-lg md:text-xl font-bold text-gray-800 line-clamp-2">
+              {event.eventName}
+            </h2>
+            <span
+              className={`px-2 py-1 text-xs md:text-sm ${
+                event.category === "Festival"
+                  ? "text-purple-700 bg-purple-100"
+                  : event.category === "Meeting"
+                  ? "bg-teal-100 text-teal-700"
+                  : "text-pink-700 bg-pink-100"
+              } rounded-full font-medium whitespace-nowrap`}
+            >
+              {event.category}
+            </span>
+          </div>
+
+          <p className="text-sm md:text-base text-gray-600 line-clamp-3">
+            {event.description}
+          </p>
+          
+          <div className="space-y-2 text-sm md:text-base">
+            <div className="flex items-center text-gray-600">
+              <BsCalendar2Date className="mr-2 flex-shrink-0" />
+              <span>{new Date(event.eventDate).toLocaleDateString("en-GB")}</span>
             </div>
-          ) : events.length === 0 ? (
-            <p>No events found</p>
-          ) : (
-            events.map((event) => (
-              <div key={event._id} className="bg-white rounded-lg shadow-lg p-6 border h-[370px] grid grid-rows-[auto,1fr,auto] gap-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-bold text-gray-800 line-clamp-1 min-h-[28px]">{event.eventName}</h2>
-                    <span className={`px-3 py-1 line-clamp-1 ${event.category === "Festival" ? "text-purple-700 bg-purple-100" : event.category === "Meeting" ? "bg-teal-100 text-teal-700" : "text-pink-700 bg-pink-100"} rounded-full text-sm font-medium`}>
-                      {event.category}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 line-clamp-2 min-h-[48px]">{event.description}</p>
-                  <div className="flex items-center text-gray-600"><BsCalendar2Date className="mr-2" /><span>{new Date(event.eventDate).toLocaleDateString('en-GB')}</span></div>
-                  <div className="flex items-center text-gray-600"><FaRegClock className="mr-2" /><span>{event.time}</span></div>
-                  <div className="flex items-center text-gray-600"><IoLocationOutline className="mr-2" /><span className="truncate">{event.venue}</span></div>
-                  <p className="text-gray-700 font-bold min-h-[20px]">Amount per person: ₹{event.amtPerPerson}</p>
-                  <p className="text-gray-700 min-h-[20px]">Houses Ready: {event.totalHouseReady}</p>
-                  <p className="text-gray-700 min-h-[20px]">Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString('en-GB')}</p>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleToggleReady(event._id)}
-                    className={`flex-1 py-2 rounded-lg font-semibold text-white ${readyState[event._id] ? "bg-red-600 hover:bg-red-700" : "bg-green-500 hover:bg-green-600"}`}
-                  >
-                    {readyState[event._id] ? "Not Ready" : "I'm ready"}
-                  </button>
-                  {readyState[event._id] && (
-                    <Link 
-                     to={`/layout/payEvent/${event._id}`}
-                    className="flex-1 py-2 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700">
-                      Pay Now
-                    </Link>
-                  )}
-                  {isAdmin && (
-                    <button
-                      onClick={() => handleDeleteEvent(event._id)}
-                      className="flex-1 py-2 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700"
-                    >
-                      Delete Event
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))
+            <div className="flex items-center text-gray-600">
+              <FaRegClock className="mr-2 flex-shrink-0" />
+              <span>{event.time}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <IoLocationOutline className="mr-2 flex-shrink-0" />
+              <span className="truncate">{event.venue}</span>
+            </div>
+            <p className="text-gray-700 font-semibold">
+              Amount: ₹{event.amtPerPerson}
+            </p>
+            <p className="text-gray-700">
+              Last Date: {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 flex gap-2 flex-wrap">
+          {/* Show Pay Now button only if not paid */}
+          {!paymentStatusMap[event._id] && (
+            <Link
+              to={`/layout/payEvent/${event._id}`}
+              className="flex-1 min-w-[120px] py-2 rounded-lg font-medium text-sm md:text-base text-white bg-blue-600 hover:bg-blue-700 text-center flex items-center justify-center"
+            >
+              Pay Now
+            </Link>
+          )}
+
+          {/* Admin delete button always visible */}
+          {isAdmin && (
+            <button
+              onClick={() => handleDeleteEvent(event._id)}
+              className={`py-2 rounded-lg font-medium text-sm md:text-base text-white bg-red-600 hover:bg-red-700 ${
+                !paymentStatusMap[event._id] ? "flex-1 min-w-[120px]" : "w-full"
+              }`}
+            >
+              Delete Event
+            </button>
           )}
         </div>
+      </div>
+    ))
+  )}
+</div>
+
+
 
         {/* Past Events */}
         <h3 className="text-2xl font-semibold mt-8">Past Events</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-              <HashLoader size={60} color="#2563eb" loading={loading} />
-              <p className="mt-4 text-lg text-gray-700">Loading...</p>
+<div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mt-6 px-4 sm:px-6">
+  {loading ? (
+    <div className="col-span-full flex flex-col items-center justify-center min-h-[50vh]">
+      <HashLoader size={60} color="#2563eb" loading={loading} />
+      <p className="mt-4 text-lg text-gray-700">Loading...</p>
+    </div>
+  ) : pastData.length === 0 ? (
+    <p className="col-span-full text-center text-gray-500 py-10">No past events found</p>
+  ) : (
+    pastData.map((event) => (
+      <div
+        key={event._id}
+        className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 md:p-6 border h-full flex flex-col"
+      >
+        <div className="flex-grow space-y-3">
+          <div className="flex justify-between items-start gap-2">
+            <h2 className="text-lg md:text-xl font-bold text-gray-800 line-clamp-1">
+              {event.eventName}
+            </h2>
+            <span
+              className={`px-3 py-1 text-xs md:text-sm ${
+                event.category === "Festival"
+                  ? "text-purple-700 bg-purple-100"
+                  : event.category === "Meeting"
+                  ? "bg-teal-100 text-teal-700"
+                  : "text-pink-700 bg-pink-100"
+              } rounded-full font-medium whitespace-nowrap`}
+            >
+              {event.category}
+            </span>
+          </div>
+
+          <p className="text-sm md:text-base text-gray-600 line-clamp-2">
+            {event.description}
+          </p>
+
+          <div className="space-y-2 text-sm md:text-base">
+            <div className="flex items-center text-gray-600">
+              <BsCalendar2Date className="mr-2 flex-shrink-0" />
+              <span>{new Date(event.eventDate).toLocaleDateString("en-GB")}</span>
             </div>
-          ) : pastData.length === 0 ? (
-            <p>No past events found</p>
-          ) : (
-            pastData.map((event) => (
-              <div key={event._id} className="bg-white rounded-lg shadow-lg p-6 border h-[330px] grid grid-rows-[auto,1fr,auto] gap-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-bold text-gray-800 line-clamp-1 min-h-[28px]">{event.eventName}</h2>
-                    <span className={`px-3 py-1 line-clamp-1 ${event.category === "Festival" ? "text-purple-700 bg-purple-100" : event.category === "Meeting" ? "bg-teal-100 text-teal-700" : "text-pink-700 bg-pink-100"} rounded-full text-sm font-medium`}>
-                      {event.category}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 line-clamp-2 min-h-[40px]">{event.description}</p>
-                  <div className="flex items-center text-gray-600"><BsCalendar2Date className="mr-2" /><span>{new Date(event.eventDate).toLocaleDateString('en-GB')}</span></div>
-                  <div className="flex items-center text-gray-600"><FaRegClock className="mr-2" /><span>{event.time}</span></div>
-                  <div className="flex items-center text-gray-600"><IoLocationOutline className="mr-2" /><span className="truncate">{event.venue}</span></div>
-                  <p className="text-gray-700 font-bold min-h-[20px]">Amount per person: ₹{event.amtPerPerson}</p>
-                  <p className="text-gray-700 min-h-[20px]">No. of Houses Ready: {event.totalHouseReady}</p>
-                  <p className="text-gray-700 min-h-[20px]">Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString('en-GB')}</p>
-                </div>
-              </div>
-            ))
-          )}
+            <div className="flex items-center text-gray-600">
+              <FaRegClock className="mr-2 flex-shrink-0" />
+              <span>{event.time}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <IoLocationOutline className="mr-2 flex-shrink-0" />
+              <span className="truncate">{event.venue}</span>
+            </div>
+            <p className="text-gray-700 font-semibold">
+              Amount : ₹{event.amtPerPerson}
+            </p>
+            {/* <p className="text-gray-700">No. of Houses Ready: {event.totalHouseReady}</p> */}
+            <p className="text-gray-700">
+              Last Date to Pay: {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}
+            </p>
+          </div>
         </div>
+      </div>
+    ))
+  )}
+</div>
+
 
         {/* History Button */}
         <div>
