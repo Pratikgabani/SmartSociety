@@ -150,7 +150,7 @@ const Buy = () => {
             <h1 className="text-xl font-semibold underline">Order Details</h1>
             <div className="flex items-center text-center space-x-2 mt-4">
               <h2 className="text-gray-600 text-md">Total Price</h2>
-              <p className="text-red-500 font-bold">${payment.amount}</p>
+              <p className="text-red-500 font-bold">${payment.amount }</p>
             </div>
             <div className="flex items-center text-center space-x-2 mt-2">
               <h1 className="text-gray-600 text-md">Payment name :</h1>

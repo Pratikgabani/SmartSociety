@@ -5,7 +5,8 @@ import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
 import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
-import { HashLoader } from 'react-spinners'
+import { HashLoader } from 'react-spinners';
+import { Link } from "react-router-dom";
 function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
@@ -366,9 +367,11 @@ function Event() {
                     {readyState[event._id] ? "Not Ready" : "I'm ready"}
                   </button>
                   {readyState[event._id] && (
-                    <button className="flex-1 py-2 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700">
+                    <Link 
+                     to={`/layout/payEvent/${event._id}`}
+                    className="flex-1 py-2 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700">
                       Pay Now
-                    </button>
+                    </Link>
                   )}
                   {isAdmin && (
                     <button

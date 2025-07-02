@@ -1,98 +1,84 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowDownAZ, ArrowUpZA } from "lucide-react"; // optional icons if you use lucide
+import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
 
 const PreviousDataPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc"); // default: latest first
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
-
   const data = location.state?.data || [];
+
+  // Extract unique years from data
+  const years = Array.from(
+    new Set(
+      data
+        .map((item) =>
+          new Date(
+            item.date ||
+              item.eventDate ||
+              item.visitDate ||
+              item.dueDate ||
+              item.paidOn
+          ).getFullYear()
+        )
+        .filter((year) => !isNaN(year))
+    )
+  );
+
+  const months = [
+    { value: "1", label: "January" },
+    { value: "2", label: "February" },
+    { value: "3", label: "March" },
+    { value: "4", label: "April" },
+    { value: "5", label: "May" },
+    { value: "6", label: "June" },
+    { value: "7", label: "July" },
+    { value: "8", label: "August" },
+    { value: "9", label: "September" },
+    { value: "10", label: "October" },
+    { value: "11", label: "November" },
+    { value: "12", label: "December" },
+  ];
 
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  // this formatValue was not working properly on the date and some other stuff so i commented it down
-  
-  
-  // const formatValue = (key, value) => {
-  //   if (value == null) return "N/A";
-  //   if (typeof value === "number") return value;
-  //   if (typeof value === "boolean") return value ? "Yes" : "No";
-
-  //   if (typeof value === "string" && !isNaN(Date.parse(value))) {
-  //     return new Date(value).toLocaleString("en-UK");
-  //   }
-
-  //   if (Array.isArray(value)) {
-  //     return value.length > 0 ? (
-  //       <ul className="list-disc pl-4">
-  //         {value.map((item, index) => (
-  //           <li key={index} className="p-1">
-  //             {typeof item === "object" ? formatValue("", item) : item}
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     ) : (
-  //       <span>No items</span>
-  //     );
-  //   }
-
-  //   if (typeof value === "object") {
-  //     return (
-  //       <ul className="border p-2 rounded-md bg-gray-100">
-  //         {Object.entries(value).map(([subKey, subValue]) => (
-  //           <li key={subKey} className="p-1">
-  //             <strong>{subKey}:</strong> {formatValue(subKey, subValue)}
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     );
-  //   }
-
-  //   if (typeof value === "string" && value.startsWith("http")) {
-  //     return (
-  //       <a
-  //         href={value}
-  //         className="text-blue-500 font-medium"
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //       >
-  //         Link
-  //       </a>
-  //     );
-  //   }
-
-  //   return value;
-  // };
-
-const formatValue = (key, value) => {
-    if (value == null) return "N/A"; 
+  const formatValue = (key, value) => {
+    if (value == null) return "N/A";
     if (typeof value === "number") return value;
-    if (typeof value === "boolean") return value ? "Yes" : "No"; 
-    if( typeof value === "string" && !isNaN(value)) return value
+    if (typeof value === "boolean") return value ? "Yes" : "No";
+    if (typeof value === "string" && !isNaN(value)) return value;
     if (typeof value === "string" && value.startsWith("http")) {
       return (
-        <a href={value} className="text-blue-500 font-medium" target="_blank" rel="noopener noreferrer">
+        <a
+          href={value}
+          className="text-blue-500 font-medium"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           link
         </a>
       );
     }
 
-    // Handle Dates
-    const isDate = typeof value === "string" && !isNaN(Date.parse(value));
+    const isDate =
+      typeof value === "string" && !isNaN(Date.parse(value));
     if (isDate) return new Date(value).toLocaleDateString("en-GB");
 
-    // Handle Arrays
     if (Array.isArray(value)) {
       return (
         <ul className="list-disc pl-4">
           {value.length > 0 ? (
             value.map((item, index) => (
               <li key={index} className="p-1">
-                {typeof item === "object" ? formatValue("", item) : item}
+                {typeof item === "object"
+                  ? formatValue("", item)
+                  : item}
               </li>
             ))
           ) : (
@@ -102,23 +88,23 @@ const formatValue = (key, value) => {
       );
     }
 
-    // Handle Objects (Display Key-Value Pairs)
     if (typeof value === "object") {
       return (
         <ul className="border p-2 rounded-md bg-gray-100">
           {Object.entries(value).map(([subKey, subValue]) => (
             <li key={subKey} className="p-1">
-              <strong>{subKey}:</strong> {formatValue(subKey, subValue)}
+              <strong>{subKey}:</strong>{" "}
+              {formatValue(subKey, subValue)}
             </li>
           ))}
         </ul>
       );
     }
 
-    return value; 
+    return value;
   };
 
-  // === Sort, then filter ===
+  // === Sort + Filter ===
   const sortedFilteredData = (Array.isArray(data) ? [...data] : [])
     .filter((item) =>
       Object.values(item || {}).some((value) =>
@@ -126,25 +112,92 @@ const formatValue = (key, value) => {
       )
     )
     .sort((a, b) => {
-      const dateA = new Date(a.date || a.eventDate || a.visitDate ||a.dueDate || a.paidOn || 0);
-      const dateB = new Date(b.date || b.eventDate || b.visitDate || b.dueDate || b.paidOn || 0);
-      return sortOrder === "asc"
-        ? dateA - dateB
-        : dateB - dateA;
+      const dateA = new Date(
+        a.date ||
+          a.eventDate ||
+          a.visitDate ||
+          a.dueDate ||
+          a.paidOn ||
+          0
+      );
+      const dateB = new Date(
+        b.date ||
+          b.eventDate ||
+          b.visitDate ||
+          b.dueDate ||
+          b.paidOn ||
+          0
+      );
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
+
+  // === Month-Year Filtering ===
+  const filteredByMonthYear = sortedFilteredData.filter((item) => {
+    const dateObj = new Date(
+      item.date ||
+        item.eventDate ||
+        item.visitDate ||
+        item.dueDate ||
+        item.paidOn
+    );
+    const matchesYear = selectedYear
+      ? dateObj.getFullYear() === parseInt(selectedYear)
+      : true;
+    const matchesMonth = selectedMonth
+      ? dateObj.getMonth() + 1 === parseInt(selectedMonth)
+      : true;
+    return matchesYear && matchesMonth;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-10">
       <div className="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <h2 className="text-xl font-bold">Previous Data</h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={toggleSortOrder}
               className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
             >
               Sort by Date {sortOrder === "asc" ? "↑" : "↓"}
             </button>
+
+            <select
+              className="border p-2 rounded"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+            >
+              <option value="">All Years</option>
+              {years.map((year, idx) => (
+                <option key={idx} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="border p-2 rounded"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              <option value="">All Months</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select>
+
+            <button
+              onClick={() => {
+                setSelectedYear("");
+                setSelectedMonth("");
+              }}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            >
+              Reset Filter
+            </button>
+
             <button
               onClick={() => navigate(-1)}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
@@ -162,11 +215,11 @@ const formatValue = (key, value) => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        {sortedFilteredData.length === 0 ? (
+        {filteredByMonthYear.length === 0 ? (
           <p className="text-gray-500">No matching data found.</p>
         ) : (
           <ul className="space-y-4">
-            {sortedFilteredData.map((item, index) => (
+            {filteredByMonthYear.map((item, index) => (
               <li key={index} className="border-b pb-4">
                 {Object.keys(item).length === 0 ? (
                   <p className="text-gray-500">No data available</p>
@@ -187,6 +240,7 @@ const formatValue = (key, value) => {
 };
 
 export default PreviousDataPage;
+
 
 
 // import { useState } from "react";

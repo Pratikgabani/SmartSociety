@@ -27,6 +27,7 @@ import GoogleLogin from './components/Login/Login.jsx';
 import Buy from './components/Buy/Buy.jsx';
 import PreviousDataModal from './components/history/PreviousDataModal .jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import EventBuy from './components/Buy/eventBuy.jsx';
 const stripePromise = loadStripe(
   "pk_test_51R1h8oFjDw8IkcOQVn7UvbMIuiNBki2KBzh7mjuUS5EhTAmnAksY48vDtDxrXHy7YWOQZeJ0lrozJIfDuzraVVeR00ve6RdDcA"
 );
@@ -60,7 +61,7 @@ const router = createBrowserRouter(
    
      <Route path="Payment" element={<Payment />} />
      <Route path="payPayment/:paymentId" element={<Buy />} />
-  
+     <Route path="payEvent/:eventId" element={<EventBuy/>} />
   
      <Route path="Visitor" element={<Visitor />} />
     <Route path = "Poll" element = {<PollApp />} />
