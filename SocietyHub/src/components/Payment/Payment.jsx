@@ -156,6 +156,7 @@ const paymentDateLaao = (payId) => {
       setShowAdminForm(false);
       setNewPayment({ description: "", amount: "", dueDate: "" });
       fetchPayments();
+      toast.success("Payment added successfully!");
     } catch (error) {
       console.error("Error adding payment:", error);
     }

@@ -12,6 +12,7 @@ function dashboard() {
     const [polls, setPolls] = useState([]);
     const [society, setSociety] = useState("");
     const [notices, setNotices] = useState([]);
+    // const [payments , setPayments] = useState([]);
     const user = JSON.parse(localStorage.getItem("user"));
     const houseNo = user?.data?.user?.houseNo
     const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ const SummaryCard = ({ title, value, icon, link }) => (
     </div>
     <div className='mt-3 flex items-end justify-between'>
       <span className='text-3xl font-bold text-gray-800'>{value}</span>
-      <a href={link} className='text-blue-500 text-sm font-medium flex items-center'>
+      <a href={link} className='text-blue-600 text-sm font-medium flex items-center'>
         View all
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -45,7 +46,7 @@ const DashboardSection = ({ title, icon, children, link }) => (
         <span className='text-blue-600'>{icon}</span>
         <h3 className='ml-2 text-lg font-semibold text-gray-800'>{title}</h3>
       </div>
-      <a href={link} className='text-blue-500 text-sm font-medium flex items-center'>
+      <a href={link} className='text-blue-600 text-sm font-medium flex items-center'>
         View all
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -130,6 +131,19 @@ const DashboardSection = ({ title, icon, children, link }) => (
                 console.error("Error fetching visitors:", error);
             }
         }
+        const fetchPayments = async () => {
+            try {
+                      const response = await axios.get("http://localhost:8000/api/v1/payment/getPayments", {
+
+                          withCredentials: true,
+                      });
+                setLoading(false);
+                // console.log(response.data.data)
+                setPayments(response.data.data);
+            } catch (error) {
+                console.error("Error fetching visitors:", error);
+            }
+        }
         fetchVisitors();
         fetchNotices();
         fetchComplaints();
@@ -137,6 +151,7 @@ const DashboardSection = ({ title, icon, children, link }) => (
         fetchPolls();
         fetchBookings();
         societyDet();
+        fetchPayments();
     }, []);
 
     if (loading) {
@@ -168,7 +183,7 @@ const DashboardSection = ({ title, icon, children, link }) => (
           {/* Summary Cards */}
           <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
             <SummaryCard 
-              title="Visitors Today" 
+              title="Visitors " 
               value={visitors.length} 
               icon={
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -201,7 +216,7 @@ const DashboardSection = ({ title, icon, children, link }) => (
             />
             
             <SummaryCard 
-              title="Upcoming Events" 
+              title=" Events" 
               value={events.length} 
               icon={
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -234,9 +249,9 @@ const DashboardSection = ({ title, icon, children, link }) => (
                     </div>
                     <div className='flex-1 min-w-0'>
                       <p className='font-medium text-gray-800 truncate'>{visitor.visitorName}</p>
-                      <p className='text-sm text-gray-500 truncate'>Phone: {visitor.visitorPhone}</p>
+                      <p className='text-sm text-gray-600 truncate'>Phone: {visitor.visitorPhone}</p>
                     </div>
-                    <div className='text-sm text-gray-500 whitespace-nowrap ml-2'>
+                    <div className='text-sm text-gray-600 whitespace-nowrap ml-2'>
                       {new Date(visitor.visitDate).toLocaleDateString("en-GB")}
                     </div>
                   </div>
@@ -315,7 +330,7 @@ const DashboardSection = ({ title, icon, children, link }) => (
                   <div className='p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow'>
                     <div className='flex justify-between'>
                       <h4 className='font-semibold text-gray-800'>{event.eventName}</h4>
-                      <span className='text-sm font-medium text-blue-600'>
+                      <span className='text-sm font-medium '>
                         ₹{event.amtPerPerson}
                       </span>
                     </div>
@@ -325,17 +340,17 @@ const DashboardSection = ({ title, icon, children, link }) => (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       <span className='truncate'>{event.venue}</span>
+                      <span className='mx-2'>•</span>
+                      <span> {new Date(event.eventDate).toLocaleDateString("en-GB")}</span>
                     </div>
                     <div className='mt-2 flex items-center text-sm text-gray-500'>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>{new Date(event.eventDate).toLocaleDateString("en-GB")}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </DashboardSection>
+            
+            {/* Payments */}
             
             {/* Polls */}
             <DashboardSection 
@@ -350,13 +365,15 @@ const DashboardSection = ({ title, icon, children, link }) => (
               <div className='space-y-4'>
                 {polls.slice(0, 2).map((poll) => (
                   <div className='p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow'>
+                    <div className='flex justify-between'>
                     <h4 className='font-semibold text-gray-800 mb-3'>{poll.question}</h4>
-                    <div className='w-full bg-gray-200 rounded-full h-2.5'>
-                      <div className='bg-blue-600 h-2.5 rounded-full' style={{ width: `${Math.min(100, poll.totalVotes)}%` }}></div>
+                    <span className='text-sm  text-gray-600'>{new Date(poll.date).toLocaleDateString("en-GB")}</span>
                     </div>
-                    <div className='mt-2 flex justify-between text-sm text-gray-600'>
+                    {/* <div className='w-full bg-gray-200 rounded-full h-2.5'>
+                      <div className='bg-blue-600 h-2.5 rounded-full' style={{ width: `${Math.min(100, poll.totalVotes)}%` }}></div>
+                    </div> */}
+                    <div className='flex justify-between text-sm text-gray-600'>
                       <span>{poll.totalVotes} votes</span>
-                      <span>{new Date(poll.date).toLocaleDateString("en-GB")}</span>
                     </div>
                   </div>
                 ))}
@@ -364,7 +381,7 @@ const DashboardSection = ({ title, icon, children, link }) => (
             </DashboardSection>
             
             {/* Bookings */}
-            <DashboardSection 
+            {/* <DashboardSection 
               title="Recent Bookings" 
               icon={
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -394,7 +411,61 @@ const DashboardSection = ({ title, icon, children, link }) => (
                   </div>
                 ))}
               </div>
-            </DashboardSection>
+            </DashboardSection> */}
+            <DashboardSection 
+  title="Recent Payments"
+  icon={
+    <svg className='w-6 h-6' fill="#2563eb" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M200.533,25.6h-42.667c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533h42.667c4.71,0,8.533-3.814,8.533-8.533 S205.244,25.6,200.533,25.6z"></path> <path d="M132.267,25.6h-8.533c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533h8.533c4.71,0,8.533-3.814,8.533-8.533 S136.977,25.6,132.267,25.6z"></path> <rect x="354.133" y="290.133" width="93.867" height="42.667"></rect> <path d="M499.2,153.6v-8.533c0-18.825-15.309-34.133-34.133-34.133h-153.6V51.2V33.809C311.467,15.164,296.303,0,277.666,0 H55.134C36.497,0,21.333,15.164,21.333,33.809V51.2v25.6c-4.71,0-8.533,3.814-8.533,8.533v8.533c0,4.719,3.823,8.533,8.533,8.533 v8.533c-4.71,0-8.533,3.814-8.533,8.533V128c0,4.719,3.823,8.533,8.533,8.533v8.533c-4.71,0-8.533,3.814-8.533,8.533v8.533 c0,4.719,3.823,8.533,8.533,8.533v273.067v34.458c0,18.645,15.164,33.809,33.801,33.809h222.532 c18.637,0,33.801-15.164,33.801-33.809v-34.458V384h153.6c18.825,0,34.133-15.309,34.133-34.133v-128H149.333V204.8H499.2 v-34.133H149.333V153.6H499.2z M337.067,281.6c0-4.719,3.823-8.533,8.533-8.533h110.933c4.71,0,8.533,3.814,8.533,8.533v59.733 c0,4.719-3.823,8.533-8.533,8.533H345.6c-4.71,0-8.533-3.814-8.533-8.533V281.6z M38.4,33.809 c0-9.233,7.509-16.742,16.734-16.742h222.532c9.225,0,16.734,7.509,16.734,16.742V51.2h-256V33.809z M144.06,494.933H55.134 c-9.225,0-16.734-7.509-16.734-16.742v-34.458h105.66c-7.168,6.263-11.793,15.352-11.793,25.6S136.892,488.67,144.06,494.933z M166.4,486.4c-9.412,0-17.067-7.654-17.067-17.067c0-9.412,7.654-17.067,17.067-17.067c9.412,0,17.067,7.654,17.067,17.067 C183.467,478.746,175.812,486.4,166.4,486.4z M294.4,478.191c0,9.233-7.509,16.742-16.734,16.742H188.74 c7.168-6.263,11.793-15.351,11.793-25.6s-4.625-19.337-11.793-25.6H294.4V478.191z M302.345,298.667h-16.478 c-4.71,0-8.533-3.814-8.533-8.533s3.823-8.533,8.533-8.533h16.478c4.71,0,8.533,3.814,8.533,8.533 S307.055,298.667,302.345,298.667z M246.801,247.467h55.543c4.71,0,8.533,3.814,8.533,8.533s-3.823,8.533-8.533,8.533h-55.543 c-4.71,0-8.533-3.814-8.533-8.533S242.091,247.467,246.801,247.467z M174.933,247.467H217.6c4.71,0,8.533,3.814,8.533,8.533 s-3.823,8.533-8.533,8.533h-42.667c-4.71,0-8.533-3.814-8.533-8.533S170.223,247.467,174.933,247.467z M174.933,281.6h84.156 c4.719,0,8.533,3.814,8.533,8.533s-3.814,8.533-8.533,8.533h-84.156c-4.71,0-8.533-3.814-8.533-8.533 S170.223,281.6,174.933,281.6z M132.267,145.067v8.533v17.067V204.8v17.067v128c0,18.825,15.309,34.133,34.133,34.133h128v42.667 h-256v-358.4h256v42.667h-128C147.575,110.933,132.267,126.242,132.267,145.067z"></path> </g> </g> </g> </g></svg>
+  }
+  link="/layout/payment"
+>
+  <div className='space-y-4'>
+    {payments.slice(0, 2).map((payment) => (
+      <div
+        key={payment._id}
+        className='p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow'
+      >
+        <div className='flex justify-between items-center'>
+          <h4 className='font-semibold text-gray-800'>{payment.description}</h4>
+          
+            <div className="flex font-semibold items-center text-gray-800">
+              <span className='text-sm font-medium '>₹</span>
+              <span>{payment.amount}</span>
+            </div>
+            </div>
+          {/* <span
+            className={`px-2 py-1 text-xs rounded-full ${
+              payment.status === 'Paid'
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {payment.status}
+          </span> */}
+        
+
+          {/* <div className='text-right'>
+            <span className='font-medium'>Payment:</span>{" "}
+            {payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString("en-GB") : "—"}
+          </div> */}
+          <div className='text-sm text-gray-600 mt-2'>
+            <span className=''>Due:</span>{" "}
+            {new Date(payment.dueDate).toLocaleDateString("en-GB")}
+          </div>
+          {/* <div className='text-right'>
+            <button
+              className='text-blue-600 hover:underline text-sm font-medium'
+              onClick={() => handlePay(payment._id)}
+              disabled={payment.status === 'Paid'}
+            >
+              {payment.status === 'Paid' ? "Paid" : "Pay Now"}
+            </button>
+          </div> */}
+      </div>
+    ))}
+  </div>
+</DashboardSection>
+
           </div>
         </div>
       )}
