@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle97.jpg';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../axios';
 import * as Yup from "yup";
 import { Toaster, toast } from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google'

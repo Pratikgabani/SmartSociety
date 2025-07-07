@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";

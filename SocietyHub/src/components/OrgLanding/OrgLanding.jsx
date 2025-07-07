@@ -511,7 +511,7 @@
 import React, { useState, useEffect } from 'react';
 import ImageSlider from '../ImgSlider/ImgSlider'; // Make sure this path is correct
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios'; // Added missing import
+import axios from '../../axios'; // Added missing import
 
 // Simple SVG Icons for Mobile Menu
 const MenuIcon = () => (

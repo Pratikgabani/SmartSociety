@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../axios";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { toast, Toaster } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../axios';
 import { Link, useNavigate } from 'react-router-dom';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle97.jpg';
