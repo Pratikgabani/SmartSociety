@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-import axios from "axios";
+import axios from "../../axios";
 import { HashLoader } from 'react-spinners'
 function Complaint() {
   const navigate = useNavigate();

@@ -17,7 +17,7 @@ import SecurityRegister from './components/Security/Security.jsx';
 import Announcements from './components/Notice/Notice.jsx';
 import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
 import Dashboard from   './components/Dashboard/dashboard.jsx';
-import App from './App.jsx';
+
 import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
 import { loadStripe } from "@stripe/stripe-js";
@@ -33,26 +33,33 @@ const stripePromise = loadStripe(
 );
 
 
- const GoogleAuthWrapper = ()=>(
+ const GoogleAuthWrapper = ()=>( // 3
   
     <GoogleOAuthProvider clientId="553666257708-alafbipbuj60kpj25j56n3hu0l4lmld9.apps.googleusercontent.com">
       {/* <GoogleLogin></GoogleLogin> */}
       <Login />
     </GoogleOAuthProvider>
  )
+// here we r using requireAuth component to protect the routes that we want to be protected, so that only authenticated users can access them
+// we can use this component to wrap around the routes that we want to protect, and it will check if the user is authenticated or not
 
+// the layout is used to provide a common layout for the application, such as the sidebar and header, and the outlet is used to render the child routes inside the layout
+// the outlet is used to render the child routes inside the layout
+
+// index element is used to set the default route for the layout, which is the dashboard in this case
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path='/' element= {< OrgLanding/>} />
     {/* <Route path="Login" element={<Login />} /> */}
-    <Route path="Login" element={<GoogleAuthWrapper />} />
+    <Route path="Login" element={<GoogleAuthWrapper />} /> 
     {/* <Route path="google-login" element={<GoogleAuthWrapper />} /> */}
     <Route path ="Securityregister" element={<SecurityRegister />} />
     <Route path="history" element={<PreviousDataModal  />} />
 
     <Route path="Register" element={<Register />} />
     <Route path = "SocietyDetails" element = {<SocietyDetails/>} />
+    
     <Route element={<RequireAuth />}>
     <Route path="Layout" element={<Layout/>} >
     <Route index element={<Dashboard />} />
@@ -77,7 +84,11 @@ const router = createBrowserRouter(
     </>
      )
 )
+// here we are using the createBrowserRouter to create a router instance, and then we are passing it to the RouterProvider component to provide the router to the application
+// the RouterProvider component is used to provide the router to the application, and it will render the routes that we have defined in the router instance
 
+// the Elements component is used to provide the stripe instance to the application, so that we can use the stripe elements in our components
+// the createRoot is used to render the application to the root element in the HTML file
 createRoot(document.getElementById('root')).render(
   <Elements stripe={stripePromise}>
     <StrictMode>

@@ -143,7 +143,7 @@ const deleteComplain = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Complain ID is required");
     }
   
-    const deletedComplain = await Complain.findByIdAndDelete(complainId);
+  const deletedComplain = await Complain.findByIdAndDelete(complainId);
   
     if (!deletedComplain) {
       throw new ApiError(404, "Complain not found");

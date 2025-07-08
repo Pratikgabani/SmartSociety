@@ -283,7 +283,7 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, user, "Account details updated successfully"))
 });
 
-const googleAuth = asyncHandler(async (req, res) => {
+const googleAuth = asyncHandler(async (req, res) => { // 6
   const code = req.query.code;
   const { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);

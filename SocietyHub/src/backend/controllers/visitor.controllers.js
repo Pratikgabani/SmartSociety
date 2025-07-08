@@ -90,9 +90,9 @@ const getRecentVisitors = asyncHandler(async (req, res) => {
     try {
         const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -createdAt -updatedAt");
 
-        if (!visitors || visitors.length === 0) {
-            throw new ApiError(404, "No recent visitors found");
-        }
+        // if (!visitors || visitors.length === 0) {
+        //     throw new ApiError(404, "No recent visitors found");
+        // }
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
     } catch (error) {
@@ -110,9 +110,9 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     try {
         const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v  -createdAt -updatedAt");
 
-        if (!visitors || visitors.length === 0) {
-            return res.status(404).json({ message: "No recent visitors found" });
-        }
+        // if (!visitors || visitors.length === 0) {
+        //     return res.status(404).json({ message: "No recent visitors found" });
+        // }
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
     } catch (error) {
@@ -130,9 +130,9 @@ const getHisRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     try {
         const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v -_id -isActive -createdAt -updatedAt");
 
-        if (!visitors || visitors.length === 0) {
-            return res.status(404).json({ message: "No recent visitors found" });
-        }
+        // if (!visitors || visitors.length === 0) {
+        //     return res.status(404).json({ message: "No recent visitors found" });
+        // }
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
     } catch (error) {
@@ -143,9 +143,9 @@ const getHisRecentVisitorsByUserId = asyncHandler(async (req, res) => {
         try {
             const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -_id -isActive  -createdAt -updatedAt");
     
-            if (!visitors || visitors.length === 0) {
-                throw new ApiError(404, "No recent visitors found");
-            }
+            // if (!visitors || visitors.length === 0) {
+            //     throw new ApiError(404, "No recent visitors found");
+            // }
     
             return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
         } catch (error) {
@@ -177,9 +177,9 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
     try {
         const visitors = await Visitor.find({ societyId : req.user.societyId,isActive: true ,visitingBlock : visitingBlock, visitingAdd : userHouse});
 
-        if (!visitors || visitors.length === 0) {
-            return res.status(404).json({ message: "No recent visitors found" });
-        }
+        // if (!visitors || visitors.length === 0) {
+        //     return res.status(404).json({ message: "No recent visitors found" });
+        // }
 
         return res.status(200).json(new ApiResponse(200, visitors, "Recent visitors fetched successfully"));
     } catch (error) {

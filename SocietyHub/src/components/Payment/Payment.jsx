@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../axios";
 import PreviousDataModal from '../history/PreviousDataModal ';
 import { Plus, X } from "lucide-react"; // Import cross icon
 import { RiDeleteBin6Fill, RiDeleteBinLine } from "react-icons/ri";
