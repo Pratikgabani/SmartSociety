@@ -39,10 +39,10 @@ function Login() {
     })
   }
    
-    const responseGoogle = async (authResult) => {
+    const responseGoogle = async (authResult) => { // 2
       try {
         if (authResult["code"]) {
-          const result = await googleAuth(authResult.code);
+          const result = await googleAuth(authResult.code); 
                    console.log(result);
           const {email} = result.data.data.user;
           const token = result.data.token;
@@ -61,7 +61,7 @@ function Login() {
       }
     };
 
-  const googleLogin = useGoogleLogin({
+  const googleLogin = useGoogleLogin({ // 1 
 		onSuccess: responseGoogle,
 		onError: responseGoogle,
 		flow: "auth-code",

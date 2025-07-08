@@ -33,7 +33,7 @@ const stripePromise = loadStripe(
 );
 
 
- const GoogleAuthWrapper = ()=>(
+ const GoogleAuthWrapper = ()=>( // 3
   
     <GoogleOAuthProvider clientId="553666257708-alafbipbuj60kpj25j56n3hu0l4lmld9.apps.googleusercontent.com">
       {/* <GoogleLogin></GoogleLogin> */}
@@ -52,7 +52,7 @@ const router = createBrowserRouter(
     <>
     <Route path='/' element= {< OrgLanding/>} />
     {/* <Route path="Login" element={<Login />} /> */}
-    <Route path="Login" element={<GoogleAuthWrapper />} />
+    <Route path="Login" element={<GoogleAuthWrapper />} /> 
     {/* <Route path="google-login" element={<GoogleAuthWrapper />} /> */}
     <Route path ="Securityregister" element={<SecurityRegister />} />
     <Route path="history" element={<PreviousDataModal  />} />

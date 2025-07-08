@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../axios';
 import { useNavigate } from 'react-router-dom';
 import { HashLoader } from 'react-spinners';
 import {toast ,  Toaster } from 'react-hot-toast';

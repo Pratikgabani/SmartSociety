@@ -1,2 +1,2 @@
-import api from "../src/utils/axiosInstance"; // adjust path as needed
+import api from "../src/utils/axiosInstance"; 
 export default api
