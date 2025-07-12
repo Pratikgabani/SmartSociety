@@ -331,7 +331,7 @@ function Event() {
         )}
 
         {/* Upcoming Events */}
-       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mt-6 px-4 sm:px-6">
+       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mt-6">
   {loading ? (
     <div className="col-span-full flex flex-col items-center justify-center min-h-[50vh]">
       <HashLoader size={60} color="#2563eb" loading={loading} />
@@ -421,7 +421,7 @@ function Event() {
 
         {/* Past Events */}
         <h3 className="text-2xl font-semibold mt-8">Past Events</h3>
-<div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mt-6 px-4 sm:px-6">
+<div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mt-6 ">
   {loading ? (
     <div className="col-span-full flex flex-col items-center justify-center min-h-[50vh]">
       <HashLoader size={60} color="#2563eb" loading={loading} />
