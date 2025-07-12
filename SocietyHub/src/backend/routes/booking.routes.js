@@ -3,7 +3,7 @@ import {Router} from "express";
 import { createBooking, getBookings, deleteBooking ,
     // bookingStatus,
      createVenue , getVenue , getBookingsByUserId, getPastBookings, getPastBookingsByUserId, getUpcomingBookingsByUserId,
-     deleteVenue} from "../controllers/booking.controllers.js";
+     deleteVenue,payBooking, saveBookingOrder} from "../controllers/booking.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
 const router = Router();
@@ -18,4 +18,6 @@ router.route("/getBookingsByUserId").get(verifyJWT, getBookingsByUserId);
 router.route("/getPastBookings").get(verifyJWT , getPastBookings)
 router.route("/getPastBookingsByUserId").get(verifyJWT , getPastBookingsByUserId)
 router.route("/getUpcomingBookingsByUserId").get(verifyJWT , getUpcomingBookingsByUserId)
+router.post('/save-booking-order', verifyJWT, saveBookingOrder);
+router.post('/payBooking/:bookingId', verifyJWT, payBooking);
 export default router 

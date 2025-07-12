@@ -2,7 +2,7 @@ import axios from "../../axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 // import PreviousDataModal from "../history/PreviousDataModal .jsx";
 // import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 import { RiDeleteBin6Fill } from "react-icons/ri";
@@ -303,6 +303,7 @@ const Booking = () => {
                         >
                           Reserve Now
                         </button>
+                       
                       </div>
                     </div>
                   )))}
@@ -352,10 +353,10 @@ const Booking = () => {
               >
                 Cancel Reservation
               </button>
-              {/* Future Pay Now Button Placeholder */}
-              {/* <button className="w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+             <Link to={`/layout/payBooking/${booking._id}`} className="w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 Pay now
-              </button> */}
+              </Link>
+              
             </div>
           )}
         </div>

@@ -1,4 +1,5 @@
 import { Booking } from "../models/booking.models.js";
+import {BookingOrder} from "../models/bookingOrder.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -175,7 +176,13 @@ const getBookings = asyncHandler(async (req, res) => {
 
 //     return res.status(200).json(new ApiResponse(200, allBookings, "Bookings found successfully"));
 // });
+import Stripe from "stripe";
+import dotenv from "dotenv";
 
+dotenv.config({
+    path : "./.env"
+})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const getPastBookings = asyncHandler(async (req, res) => {
     const allBooking = await Booking.find({
         societyId: req.user?.societyId,
@@ -246,7 +253,68 @@ const deleteBooking = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200 , deletedBooking , "Booking deleted successfully"))
 }); 
+const payBooking = asyncHandler(async (req, res) => {
+  const { bookingId } = req.params;
+  const userId = req.user._id;   // ✅ Make sure your auth middleware is setting this correctly
 
+  const bookings = await Booking.findById(bookingId);
+  if (!bookings) {
+    throw new ApiError(404, "bookings not found");
+  }
+
+  // ✅ Check if THIS user already paid for THIS event
+  const existingOrder = await BookingOrder.findOne({ userId, bookingId });
+  if (existingOrder) {
+    return res.status(400).json({ errors: "You have already paid for this booking." });
+  }
+  
+  const venues = await Venue.find({venue: bookings.bookingType, societyId: req.user?.societyId});
+  console.log("Venues:", venues);
+  const price = venues[0].price
+  console.log("Price" , price)
+  // ✅ Proceed to create Stripe payment intent...
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: price * 100,  // Convert to paise or cents
+    currency: "inr",
+    payment_method_types: ["card"],
+  });
+
+  res.status(201).json({
+    message: "Event payment intent created successfully",
+    bookings,
+    clientSecret: paymentIntent.client_secret,
+  });
+});
+
+
+const saveBookingOrder = asyncHandler(async (req, res) => {
+  const {
+    paymentDoneId,   // Stripe's PaymentIntent ID
+    bookingId,
+    amount,
+    status,
+    paidOn,
+  } = req.body;
+
+  if (!paymentDoneId || !bookingId || !amount || !status) {
+    throw new ApiError(400, "Missing required payment/order fields");
+  }
+
+  await BookingOrder.create({
+    userId: req.user._id,
+    bookingId,
+    paymentDoneId,
+    amount,
+    status,
+    paidOn,
+    societyId: req.user.societyId,
+    email: req.user.email,
+  });
+
+  res.status(201).json({
+    message: "Event order saved successfully",
+  });
+});
 // const bookingStatus = asyncHandler(async (req, res) => {
 //     const {bookingId} = req.params
 
@@ -271,4 +339,4 @@ const deleteBooking = asyncHandler(async (req, res) => {
 
 // })
 
-export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , deleteVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId}
+export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , deleteVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId, payBooking , saveBookingOrder}
