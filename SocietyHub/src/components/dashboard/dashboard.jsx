@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from '../../axios'
 import { set } from 'mongoose';
 import { HashLoader } from 'react-spinners';
+import UserContext from '../../context/UserContext';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function dashboard() {
   const [visitors, setVisitors] = useState([]);
@@ -15,8 +17,9 @@ function dashboard() {
   // const [payments , setPayments] = useState([]);
   // const user = JSON.parse(localStorage.getItem("user"));
   // const houseNo = user?.data?.user?.houseNo
+  const {rolee , setRolee } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
 
   // Reusable components
   const SummaryCard = ({ title, value, icon, link }) => (
@@ -155,6 +158,12 @@ function dashboard() {
     fetchPayments();
   }, []);
 
+  useEffect(() => {
+    if(rolee === "security") {
+      navigate("/layout/Visitor");
+    }
+  } , [rolee , navigate]);
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -191,7 +200,7 @@ function dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 }
-                link="/layout/visitor"
+                link="/layout/Visitor"
               />
 
               <SummaryCard
@@ -202,7 +211,7 @@ function dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                   </svg>
                 }
-                link="/layout/notice"
+                link="/layout/Notice"
               />
 
               <SummaryCard
@@ -213,7 +222,7 @@ function dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 }
-                link="/layout/complaint"
+                link="/layout/Complaint"
               />
 
               <SummaryCard
@@ -224,7 +233,7 @@ function dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 }
-                link="/layout/event"
+                link="/layout/Event"
               />
             </div>
 
@@ -365,7 +374,7 @@ function dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 }
-                link="/layout/poll"
+                link="/layout/Poll"
               >
                 <div className='space-y-4'>
                   {polls.length === 0 && <p className='text-gray-600'>No Polls found.</p>}
@@ -423,7 +432,7 @@ function dashboard() {
                 icon={
                   <svg className='w-6 h-6' fill="#2563eb" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M200.533,25.6h-42.667c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533h42.667c4.71,0,8.533-3.814,8.533-8.533 S205.244,25.6,200.533,25.6z"></path> <path d="M132.267,25.6h-8.533c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533h8.533c4.71,0,8.533-3.814,8.533-8.533 S136.977,25.6,132.267,25.6z"></path> <rect x="354.133" y="290.133" width="93.867" height="42.667"></rect> <path d="M499.2,153.6v-8.533c0-18.825-15.309-34.133-34.133-34.133h-153.6V51.2V33.809C311.467,15.164,296.303,0,277.666,0 H55.134C36.497,0,21.333,15.164,21.333,33.809V51.2v25.6c-4.71,0-8.533,3.814-8.533,8.533v8.533c0,4.719,3.823,8.533,8.533,8.533 v8.533c-4.71,0-8.533,3.814-8.533,8.533V128c0,4.719,3.823,8.533,8.533,8.533v8.533c-4.71,0-8.533,3.814-8.533,8.533v8.533 c0,4.719,3.823,8.533,8.533,8.533v273.067v34.458c0,18.645,15.164,33.809,33.801,33.809h222.532 c18.637,0,33.801-15.164,33.801-33.809v-34.458V384h153.6c18.825,0,34.133-15.309,34.133-34.133v-128H149.333V204.8H499.2 v-34.133H149.333V153.6H499.2z M337.067,281.6c0-4.719,3.823-8.533,8.533-8.533h110.933c4.71,0,8.533,3.814,8.533,8.533v59.733 c0,4.719-3.823,8.533-8.533,8.533H345.6c-4.71,0-8.533-3.814-8.533-8.533V281.6z M38.4,33.809 c0-9.233,7.509-16.742,16.734-16.742h222.532c9.225,0,16.734,7.509,16.734,16.742V51.2h-256V33.809z M144.06,494.933H55.134 c-9.225,0-16.734-7.509-16.734-16.742v-34.458h105.66c-7.168,6.263-11.793,15.352-11.793,25.6S136.892,488.67,144.06,494.933z M166.4,486.4c-9.412,0-17.067-7.654-17.067-17.067c0-9.412,7.654-17.067,17.067-17.067c9.412,0,17.067,7.654,17.067,17.067 C183.467,478.746,175.812,486.4,166.4,486.4z M294.4,478.191c0,9.233-7.509,16.742-16.734,16.742H188.74 c7.168-6.263,11.793-15.351,11.793-25.6s-4.625-19.337-11.793-25.6H294.4V478.191z M302.345,298.667h-16.478 c-4.71,0-8.533-3.814-8.533-8.533s3.823-8.533,8.533-8.533h16.478c4.71,0,8.533,3.814,8.533,8.533 S307.055,298.667,302.345,298.667z M246.801,247.467h55.543c4.71,0,8.533,3.814,8.533,8.533s-3.823,8.533-8.533,8.533h-55.543 c-4.71,0-8.533-3.814-8.533-8.533S242.091,247.467,246.801,247.467z M174.933,247.467H217.6c4.71,0,8.533,3.814,8.533,8.533 s-3.823,8.533-8.533,8.533h-42.667c-4.71,0-8.533-3.814-8.533-8.533S170.223,247.467,174.933,247.467z M174.933,281.6h84.156 c4.719,0,8.533,3.814,8.533,8.533s-3.814,8.533-8.533,8.533h-84.156c-4.71,0-8.533-3.814-8.533-8.533 S170.223,281.6,174.933,281.6z M132.267,145.067v8.533v17.067V204.8v17.067v128c0,18.825,15.309,34.133,34.133,34.133h128v42.667 h-256v-358.4h256v42.667h-128C147.575,110.933,132.267,126.242,132.267,145.067z"></path> </g> </g> </g> </g></svg>
                 }
-                link="/layout/payment"
+                link="/layout/Payment"
               >
                 <div className='space-y-4'>
                   {payments.slice(0, 2).map((payment) => (

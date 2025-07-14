@@ -33,8 +33,10 @@ function Login() {
       .required("Role is required")
   })
   useEffect(() => {
-  if (rolee) {
-    navigate("/layout/dashboard");
+  if (rolee==="admin" || rolee==="user") {
+    navigate("/layout/Dashboard");
+  }else if(rolee==="security"){
+    navigate("/layout/Visitor");
   }
 }, [rolee, navigate]);
 
@@ -61,7 +63,7 @@ function Login() {
             setRolee(result.data.data.user.role.toString());
           console.log(rolee);
           toast.success("Google Login Successful");
-          navigate('/layout/dashboard');
+          navigate('/layout/Dashboard');
         } else {
           // console.log(authResult);
           throw new Error(authResult);
@@ -136,7 +138,7 @@ function Login() {
           // localStorage.setItem("user", JSON.stringify(response.data));
           console.log(response.data.data.user.role)
           setRolee(response.data.data.user.role.toString());
-          navigate("/layout/dashboard");
+          navigate("/layout/Dashboard");
         } catch (error) {
           toast.error("error logging in");
           if (error.response) {

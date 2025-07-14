@@ -537,10 +537,13 @@ function OrgLanding() {
     // const user = localStorage.getItem("user");
     // if (user) {
     //   setIsLoggedIn(true);
-      if(rolee=="admin" || rolee=="user" || rolee=="security"){
+      if(rolee=="admin" || rolee=="user"){
         setIsLoggedIn(true);
       
-      navigate('/layout/dashboard');
+      navigate('/layout/Dashboard');
+    } else if(rolee == "security"){
+      setIsLoggedIn(true);
+      navigate('/layout/Visitor');
     } else {
       setIsLoggedIn(false);
     }
