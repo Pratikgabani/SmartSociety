@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from '../../axios';
 import { useNavigate } from 'react-router-dom';
 import { HashLoader } from 'react-spinners';
 import {toast ,  Toaster } from 'react-hot-toast';
+import UserContext from '../../context/UserContext';
 function Visitor() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newVisitor, setNewVisitor] = useState({
@@ -16,19 +17,19 @@ function Visitor() {
     duration: '',
   });
   const [loading, setLoading] = useState(false);
-  const token = JSON.parse(localStorage.getItem('user'));
-  const roles = token?.data?.user?.role;
-  const userId = token?.data?.user?._id;
+  // const token = JSON.parse(localStorage.getItem('user'));
+  // const roles = token?.data?.user?.role;
+  // const userId = token?.data?.user?._id;
   const [activeVisitors, setActiveVisitors] = useState([]);
   const [recentVisitors, setRecentVisitors] = useState([]);
   const [vari, setVari] = useState(false);
   const navigate = useNavigate();
-
+  const { rolee } = useContext(UserContext);
   const fetchPreviousData = async () => {
     let response;
     try {
       setLoading(true);
-      if (roles === "security") {
+      if (rolee === "security") {
         response = await axios.get("http://localhost:8000/api/v1/visitor/getHisAllRecentVisitors", { withCredentials: true });
       }
       else {
@@ -46,7 +47,7 @@ function Visitor() {
     const fetchRecentVisitors = async () => {
       let response;
       try {
-        if (roles === "security") {
+        if (rolee === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getRecentVisitors', { withCredentials: true });
         } else {
           response = await axios.get("http://localhost:8000/api/v1/visitor/getRecentVisitorsByUserId", { withCredentials: true });
@@ -65,7 +66,7 @@ function Visitor() {
     const fetchActiveVisitors = async () => {
       let response;
       try {
-        if (roles === "security") {
+        if (rolee === "security") {
           response = await axios.get('http://localhost:8000/api/v1/visitor/getActiveVisitors', { withCredentials: true });
         } else {
           response = await axios.get("http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId", { withCredentials: true });
@@ -119,7 +120,7 @@ function Visitor() {
   };
 
   const handleCheckOut = async (id) => {
-    if (roles === "security") {
+    if (rolee === "security") {
       try {
         const checkoutTime = new Date().toLocaleTimeString("en-US", {
           hour: "2-digit",
@@ -158,7 +159,7 @@ function Visitor() {
 return (
   <div className="container relative mx-auto px-4 py-8 bg-gray-100">
     {/* Add Visitor Modal */}
-    {roles === "security" && showAddModal && (
+    {rolee === "security" && showAddModal && (
       <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
           <h3 className="text-xl font-semibold text-blue-800 mb-4">Add New Visitor</h3>
@@ -203,7 +204,7 @@ return (
     <div className='flex justify-between items-center'>
     <h2 className="text-xl font-semibold text-gray-800 mb-4">Active Visitors</h2>
     <div className="mb-4">
-      {roles === "security" && (
+      {rolee=== "security" && (
         <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
           + Add New Visitor
         </button>
@@ -220,12 +221,19 @@ return (
         <th className="border border-gray-300 px-4 py-2 text-center">Phone</th>
         <th className="border border-gray-300 px-4 py-2 text-center">Status</th>
         <th className="border border-gray-300 px-4 py-2 text-center">Check IN</th>
-        {roles === "security" && (
+        {rolee === "security" && (
           <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
         )}
       </tr>
     </thead>
     <tbody>
+      {activeVisitors.length === 0 && (
+        <tr>
+          <td colSpan="6" className="border border-gray-300 px-4 py-2 text-center">
+            No active visitors found.
+          </td>
+        </tr>
+      )}
       {activeVisitors.map((visitor) => (
         <tr
           key={visitor._id}
@@ -248,7 +256,7 @@ return (
               ? new Date(visitor.visitDate).toLocaleString("en-GB")
               : "-"}
           </td>
-          {roles === "security" && (
+          {rolee === "security" && (
             <td className="border border-gray-300 px-4 py-2 text-center flex justify-center gap-2">
               <button
                 onClick={() => handleCheckOut(visitor._id)}
@@ -284,7 +292,7 @@ return (
           <th className="border border-gray-300 px-4 py-2 text-center">Visitor Phone</th>
           <th className="border border-gray-300 px-4 py-2 text-center">Visit Time</th>
           <th className="border border-gray-300 px-4 py-2 text-center">Checkout</th>
-          {roles === "security" && (
+          {rolee === "security" && (
             <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
           )}
         </tr>
@@ -312,7 +320,7 @@ return (
             <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
               {visitor.duration || "-"}
             </td>
-            {roles === "security" && (
+            {rolee === "security" && (
               <td className="border border-gray-300 px-4 py-2 text-center">
                 <button
                   onClick={() => deleteVisitor(visitor._id)}
