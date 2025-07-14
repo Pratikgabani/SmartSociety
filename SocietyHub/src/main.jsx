@@ -29,6 +29,7 @@ import PreviousDataModal from './components/history/PreviousDataModal .jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import EventBuy from './components/Buy/EventBuy.jsx';
 import BookingBuy from './components/Buy/BookingBuy.jsx';
+import UserContextProvider from './context/UserContextProvider.jsx';
 const stripePromise = loadStripe(
   "pk_test_51R1h8oFjDw8IkcOQVn7UvbMIuiNBki2KBzh7mjuUS5EhTAmnAksY48vDtDxrXHy7YWOQZeJ0lrozJIfDuzraVVeR00ve6RdDcA"
 );
@@ -91,11 +92,14 @@ const router = createBrowserRouter(
 // the Elements component is used to provide the stripe instance to the application, so that we can use the stripe elements in our components
 // the createRoot is used to render the application to the root element in the HTML file
 createRoot(document.getElementById('root')).render(
+  <UserContextProvider> 
+
   <Elements stripe={stripePromise}>
     <StrictMode>
   <RouterProvider router={router} />
   
    </StrictMode>
    </Elements>
+  </UserContextProvider>
 )
 

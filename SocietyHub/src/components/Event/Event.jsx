@@ -1,5 +1,5 @@
 import axios from "../../axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
@@ -7,6 +7,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from 'react-spinners';
 import { Link } from "react-router-dom";
+import UserContext from "../../context/UserContext";
 function Event() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [events, setEvents] = useState([]);
@@ -29,6 +30,7 @@ function Event() {
   const [previousData, setPreviousData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const {rolee } = useContext(UserContext);
 
 // Fetch payment statuses
   useEffect(() => {
@@ -55,14 +57,14 @@ function Event() {
 }, [events]);
 
   // Fetch user info from localStorage
-  useEffect(() => {
-    const token = localStorage.getItem("user");
-    if (token) {
-      setIsLoggedIn(true);
-      const user = JSON.parse(token);
-      setIsAdmin(user.data.user.role === "admin");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("user");
+  //   if (token) {
+  //     setIsLoggedIn(true);
+  //     const user = JSON.parse(token);
+  //     setIsAdmin(user.data.user.role === "admin");
+  //   }
+  // }, []);
 
   // Fetch upcoming events
   useEffect(() => {
@@ -202,7 +204,7 @@ function Event() {
 
         <div className="flex justify-between items-center">
           <h3 className="text-2xl font-semibold mt-4">Upcoming Events</h3>
-          {isAdmin && (
+          {rolee === "admin" && (
             <button
               className="bg-blue-600 text-white font-semibold py-2 px-4 rounded mt-4"
               onClick={() => setShowAddEventForm(!showAddEventForm)}
@@ -401,7 +403,7 @@ function Event() {
           )}
 
           {/* Admin delete button always visible */}
-          {isAdmin && (
+          {rolee === "admin" && (
             <button
               onClick={() => handleDeleteEvent(event._id)}
               className={`py-2 rounded-lg font-medium text-sm md:text-base text-white bg-red-600 hover:bg-red-700 ${

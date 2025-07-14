@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import axios from "../../axios";
 import { HashLoader } from 'react-spinners'
+import UserContext from "../../context/UserContext.js";
 function Complaint() {
   const navigate = useNavigate();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -13,17 +14,17 @@ function Complaint() {
   const [refresh, setRefresh] = useState(false);
   const [previousData, setPreviousData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.token;
-  const role = user?.data?.user?.role;
-
+  // const user = JSON.parse(localStorage.getItem("user"));
+  // const token = user?.token;
+  // const role = user?.data?.user?.role;
+  const {rolee} = useContext(UserContext);
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8000/api/v1/complain/getAllComplains",
           {
-            headers: { Authorization: `Bearer ${token}` },
+            // headers: { Authorization: `Bearer ${token}` },
             withCredentials: true,
           }
         );
@@ -70,7 +71,7 @@ function Complaint() {
         "http://localhost:8000/api/v1/complain/createComplain",
         formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          // headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         }
       );
@@ -101,7 +102,7 @@ function Complaint() {
   };
 
   const handleResolve = async (complaintId) => {
-    if (role !== "admin") {
+    if (rolee !== "admin") {
       alert("You are not authorized to resolve this complaint");
       return;
     }
@@ -245,7 +246,7 @@ function Complaint() {
       </div>
 
       <div className="flex gap-4 mt-4">
-        {!complaint.isResolved && role === "admin" && (
+        {!complaint.isResolved && rolee === "admin" && (
           <button
             onClick={() => handleResolve(complaint._id)}
             className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useContext , useEffect } from 'react';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle97.jpg';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { Toaster, toast } from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google'
 import { googleAuth } from '../../api';
+import UserContext from '../../context/UserContext.js';
 function Login() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState({});
@@ -15,6 +16,8 @@ function Login() {
     password: '',
     role: ''
   })
+  const {setRolee} = useContext(UserContext);
+  const {rolee} = useContext(UserContext);
   const validationSchema = Yup.object({
     email: Yup.string()
       .matches(
@@ -29,6 +32,11 @@ function Login() {
     role: Yup.string()
       .required("Role is required")
   })
+  useEffect(() => {
+  if (rolee) {
+    navigate("/layout/dashboard");
+  }
+}, [rolee, navigate]);
 
 
   const handleChange = (e) => {
@@ -44,11 +52,14 @@ function Login() {
         if (authResult["code"]) {
           const result = await googleAuth(authResult.code); 
                    console.log(result);
-          const {email} = result.data.data.user;
-          const token = result.data.token;
-          const obj = {email, token};
-          // localStorage.setItem('user-info',JSON.stringify(obj));
-                   localStorage.setItem("user", JSON.stringify(result.data));
+          // const {email} = result.data.data.user;
+          // const token = result.data.token;
+          // const obj = {email, token};
+          // // localStorage.setItem('user-info',JSON.stringify(obj));
+          //          localStorage.setItem("user", JSON.stringify(result.data));
+          // console.log(result.data.data.user.role);
+            setRolee(result.data.data.user.role.toString());
+          console.log(rolee);
           toast.success("Google Login Successful");
           navigate('/layout/dashboard');
         } else {
@@ -87,7 +98,10 @@ function Login() {
               },
             }
           );
-          localStorage.setItem("user", JSON.stringify(response.data));
+          // localStorage.setItem("user", JSON.stringify(response.data));
+          console.log(response.data.data.user.role)
+          setRolee(response.data.data.user.role.toString());
+          toast.success("Logged in successfully");
           navigate("/layout/Visitor");
 
           // console.log("Login successful: ", response.data);
@@ -119,7 +133,9 @@ function Login() {
 
           // console.log("Login successful: ", response.data);
 
-          localStorage.setItem("user", JSON.stringify(response.data));
+          // localStorage.setItem("user", JSON.stringify(response.data));
+          console.log(response.data.data.user.role)
+          setRolee(response.data.data.user.role.toString());
           navigate("/layout/dashboard");
         } catch (error) {
           toast.error("error logging in");

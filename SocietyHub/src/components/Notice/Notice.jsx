@@ -1,20 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "../../axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import { HashLoader } from 'react-spinners'
+import UserContext from "../../context/UserContext";
 export default function Announcements() {
   const [notices, setNotices] = useState([]);
   const [topic, setTopic] = useState("");
   const [description, setDescription] = useState("");
-  const token = localStorage.getItem("user");
-  const roled = token ? JSON.parse(token) : null;
-  const role = roled?.data?.user?.role
+  // const token = localStorage.getItem("user");
+  // const roled = token ? JSON.parse(token) : null;
+  // const role = roled?.data?.user?.role
   const [ isNoticeModalOpen ,setIsNoticeModalOpen] = useState(false)
   const [loading, setLoading] = useState(true);
-
+  const {rolee} = useContext(UserContext)
   const navigate = useNavigate();
   const fetchPreviousData = async () => {
 
@@ -97,7 +98,7 @@ if (loading) {
       <div className="flex justify-between items-center">
         <div className="text-2xl font-semibold mt-4">Recent Notices</div>
         {
-        role === "admin" && (
+        rolee === "admin" && (
           <button
             onClick={() => setIsNoticeModalOpen(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded mt-4 mb-4"
@@ -169,7 +170,7 @@ if (loading) {
         </span>
       </div>
 
-      {role === "admin" && (
+      {rolee === "admin" && (
         <button
           onClick={() => deleteNotice(notice._id)}
           className="bg-red-500 text-white mt-4 px-4 py-1 rounded hover:bg-red-600"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "../../axios";
 import PreviousDataModal from '../history/PreviousDataModal ';
 import { Plus, X } from "lucide-react"; // Import cross icon
@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from 'react-spinners'
+import UserContext from "../../context/UserContext";
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
@@ -16,14 +17,15 @@ const PaymentSection = () => {
   
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.token;
-  const role = user?.data?.user?.role;
+  // const user = JSON.parse(localStorage.getItem("user"));
+  // const token = user?.token;
+  // const role = user?.data?.user?.role;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [previousData, setPreviousData] = useState([]);
   const [fetchAgain, setFetchAgain] = useState([]);
   const [kaam, setKaam] = useState([]);
+  const {rolee} = useContext(UserContext)
   useEffect(() => {
 
     const fetchTimeAndDate = async () => {
@@ -150,7 +152,7 @@ const paymentDateLaao = (payId) => {
   const addPayment = async () => {
     try {
       await axios.post("http://localhost:8000/api/v1/payment/createPayment", newPayment, {
-        headers: { Authorization: "Bearer " + token },
+        // headers: { Authorization: "Bearer " + token },
         withCredentials: true,
       });
       setShowAdminForm(false);
@@ -179,7 +181,7 @@ return (
         Securely pay society maintenance and other charges online with ease
       </p>
 
-      {role === "admin" && (
+      {rolee === "admin" && (
         <div className="mb-4 flex justify-between items-center">
           <h3 className="text-2xl font-semibold mt-4">My Payments</h3>
           <button
@@ -285,13 +287,16 @@ return (
                   {new Date(payment.dueDate).toLocaleDateString("en-GB")}
                 </td>
                 <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
-                  <Link
+                  {paymentStatus(payment._id) !== "Paid" &&(<Link
                     to={`/layout/payPayment/${payment._id}`}
                     className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700"
                   >
                     Pay
-                  </Link>
-                  {role === "admin" && (
+                  </Link>)}
+                  {paymentStatus(payment._id) === "Paid" && (
+                    <button >Paid</button>
+                  )}
+                  {rolee === "admin" && (
                     <button
                       onClick={() => deletePayment(payment._id)}
                       className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors"
@@ -316,7 +321,7 @@ return (
       </button>
     </div>
 
-    {role === "admin" && (
+    {rolee=== "admin" && (
       <div>
         <button
           onClick={fetchAgainData}

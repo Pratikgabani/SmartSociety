@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
 import { toast, Toaster } from "react-hot-toast";
 import { HashLoader } from "react-spinners";
+import UserContext from "../../context/UserContext.js";
 const PollApp = () => {
   const [polls, setPolls] = useState([]);
   const [question, setQuestion] = useState("");
@@ -12,10 +13,10 @@ const PollApp = () => {
   const [isPollModalOpen, setIsPollModalOpen] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("user");
-  const user = token ? JSON.parse(token) : null;
-  const role = user?.data.user.role;
-
+  // const token = localStorage.getItem("user");
+  // const user = token ? JSON.parse(token) : null;
+  // const role = user?.data.user.role;
+  const { rolee } = useContext(UserContext);
   const fetchPreviousData = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/v1/polls/getPolls", {
@@ -140,7 +141,7 @@ const PollApp = () => {
 
         <div className="flex justify-between items-center">
           <h2 className="text-2xl mt-4 font-semibold text-gray-800 mb-2">Active Polls</h2>
-          {role === "admin" && (
+          {rolee === "admin" && (
             <div className="flex justify-end">
               <button
                 onClick={() => setIsPollModalOpen(true)}
@@ -255,7 +256,7 @@ const PollApp = () => {
         </div>
 
         {/* Admin Buttons */}
-        {role === "admin" && (
+        {rolee === "admin" && (
           <div className="flex justify-between gap-2 mt-6 pt-4 border-t">
             <button
               onClick={() => handleDeletePoll(poll._id)}

@@ -508,10 +508,11 @@
 
 // export default OrgLanding
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ImageSlider from '../ImgSlider/ImgSlider'; // Make sure this path is correct
 import { Link, useNavigate } from "react-router-dom";
 import axios from '../../axios'; // Added missing import
+import UserContext from '../../context/UserContext';
 
 // Simple SVG Icons for Mobile Menu
 const MenuIcon = () => (
@@ -530,40 +531,44 @@ function OrgLanding() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // For mobile navigation
   const navigate = useNavigate();
-  const token = localStorage.getItem("user"); // Used for "Join an Existing Society" button
-
+  // const token = localStorage.getItem("user"); // Used for "Join an Existing Society" button
+  const {rolee} = useContext(UserContext);
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setIsLoggedIn(true);
+    // const user = localStorage.getItem("user");
+    // if (user) {
+    //   setIsLoggedIn(true);
+      if(rolee=="admin" || rolee=="user" || rolee=="security"){
+        setIsLoggedIn(true);
+      
       navigate('/layout/dashboard');
     } else {
       setIsLoggedIn(false);
     }
-  }, [navigate]); // Added navigate to dependency array, though it's stable. [] is also fine.
+  }, [rolee , navigate]); // Added navigate to dependency array, though it's stable. [] is also fine.
 
-  const handleLogout = async () => {
-    try {
-      const accessToken = localStorage.getItem("accessToken"); // Changed from "token" to "accessToken" to match usage
-      if (accessToken) {
-        await axios.post(
-          "http://localhost:8000/api/v1/users/logout",
-          {},
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-            withCredentials: true,
-          }
-        );
-      }
-    } catch (error) {
-      console.error("Error in logging out:", error);
-    } finally {
-      localStorage.removeItem("user");
-      localStorage.removeItem("accessToken");
-      setIsLoggedIn(false);
-      navigate('/');
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     const accessToken = localStorage.getItem("accessToken"); // Changed from "token" to "accessToken" to match usage
+  //     if (accessToken) {
+  //       await axios.post(
+  //         "http://localhost:8000/api/v1/users/logout",
+  //         {},
+  //         {
+  //           // headers: { Authorization: `Bearer ${accessToken}` },
+  //           withCredentials: true,
+  //         }
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in logging out:", error);
+  //   } finally {
+  //     // localStorage.removeItem("user");
+  //     // localStorage.removeItem("accessToken");
+
+  //     setIsLoggedIn(false);
+  //     navigate('/');
+  //   }
+  // };
 
   return (
     <div className='bg-white min-h-screen w-full font-raleway overflow-x-hidden'>
@@ -622,14 +627,17 @@ function OrgLanding() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 sm:space-x-4 lg:space-x-6 mt-5 justify-center lg:justify-start">
-              {!token && (
+              {!rolee && (
+                <div className='flex gap-4'>
                 <Link to="/register" className="bg-blue-600 text-white text-sm sm:text-base lg:text-lg px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-blue-700 text-center">
                   Join an Existing Society
                 </Link>
-              )}
+              
               <Link to="/SocietyDetails" className="bg-green-600 text-white text-sm sm:text-base lg:text-lg px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-green-700 text-center">
                 Create a New Society
               </Link>
+                </div>
+                )}
             </div>
           </div>
           <div className='hidden lg:block mt-8 lg:mt-0 lg:ml-4 w-full max-w-lg mx-auto lg:w-1/2'>
