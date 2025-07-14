@@ -152,7 +152,8 @@ await payment.save();
 
   const getAdminData = async (req, res) => {
     try {
-      const payments = await Payment.find({societyId : req.user.societyId}).populate("paidBy" , "name email");
+      const payments = await Payment.find({societyId : req.user.societyId}).populate("paidBy" , "name phoneNo houseNo block -_id").select(" -updatedAt -__v -societyId -_id");
+     
       res.status(200).json(new ApiResponse(200, payments, "Payments fetched successfully"));
     } catch (error) {
       throw new ApiError(500, "Failed to fetch payments");
