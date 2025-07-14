@@ -57,7 +57,7 @@ const createPoll = asyncHandler(async (req, res) => {
 // });
 
 const getPolls = asyncHandler(async (req, res) => {
-    const polls = await Poll.find({societyId : req.user.societyId}).select(" -__v  -societyId -createdAt -updatedAt -isClosed -voters -_id -options._id").populate("options.voting" , " block houseNo -_id") 
+    const polls = await Poll.find({societyId : req.user.societyId}).select(" -__v  -societyId -createdAt -updatedAt -isClosed -voters -_id -options.voting -options._id")
     return res
     .status(200)
     .json(new ApiResponse(200 , polls , "Polls found successfully"))

@@ -63,7 +63,7 @@ const getUpcomingEvents = asyncHandler(async (req, res) => {
     })
 
 const getAllEvents = asyncHandler(async (req, res) => {
-    const events = await Event.find({societyId : req.user.societyId}).select("-_id -updatedAt -__v -societyId -isActive").populate("readyUsers" , "houseNo block -_id" )
+    const events = await Event.find({societyId : req.user.societyId}).populate("readyUsers" , "name phoneNo houseNo block -_id" ).select(" -updatedAt -__v -societyId -isActive -_id")
     // console.log(events)
     if(!events){
         return new ApiError( 500 ,"No events found" );
