@@ -16,8 +16,7 @@ function Login() {
     password: '',
     role: ''
   })
-  const {setRolee} = useContext(UserContext);
-  const {rolee} = useContext(UserContext);
+  const {rolee , setRolee} = useContext(UserContext);
   const validationSchema = Yup.object({
     email: Yup.string()
       .matches(

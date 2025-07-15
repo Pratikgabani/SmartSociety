@@ -646,7 +646,7 @@ const Booking = () => {
 
       {/* History */}
       {/* {isAdmin && ( */}
-      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
+      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600'>History</button>
 
       </div>
       {/* )} */}

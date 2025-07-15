@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { Link, useNavigate } from 'react-router-dom';
 import building1 from './../../assets/Rectangle95.png';
 import building2 from './../../assets/Rectangle97.jpg';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
+import UserContext from '../../context/UserContext';
 
 
 
@@ -65,13 +66,15 @@ const Register = () => {
       .nullable(),
 
   });
-
+  const {rolee , setRolee} = useContext(UserContext);
   useEffect(() => {
-    const token = localStorage.getItem('user');
-    if (token) {
-      navigate('/OrgLanding');
-    }
-  }, []);
+  if (rolee==="admin" || rolee==="user") {
+    navigate("/layout/Dashboard");
+  }else if(rolee==="security"){
+    navigate("/layout/Visitor");
+  }
+}, [rolee, navigate]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,7 +95,6 @@ const Register = () => {
       );
       toast.success("Signup successful!");
       // console.log('Signup successful: ', response.data);
-      // toast.success(response.data.message);
       navigate('/login');
     } catch (error) {
 

@@ -282,7 +282,7 @@ const PollApp = () => {
       <div>
         <button
           onClick={fetchPreviousData}
-          className="absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400"
+          className="absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600"
         >
           History
         </button>
