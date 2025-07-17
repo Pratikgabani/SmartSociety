@@ -11,15 +11,28 @@ const Buy = () => {
   
 
   const [payment,setPayment] = useState({});
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.token;
-  const role = user?.data?.user?.role;
+  // const user = JSON.parse(localStorage.getItem("user"));
+  // const token = user?.token;
+  // const role = user?.data?.user?.role;
   const stripe = useStripe();
   const elements = useElements();
   const [cardError, setCardError] = useState("");
   const [error, setError] = useState("");
- ;
+  const [user , setUser] = useState({});
  const navigate = useNavigate(); 
+
+   useEffect(() => {
+    const fetchUser = async()=>{
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", { withCredentials: true });
+        console.log(res.data.data)
+        setUser(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchUser();
+  } , [])
 
   useEffect(() => {
     const fetchPayData = async () => {
@@ -89,9 +102,9 @@ const Buy = () => {
         payment_method: {
           card: card,
           billing_details: {
-            house: user?.user?.houseNo,
-            block : user?.user?.block,
-            email: user?.user?.email,
+            // house: user?.houseNo,
+            // block : user?.block,
+            email: user?.email,
           },
         },
       });
@@ -101,14 +114,14 @@ const Buy = () => {
       // console.log("Payment succeeded: ", paymentIntent);
       setCardError("your payment id: ", paymentIntent.id);
       const paymentInfo = {
-        email: user?.data.user.email,
-        userId: user.data.user._id,
+        email: user?.email,
+        userId: user._id,
         paymentId : paymentId,
         paymentDoneId: paymentIntent.id,
         amount: paymentIntent.amount,
         status: paymentIntent.status,
         
-        societyId : user?.data?.user?.societyId,
+        societyId : user?.societyId,
         paidOn : new Date(),
 
       

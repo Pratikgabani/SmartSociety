@@ -192,7 +192,13 @@ const saveEventOrder = asyncHandler(async (req, res) => {
     societyId: req.user.societyId,
     email: req.user.email,
   });
-
+   if (status === "paid" || status === "succeeded") {
+    await Event.findByIdAndUpdate(
+      eventId,
+      { $addToSet: { readyUsers: req.user._id } },  // addToSet prevents duplicates
+      { new: true }
+    );
+  }
   res.status(201).json({
     message: "Event order saved successfully",
   });

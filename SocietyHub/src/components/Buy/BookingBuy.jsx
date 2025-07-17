@@ -11,8 +11,8 @@ const BookingBuy = () => {
   const [bookingData, setBookingData] = useState({});
   const [cardError, setCardError] = useState("");
   const [error, setError] = useState("");
-
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [user , setUser] = useState({});
+  // const user = JSON.parse(localStorage.getItem("user"));
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -39,6 +39,18 @@ useEffect(() => {
     fetchBookingData();
   }, [bookingId]);
 
+  useEffect(() => {
+    const fetchUser = async()=>{
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", { withCredentials: true });
+        console.log(res.data.data)
+        setUser(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchUser();
+  } , [])
 
 const handleBookingPayment = async (e) => {
     e.preventDefault();
@@ -85,14 +97,14 @@ const handleBookingPayment = async (e) => {
         toast.success("Payment Successful!");
 
         const paymentInfo = {
-          email: user?.data?.user?.email,
-          userId: user?.data?.user?._id,
+          email: user?.email,
+          userId: user?._id,
           bookingId,
           paymentDoneId: paymentIntent.id,
           amount: paymentIntent.amount,
           status: paymentIntent.status,
           paidOn: new Date(),
-          societyId: user?.data?.user?.societyId,
+          societyId: user?.societyId,
         };
 console.log("Payment Info:", paymentInfo);
         await axios.post("http://localhost:8000/api/v1/booking/save-booking-order", paymentInfo, {

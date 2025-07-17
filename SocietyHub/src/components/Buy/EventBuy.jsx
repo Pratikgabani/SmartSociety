@@ -11,11 +11,24 @@ const EventBuy = () => {
   const [eventData, setEventData] = useState({});
   const [cardError, setCardError] = useState("");
   const [error, setError] = useState("");
-
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [user , setUser] = useState({});
+  // const user = JSON.parse(localStorage.getItem("user"));
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUser = async()=>{
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", { withCredentials: true });
+        console.log(res.data.data)
+        setUser(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchUser();
+  } , [])
 
   // ✅ Fetch Event Payment Intent & Event Details
   useEffect(() => {
@@ -85,14 +98,14 @@ const EventBuy = () => {
         toast.success("Payment Successful!");
 
         const paymentInfo = {
-          email: user?.data?.user?.email,
-          userId: user?.data?.user?._id,
+          email: user?.email,
+          userId: user?._id,
           eventId,
           paymentDoneId: paymentIntent.id,
           amount: paymentIntent.amount,
           status: paymentIntent.status,
           paidOn: new Date(),
-          societyId: user?.data?.user?.societyId,
+          societyId: user?.societyId,
         };
 
         await axios.post("http://localhost:8000/api/v1/events/save-event-order", paymentInfo, {

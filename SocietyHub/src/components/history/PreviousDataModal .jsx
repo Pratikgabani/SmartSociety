@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -133,7 +131,6 @@ const PreviousDataPage = () => {
   });
 
   const renderValue = (key, value) => {
-    // ✅ Special handling for paymentId
     if (key === "paymentId" && value?.description) {
       return highlightSearch(value.description);
     }
@@ -226,13 +223,12 @@ const PreviousDataPage = () => {
     return highlightSearch(String(value));
   };
 
-  // ✅ Column header with paymentId → description
   const tableHeaders =
-  filteredByMonthYear.length > 0
-    ? Object.keys(filteredByMonthYear[0]).map((key) =>
-        key === "paymentId" ? "Description" : key
-      )
-    : [];
+    filteredByMonthYear.length > 0
+      ? Object.keys(filteredByMonthYear[0]).map((key) =>
+          key === "paymentId" ? "Description" : key
+        )
+      : [];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-10">
@@ -315,19 +311,26 @@ const PreviousDataPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredByMonthYear.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
-                  {tableHeaders.map((header) => {
-  const actualKey = header === "Description" ? "paymentId" : header;
-  return (
-    <td key={actualKey} className="p-3 align-top border">
-      {renderValue(actualKey, item[actualKey])}
-    </td>
-  );
-})}
-
-                  </tr>
-                ))}
+                {filteredByMonthYear
+                  .filter((item) => {
+                    if ("paymentId" in item) {
+                      return item.paymentId?.description;
+                    }
+                    return true;
+                  })
+                  .map((item, idx) => (
+                    <tr key={idx} className="border-b hover:bg-gray-50">
+                      {tableHeaders.map((header) => {
+                        const actualKey =
+                          header === "Description" ? "paymentId" : header;
+                        return (
+                          <td key={actualKey} className="p-3 align-top border">
+                            {renderValue(actualKey, item[actualKey])}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
