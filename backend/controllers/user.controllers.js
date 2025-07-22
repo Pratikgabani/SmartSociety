@@ -198,6 +198,7 @@ if(!loggedInUser){
 const options = {
 httpOnly : true ,//This means that the cookie cannot be accessed by client-side scripts.
 secure : process.env.NODE_ENV === "production" ,// This means that the cookie will only be sent over HTTPS in production environments.
+sameSite : "none" // updated this line
 }
 
 return res
