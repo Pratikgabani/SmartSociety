@@ -38,20 +38,6 @@ const Booking = () => {
   const { rolee } = useContext(UserContext)
   const navigate = useNavigate();
 
-  // Fetch user info from localStorage
-  // useEffect(() => {
-  //   // const token = localStorage.getItem("user");
-  //   // if (token) {
-  //   //   setIsLoggedIn(true);
-  //   //   const user = JSON.parse(token);
-  //   //   setIsAdmin(user.data.user.role === "admin");
-  //   // }
-  //   if(rolee){
-  //     setIsLoggedIn(true);
-  //     setIsAdmin(rolee.role === "admin");
-  //   }
-  // }, []);
-
   // Fetch venues
   useEffect(() => {
     const fetchVenues = async () => {

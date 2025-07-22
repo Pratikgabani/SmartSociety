@@ -67,6 +67,7 @@ const Register = () => {
 
   });
   const {rolee , setRolee} = useContext(UserContext);
+  // Check if user is logged in then redirect to dashboard
   useEffect(() => {
   if (rolee==="admin" || rolee==="user") {
     navigate("/layout/Dashboard");

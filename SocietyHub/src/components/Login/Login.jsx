@@ -48,19 +48,11 @@ function Login() {
     })
   }
    
-    const responseGoogle = async (authResult) => { // 2
+  const responseGoogle = async (authResult) => { // 2
       try {
         if (authResult["code"]) {
           const result = await googleAuth(authResult.code); 
-                   console.log(result);
-          // const {email} = result.data.data.user;
-          // const token = result.data.token;
-          // const obj = {email, token};
-          // // localStorage.setItem('user-info',JSON.stringify(obj));
-          //          localStorage.setItem("user", JSON.stringify(result.data));
-          // console.log(result.data.data.user.role);
             setRolee(result.data.data.user.role.toString());
-          console.log(rolee);
           toast.success("Google Login Successful");
           navigate('/layout/Dashboard');
         } else {
@@ -99,13 +91,10 @@ function Login() {
               },
             }
           );
-          // localStorage.setItem("user", JSON.stringify(response.data));
-          console.log(response.data.data.user.role)
+          // console.log(response.data.data.user.role)
           setRolee(response.data.data.user.role.toString());
           toast.success("Logged in successfully");
           navigate("/layout/Visitor");
-
-          // console.log("Login successful: ", response.data);
         } catch (error) {
           console.log(error)
           toast.error("error logging in");
@@ -131,12 +120,9 @@ function Login() {
               },
             }
           );
-
-          // console.log("Login successful: ", response.data);
-
-          // localStorage.setItem("user", JSON.stringify(response.data));
-          console.log(response.data.data.user.role)
+          // console.log(response.data.data.user.role)
           setRolee(response.data.data.user.role.toString());
+          toast.success("Logged in successfully");
           navigate("/layout/Dashboard");
         } catch (error) {
           toast.error("error logging in");
@@ -183,7 +169,7 @@ function Login() {
               {errorMessage.email && <div className='text-red-500 mt-1'>{errorMessage.email}</div>}
             </div>
             <div className="mb-2">
-              <label className="block font-medium text-gray-700 font-semibold">Password</label>
+              <label className="block text-gray-700 font-semibold">Password</label>
               <input
                 name='password'
                 type="password"
@@ -196,7 +182,7 @@ function Login() {
               {errorMessage.password && <div className='text-red-500 mt-1'>{errorMessage.password}</div>}
             </div>
             <div className="mb-2">
-              <label className="block font-medium text-gray-700 font-semibold">Role</label>
+              <label className="block text-gray-700 font-semibold">Role</label>
               <select
                 name="role"
                 className="w-full px-3 py-2 border rounded-lg cursor-pointer"
