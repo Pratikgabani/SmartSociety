@@ -7,7 +7,7 @@ import { Route, RouterProvider, BrowserRouter } from "react-router-dom";
 import Login from './components/Login/Login.jsx';
 import Register from './components/Register/Register.jsx';
 import Payment from './components/Payment/Payment.jsx';
-import Visitor from './components/Visitor/Visitor.jsx';
+import Visitor from './components/visitor/Visitor.jsx';
 import Complaint from './components/Complaint/Complaint.jsx';
 import { Toaster } from 'react-hot-toast';
 import Booking from './components/Booking/Booking.jsx';
