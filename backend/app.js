@@ -8,13 +8,9 @@ dotenv.config({
 })
 
 const app = express();
-const allowedOrigins = [
-    'http://localhost:5173', // for development
-    'https://resi-hub.onrender.com' // your deployed frontend
-];
 app.use(
     cors({
-        origin: allowedOrigins,
+        origin: 'https://resi-hub.onrender.com',
        
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE" ,"PATCH"],
