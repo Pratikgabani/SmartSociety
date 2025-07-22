@@ -8,19 +8,34 @@ dotenv.config({
 })
 
 const app = express();
-app.use(
-    cors({
-        origin: 'https://resi-hub.onrender.com',
+// app.use(
+//     cors({
+//         origin: 'https://resi-hub.onrender.com',
        
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE" ,"PATCH"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    })
-)
+//         credentials: true,
+//         methods: ["GET", "POST", "PUT", "DELETE" ,"PATCH"],
+//         allowedHeaders: ["Content-Type", "Authorization"],
+//     })
+// )
+
+app.use((req, res, next) => {
+  // Set the Access-Control-Allow-Origin header to the correct origin
+  res.setHeader('Access-Control-Allow-Origin', 'https://resi-hub.onrender.com');
+  // Or to allow multiple origins:
+  // const allowedOrigins = ['https://resi-hub.onrender.com', 'http://localhost:5173'];
+  // const origin = req.headers.origin;
+  // if (allowedOrigins.includes(origin)) {
+  //      res.setHeader('Access-Control-Allow-Origin', origin);
+  // }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 
 app.use(express.json({
     limit: "16kb" 
 }))
+
 
 
 app.use(express.urlencoded({
