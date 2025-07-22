@@ -16,7 +16,7 @@ import Event from './components/Event/Event.jsx';
 import SecurityRegister from './components/Security/Security.jsx';
 import Announcements from './components/Notice/Notice.jsx';
 import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
-import Dashboard from   './components/Dashboard/dashboard.jsx';
+import Dashboard from   './components/dashboard/dashboard.jsx';
 
 import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
