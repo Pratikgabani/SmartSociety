@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { deleteFromCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/user.models.js";
-import {upload} from "./../middlewares/multer.middlewares.js"
+import {upload} from "../middlewares/multer.middlewares.js"
 
 
 // const createComplain = asyncHandler(async (req, res, next) => {
