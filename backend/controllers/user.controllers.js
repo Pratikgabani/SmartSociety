@@ -306,7 +306,7 @@ const googleAuth = asyncHandler(async (req, res) => { // 6
 
   const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production"
+      secure: true
   };
 
   return res
