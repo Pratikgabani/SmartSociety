@@ -7,7 +7,7 @@
 //     useEffect(()=>{
 //         const fetchUser = async()=>{
 //             try {
-//               const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", { withCredentials: true });
+//               const res = await axios.get("https://resihub.onrender.com/api/v1/users/currentUser", { withCredentials: true });
 //             //   console.log( "res" , res.data.data.role)
 //               setRolee(res.data.data.role.toString());  
 //             } catch (error) {
@@ -35,7 +35,7 @@ const UserContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", {
+        const res = await axios.get("https://resihub.onrender.com/api/v1/users/currentUser", {
           withCredentials: true,
         });
         setRolee(res.data.data.role.toString());

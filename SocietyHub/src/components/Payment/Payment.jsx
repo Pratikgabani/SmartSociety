@@ -30,7 +30,7 @@ const PaymentSection = () => {
 
     const fetchTimeAndDate = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/purchase/getAllPurchases", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/purchase/getAllPurchases", { withCredentials: true });
         // Update API URL) // Update API URL
         setKaam(response.data.data);
 
@@ -52,7 +52,7 @@ const PaymentSection = () => {
     try {
 
 
-      const response = await axios.get("http://localhost:8000/api/v1/payment/getPayments", {
+      const response = await axios.get("https://resihub.onrender.com/api/v1/payment/getPayments", {
 
         withCredentials: true,
       });
@@ -75,7 +75,7 @@ const PaymentSection = () => {
   const fetchAgainData = async (a) => {
 
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/payment/getAdminData", { withCredentials: true });
+      const response = await axios.get("https://resihub.onrender.com/api/v1/payment/getAdminData", { withCredentials: true });
       // Update API URL) // Update API URL
       setFetchAgain(response.data.data);
      navigate("/history", { state: { data: response.data.data } });
@@ -88,7 +88,7 @@ const PaymentSection = () => {
   const fetchPreviousData = async (a) => {
 
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/purchase/getAllPurchases", { withCredentials: true });
+      const response = await axios.get("https://resihub.onrender.com/api/v1/purchase/getAllPurchases", { withCredentials: true });
       // Update API URL) // Update API URL
       setPreviousData(response.data.data);
     navigate("/history", { state: { data: response.data.data } });
@@ -99,7 +99,7 @@ const PaymentSection = () => {
   };
   const deletePayment = async (paymentId) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/payment/deletePayment/${paymentId}`, {
+      await axios.delete(`https://resihub.onrender.com/api/v1/payment/deletePayment/${paymentId}`, {
         withCredentials: true,
       });
       toast.success("Payment deleted successfully!");
@@ -151,7 +151,7 @@ const paymentDateLaao = (payId) => {
 
   const addPayment = async () => {
     try {
-      await axios.post("http://localhost:8000/api/v1/payment/createPayment", newPayment, {
+      await axios.post("https://resihub.onrender.com/api/v1/payment/createPayment", newPayment, {
         // headers: { Authorization: "Bearer " + token },
         withCredentials: true,
       });

@@ -21,7 +21,7 @@ useEffect(() => {
     const fetchBookingData = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:8000/api/v1/booking/payBooking/${bookingId}`,
+          `https://resihub.onrender.com/api/v1/booking/payBooking/${bookingId}`,
           {},
           { withCredentials: true }
         );
@@ -42,7 +42,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchUser = async()=>{
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", { withCredentials: true });
+        const res = await axios.get("https://resihub.onrender.com/api/v1/users/currentUser", { withCredentials: true });
         console.log(res.data.data)
         setUser(res.data.data);
       } catch (error) {
@@ -107,7 +107,7 @@ const handleBookingPayment = async (e) => {
           societyId: user?.societyId,
         };
 console.log("Payment Info:", paymentInfo);
-        await axios.post("http://localhost:8000/api/v1/booking/save-booking-order", paymentInfo, {
+        await axios.post("https://resihub.onrender.com/api/v1/booking/save-booking-order", paymentInfo, {
           withCredentials: true,
         });
 

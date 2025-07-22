@@ -66,7 +66,7 @@ function dashboard() {
   useEffect(() => {
     const fetchVisitors = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/visitor/getActiveVisitorsByUserId", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/visitor/getActiveVisitorsByUserId", { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setVisitors(response.data.data);
@@ -76,7 +76,7 @@ function dashboard() {
     };
     const societyDet = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/societyDetail/getSocietyDetail", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/societyDetail/getSocietyDetail", { withCredentials: true });
         setLoading(false);
         // console.log("soc" + response.data)
         // console.log(response.data.data[0].societyName)
@@ -87,7 +87,7 @@ function dashboard() {
     }
     const fetchComplaints = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/complain/getAllComplains`, { withCredentials: true });
+        const response = await axios.get(`https://resihub.onrender.com/api/v1/complain/getAllComplains`, { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setComplaints(response.data.data);
@@ -97,7 +97,7 @@ function dashboard() {
     }
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/events/getAllEvent`, { withCredentials: true });
+        const response = await axios.get(`https://resihub.onrender.com/api/v1/events/getAllEvent`, { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setEvents(response.data.data);
@@ -107,7 +107,7 @@ function dashboard() {
     }
     const fetchPolls = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/polls/getAllPolls`, { withCredentials: true });
+        const response = await axios.get(`https://resihub.onrender.com/api/v1/polls/getAllPolls`, { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setPolls(response.data.data);
@@ -117,7 +117,7 @@ function dashboard() {
     }
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/booking/getBookingsByUserId`, { withCredentials: true });
+        const response = await axios.get(`https://resihub.onrender.com/api/v1/booking/getBookingsByUserId`, { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setBookings(response.data.data);
@@ -127,7 +127,7 @@ function dashboard() {
     }
     const fetchNotices = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/notices/getNotices`, { withCredentials: true });
+        const response = await axios.get(`https://resihub.onrender.com/api/v1/notices/getNotices`, { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setNotices(response.data.data);
@@ -137,7 +137,7 @@ function dashboard() {
     }
     const fetchPayments = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/payment/getPayments", {
+        const response = await axios.get("https://resihub.onrender.com/api/v1/payment/getPayments", {
 
           withCredentials: true,
         });

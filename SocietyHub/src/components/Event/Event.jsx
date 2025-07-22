@@ -35,7 +35,7 @@ function Event() {
     const getUpcomingEvents = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/events/getUpcomingEvents",
+          "https://resihub.onrender.com/api/v1/events/getUpcomingEvents",
           { withCredentials: true }
         );
         setEvents(response.data.data);
@@ -52,7 +52,7 @@ function Event() {
     const fetchPastEvents = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/events/getPastEvents",
+          "https://resihub.onrender.com/api/v1/events/getPastEvents",
           { withCredentials: true }
         );
         setPastData(response.data.data);
@@ -72,7 +72,7 @@ function Event() {
       for (let event of events) {
         try {
           const response = await axios.get(
-            `http://localhost:8000/api/v1/events/paymentStatus/${event._id}`,
+            `https://resihub.onrender.com/api/v1/events/paymentStatus/${event._id}`,
             { withCredentials: true }
           );
           statusMap[event._id] = response.data.data;
@@ -92,7 +92,7 @@ function Event() {
 
   const fetchPreviousData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/events/getAllEvent", { withCredentials: true });
+      const response = await axios.get("https://resihub.onrender.com/api/v1/events/getAllEvent", { withCredentials: true });
       navigate("/history", { state: { data: response.data.data } });
       setIsModalOpen(true);
     } catch (error) {
@@ -112,7 +112,7 @@ function Event() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/events/createEvent",
+        "https://resihub.onrender.com/api/v1/events/createEvent",
         formData,
         { withCredentials: true }
       );
@@ -139,7 +139,7 @@ function Event() {
   const handleDeleteEvent = async (eventId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/v1/events/deleteEvent/${eventId}`,
+        `https://resihub.onrender.com/api/v1/events/deleteEvent/${eventId}`,
         { withCredentials: true }
       );
 

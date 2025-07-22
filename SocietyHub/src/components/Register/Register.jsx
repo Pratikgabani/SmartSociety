@@ -83,7 +83,7 @@ const Register = () => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       const response = await axios.post(
-        'http://localhost:8000/api/v1/users/register',
+        'https://resihub.onrender.com/api/v1/users/register',
         {
           ...formData,
         },

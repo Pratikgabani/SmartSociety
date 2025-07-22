@@ -20,7 +20,7 @@ const EventBuy = () => {
   useEffect(() => {
     const fetchUser = async()=>{
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/users/currentUser", { withCredentials: true });
+        const res = await axios.get("https://resihub.onrender.com/api/v1/users/currentUser", { withCredentials: true });
         console.log(res.data.data)
         setUser(res.data.data);
       } catch (error) {
@@ -35,7 +35,7 @@ const EventBuy = () => {
     const fetchEventData = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:8000/api/v1/events/payEvent/${eventId}`,
+          `https://resihub.onrender.com/api/v1/events/payEvent/${eventId}`,
           {},
           { withCredentials: true }
         );
@@ -108,7 +108,7 @@ const EventBuy = () => {
           societyId: user?.societyId,
         };
 
-        await axios.post("http://localhost:8000/api/v1/events/save-event-order", paymentInfo, {
+        await axios.post("https://resihub.onrender.com/api/v1/events/save-event-order", paymentInfo, {
           withCredentials: true,
         });
 
