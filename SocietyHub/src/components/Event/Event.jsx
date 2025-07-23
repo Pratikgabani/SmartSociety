@@ -68,7 +68,7 @@ function Event() {
   useEffect(() => {
     const fetchPaymentStatuses = async () => {
       const statusMap = {};
-      setPaymentStatusLoading(true);
+      setLoading(true);
       for (let event of events) {
         try {
           const response = await axios.get(
@@ -82,7 +82,7 @@ function Event() {
         }
       }
       setPaymentStatusMap(statusMap);
-      setPaymentStatusLoading(false);
+      setLoading(false);
     };
 
     if (events.length > 0) {
