@@ -60,98 +60,98 @@ import {upload} from "../middlewares/multer.middlewares.js"
 //         next(new ApiError(500, "Something went wrong"));
 //     }
 // });
-// const createComplain = asyncHandler(async (req, res, next) => {
-//     const { subject, description } = req.body;
+const createComplain = asyncHandler(async (req, res, next) => {
+    const { subject, description } = req.body;
 
-//     console.log("Received:", subject, description, req.file);
+    console.log("Received:", subject, description, req.file);
 
-//     if (!subject || !description) {
-//         throw new ApiError(400, "All fields are required");
-//     }
+    if (!subject || !description) {
+        throw new ApiError(400, "All fields are required");
+    }
 
-//     const existingComplain = await Complain.findOne({ subject });
-//     if (existingComplain) {
-//         throw new ApiError(400, "Complaint already exists");
-//     }
+    const existingComplain = await Complain.findOne({ subject });
+    if (existingComplain) {
+        throw new ApiError(400, "Complaint already exists");
+    }
 
-//     let proof = null;
-//     if (req.file) {
-//         try {
-//             proof = await uploadOnCloudinary(req.file.path);
-//             console.log("Proof uploaded", proof);
-//         } catch (error) {
-//             console.log("Error uploading proof", error);
-//             throw new ApiError(500, "Failed to upload proof");
-//         }
-//     }
-
-//     try {
-//         const complain = await Complain.create({
-//             complainId: req.user._id,
-//             subject,
-//             description,
-//             date: new Date(),
-//             byHouse: req.user.houseNo,
-//             proof : proof?.url,// Store Cloudinary URL
-//             societyId: req.user?.societyId ,
-            
-//         });
-
-//         if (!complain) {
-//             throw new ApiError(400, "Complaint not created");
-//         }
-
-//         return res.status(200).json(new ApiResponse(200, complain, "Complaint created successfully"));
-
-//     } catch (error) {
-//         if (proof) {
-//             await deleteFromCloudinary(proof.public_id);
-//         }
-//         next(new ApiError(500, "Something went wrong"));
-//     }
-// });
-const createComplain = async (req, res) => {
-    // 1. Check if a file was uploaded. Multer adds the `file` object to `req`.
-    if (!req.file) {
-        return res.status(400).json({ error: "An image file is required for the complaint." });
+    let proof = null;
+    if (req.file) {
+        try {
+            proof = await uploadOnCloudinary(req.file.path);
+            console.log("Proof uploaded", proof);
+        } catch (error) {
+            console.log("Error uploading proof", error);
+            throw new ApiError(500, "Failed to upload proof");
+        }
     }
 
     try {
-        // 2. Upload the file buffer from memory to Cloudinary
-        const cloudinaryResponse = await uploadOnCloudinary(req.file.buffer);
+        const complain = await Complain.create({
+            complainId: req.user._id,
+            subject,
+            description,
+            date: new Date(),
+            byHouse: req.user.houseNo,
+            proof : proof?.url,// Store Cloudinary URL
+            societyId: req.user?.societyId ,
+            
+        });
 
-        if (!cloudinaryResponse) {
-            return res.status(500).json({ error: "Failed to upload image, please try again." });
+        if (!complain) {
+            throw new ApiError(400, "Complaint not created");
         }
 
-        // 3. Extract necessary data from the form body and Cloudinary's response
-        const { title, description } = req.body;
-        const imageUrl = cloudinaryResponse.secure_url;
-        const imagePublicId = cloudinaryResponse.public_id;
-        const imageResourceType = cloudinaryResponse.resource_type;
-
-        // 4. Create a new entry in your database, saving the Cloudinary details
-        const newComplaint = await Complain.create({
-            title,
-            description,
-            author: req.user._id, // Assuming user is available from an auth middleware
-            attachment: {
-                url: imageUrl,
-                publicId: imagePublicId,
-                resourceType: imageResourceType
-            }
-        });
-
-        return res.status(201).json({
-            message: "Complaint created successfully.",
-            data: newComplaint
-        });
+        return res.status(200).json(new ApiResponse(200, complain, "Complaint created successfully"));
 
     } catch (error) {
-        console.error("Error creating complaint:", error);
-        return res.status(500).json({ error: "An internal server error occurred." });
+        if (proof) {
+            await deleteFromCloudinary(proof.public_id);
+        }
+        next(new ApiError(500, "Something went wrong"));
     }
-};
+});
+// const createComplain = async (req, res) => {
+//     // 1. Check if a file was uploaded. Multer adds the `file` object to `req`.
+//     if (!req.file) {
+//         return res.status(400).json({ error: "An image file is required for the complaint." });
+//     }
+
+//     try {
+//         // 2. Upload the file buffer from memory to Cloudinary
+//         const cloudinaryResponse = await uploadOnCloudinary(req.file.buffer);
+
+//         if (!cloudinaryResponse) {
+//             return res.status(500).json({ error: "Failed to upload image, please try again." });
+//         }
+
+//         // 3. Extract necessary data from the form body and Cloudinary's response
+//         const { title, description } = req.body;
+//         const imageUrl = cloudinaryResponse.secure_url;
+//         const imagePublicId = cloudinaryResponse.public_id;
+//         const imageResourceType = cloudinaryResponse.resource_type;
+
+//         // 4. Create a new entry in your database, saving the Cloudinary details
+//         const newComplaint = await Complain.create({
+//             title,
+//             description,
+//             author: req.user._id, // Assuming user is available from an auth middleware
+//             attachment: {
+//                 url: imageUrl,
+//                 publicId: imagePublicId,
+//                 resourceType: imageResourceType
+//             }
+//         });
+
+//         return res.status(201).json({
+//             message: "Complaint created successfully.",
+//             data: newComplaint
+//         });
+
+//     } catch (error) {
+//         console.error("Error creating complaint:", error);
+//         return res.status(500).json({ error: "An internal server error occurred." });
+//     }
+// };
 
 const getAllComplains = asyncHandler(async (req, res) => {
     const complains = await Complain.find({societyId: req.user?.societyId , isResolved : false}).select("-__v  -societyId -createdAt -updatedAt -complainId -byuser").sort({ createdAt: -1 });
