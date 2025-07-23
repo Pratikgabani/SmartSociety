@@ -41,7 +41,7 @@ const deleteFromCloudinary = async (publicId) =>{
         // hota lekin video likhta hu toh delete ho jata hai aisa isiliye hota hai kyun ki
         //  cloudinary ko pata chal jata hai ki kis type ka file delete karna hai ..usko auto me confusion hota hai kyuki auto me kuch bhi ho sakta hai
        const result = await cloudinary.uploader.destroy(publicId,{
-            resource_type: "video"   
+            resource_type: "image"   
        })        
        console.log("Deleted from cloudinary public id ",result)
        return result
