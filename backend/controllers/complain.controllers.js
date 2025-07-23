@@ -110,7 +110,7 @@ import {upload} from "../middlewares/multer.middlewares.js"
 //         next(new ApiError(500, "Something went wrong"));
 //     }
 // });
-const createComplaint = async (req, res) => {
+const createComplain = async (req, res) => {
     // 1. Check if a file was uploaded. Multer adds the `file` object to `req`.
     if (!req.file) {
         return res.status(400).json({ error: "An image file is required for the complaint." });
