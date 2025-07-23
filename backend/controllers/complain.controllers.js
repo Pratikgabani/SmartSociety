@@ -131,7 +131,7 @@ const createComplain = async (req, res) => {
         const imageResourceType = cloudinaryResponse.resource_type;
 
         // 4. Create a new entry in your database, saving the Cloudinary details
-        const newComplaint = await Complaint.create({
+        const newComplaint = await Complain.create({
             title,
             description,
             author: req.user._id, // Assuming user is available from an auth middleware
