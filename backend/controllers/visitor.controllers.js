@@ -62,7 +62,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Visitor } from "../models/visitor.models.js";
 import { User } from "../models/user.models.js";
 
-export const createVisitor = asyncHandler(async (req, res) => {
+const createVisitor = asyncHandler(async (req, res) => {
   const {
     visitorName,
     visitorPhone,
