@@ -306,7 +306,8 @@ const googleAuth = asyncHandler(async (req, res) => { // 6
 
   const options = {
       httpOnly: true,
-      secure: true
+      secure: true,
+      sameSite: "none" // updated this line
   };
 
   return res
