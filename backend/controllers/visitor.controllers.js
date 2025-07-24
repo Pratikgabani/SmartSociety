@@ -5,55 +5,119 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Security } from "../models/security.models.js";
 import { User } from "../models/user.models.js";
 
-const createVisitor = asyncHandler(async (req, res) => {
-    const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,duration} = req.body;
-    const userId = req.user?._id
-//   console.log("user"+ userId)
-    //   const userId =  req.data.user?._id
-      const securityId = await Security.findById(userId)
-      if(!securityId){
-        throw new ApiError(404 , "User not found")
-      }
-           const ifExist = await Visitor.findOne({visitorPhone,visitorName})
-           if(ifExist){
-            throw new ApiError(400 , "Visitor already exist")
-           }
+// const createVisitor = asyncHandler(async (req, res) => {
+//     const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,duration} = req.body;
+// //     console.log(req.user._id)
+// //     const userId = req.user?._id
+// //   console.log("user"+ userId)
+//     //   const userId =  req.data.user?._id
+//       const securityId = await Security.findById(req.user._id)
+//       if(!securityId){
+//         throw new ApiError(404 , "User not found")
+//       }
+//            const ifExist = await Visitor.findOne({visitorPhone,visitorName})
+//            if(ifExist){
+//             throw new ApiError(400 , "Visitor already exist")
+//            }
 
 
-        if(!visitorName || !visitorPhone || !visitingAdd || !purpose ){
-            throw new ApiError(400 , "All fields are required")
-        }
-        const haiKiNai = await User.find({ houseNo: visitingAdd, block: visitingBlock });
+//         if(!visitorName || !visitorPhone || !visitingAdd || !purpose ){
+//             throw new ApiError(400 , "All fields are required")
+//         }
+//         const haiKiNai = await User.find({ houseNo: visitingAdd, block: visitingBlock });
 
-// console.log("user", haiKiNai); // Log properly for debugging
+// // console.log("user", haiKiNai); // Log properly for debugging
 
-if (haiKiNai.length === 0) {  // Check if the array is empty
-    throw new ApiError(400, "User not found");
-}
+// if (haiKiNai.length === 0) {  // Check if the array is empty
+//     throw new ApiError(400, "User not found");
+// }
 
 
-        const newVisitor = await Visitor.create({
-            visitorName,
-            visitorPhone,   
-            visitingAdd ,
-            purpose,
-            visitingBlock , 
-            visitDate : new Date(), 
+//         const newVisitor = await Visitor.create({
+//             visitorName,
+//             visitorPhone,   
+//             visitingAdd ,
+//             purpose,
+//             visitingBlock , 
+//             visitDate : new Date(), 
             
-            duration : duration || "00:00:00",
-            isActive : true,
-            societyId : securityId.societyId,
+//             duration : duration || "00:00:00",
+//             isActive : true,
+//             societyId : securityId.societyId,
             
-        })
+//         })
 
-        if(!newVisitor){
-            throw new ApiError(400 , "Visitor not created")
-        }
-        return res
-        .status(200)
-        .json(new ApiResponse(200, newVisitor, "Visitor created successfully"));
+//         if(!newVisitor){
+//             throw new ApiError(400 , "Visitor not created")
+//         }
+//         return res
+//         .status(200)
+//         .json(new ApiResponse(200, newVisitor, "Visitor created successfully"));
 
-})
+// })
+
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { Visitor } from "../models/visitor.models.js";
+import { User } from "../models/user.models.js";
+
+export const createVisitor = asyncHandler(async (req, res) => {
+  const {
+    visitorName,
+    visitorPhone,
+    visitingAdd,
+    purpose,
+    visitingBlock,
+    duration,
+  } = req.body;
+
+  // ✅ Ensure only Security users can access this route
+  if (req.userType !== "Security") {
+    throw new ApiError(403, "Only security can add visitors");
+  }
+
+  const securityId = req.user; // already a valid Security user
+
+  // ✅ Check required fields
+  if (!visitorName || !visitorPhone || !visitingAdd || !purpose || !visitingBlock) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  // ✅ Check if visitor already exists
+  const ifExist = await Visitor.findOne({ visitorPhone, visitorName });
+  if (ifExist) {
+    throw new ApiError(400, "Visitor already exists");
+  }
+
+  // ✅ Check if resident exists for the given house number and block
+  const haiKiNai = await User.find({ houseNo: visitingAdd, block: visitingBlock });
+  if (haiKiNai.length === 0) {
+    throw new ApiError(400, "Resident not found for the given house and block");
+  }
+
+  // ✅ Create new visitor entry
+  const newVisitor = await Visitor.create({
+    visitorName,
+    visitorPhone,
+    visitingAdd,
+    purpose,
+    visitingBlock,
+    visitDate: new Date(),
+    duration: duration || "00:00:00",
+    isActive: true,
+    societyId: securityId.societyId,
+  });
+
+  if (!newVisitor) {
+    throw new ApiError(400, "Visitor not created");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, newVisitor, "Visitor created successfully"));
+});
+
 
 const removeVisitor = asyncHandler(async (req, res) => {
     const { id } = req.params;
