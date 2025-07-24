@@ -73,11 +73,11 @@ const createVisitor = asyncHandler(async (req, res) => {
   } = req.body;
 
   // ✅ Ensure only Security users can access this route
-  if (req.userType !== "Security") {
+  if (req.user.role !== "Security") {
     throw new ApiError(403, "Only security can add visitors");
   }
 
-  const securityId = req.user; // already a valid Security user
+  const securityId = req.user._id; // already a valid Security user
 
   // ✅ Check required fields
   if (!visitorName || !visitorPhone || !visitingAdd || !purpose || !visitingBlock) {
