@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import ImageSlider from '../ImgSlider/ImgSlider';
+import ImageSlider from '../ImgSlider/ImgSlider'; 
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from '../../context/UserContext';
-
+import finalLogo from './../../assets/finalLogo.svg'
 // Simple SVG Icons for Mobile Menu
 const MenuIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -40,7 +40,7 @@ function OrgLanding() {
         {/* Nav Bar */}
         <nav className='w-full bg-white mb-3 flex flex-col md:flex-row justify-between md:items-center py-4 md:py-6 px-4 sm:px-6 lg:px-14 rounded-xl shadow-lg sticky top-0 z-50'>
           <div className='flex justify-between items-center w-full md:w-auto'>
-            <div className='font-bold text-3xl sm:text-4xl text-blue-600 font-raleway'>ResiHub</div>
+            <div className='font-bold text-3xl sm:text-4xl text-blue-600 font-raleway'>{finalLogo}</div>
             <div className="md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

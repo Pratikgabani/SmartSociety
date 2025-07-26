@@ -215,7 +215,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     req.user._id , 
   {
     $set : {
-      refreshToken : undefined,
+      refreshToken : null, // made it undefined to null 
     }
   },
   {new : true}
@@ -223,7 +223,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly : true , 
-    secure : true
+    secure : true , 
+    path : "/" // This ensures the cookie is cleared for all paths
   }
 
   return res
