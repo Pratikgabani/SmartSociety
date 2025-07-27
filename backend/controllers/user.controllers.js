@@ -18,7 +18,7 @@ import { oauth2Client } from '../utils/googleConfig.js';
 
 const generateAccessAndRefereshTokens = async(userId) =>{
   try {
-      const user = await User.findById(userId)
+      const user = await User.findById(userId) || await Security.findById(userId)
       const accessToken = user.generateAccessToken()
       const refreshToken = user.generateRefreshToken()
 
