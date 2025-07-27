@@ -176,7 +176,8 @@ if(  !email || !password){
     
     const options = {
     httpOnly : true ,//This means that the cookie cannot be accessed by client-side scripts.
-    secure : process.env.NODE_ENV === "production" ,// This means that the cookie will only be sent over HTTPS in production environments.
+    secure : process.env.NODE_ENV === "production" ,
+    sameSite : "none"// This means that the cookie will only be sent over HTTPS in production environments.
     }
     
     return res
@@ -201,7 +202,8 @@ const logoutSecurity = asyncHandler(async (req, res) => {
   
     const options = {
       httpOnly : true , 
-      secure : process.env.NODE_ENV === "production"
+      secure : process.env.NODE_ENV === "production",
+      sameSite : "none"
     }
   
     return res
