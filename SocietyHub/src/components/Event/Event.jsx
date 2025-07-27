@@ -272,7 +272,7 @@ function Event() {
                 </div>
               </div>
               <div className="mt-4 flex gap-3">
-                {!paymentStatusLoading && paymentStatusMap[event._id] === false && (
+                {!loading && paymentStatusMap[event._id] === false && (
                   <Link to={`/layout/payEvent/${event._id}`}
                     className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-center hover:bg-blue-700">Pay Now</Link>
                 )}
