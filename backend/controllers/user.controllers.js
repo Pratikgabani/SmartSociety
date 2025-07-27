@@ -221,11 +221,17 @@ const logoutUser = asyncHandler(async (req, res) => {
   {new : true}
   )
 
+  // const options = {
+  //   httpOnly : true , 
+  //   secure : true , 
+  //   path : "/" // This ensures the cookie is cleared for all paths
+  // }
   const options = {
-    httpOnly : true , 
-    secure : true , 
-    path : "/" // This ensures the cookie is cleared for all paths
-  }
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/"
+};
 
   return res
   .status(200)
