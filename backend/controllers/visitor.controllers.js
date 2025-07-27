@@ -11,6 +11,7 @@ const createVisitor = asyncHandler(async (req, res) => {
 //     const userId = req.user?._id
 //   console.log("user"+ userId)
     //   const userId =  req.data.user?._id
+    console.log(req.user._id + "id");
       const securityId = await Security.findById(req.user._id)
       if(!securityId){
         throw new ApiError(404 , "User not found")
