@@ -46,7 +46,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
           process.env.REFRESH_TOKEN_SECRET
       )
   
-      const user = await User.findById(decodedToken?._id)
+      const user = await User.findById(decodedToken?._id) || await Security.findById(decodedToken?._id)
   
       if (!user) {
           throw new ApiError(401, "Invalid refresh token")
@@ -219,7 +219,17 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
   },
   {new : true}
+  ) || await Security.findByIdAndUpdate(
+    req.user._id , 
+  {
+    $set : {
+      refreshToken : null, // made it undefined to null 
+    }
+  },
+  {new : true}
   )
+  
+  
 
   // const options = {
   //   httpOnly : true , 
