@@ -190,7 +190,7 @@ if(!isPasswordValid){
 // }
 
 const {accessToken , refreshToken } = await generateAccessAndRefereshTokens(user._id)
-const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+const loggedInUser = await User.findById(user._id).select("-password -refreshToken") || await Security.findById(user._id).select("-password -refreshToken")
 if(!loggedInUser){
   throw new ApiError(500 , "Failed to login")
 }
