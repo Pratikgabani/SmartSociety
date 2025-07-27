@@ -40,7 +40,7 @@ function OrgLanding() {
         {/* Nav Bar */}
         <nav className='w-full bg-white mb-3 flex flex-col md:flex-row justify-between md:items-center py-4 md:py-6 px-4 sm:px-6 lg:px-14 rounded-xl shadow-lg sticky top-0 z-50'>
           <div className='flex justify-between items-center w-full md:w-auto'>
-            <div className='font-bold text-3xl sm:text-4xl text-blue-600 font-raleway'>{finalLogo}</div>
+            <div className='font-bold text-3xl sm:text-4xl text-blue-600 font-raleway'><img className='w-20 h-10' alt= "logo" src={finalLogo} /></div>
             <div className="md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
