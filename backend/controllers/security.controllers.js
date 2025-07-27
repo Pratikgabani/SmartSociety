@@ -203,7 +203,8 @@ const logoutSecurity = asyncHandler(async (req, res) => {
     const options = {
       httpOnly : true , 
       secure : process.env.NODE_ENV === "production",
-      sameSite : "none"
+      sameSite : "none",
+        path: "/"
     }
   
     return res
