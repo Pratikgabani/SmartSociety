@@ -211,7 +211,9 @@ function OrgLanding() {
                   </li>
                 ))}
               </ul>
+              <Link to = "/pageNotFound" className='w-full'>
               <button className={`px-5 py-3 w-full ${plan.popular ? 'bg-white text-blue-700 hover:bg-gray-100' : 'bg-blue-600 text-white hover:bg-blue-700'} rounded-lg font-semibold transition-colors`}>Get Started</button>
+              </Link>
             </div>
           ))}
         </div>
@@ -245,7 +247,9 @@ function OrgLanding() {
           ))}
         </div>
         <div className='text-center mt-10 sm:mt-12'>
+          <Link to='/pageNotFound'>
           <button className='bg-blue-600 text-white rounded-lg px-5 py-3 sm:p-4 text-sm sm:text-base hover:bg-blue-700 transition-colors'>View more testimonials</button>
+          </Link>
         </div>
       </div>
 
