@@ -30,10 +30,10 @@ function Visitor() {
     try {
       setLoading(true);
       if (rolee === "security") {
-        response = await axios.get("https://resihub.onrender.com/api/v1/visitor/getHisAllRecentVisitors", { withCredentials: true });
+        response = await axios.get("https://resihub2.onrender.com/api/v1/visitor/getHisAllRecentVisitors", { withCredentials: true });
       }
       else {
-        response = await axios.get("https://resihub.onrender.com/api/v1/visitor/getHisRecentVisitorsByUserId", { withCredentials: true });
+        response = await axios.get("https://resihub2.onrender.com/api/v1/visitor/getHisRecentVisitorsByUserId", { withCredentials: true });
       }
       navigate("/history", { state: { data: response.data.data } });
     } catch (error) {
@@ -48,9 +48,9 @@ function Visitor() {
       let response;
       try {
         if (rolee === "security") {
-          response = await axios.get('https://resihub.onrender.com/api/v1/visitor/getRecentVisitors', { withCredentials: true });
+          response = await axios.get('https://resihub2.onrender.com/api/v1/visitor/getRecentVisitors', { withCredentials: true });
         } else {
-          response = await axios.get("https://resihub.onrender.com/api/v1/visitor/getRecentVisitorsByUserId", { withCredentials: true });
+          response = await axios.get("https://resihub2.onrender.com/api/v1/visitor/getRecentVisitorsByUserId", { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setRecentVisitors(visitors);
@@ -67,9 +67,9 @@ function Visitor() {
       let response;
       try {
         if (rolee === "security") {
-          response = await axios.get('https://resihub.onrender.com/api/v1/visitor/getActiveVisitors', { withCredentials: true });
+          response = await axios.get('https://resihub2.onrender.com/api/v1/visitor/getActiveVisitors', { withCredentials: true });
         } else {
-          response = await axios.get("https://resihub.onrender.com/api/v1/visitor/getActiveVisitorsByUserId", { withCredentials: true });
+          response = await axios.get("https://resihub2.onrender.com/api/v1/visitor/getActiveVisitorsByUserId", { withCredentials: true });
         }
         const visitors = response.data.data || response.data;
         setActiveVisitors(visitors);
@@ -83,7 +83,7 @@ function Visitor() {
 
   const deleteVisitor = async (id) => {
     try {
-      await axios.delete(`https://resihub.onrender.com/api/v1/visitor/deleteVisitor/${id}`, { withCredentials: true });
+      await axios.delete(`https://resihub2.onrender.com/api/v1/visitor/deleteVisitor/${id}`, { withCredentials: true });
       setVari(!vari);
     } catch (error) {
       console.error('Error deleting visitor:', error);
@@ -102,7 +102,7 @@ function Visitor() {
     };
 
     try {
-      await axios.post('https://resihub.onrender.com/api/v1/visitor/createVisitor', newVisitorObj, { withCredentials: true });
+      await axios.post('https://resihub2.onrender.com/api/v1/visitor/createVisitor', newVisitorObj, { withCredentials: true });
       setShowAddModal(false);
       setNewVisitor({
         visitorName: '',
@@ -128,7 +128,7 @@ function Visitor() {
           second: "2-digit",
           hour12: true
         });
-        await axios.patch(`https://resihub.onrender.com/api/v1/visitor/updateVisitorDuration/${id}`, { duration: checkoutTime }, { withCredentials: true });
+        await axios.patch(`https://resihub2.onrender.com/api/v1/visitor/updateVisitorDuration/${id}`, { duration: checkoutTime }, { withCredentials: true });
 
         const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
         if (!checkedOutVisitor) {

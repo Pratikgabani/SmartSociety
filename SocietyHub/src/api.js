@@ -1,7 +1,7 @@
 import axios from 'axios'; // 4
 
 const api = axios.create({
-  baseURL: "https://resihub.onrender.com/auth/",
+  baseURL: "https://resihub2.onrender.com/auth/",
   withCredentials: true, // ✅ FIXED: cookies will now be sent
 });
 

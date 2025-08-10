@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://resihub.onrender.com/api/v1",
+  baseURL: "https://resihub2.onrender.com/api/v1",
   withCredentials: true,
 });
 

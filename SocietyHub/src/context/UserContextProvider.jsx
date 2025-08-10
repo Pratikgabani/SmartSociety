@@ -35,7 +35,7 @@ const UserContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("https://resihub.onrender.com/api/v1/users/currentUser", {
+        const res = await axios.get("https://resihub2.onrender.com/api/v1/users/currentUser", {
           withCredentials: true,
         });
         setRolee(res.data.data.role.toString());
