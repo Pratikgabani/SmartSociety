@@ -109,7 +109,7 @@ function OrgLanding() {
       </div>
 
       {/* Second part - Features */}
-      <div id='features' className='text-gray-200 bg-[url(/bgSociety.png)] bg-cover bg-center py-10 sm:py-16'>
+      <div id='features' className='text-gray-200 bg-[#1E1B2C] bg-cover bg-center py-10 sm:py-16'>
         <div className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24'>
           <h2 className='text-center text-2xl sm:text-3xl md:text-4xl font-bold mt-7 text-pretty'>Comprehensive Society Management Features</h2>
           <p className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-7 sm:mb-10'>Everything you need to manage your residential community efficiently</p>
@@ -186,7 +186,7 @@ function OrgLanding() {
       </div>
 
       {/* Fourth part - Pricing */}
-      <div id='pricing' className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-12 sm:py-16 md:py-20 mb-4 bg-[url(/bgSociety.png)] bg-cover bg-center min-h-screen text-gray-200'>
+      <div id='pricing' className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-12 sm:py-16 md:py-20 mb-4 bg-[#1E1B2C] bg-cover bg-center min-h-screen text-gray-200'>
         <h1 className='text-center font-bold text-2xl sm:text-3xl md:text-4xl'>Simple & Transparent Pricing</h1>
         <h2 className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-12 sm:mb-16 md:mb-20'>Choose the perfect plan for you</h2>
         <div className='flex flex-col lg:flex-row gap-8 justify-center items-center lg:items-stretch'>
@@ -250,7 +250,7 @@ function OrgLanding() {
       </div>
 
       {/* Sixth part - Contact & Footer */}
-      <div id='contact' className="bg-[url(/bgSociety.png)] bg-cover bg-center">
+      <div id='contact' className="bg-[#1E1B2C] bg-cover bg-center">
         <div className='py-10 sm:py-12 md:py-16 px-4 sm:p-7 text-gray-200'>
           <div className='text-center font-bold text-2xl sm:text-3xl md:text-4xl'>Get in touch with us</div>
           <div className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-12 sm:mb-16 md:mb-20'>Have questions? We'd love to answer that!</div>
