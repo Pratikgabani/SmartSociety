@@ -27,7 +27,7 @@ function SecurityRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://resihub2.onrender.com/api/v1/security/registerSecurity', formData);
+      await axios.post('https://resihub.onrender.com/api/v1/security/registerSecurity', formData);
       setSuccessMessage('Registration successful!');
       setErrorMessage('');
       setFormData({

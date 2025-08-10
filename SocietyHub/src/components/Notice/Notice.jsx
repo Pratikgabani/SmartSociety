@@ -20,7 +20,7 @@ export default function Announcements() {
   const fetchPreviousData = async () => {
 
     try {
-      const response = await axios.get("https://resihub2.onrender.com/api/v1/notices/getAllNotices", { withCredentials: true });
+      const response = await axios.get("https://resihub.onrender.com/api/v1/notices/getAllNotices", { withCredentials: true });
       // Update API URL) // Update API URL
 
       navigate("/history", { state: { data: response.data.data } });
@@ -34,7 +34,7 @@ export default function Announcements() {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const response = await axios.get("https://resihub2.onrender.com/api/v1/notices/getNotices", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/notices/getNotices", { withCredentials: true });
         setNotices(response.data.data);
         setLoading(false);
       } catch (error) {
@@ -48,7 +48,7 @@ export default function Announcements() {
   const handleAddNotice = async () => {
     if (!topic || !description) return;
     try {
-      const response = await axios.post("https://resihub2.onrender.com/api/v1/notices/addNotice", {
+      const response = await axios.post("https://resihub.onrender.com/api/v1/notices/addNotice", {
         topic,
         description
       }, { withCredentials: true });
@@ -64,7 +64,7 @@ export default function Announcements() {
   };
   const deleteNotice = async (id) => {
     try {
-      await axios.patch(`https://resihub2.onrender.com/api/v1/notices/deleteNotice/${id}`, {}, {
+      await axios.patch(`https://resihub.onrender.com/api/v1/notices/deleteNotice/${id}`, {}, {
         withCredentials: true,
       });
       setNotices(notices.filter((notice) => notice._id !== id));

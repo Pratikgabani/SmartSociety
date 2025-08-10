@@ -10,7 +10,7 @@ dotenv.config({
 const app = express();
 app.use(
     cors({
-        origin: 'https://resihub.onrender.com',
+        origin: 'https://resi-hub.onrender.com',
        
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE" ,"PATCH"],

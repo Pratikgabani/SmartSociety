@@ -22,7 +22,7 @@ function Complaint() {
     const fetchComplaints = async () => {
       try {
         const response = await axios.get(
-          "https://resihub2.onrender.com/api/v1/complain/getAllComplains",
+          "https://resihub.onrender.com/api/v1/complain/getAllComplains",
           {
             // headers: { Authorization: `Bearer ${token}` },
             withCredentials: true,
@@ -45,7 +45,7 @@ function Complaint() {
   const handleHistoryClick = async () => {
     try {
       // admin nu logic and user logic separate krna hai
-      const response = await axios.get("https://resihub2.onrender.com/api/v1/complain/getComplains", {
+      const response = await axios.get("https://resihub.onrender.com/api/v1/complain/getComplains", {
         withCredentials: true,
       });
       setPreviousData(response.data.data);
@@ -68,7 +68,7 @@ function Complaint() {
 
     try {
       await axios.post(
-        "https://resihub2.onrender.com/api/v1/complain/createComplain",
+        "https://resihub.onrender.com/api/v1/complain/createComplain",
         formData,
         {
           // headers: { Authorization: `Bearer ${token}` },
@@ -90,7 +90,7 @@ function Complaint() {
   const handleDelete = async (complaintId) => {
     try {
       await axios.delete(
-        `https://resihub2.onrender.com/api/v1/complain/deleteComplain/${complaintId}`,
+        `https://resihub.onrender.com/api/v1/complain/deleteComplain/${complaintId}`,
         { withCredentials: true }
       );
       toast.success("Complaint deleted successfully!");
@@ -109,7 +109,7 @@ function Complaint() {
 
     try {
       await axios.patch(
-        `https://resihub2.onrender.com/api/v1/complain/toggleComplain/${complaintId}`,
+        `https://resihub.onrender.com/api/v1/complain/toggleComplain/${complaintId}`,
         { isResolved: true },
         { withCredentials: true }
       );

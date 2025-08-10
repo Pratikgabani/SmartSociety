@@ -42,7 +42,7 @@ const Booking = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const response = await axios.get("https://resihub2.onrender.com/api/v1/booking/getVenue", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/booking/getVenue", { withCredentials: true });
         setVenues(response.data.data);
         setLoading(false);
         // if (response.data.data.length === 0) toast.error("No Venues found!");
@@ -58,7 +58,7 @@ const Booking = () => {
   useEffect(() => {
     const fetchMyBookings = async () => {
       try {
-        const response = await axios.get("https://resihub2.onrender.com/api/v1/booking/getUpcomingBookingsByUserId", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/booking/getUpcomingBookingsByUserId", { withCredentials: true });
         setMyBooking(response.data.data);
         setLoading(false);
 
@@ -75,7 +75,7 @@ const Booking = () => {
   useEffect(() => {
     const fetchMyPastBookings = async () => {
       try {
-        const response = await axios.get("https://resihub2.onrender.com/api/v1/booking/getPastBookingsByUserId", { withCredentials: true });
+        const response = await axios.get("https://resihub.onrender.com/api/v1/booking/getPastBookingsByUserId", { withCredentials: true });
         setMyPastBooking(response.data.data);
         setLoading(false);
 
@@ -93,8 +93,8 @@ const Booking = () => {
     try {
       let response
       if (rolee === "admin")
-        response = await axios.get("https://resihub2.onrender.com/api/v1/booking/all-Bookings", { withCredentials: true })
-      else response = await axios.get("https://resihub2.onrender.com/api/v1/booking/getBookingsByUserId", { withCredentials: true })
+        response = await axios.get("https://resihub.onrender.com/api/v1/booking/all-Bookings", { withCredentials: true })
+      else response = await axios.get("https://resihub.onrender.com/api/v1/booking/getBookingsByUserId", { withCredentials: true })
       setPreviousData(response.data.data)
       navigate("/history", { state: { data: response.data.data } });
       setIsModalOpen(true)
@@ -106,7 +106,7 @@ const Booking = () => {
   // Delete booking
   const handleDelete = async (bookingId) => {
     try {
-      const response = await axios.delete(`https://resihub2.onrender.com/api/v1/booking/delete/${bookingId}`, { withCredentials: true });
+      const response = await axios.delete(`https://resihub.onrender.com/api/v1/booking/delete/${bookingId}`, { withCredentials: true });
       setMyBooking(myBooking.filter((booking) => booking._id !== bookingId));
       toast.success("Booking deleted successfully!"); // Toast for success
     } catch (error) {
@@ -168,7 +168,7 @@ const Booking = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://resihub2.onrender.com/api/v1/booking/createVenue",
+        "https://resihub.onrender.com/api/v1/booking/createVenue",
         { ...venueFormData },
         { withCredentials: true }
       );
@@ -184,7 +184,7 @@ const Booking = () => {
   // Delete venue
   const handleDeleteVenue = async (venueId) => {
     try {
-      const response = await axios.delete(`https://resihub2.onrender.com/api/v1/booking/deleteVenue/${venueId}`, { withCredentials: true });
+      const response = await axios.delete(`https://resihub.onrender.com/api/v1/booking/deleteVenue/${venueId}`, { withCredentials: true });
       setVenues(venues.filter((venue) => venue._id !== venueId));
       toast.success("Venue deleted successfully!"); // Toast for success
     } catch (error) {
@@ -199,7 +199,7 @@ const Booking = () => {
     try {
       // Send the venue's name as bookingType
       const response = await axios.post(
-        "https://resihub2.onrender.com/api/v1/booking/new-booking",
+        "https://resihub.onrender.com/api/v1/booking/new-booking",
         { ...formData, bookingType: selectedVenue.venue }, // Corrected here
         { withCredentials: true }
       );

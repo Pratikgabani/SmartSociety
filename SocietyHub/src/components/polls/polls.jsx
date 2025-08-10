@@ -19,7 +19,7 @@ const PollApp = () => {
   const { rolee } = useContext(UserContext);
   const fetchPreviousData = async () => {
     try {
-      const response = await axios.get("https://resihub2.onrender.com/api/v1/polls/getPolls", {
+      const response = await axios.get("https://resihub.onrender.com/api/v1/polls/getPolls", {
         withCredentials: true,
       });
       navigate("/history", { state: { data: response.data.data } });
@@ -37,7 +37,7 @@ const PollApp = () => {
   // })
   const fetchPolls = async () => {
     try {
-      const res = await axios.get("https://resihub2.onrender.com/api/v1/polls/getAllPolls", {
+      const res = await axios.get("https://resihub.onrender.com/api/v1/polls/getAllPolls", {
         withCredentials: true,
       });
       setPolls(res.data.data);
@@ -50,7 +50,7 @@ const PollApp = () => {
   const handleVote = async (pollId, optionId) => {
     try {
       await axios.patch(
-        `https://resihub2.onrender.com/api/v1/polls/votePoll/${pollId}/${optionId}`,
+        `https://resihub.onrender.com/api/v1/polls/votePoll/${pollId}/${optionId}`,
         {},
         { withCredentials: true }
       );
@@ -65,7 +65,7 @@ const PollApp = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "https://resihub2.onrender.com/api/v1/polls/createPoll",
+        "https://resihub.onrender.com/api/v1/polls/createPoll",
         {
           question,
           options: options
@@ -88,7 +88,7 @@ const PollApp = () => {
   const handleClosePoll = async (pollId) => {
     try {
       await axios.patch(
-        `https://resihub2.onrender.com/api/v1/polls/closePoll/${pollId}`,
+        `https://resihub.onrender.com/api/v1/polls/closePoll/${pollId}`,
         {},
         { withCredentials: true }
       );
@@ -102,7 +102,7 @@ const PollApp = () => {
 
   const handleDeletePoll = async (pollId) => {
     try {
-      await axios.delete(`https://resihub2.onrender.com/api/v1/polls/deletePoll/${pollId}`, {
+      await axios.delete(`https://resihub.onrender.com/api/v1/polls/deletePoll/${pollId}`, {
         withCredentials: true,
       });
       setVari(!vari);

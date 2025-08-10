@@ -47,7 +47,7 @@ const clickEvent = async (item) => {
 
     if (item === "logout") {
         try {
-            await axios.post("https://resihub2.onrender.com/api/v1/users/logout", {}, { withCredentials: true });
+            await axios.post("https://resihub.onrender.com/api/v1/users/logout", {}, { withCredentials: true });
             setRolee("");
             navigate("/");
         } catch (error) {

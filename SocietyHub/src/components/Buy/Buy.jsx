@@ -24,7 +24,7 @@ const Buy = () => {
    useEffect(() => {
     const fetchUser = async()=>{
       try {
-        const res = await axios.get("https://resihub2.onrender.com/api/v1/users/currentUser", { withCredentials: true });
+        const res = await axios.get("https://resihub.onrender.com/api/v1/users/currentUser", { withCredentials: true });
         console.log(res.data.data)
         setUser(res.data.data);
       } catch (error) {
@@ -38,7 +38,7 @@ const Buy = () => {
     const fetchPayData = async () => {
       try {
         const response = await axios.post(
-          `https://resihub2.onrender.com/api/v1/payment/payPayment/${paymentId}`,
+          `https://resihub.onrender.com/api/v1/payment/payPayment/${paymentId}`,
           {},
           {
            
@@ -128,7 +128,7 @@ const Buy = () => {
       };
       // console.log("Payment info: ", paymentInfo);
       await axios
-        .post("https://resihub2.onrender.com/api/v1/order", paymentInfo, {
+        .post("https://resihub.onrender.com/api/v1/order", paymentInfo, {
          
           withCredentials: true,
         })
