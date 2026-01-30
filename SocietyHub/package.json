@@ -21,7 +21,7 @@
     "@react-spring/web": "^9.7.5",
     "@stripe/react-stripe-js": "^3.4.0",
     "@stripe/stripe-js": "^6.0.0",
-    "axios": "^1.7.9",
+    "axios": "^1.12.1",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
