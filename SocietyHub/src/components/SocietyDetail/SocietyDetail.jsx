@@ -43,7 +43,7 @@ const SocietyDetails = () => {
     try {
       await validationSchema.validate(society, { abortEarly: false });
       const response = await axios.post(
-        'https://resihub.onrender.com/api/v1/societyDetail/createSocietyDetail',
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/societyDetail/createSocietyDetail`,
         { ...society },
         {
           withCredentials: true,
