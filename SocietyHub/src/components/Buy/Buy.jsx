@@ -24,7 +24,7 @@ const Buy = () => {
    useEffect(() => {
     const fetchUser = async()=>{
       try {
-        const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/users/currentUser`, { withCredentials: true });
+        const res = await axios.get(`/users/currentUser`, { withCredentials: true });
         console.log(res.data.data)
         setUser(res.data.data);
       } catch (error) {
@@ -35,21 +35,22 @@ const Buy = () => {
   } , [])
 
   useEffect(() => {
+    let cancelled = false;
     const fetchPayData = async () => {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/payPayment/${paymentId}`,
+          `/payment/payPayment/${paymentId}`,
           {},
           {
-           
-            withCredentials: true, // Include cookies if needed
+            withCredentials: true,
           }
         );
-        // console.log(response.data.payment);
+        if (cancelled) return; // StrictMode re-ran the effect — discard stale response
         setPayment(response.data.payment);
         setClientSecret(response.data.clientSecret);
         setLoading(false);
       } catch (error) {
+        if (cancelled) return;
         setLoading(false);
         if (error?.response?.status === 400) {
           setError("you have already paid this payment");
@@ -60,6 +61,7 @@ const Buy = () => {
       }
     };
     fetchPayData();
+    return () => { cancelled = true; }; // cleanup: marks previous effect as stale
   }, [paymentId]);
 
   const handlePurchase = async (event) => {
@@ -89,6 +91,7 @@ const Buy = () => {
       console.log("Stripe PaymentMethod Error: ", error);
       setLoading(false);
       setCardError(error.message);
+      return; // stop here, don't proceed to confirmCardPayment
     } else {
       console.log("[PaymentMethod Created]", paymentMethod);
     }
@@ -117,7 +120,7 @@ const Buy = () => {
         email: user?.email,
         userId: user._id,
         paymentId : paymentId,
-        paymentDoneId: paymentIntent.id,
+        paymentIntentId: paymentIntent.id,
         amount: paymentIntent.amount,
         status: paymentIntent.status,
         
@@ -128,8 +131,7 @@ const Buy = () => {
       };
       // console.log("Payment info: ", paymentInfo);
       await axios
-        .post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/order`, paymentInfo, {
-         
+        .post("/order", paymentInfo, {
           withCredentials: true,
         })
         .then((response) => {
@@ -163,7 +165,7 @@ const Buy = () => {
             <h1 className="text-xl font-semibold underline">Order Details</h1>
             <div className="flex items-center text-center space-x-2 mt-4">
               <h2 className="text-gray-600 text-md">Total Price</h2>
-              <p className="text-red-500 font-bold">${payment.amount }</p>
+              <p className="text-red-500 font-bold">₹{payment.amount }</p>
             </div>
             <div className="flex items-center text-center space-x-2 mt-2">
               <h1 className="text-gray-600 text-md">Payment name :</h1>

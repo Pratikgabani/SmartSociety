@@ -9,12 +9,21 @@ const purchaseSchema = new mongoose.Schema({
     type : Schema.Types.ObjectId,
     ref : "Payment",
   },
-  paymentDoneId  : {
+  societyId : {
+    type : String,
+    required : true
+  },
+  paymentIntentId  : {
+    type: String,
+    unique: true,
+    sparse: true  // allows multiple null values (e.g. purchases not via Stripe)
+  },
+  receiptUrl : {
     type: String
   },
   paidOn : {
     type : Date,
-    default : Date.now()
+    default : Date.now
   }
 
 });

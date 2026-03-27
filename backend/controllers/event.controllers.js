@@ -171,21 +171,21 @@ const payEvent = asyncHandler(async (req, res) => {
 
 const saveEventOrder = asyncHandler(async (req, res) => {
   const {
-    paymentDoneId,   // Stripe's PaymentIntent ID
+    paymentIntentId,   // Stripe's PaymentIntent ID
     eventId,
     amount,
     status,
     paidOn,
   } = req.body;
 
-  if (!paymentDoneId || !eventId || !amount || !status) {
+  if (!paymentIntentId || !eventId || !amount || !status) {
     throw new ApiError(400, "Missing required payment/order fields");
   }
 
   await EventOrder.create({
     userId: req.user._id,
     eventId,
-    paymentDoneId,
+    paymentIntentId,
     amount,
     status,
     paidOn,

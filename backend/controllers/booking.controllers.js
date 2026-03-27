@@ -289,21 +289,21 @@ const payBooking = asyncHandler(async (req, res) => {
 
 const saveBookingOrder = asyncHandler(async (req, res) => {
   const {
-    paymentDoneId,   // Stripe's PaymentIntent ID
+    paymentIntentId,   // Stripe's PaymentIntent ID
     bookingId,
     amount,
     status,
     paidOn,
   } = req.body;
 
-  if (!paymentDoneId || !bookingId || !amount || !status) {
+  if (!paymentIntentId || !bookingId || !amount || !status) {
     throw new ApiError(400, "Missing required payment/order fields");
   }
 
   await BookingOrder.create({
     userId: req.user._id,
     bookingId,
-    paymentDoneId,
+    paymentIntentId,
     amount,
     status,
     paidOn,

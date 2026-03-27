@@ -9,7 +9,7 @@ const eventOrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
   },
-  paymentDoneId: String,
+  paymentIntentId: String,
   amount: Number,
   status: String,
   paidOn: Date,

@@ -1,6 +1,7 @@
 import {Router} from "express";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 import { createPayment , getPayments , getUserPayments , getAdminData, deletePayment , updatePayment, payPayment} from "../controllers/payment.controllers.js";
+// Note: stripeWebhook route is registered in app.js (needs express.raw before express.json)
 
 const router = Router();
  router.route("/getAdminData").get(verifyJWT, getAdminData);

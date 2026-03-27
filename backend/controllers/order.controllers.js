@@ -1,28 +1,17 @@
 import { Order } from "../models/order.model.js";
-import  {Purchase}  from "../models/purchase.models .js";
 
  const orderData = async (req, res) => {
   const order = req.body;
   try {
+    // Save the order record for logging/history purposes
     const orderInfo = await Order.create(order);
-    // console.log(orderInfo);
-    const userId = orderInfo?.userId;
-    const paymentId = orderInfo?.paymentId;
-    const paidOn = orderInfo?.paidOn;
-   
-    const paymentDoneId = orderInfo?.paymentDoneId;
-    if (orderInfo) {
-    const purchase =  await Purchase.create({ userId, paymentId, paidOn, paymentDoneId });
-    if (!purchase) {
-      throw new ApiError(500, "Failed to create purchase");
-    }
-    }
-
+    // NOTE: Purchase is created by the Stripe webhook (payment_intent.succeeded)
+    // Do NOT create Purchase here — that would cause duplicates
     res.status(201).json({ message: "Order Details: ", orderInfo });
    
   } catch (error) {
-    // console.log("Error in order: ", error);
-    res.status(401).json({ errors: "Error in order creation" });
+    console.log("Error in order: ", error);
+    res.status(500).json({ errors: "Error in order creation", details: error.message });
   }
 };
 

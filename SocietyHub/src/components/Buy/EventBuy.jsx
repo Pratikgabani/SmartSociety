@@ -101,7 +101,7 @@ const EventBuy = () => {
           email: user?.email,
           userId: user?._id,
           eventId,
-          paymentDoneId: paymentIntent.id,
+          paymentIntentId: paymentIntent.id,
           amount: paymentIntent.amount,
           status: paymentIntent.status,
           paidOn: new Date(),

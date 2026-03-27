@@ -1,4 +1,3 @@
-import { SourceCode } from "eslint";
 import mongoose, { Schema } from "mongoose";
 
 

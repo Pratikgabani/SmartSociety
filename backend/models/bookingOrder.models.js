@@ -9,7 +9,7 @@ const bookingOrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking',
   },
-  paymentDoneId: String,
+  paymentIntentId: String,
   amount: Number,
   status: String,
   paidOn: Date,
