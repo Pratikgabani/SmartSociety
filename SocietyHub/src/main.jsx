@@ -30,18 +30,19 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import EventBuy from './components/Buy/EventBuy.jsx';
 import BookingBuy from './components/Buy/BookingBuy.jsx';
 import UserContextProvider from './context/UserContextProvider.jsx';
-const stripePromise = loadStripe(
-  "pk_test_51R1h8oFjDw8IkcOQVn7UvbMIuiNBki2KBzh7mjuUS5EhTAmnAksY48vDtDxrXHy7YWOQZeJ0lrozJIfDuzraVVeR00ve6RdDcA"
-);
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 
- const GoogleAuthWrapper = ()=>( // 3
-  
+ function GoogleAuthWrapper() {
+  return ( // 3
+
     <GoogleOAuthProvider clientId="553666257708-alafbipbuj60kpj25j56n3hu0l4lmld9.apps.googleusercontent.com">
       {/* <GoogleLogin></GoogleLogin> */}
       <Login />
     </GoogleOAuthProvider>
- )
+  );
+}
 // here we r using requireAuth component to protect the routes that we want to be protected, so that only authenticated users can access them
 // we can use this component to wrap around the routes that we want to protect, and it will check if the user is authenticated or not
 

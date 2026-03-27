@@ -26,50 +26,56 @@ const PaymentSection = () => {
   const [fetchAgain, setFetchAgain] = useState([]);
   const [kaam, setKaam] = useState([]);
   const {rolee} = useContext(UserContext)
-  useEffect(() => {
-
-    const fetchTimeAndDate = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/purchase/getAllPurchases`, { withCredentials: true });
-        // Update API URL) // Update API URL
-        setKaam(response.data.data);
-
-        // Open modal after fetching
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+  const fetchPurchases = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/purchase/getAllPurchases`, { withCredentials: true });
+      setKaam(response.data.data);
+    } catch (error) {
+      console.error("Error fetching purchases:", error);
     }
-    fetchTimeAndDate();
-    fetchPayments();
+  };
 
+  useEffect(() => {
+    fetchPurchases();
+    fetchPayments();
   }, []);
 
+  useEffect(() => {
+    const url = `${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/stream`;
+    const es = new EventSource(url, { withCredentials: true });
 
+    es.onmessage = event => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "payment_intent.succeeded") {
+          fetchPurchases();
+          fetchPayments(false);
+        }
+      } catch (err) {
+        console.error("SSE parse error", err);
+      }
+    };
 
+    es.onerror = () => {
+      es.close();
+    };
 
-  const fetchPayments = async () => {
-    setLoading(true);
+    return () => {
+      es.close();
+    };
+  }, []);
+
+  const fetchPayments = async (showLoader = true) => {
+    if (showLoader) setLoading(true);
     try {
-
-
       const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/getPayments`, {
-
         withCredentials: true,
       });
       setPayments(response.data.data);
-      // console.log(response.data.data);
-      // console.log(payments[0].paidBy.includes(user.data.user._id));
-      // if(payments[0].paidBy.includes(user.data.user._id)){
-      //   setIsPaid(true);
-      // }
-      // if(payments.paidBy.some(id => id.$oid === user.data.user._Id)){
-
-      // }
-
     } catch (error) {
       console.error("Error fetching payments:", error);
     }
-    setLoading(false);
+    if (showLoader) setLoading(false);
   };
 
   const fetchAgainData = async (a) => {

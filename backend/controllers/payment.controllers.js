@@ -7,6 +7,44 @@ import { Purchase } from "../models/purchase.models .js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// In-memory SSE registry keyed by society. Keeps things simple and avoids a DB round-trip on each webhook event.
+const paymentStreams = new Map(); // Map<societyId, Set<res>>
+
+const sendPaymentEvent = (societyId, payload) => {
+  const listeners = paymentStreams.get(societyId?.toString());
+  if (!listeners || listeners.size === 0) return;
+  const data = `data: ${JSON.stringify(payload)}\n\n`;
+  for (const res of listeners) {
+    res.write(data);
+  }
+};
+
+const paymentStream = asyncHandler(async (req, res) => {
+  const societyId = req.user?.societyId?.toString();
+  if (!societyId) {
+    return res.status(400).json(new ApiResponse(400, null, "Missing society context"));
+  }
+
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders?.();
+
+  const listeners = paymentStreams.get(societyId) || new Set();
+  listeners.add(res);
+  paymentStreams.set(societyId, listeners);
+
+  // immediate heartbeat so the client knows we're connected
+  res.write(`data: ${JSON.stringify({ type: "connected" })}\n\n`);
+
+  req.on("close", () => {
+    listeners.delete(res);
+    if (listeners.size === 0) {
+      paymentStreams.delete(societyId);
+    }
+  });
+});
+
 
 
 
@@ -208,6 +246,13 @@ const stripeWebhook = asyncHandler(async(req , res)=>{
           receiptUrl,
         });
       }
+
+      // Notify connected clients in this society that payments changed
+      sendPaymentEvent(societyId, {
+        type: "payment_intent.succeeded",
+        paymentId,
+        userId,
+      });
       break;
     }
 
@@ -236,4 +281,4 @@ const getAdminData = async (req, res) => {
   }
 };
 
-export { getPayments, getUserPayments, createPayment, deletePayment, updatePayment, getAdminData, payPayment, stripeWebhook };
+export { getPayments, getUserPayments, createPayment, deletePayment, updatePayment, getAdminData, payPayment, stripeWebhook, paymentStream };
