@@ -1,5 +1,5 @@
 import {User} from "../models/user.models.js";
-import {registerUser, loginUser , logoutUser , getUserDetail ,updateAccountDetails, changeCurrentPassword, refreshAccessToken} from "../controllers/user.controllers.js";
+import {registerUser, loginUser , logoutUser , getUserDetail ,updateAccountDetails, changeCurrentPassword, refreshAccessToken, sendOtp, verifyOtp, completeRegistration} from "../controllers/user.controllers.js";
 import {Router} from "express";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
@@ -13,5 +13,10 @@ router.route("/refresh-token").post(refreshAccessToken);
 router.route("/currentUser").get(verifyJWT , getUserDetail);
 router.route("/changePassword").post(verifyJWT , changeCurrentPassword);
 router.route("/updateAccountDetails").patch(verifyJWT , updateAccountDetails);
+
+// OTP-based email verification routes (used during registration)
+router.route("/send-otp").post(sendOtp);
+router.route("/verify-otp").post(verifyOtp);
+router.route("/complete-registration").post(completeRegistration);
 
 export default router

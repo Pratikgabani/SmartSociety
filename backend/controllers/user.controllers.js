@@ -10,8 +10,15 @@ import { Security } from '../models/security.models.js';
 import { Visitor } from '../models/visitor.models.js';
 
 import axios from 'axios';
+import { sendOtpEmail } from '../utils/mailer.js';
 
 import { oauth2Client } from '../utils/googleConfig.js';
+
+// ─── In-memory stores ────────────────────────────────────────────────────────
+// otpStore   : { otp, expiresAt, pendingData }  — keyed by email
+// verifiedEmails : Set of emails whose OTP has been confirmed
+const otpStore       = new Map();
+const verifiedEmails = new Set();
 
 
 
@@ -334,4 +341,133 @@ const googleAuth = asyncHandler(async (req, res) => { // 6
       .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Google Login successful"));
 });
 
-export {googleAuth, registerUser, loginUser, refreshAccessToken , generateAccessAndRefereshTokens , logoutUser , getUserDetail ,changeCurrentPassword, updateAccountDetails};
+// ─── Send OTP ─────────────────────────────────────────────────────────────────
+const sendOtp = asyncHandler(async (req, res) => {
+  const {
+    block,
+    houseNo,
+    password,
+    societyId,
+    email,
+    name,
+    role,
+    rolePass,
+    phoneNo,
+    phoneNo2,
+  } = req.body;
+
+  // Basic field validation
+  if (!block || !houseNo || !password || !societyId || !email || !name || !role || !phoneNo) {
+    throw new ApiError(400, 'All required fields must be provided');
+  }
+
+  // Check society exists
+  const existingSociety = await SocietyDetail.findOne({ societyId });
+  if (!existingSociety) {
+    throw new ApiError(400, 'Society not found');
+  }
+
+  // Check duplicate email
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new ApiError(400, 'User with this email already exists');
+  }
+
+  // Check duplicate house in society
+  const existingHouse = await User.findOne({ societyId, houseNo, block });
+  if (existingHouse) {
+    throw new ApiError(400, 'House number already registered in this society');
+  }
+
+  // Validate admin role pass
+  if (role === 'admin') {
+    if (!rolePass) throw new ApiError(400, 'Role pass is required for admin');
+    const validRolePass = await SocietyDetail.findOne({ adminPass: rolePass });
+    if (!validRolePass) throw new ApiError(400, 'Invalid role pass');
+  }
+
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  // Store OTP + pending form data (keyed by email)
+  otpStore.set(email, {
+    otp,
+    expiresAt,
+    pendingData: { block, houseNo, password, societyId, email, name, role, rolePass, phoneNo, phoneNo2 },
+  });
+
+  // Send OTP email
+  await sendOtpEmail(email, otp);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'OTP sent to your email. Please verify within 10 minutes.'));
+});
+
+// ─── Verify OTP (validates only — does NOT create user) ──────────────────────
+const verifyOtp = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    throw new ApiError(400, 'Email and OTP are required');
+  }
+
+  const record = otpStore.get(email);
+
+  if (!record) {
+    throw new ApiError(400, 'No OTP request found for this email. Please register again.');
+  }
+
+  if (Date.now() > record.expiresAt) {
+    otpStore.delete(email);
+    verifiedEmails.delete(email);
+    throw new ApiError(400, 'OTP has expired. Please register again to get a new OTP.');
+  }
+
+  if (record.otp !== otp.trim()) {
+    throw new ApiError(400, 'Invalid OTP. Please try again.');
+  }
+
+  // Mark email as verified — pendingData stays in otpStore for completeRegistration
+  verifiedEmails.add(email);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'OTP verified successfully.'));
+});
+
+// ─── Complete Registration (creates user after OTP verified) ─────────────────
+const completeRegistration = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, 'Email is required');
+  }
+
+  if (!verifiedEmails.has(email)) {
+    throw new ApiError(400, 'Email not verified. Please complete OTP verification first.');
+  }
+
+  const record = otpStore.get(email);
+  if (!record) {
+    throw new ApiError(400, 'Registration session expired. Please start again.');
+  }
+
+  // Clean up stores
+  verifiedEmails.delete(email);
+  otpStore.delete(email);
+
+  const newUser = await User.create(record.pendingData);
+
+  const userResponse = await User.findById(newUser._id).select('-password -refreshToken');
+  if (!userResponse) {
+    throw new ApiError(500, 'User registration failed');
+  }
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, userResponse, 'Email verified and user registered successfully'));
+});
+
+export {googleAuth, registerUser, loginUser, refreshAccessToken, generateAccessAndRefereshTokens, logoutUser, getUserDetail, changeCurrentPassword, updateAccountDetails, sendOtp, verifyOtp, completeRegistration};
