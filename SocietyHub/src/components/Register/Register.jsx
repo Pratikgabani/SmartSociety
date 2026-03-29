@@ -294,7 +294,7 @@ const Register = () => {
                   <div className="mb-4">
                     <label className="block mb-1 font-semibold">Enter OTP</label>
                     <p className="text-xs text-gray-500 mb-2">
-                      Sent to <span className="font-semibold text-gray-700">{formData.email}</span>. Valid for 10 minutes.
+                      Sent to <span className="font-semibold text-gray-700">{formData.email}</span>. Valid for 5 minutes.
                     </p>
                     <input
                       type="text"
