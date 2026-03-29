@@ -29,6 +29,7 @@ const Booking = () => {
   })
   const [amenityInput, setAmenityInput] = useState("");
   const [myBooking, setMyBooking] = useState([]);
+  const [bookingOrders, setBookingOrders] = useState([]);
   const [myPastBooking, setMyPastBooking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +70,18 @@ const Booking = () => {
       }
     };
     fetchMyBookings();
+  }, []);
+
+  useEffect(() => {
+    const fetchMyBookingOrders = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
+        setBookingOrders(response.data.data || []);
+      } catch (error) {
+        console.log("Error fetching booking orders", error);
+      }
+    };
+    fetchMyBookingOrders();
   }, []);
 
   // Past bookings
@@ -113,6 +126,15 @@ const Booking = () => {
       console.error("Error deleting booking:", error);
       toast.error("Failed to delete booking!"); // Toast for error
     }
+  };
+
+  const isBookingPaid = (bookingId) => {
+    return bookingOrders.some((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
+  };
+
+  const getBookingReceiptUrl = (bookingId) => {
+    const match = bookingOrders.find((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
+    return match?.receiptUrl || null;
   };
 
   // Book now
@@ -345,14 +367,29 @@ const Booking = () => {
                       >
                         Cancel Reservation
                       </button>
-                      <Link
-                        to={`/layout/payBooking/${booking._id}`}
-                        className="w-5/12 flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        Pay now
-                      </Link>
-
-
+                      {isBookingPaid(booking._id) ? (
+                        <div className="flex flex-col gap-2 w-5/12 justify-center">
+                          {getBookingReceiptUrl(booking._id) ? (
+                            <a
+                              href={getBookingReceiptUrl(booking._id)}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="w-full py-2 rounded-lg border border-blue-600 text-blue-600 font-semibold text-center hover:bg-blue-50 transition-colors"
+                            >
+                              View Receipt
+                            </a>
+                          ) : (
+                            <span className="w-full py-2 text-sm text-gray-500 text-center bg-gray-100 rounded-lg cursor-not-allowed">Receipt unavailable</span>
+                          )}
+                        </div>
+                      ) : (
+                        <Link
+                          to={`/layout/payBooking/${booking._id}`}
+                          className="w-5/12 flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          Pay now
+                        </Link>
+                      )}
                     </div>
                   )}
                 </div>

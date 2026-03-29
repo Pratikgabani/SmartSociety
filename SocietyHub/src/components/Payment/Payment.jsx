@@ -155,6 +155,14 @@ const paymentDateLaao = (payId) => {
   return "N/A";
 };
 
+const getPaymentReceiptUrl = (payId) => {
+  if (kaam.length > 0) {
+    const found = kaam.find(purchase => purchase.paymentId && purchase.paymentId._id === payId);
+    return found?.receiptUrl || null;
+  }
+  return null;
+};
+
   const addPayment = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/createPayment`, newPayment, {
@@ -300,7 +308,20 @@ return (
                     Pay
                   </Link>)}
                   {paymentStatus(payment._id) === "Paid" && (
-                    <button >Paid</button>
+                    <div className="flex justify-center items-center">
+                      {getPaymentReceiptUrl(payment._id) ? (
+                        <a
+                          href={getPaymentReceiptUrl(payment._id)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="border border-blue-600 text-blue-600 px-4 py-1 rounded-lg font-semibold hover:bg-blue-50 transition-colors whitespace-nowrap"
+                        >
+                          View Receipt
+                        </a>
+                      ) : (
+                        <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-lg text-sm font-semibold cursor-not-allowed whitespace-nowrap">Receipt unavailable</span>
+                      )}
+                    </div>
                   )}
                   {rolee === "admin" && (
                     <button

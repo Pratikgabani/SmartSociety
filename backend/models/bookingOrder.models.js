@@ -13,7 +13,8 @@ const bookingOrderSchema = new mongoose.Schema({
   amount: Number,
   status: String,
   paidOn: Date,
-  societyId: String
+  societyId: String,
+  receiptUrl: String
 });
 
 export const BookingOrder = mongoose.model('BookingOrder', bookingOrderSchema);

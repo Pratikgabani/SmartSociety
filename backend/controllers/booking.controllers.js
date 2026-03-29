@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Booking } from "../models/booking.models.js";
 import {BookingOrder} from "../models/bookingOrder.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -7,6 +8,7 @@ import { User } from "../models/user.models.js";
 import { Venue } from "../models/venue.models.js";
   
 const createBooking = asyncHandler(async (req, res) => {
+    // Creates a new venue booking after validating slot availability and user ownership context.
     const {bookingType , bookDescription, duration, date } = req.body;
     // const bookingType = req.body.bookingType;  // Extract venue ID from request
 
@@ -44,6 +46,7 @@ const createBooking = asyncHandler(async (req, res) => {
 });
 
 const createVenue = asyncHandler(async (req , res) =>{
+    // Allows admins to register a new venue with capacity, pricing, and amenities for the society.
     // Check if the user is admin or not 
     const role = req.user?.role
 
@@ -83,6 +86,7 @@ const createVenue = asyncHandler(async (req , res) =>{
 })
 
 const getVenue = asyncHandler(async (req , res) => {
+    // Fetches all venues for the logged-in user's society.
     const allVenues = await Venue.find({societyId: req.user?.societyId})
     if(!allVenues){
         throw new ApiError(500 , "Failed to get venues")
@@ -95,6 +99,7 @@ const getVenue = asyncHandler(async (req , res) => {
 })
 
 const deleteVenue = asyncHandler(async (req , res) => {
+    // Lets admins remove a venue belonging to their society.
     const {venueId} = req.params;
 
     if(!venueId.trim()){
@@ -126,9 +131,10 @@ const deleteVenue = asyncHandler(async (req , res) => {
 })
 
 const getBookings = asyncHandler(async (req, res) => {
+    // Returns all society bookings with resident details, sorted by date.
     const allBookings = await Booking.find({ societyId: req.user?.societyId })
         .sort({ date: -1 }) // Sort by date in descending order
-        .select("-__v -_id -updatedAt -societyId")
+        .select("-__v -updatedAt -societyId")
         .populate("bookingOwner", "houseNo block -_id" ); // Populating houseNo & block from User model
 
     if (!allBookings) {
@@ -184,10 +190,11 @@ dotenv.config({
 })
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const getPastBookings = asyncHandler(async (req, res) => {
+    // Lists completed (past-date) bookings for the society with owner info.
     const allBooking = await Booking.find({
         societyId: req.user?.societyId,
         date: { $lt: new Date() },
-      }).select("-__v -_id -updatedAt -societyId").populate("bookingOwner" , "houseNo block -_id" )
+            }).select("-__v -updatedAt -societyId").populate("bookingOwner" , "houseNo block -_id" )
     if(!allBooking){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -198,8 +205,9 @@ const getPastBookings = asyncHandler(async (req, res) => {
 })
 
 const getPastBookingsByUserId = asyncHandler(async (req, res) => {
+    // Retrieves past bookings made by the authenticated user.
     const userId = req.user._id 
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $lt: new Date() }}).select("-__v -_id -updatedAt -bookingOwner -societyId")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $lt: new Date() }}).select("-__v -updatedAt -bookingOwner -societyId")
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -209,6 +217,7 @@ const getPastBookingsByUserId = asyncHandler(async (req, res) => {
 })
 
 const getBookingsByUserId = asyncHandler(async (req, res) => {
+    // Retrieves all bookings made by the authenticated user.
     const userId = req.user._id 
     
     // console.log(userId)
@@ -216,7 +225,7 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
         throw new ApiError(400 , "User not found")
     }
 
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId}).select("-__v -_id -updatedAt -bookingOwner -societyId")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId}).select("-__v -updatedAt -bookingOwner -societyId")
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -226,8 +235,9 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
 })
 
 const getUpcomingBookingsByUserId = asyncHandler(async (req, res) => {
+    // Retrieves upcoming bookings for the authenticated user.
     const userId = req.user._id
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $gte: new Date() }}).select("-__v -_id -updatedAt -bookingOwner -societyId")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $gte: new Date() }}).select("-__v -updatedAt -bookingOwner -societyId")
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -237,10 +247,11 @@ const getUpcomingBookingsByUserId = asyncHandler(async (req, res) => {
 })
 
 const deleteBooking = asyncHandler(async (req, res) => {
+    // Deletes a booking by its identifier.
     const {bookingId} = req.params
 
-    if(!bookingId.trim()){
-        throw new ApiError(400 , "Booking Id is required")
+    if(!bookingId || !mongoose.isValidObjectId(bookingId)){
+        throw new ApiError(400 , "Valid Booking Id is required")
     }
 
     const deletedBooking = await Booking.findByIdAndDelete(bookingId);
@@ -254,6 +265,7 @@ const deleteBooking = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200 , deletedBooking , "Booking deleted successfully"))
 }); 
 const payBooking = asyncHandler(async (req, res) => {
+    // Initiates a Stripe payment intent for a booking while preventing duplicate payments per user.
   const { bookingId } = req.params;
   const userId = req.user._id;   // ✅ Make sure your auth middleware is setting this correctly
 
@@ -273,11 +285,25 @@ const payBooking = asyncHandler(async (req, res) => {
   const price = venues[0].price
   console.log("Price" , price)
   // ✅ Proceed to create Stripe payment intent...
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: price * 100,  // Convert to paise or cents
-    currency: "inr",
-    payment_method_types: ["card"],
-  });
+    const paymentIntent = await stripe.paymentIntents.create(
+        {
+            amount: price * 100,  // Convert to paise or cents
+            currency: "inr",
+            description: `Booking for ${venues[0].venue || "Society"} venue`,
+            receipt_email: req.user?.email || undefined,
+            payment_method_types: ["card"],
+            metadata: {
+                bookingId: bookingId.toString(),
+                userId: userId.toString(),
+                societyId: req.user?.societyId?.toString() || "",
+                email: req.user?.email || "",
+                kind: "booking",
+            },
+        },
+        {
+            idempotencyKey: `payBooking-${userId}-${bookingId}`,
+        }
+    );
 
   res.status(201).json({
     message: "Event payment intent created successfully",
@@ -288,6 +314,7 @@ const payBooking = asyncHandler(async (req, res) => {
 
 
 const saveBookingOrder = asyncHandler(async (req, res) => {
+    // Persists booking payment metadata after successful Stripe payment.
   const {
     paymentIntentId,   // Stripe's PaymentIntent ID
     bookingId,
@@ -300,21 +327,52 @@ const saveBookingOrder = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Missing required payment/order fields");
   }
 
-  await BookingOrder.create({
-    userId: req.user._id,
-    bookingId,
-    paymentIntentId,
-    amount,
-    status,
-    paidOn,
-    societyId: req.user.societyId,
-    email: req.user.email,
-  });
+  let fetchedReceiptUrl = "";
+  try {
+    const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (intent.latest_charge) {
+      const charge = await stripe.charges.retrieve(intent.latest_charge);
+      fetchedReceiptUrl = charge.receipt_url || "";
+    }
+  } catch (e) {
+    console.error("Failed to eagerly fetch receipt URL for booking", e.message);
+  }
+
+  await BookingOrder.findOneAndUpdate(
+    { paymentIntentId },
+    {
+      $set: {
+        userId: req.user._id,
+        bookingId,
+        amount,
+        status,
+        paidOn,
+        societyId: req.user.societyId,
+        email: req.user.email,
+        ...(fetchedReceiptUrl && { receiptUrl: fetchedReceiptUrl }),
+      }
+    },
+    { upsert: true, new: true }
+  );
 
   res.status(201).json({
     message: "Event order saved successfully",
   });
 });
+
+const getBookingOrdersForUser = asyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized");
+    }
+
+    const orders = await BookingOrder.find({ userId }).select("bookingId paymentIntentId status paidOn amount receiptUrl");
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, orders, "Booking orders fetched successfully"));
+});
+
 // const bookingStatus = asyncHandler(async (req, res) => {
 //     const {bookingId} = req.params
 
@@ -339,4 +397,4 @@ const saveBookingOrder = asyncHandler(async (req, res) => {
 
 // })
 
-export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , deleteVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId, payBooking , saveBookingOrder}
+export { createBooking , getBookings , deleteBooking  , createVenue , getVenue , deleteVenue , getBookingsByUserId , getPastBookings , getPastBookingsByUserId , getUpcomingBookingsByUserId, payBooking , saveBookingOrder, getBookingOrdersForUser}

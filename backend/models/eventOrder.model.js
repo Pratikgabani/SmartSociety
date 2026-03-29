@@ -13,7 +13,8 @@ const eventOrderSchema = new mongoose.Schema({
   amount: Number,
   status: String,
   paidOn: Date,
-  societyId: String
+  societyId: String,
+  receiptUrl: String
 });
 
 export const EventOrder = mongoose.model('EventOrder', eventOrderSchema);

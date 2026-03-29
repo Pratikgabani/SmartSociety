@@ -57,9 +57,16 @@ const getUpcomingEvents = asyncHandler(async (req, res) => {
         return new ApiError( 500 ,"No events found" );
     }
 
+    // Hotfix: Automatically recalculate total house counter based on authentic array length
+    const updatedEvents = events.map(e => {
+        const obj = e.toObject();
+        obj.totalHouseReady = obj.readyUsers ? obj.readyUsers.length : 0;
+        return obj;
+    });
+
     return res
     .status(200)
-    .json(new ApiResponse(200, events, "Upcoming Events found successfully"));
+    .json(new ApiResponse(200, updatedEvents, "Upcoming Events found successfully"));
     })
 
 const getAllEvents = asyncHandler(async (req, res) => {
@@ -69,9 +76,16 @@ const getAllEvents = asyncHandler(async (req, res) => {
         return new ApiError( 500 ,"No events found" );
     }
 
+    // Dynamically override any desynced database counter
+    const updatedEvents = events.map(e => {
+        const obj = e.toObject();
+        obj.totalHouseReady = obj.readyUsers ? obj.readyUsers.length : 0;
+        return obj;
+    });
+
     return res
     .status(200)
-    .json(new ApiResponse(200, events, "Events found successfully"));
+    .json(new ApiResponse(200, updatedEvents, "Events found successfully"));
 })
 
 const getPastEvents = asyncHandler(async (req, res) => {
@@ -80,9 +94,16 @@ const getPastEvents = asyncHandler(async (req, res) => {
         return new ApiError( 500 ,"No events found" );
     }
 
+    // Hotfix: Tie totalHouseReady to the genuine array size 
+    const updatedEvents = events.map(e => {
+        const obj = e.toObject();
+        obj.totalHouseReady = obj.readyUsers ? obj.readyUsers.length : 0;
+        return obj;
+    });
+
     return res
     .status(200)
-    .json(new ApiResponse(200, events, "Past Events found successfully"));
+    .json(new ApiResponse(200, updatedEvents, "Past Events found successfully"));
 })
 
 const deleteEvent = asyncHandler(async (req, res) => {
@@ -155,11 +176,25 @@ const payEvent = asyncHandler(async (req, res) => {
   }
 
   // ✅ Proceed to create Stripe payment intent...
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: event.amtPerPerson * 100,  // Convert to paise or cents
-    currency: "inr",
-    payment_method_types: ["card"],
-  });
+    const paymentIntent = await stripe.paymentIntents.create(
+        {
+            amount: event.amtPerPerson * 100,  // Convert to paise or cents
+            currency: "inr",
+            description: `Payment for Event: ${event.description || "Smart Society"}`,
+            receipt_email: req.user?.email || undefined,
+            payment_method_types: ["card"],
+            metadata: {
+                eventId: eventId.toString(),
+                userId: userId.toString(),
+                societyId: req.user?.societyId?.toString() || "",
+                email: req.user?.email || "",
+                kind: "event",
+            },
+        },
+        {
+            idempotencyKey: `payEvent-${userId}-${eventId}`,
+        }
+    );
 
   res.status(201).json({
     message: "Event payment intent created successfully",
@@ -182,16 +217,33 @@ const saveEventOrder = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Missing required payment/order fields");
   }
 
-  await EventOrder.create({
-    userId: req.user._id,
-    eventId,
-    paymentIntentId,
-    amount,
-    status,
-    paidOn,
-    societyId: req.user.societyId,
-    email: req.user.email,
-  });
+  let fetchedReceiptUrl = "";
+  try {
+    const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (intent.latest_charge) {
+      const charge = await stripe.charges.retrieve(intent.latest_charge);
+      fetchedReceiptUrl = charge.receipt_url || "";
+    }
+  } catch (e) {
+    console.error("Failed to eagerly fetch receipt URL for event", e.message);
+  }
+
+  await EventOrder.findOneAndUpdate(
+    { paymentIntentId },
+    {
+      $set: {
+        userId: req.user._id,
+        eventId,
+        amount,
+        status,
+        paidOn,
+        societyId: req.user.societyId,
+        email: req.user.email,
+        ...(fetchedReceiptUrl && { receiptUrl: fetchedReceiptUrl }),
+      }
+    },
+    { upsert: true, new: true }
+  );
    if (status === "paid" || status === "succeeded") {
     await Event.findByIdAndUpdate(
       eventId,
@@ -256,4 +308,15 @@ const paymentStatus = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, true, "Payment status fetched successfully"));
 });
-export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse , getUpcomingEvents , getPastEvents , payEvent , saveEventOrder , paymentStatus }
+const getEventOrdersForUser = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized");
+  }
+  const orders = await EventOrder.find({ userId }).select("eventId paymentIntentId status paidOn amount receiptUrl");
+  return res
+    .status(200)
+    .json(new ApiResponse(200, orders, "Event orders fetched successfully"));
+});
+
+export { createEvent , getAllEvents , deleteEvent , updateEvent , toggleResponse , getUpcomingEvents , getPastEvents , payEvent , saveEventOrder , paymentStatus , getEventOrdersForUser }

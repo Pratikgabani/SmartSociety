@@ -4,6 +4,9 @@ import { Payment } from "../models/payment.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Purchase } from "../models/purchase.models .js";
+import { BookingOrder } from "../models/bookingOrder.models.js";
+import { EventOrder } from "../models/eventOrder.model.js";
+import { Event } from "../models/event.models.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -165,11 +168,15 @@ const payPayment = asyncHandler(async (req, res) => {
     {
       amount: payment.amount * 100,
       currency: "inr",
+      description: `Society Payment: ${payment.description || "Invoice"}`,
+      receipt_email: req.user.email || undefined,
       payment_method_types: ["card"],
       metadata: {
         paymentId: paymentId.toString(),
         userId: userId.toString(),
         societyId: req.user.societyId.toString(),
+        email: req.user.email || "",
+        kind: "maintenance",
       },
     },
     {
@@ -197,79 +204,169 @@ const payPayment = asyncHandler(async (req, res) => {
   });
 });
 
-const stripeWebhook = asyncHandler(async(req , res)=>{
-  const sig = req.headers['stripe-signature'];
+const getReceiptUrl = async (paymentIntent) => {
+  if (!paymentIntent.latest_charge) return null;
+  try {
+    const charge = await stripe.charges.retrieve(paymentIntent.latest_charge);
+    return charge.receipt_url || null;
+  } catch (err) {
+    console.error("Failed to retrieve charge receipt:", err.message);
+    return null;
+  }
+};
+
+const handleMaintenanceSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
+  const { paymentId, userId, societyId } = metadata || {};
+  if (!paymentId || !userId) return;
+
+  const payment = await Payment.findById(paymentId);
+  if (payment && !payment.paidBy.includes(userId)) {
+    payment.paidBy.push(userId);
+    await payment.save();
+  }
+
+  const alreadyProcessed = await Purchase.findOne({ paymentIntentId: paymentIntent.id });
+  if (!alreadyProcessed) {
+    await Purchase.create({
+      userId,
+      paymentId,
+      societyId,
+      paymentIntentId: paymentIntent.id,
+      receiptUrl,
+    });
+  }
+
+  sendPaymentEvent(societyId, {
+    type: "payment_intent.succeeded",
+    paymentId,
+    userId,
+  });
+};
+
+const handleBookingSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
+  const { bookingId, userId, societyId, email } = metadata || {};
+  if (!bookingId || !userId) return;
+
+  const alreadyProcessed = await BookingOrder.findOne({ paymentIntentId: paymentIntent.id });
+  if (!alreadyProcessed) {
+    await BookingOrder.create({
+      userId,
+      bookingId,
+      societyId,
+      paymentIntentId: paymentIntent.id,
+      amount: paymentIntent.amount,
+      status: paymentIntent.status,
+      paidOn: new Date(),
+      email: email || "",
+      receiptUrl: receiptUrl || "",
+    });
+  } else if (receiptUrl && !alreadyProcessed.receiptUrl) {
+    alreadyProcessed.receiptUrl = receiptUrl;
+    await alreadyProcessed.save();
+  }
+
+  sendPaymentEvent(societyId, {
+    type: "booking_intent.succeeded",
+    bookingId,
+    userId,
+  });
+};
+
+const handleEventSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
+  const { eventId, userId, societyId, email } = metadata || {};
+  if (!eventId || !userId) return;
+
+  const alreadyProcessed = await EventOrder.findOne({ paymentIntentId: paymentIntent.id });
+  if (!alreadyProcessed) {
+    await EventOrder.create({
+      userId,
+      eventId,
+      societyId,
+      paymentIntentId: paymentIntent.id,
+      amount: paymentIntent.amount,
+      status: paymentIntent.status,
+      paidOn: new Date(),
+      email: email || "",
+      receiptUrl: receiptUrl || "",
+    });
+  } else if (receiptUrl && !alreadyProcessed.receiptUrl) {
+    alreadyProcessed.receiptUrl = receiptUrl;
+    await alreadyProcessed.save();
+  }
+
+  await Event.findByIdAndUpdate(
+    eventId,
+    { $addToSet: { readyUsers: userId } },
+    { new: true }
+  );
+
+  sendPaymentEvent(societyId, {
+    type: "event_intent.succeeded",
+    eventId,
+    userId,
+  });
+};
+
+const stripeWebhook = asyncHandler(async (req, res) => {
+  const sig = req.headers["stripe-signature"];
   let event;
-  try{
+  try {
     event = stripe.webhooks.constructEvent(
-      req.body , 
-      sig , 
+      req.body,
+      sig,
       process.env.STRIPE_WEBHOOK_SECRET
-      
     );
-  }catch(err){
+  } catch (err) {
     console.log("Webhook signature verification failed.", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-    // Handle the event
   switch (event.type) {
     case "payment_intent.succeeded": {
-      const paymentIntent = event.data.object; // full snapshot here
-      const { paymentId, userId, societyId } = paymentIntent.metadata;
+      const paymentIntent = event.data.object;
+      const metadata = paymentIntent.metadata || {};
+      const receiptUrl = await getReceiptUrl(paymentIntent);
+      const kind = metadata.kind || "maintenance";
 
-      // Retrieve receipt URL from the charge
-      let receiptUrl = null;
-      try {
-        if (paymentIntent.latest_charge) {
-          const charge = await stripe.charges.retrieve(paymentIntent.latest_charge);
-          receiptUrl = charge.receipt_url;
-        }
-      } catch (chargeErr) {
-        console.error("Failed to retrieve charge receipt:", chargeErr.message);
+      if (kind === "booking") {
+        await handleBookingSuccess({ paymentIntent, metadata, receiptUrl });
+      } else if (kind === "event") {
+        await handleEventSuccess({ paymentIntent, metadata, receiptUrl });
+      } else {
+        await handleMaintenanceSuccess({ paymentIntent, metadata, receiptUrl });
       }
+      break;
+    }
 
-      const payment = await Payment.findById(paymentId);
-      if (payment && !payment.paidBy.includes(userId)) {
-        payment.paidBy.push(userId);
-        await payment.save();
+    case "charge.succeeded": {
+      const charge = event.data.object;
+      const metadata = charge.metadata || {};
+      const receiptUrl = charge.receipt_url;
+      const kind = metadata.kind || "maintenance";
+      const mockPaymentIntent = { id: charge.payment_intent, amount: charge.amount, status: "succeeded" };
+
+      if (kind === "booking") {
+        await handleBookingSuccess({ paymentIntent: mockPaymentIntent, metadata, receiptUrl });
+      } else if (kind === "event") {
+        await handleEventSuccess({ paymentIntent: mockPaymentIntent, metadata, receiptUrl });
+      } else {
+        await handleMaintenanceSuccess({ paymentIntent: mockPaymentIntent, metadata, receiptUrl });
       }
-
-      // Idempotency guard: Stripe retries webhooks — only create Purchase once per PaymentIntent
-      const alreadyProcessed = await Purchase.findOne({ paymentIntentId: paymentIntent.id });
-      if (!alreadyProcessed) {
-        await Purchase.create({
-          userId,
-          paymentId,
-          societyId,
-          paymentIntentId: paymentIntent.id,
-          receiptUrl,
-        });
-      }
-
-      // Notify connected clients in this society that payments changed
-      sendPaymentEvent(societyId, {
-        type: "payment_intent.succeeded",
-        paymentId,
-        userId,
-      });
       break;
     }
 
     case "payment_intent.payment_failed": {
       const paymentIntent = event.data.object;
       console.error("Payment failed:", paymentIntent.last_payment_error?.message);
-      // optionally notify user
       break;
     }
 
     default:
       console.log(`Unhandled event type: ${event.type}`);
-    }
-    
-      res.status(200).json({ received: true });
+  }
 
-})
+  res.status(200).json({ received: true });
+});
 
 const getAdminData = async (req, res) => {
   try {

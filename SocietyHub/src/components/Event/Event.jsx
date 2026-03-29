@@ -16,6 +16,7 @@ function Event() {
   const [pastData, setPastData] = useState([]);
   const [showAddEventForm, setShowAddEventForm] = useState(false);
   const [paymentStatusMap, setPaymentStatusMap] = useState({});
+  const [eventOrders, setEventOrders] = useState([]);
   const [paymentStatusLoading, setPaymentStatusLoading] = useState(true);
   const [formData, setFormData] = useState({
     eventName: "",
@@ -89,6 +90,23 @@ function Event() {
       fetchPaymentStatuses();
     }
   }, [events]);
+
+  useEffect(() => {
+    const fetchEventOrders = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/events/orders/me`, { withCredentials: true });
+        setEventOrders(response.data.data || []);
+      } catch (error) {
+        console.log("Error fetching event orders", error);
+      }
+    };
+    fetchEventOrders();
+  }, []);
+
+  const getReceiptUrl = (eventId) => {
+    const match = eventOrders.find((order) => order.eventId === eventId || order.eventId?._id === eventId);
+    return match?.receiptUrl || null;
+  };
 
   const fetchPreviousData = async () => {
     try {
@@ -275,6 +293,22 @@ function Event() {
                 {!loading && paymentStatusMap[event._id] === false && (
                   <Link to={`/layout/payEvent/${event._id}`}
                     className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-center hover:bg-blue-700">Pay Now</Link>
+                )}
+                {!loading && paymentStatusMap[event._id] === true && (
+                  <div className="flex-1 flex flex-col justify-center gap-2">
+                    {getReceiptUrl(event._id) ? (
+                      <a
+                        href={getReceiptUrl(event._id)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="w-full py-2 rounded-lg border border-blue-600 text-blue-600 font-semibold text-center hover:bg-blue-50 block transition-colors"
+                      >
+                        View receipt
+                      </a>
+                    ) : (
+                      <span className="w-full py-2 text-sm text-gray-500 font-semibold text-center bg-gray-100 rounded-lg cursor-not-allowed">Receipt unavailable</span>
+                    )}
+                  </div>
                 )}
                 {rolee === "admin" && (
                   <button onClick={() => handleDeleteEvent(event._id)}
