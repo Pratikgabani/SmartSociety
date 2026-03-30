@@ -52,6 +52,10 @@ app.use(express.static("public"));
 
 app.use(cookieParser())
 
+import { globalLimiter } from "./middlewares/rateLimit.middlewares.js";
+// Apply rate limiting globally to all requests
+app.use(globalLimiter);
+
 
 
 import userRouter from "./routes/user.routes.js";
