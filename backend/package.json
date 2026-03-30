@@ -30,8 +30,11 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
+    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^8.3.1",
     "googleapis": "^149.0.0",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.469.0",
     "mongoose": "^8.9.5",
@@ -48,6 +51,7 @@
     "react-toastify": "^11.0.3",
     "recharts": "^2.15.1",
     "stripe": "^17.7.0",
+    "xss-clean": "^0.1.4",
     "yup": "^1.6.1"
   },
   "devDependencies": {

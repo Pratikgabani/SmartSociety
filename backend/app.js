@@ -3,11 +3,19 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import xss from "xss-clean";
+import hpp from "hpp";
 dotenv.config({
     path : "./.env"
 })
 
 const app = express();
+
+// 1. Set security HTTP headers
+app.use(helmet());
+
 app.use(
     cors({
         // origin: 'https://resi-hub.onrender.com',
@@ -41,12 +49,19 @@ app.use(express.json({
     limit: "16kb" 
 }))
 
-
-
 app.use(express.urlencoded({
     extended:true , 
     limit : "16kb"
 }))
+
+// 2. Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// 3. Data sanitization against XSS
+app.use(xss());
+
+// 4. Prevent parameter pollution
+app.use(hpp());
 
 app.use(express.static("public"));
 
