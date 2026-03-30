@@ -1,6 +1,8 @@
 import Notice from "../models/notice.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User } from "../models/user.models.js";
+import { sendNoticeCreatedEmail } from "../utils/mailer.js";
 
 // Get all notices
 export const getNotices = async (req, res) => {
@@ -32,6 +34,28 @@ export const addNotice = async (req, res) => {
   try {
     const notice = new Notice({ topic, description, societyId : req.user.societyId });
     await notice.save();
+
+    const societyMembers = await User.find({
+      societyId: req.user.societyId,
+      role: { $in: ["user", "admin"] },
+      email: { $exists: true, $ne: "" },
+    }).select("email");
+
+    const memberEmails = [...new Set(societyMembers.map((member) => member.email).filter(Boolean))];
+
+    // Fire-and-forget email dispatch so notice creation is not blocked by SMTP latency.
+    if (memberEmails.length > 0) {
+      sendNoticeCreatedEmail(
+        memberEmails,
+        notice.topic,
+        notice.description,
+        notice.Date,
+        req.user?.name || "Society Admin"
+      ).catch((mailErr) => {
+        console.error("Failed to send notice email:", mailErr);
+      });
+    }
+
     res.status(201).json(new ApiResponse(201, notice, "Notice added successfully"));
   } catch (error) {
     throw new ApiError(500, "Error adding notice", error);

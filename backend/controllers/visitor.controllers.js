@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Security } from "../models/security.models.js";
 import { User } from "../models/user.models.js";
+import { sendVisitorArrivalEmail } from "../utils/mailer.js";
 
 const createVisitor = asyncHandler(async (req, res) => {
     const {visitorName, visitorPhone, visitingAdd, purpose,visitingBlock,duration} = req.body;
@@ -25,11 +26,16 @@ const createVisitor = asyncHandler(async (req, res) => {
         if(!visitorName || !visitorPhone || !visitingAdd || !purpose ){
             throw new ApiError(400 , "All fields are required")
         }
-        const haiKiNai = await User.find({ houseNo: visitingAdd, block: visitingBlock });
+        const owners = await User.find({
+            houseNo: String(visitingAdd),
+            block: String(visitingBlock),
+            societyId: securityId.societyId,
+            role: { $in: ["user", "admin"] },
+        }).select("email");
 
 // console.log("user", haiKiNai); // Log properly for debugging
 
-if (haiKiNai.length === 0) {  // Check if the array is empty
+if (owners.length === 0) {  // Check if the array is empty
     throw new ApiError(400, "User not found");
 }
 
@@ -51,6 +57,22 @@ if (haiKiNai.length === 0) {  // Check if the array is empty
         if(!newVisitor){
             throw new ApiError(400 , "Visitor not created")
         }
+
+        const ownerEmails = [...new Set(owners.map((owner) => owner.email).filter(Boolean))];
+        if (ownerEmails.length > 0) {
+            sendVisitorArrivalEmail(ownerEmails, {
+                visitorName,
+                visitorPhone,
+                purpose,
+                visitingBlock,
+                visitingAdd,
+                visitDate: newVisitor.visitDate,
+                recordedBy: req.user?.email || "Security Desk",
+            }).catch((mailErr) => {
+                console.error("Failed to send visitor alert email:", mailErr);
+            });
+        }
+
         return res
         .status(200)
         .json(new ApiResponse(200, newVisitor, "Visitor created successfully"));

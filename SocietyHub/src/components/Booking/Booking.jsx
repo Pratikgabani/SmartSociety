@@ -76,15 +76,31 @@ const Booking = () => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+    let isFetching = false;
+
     const fetchMyBookingOrders = async () => {
+      if (isFetching) return;
+      isFetching = true;
       try {
         const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
-        setBookingOrders(response.data.data || []);
+        if (isMounted) {
+          setBookingOrders(response.data.data || []);
+        }
       } catch (error) {
         console.log("Error fetching booking orders", error);
+      } finally {
+        isFetching = false;
       }
     };
+
     fetchMyBookingOrders();
+    const intervalId = setInterval(fetchMyBookingOrders, 5000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   // Past bookings
@@ -104,16 +120,66 @@ const Booking = () => {
     fetchMyPastBookings();
   }, []);
 
+  const isPaidBookingOrderStatus = (status) => {
+    return [
+      "succeeded",
+      "Refund Initiated",
+      "Refund_Initiated",
+      "Refund_Pending_Approval",
+      "Refunded",
+    ].includes(status);
+  };
+
+  const isBookingHistoryVisibleStatus = (status) => {
+    return status === "succeeded";
+  };
+
   // Fetch previous data (for admin only)
   const fetchPreviousData = async () => {
     try {
-      let response
-      if (rolee === "admin")
-        response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/all-Bookings`, { withCredentials: true })
-      else response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/getBookingsByUserId`, { withCredentials: true })
-      setPreviousData(response.data.data)
-      navigate("/history", { state: { data: response.data.data } });
-      setIsModalOpen(true)
+      const stripTopLevelId = (rows = []) =>
+        rows.map((row) => {
+          if (!row || typeof row !== "object") return row;
+          const { _id, ...rest } = row;
+          return rest;
+        });
+
+      if (rolee === "admin") {
+        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/all-Bookings`, { withCredentials: true });
+        const adminHistory = response.data.data || [];
+        const adminHistoryWithoutId = stripTopLevelId(adminHistory);
+        setPreviousData(adminHistoryWithoutId);
+        navigate("/history", { state: { data: adminHistoryWithoutId } });
+        setIsModalOpen(true);
+        return;
+      }
+
+      const [bookingResponse, orderResponse] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/getBookingsByUserId`, { withCredentials: true }),
+        axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true }),
+      ]);
+
+      const userBookings = bookingResponse.data.data || [];
+      const userBookingOrders = orderResponse.data.data || [];
+      setBookingOrders(userBookingOrders);
+
+      const paidBookingIds = new Set(
+        userBookingOrders
+          .filter((order) => isBookingHistoryVisibleStatus(order?.status))
+          .map((order) => order?.bookingId?._id || order?.bookingId?.id || order?.bookingId)
+          .filter(Boolean)
+          .map((id) => id.toString())
+      );
+
+      const paidBookingHistory = userBookings.filter((booking) =>
+        paidBookingIds.has((booking?._id || booking?.id || "").toString())
+      );
+
+      const paidBookingHistoryWithoutId = stripTopLevelId(paidBookingHistory);
+
+      setPreviousData(paidBookingHistoryWithoutId);
+      navigate("/history", { state: { data: paidBookingHistoryWithoutId } });
+      setIsModalOpen(true);
     } catch (error) {
       console.log("Error fetching data:", error);
     }
@@ -132,16 +198,21 @@ const Booking = () => {
   };
 
   const isBookingPaid = (bookingId) => {
-    return bookingOrders.some((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
+    const order = getBookingOrder(bookingId);
+    return Boolean(order && isPaidBookingOrderStatus(order.status));
   };
 
   const getBookingReceiptUrl = (bookingId) => {
-    const match = bookingOrders.find((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
+    const match = getBookingOrder(bookingId);
     return match?.receiptUrl || null;
   };
 
   const getBookingOrder = (bookingId) => {
-    return bookingOrders.find((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
+    const normalizedBookingId = (bookingId || "").toString();
+    return bookingOrders.find((order) => {
+      const orderBookingId = order?.bookingId?._id || order?.bookingId?.id || order?.bookingId;
+      return orderBookingId && orderBookingId.toString() === normalizedBookingId;
+    });
   };
 
   const handleRequestRefundClick = (orderId) => {
@@ -160,9 +231,21 @@ const Booking = () => {
       }, { withCredentials: true });
       toast.success(response.data?.message || "Refund requested successfully");
       setIsRefundModalOpen(false);
-      // Re-fetch to update status
-      const bookRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
-      setBookingOrders(bookRes.data.data || []);
+      
+      if (response.status === 200) {
+        // Optimistically mark as Refunded to remove it instantly without requiring a page refresh
+        setBookingOrders((prev) =>
+          prev.map((order) =>
+            order._id === selectedRefundOrderId
+              ? { ...order, status: "Refunded" }
+              : order
+          )
+        );
+      } else {
+        // Re-fetch to update status for pending refunds
+        const bookRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
+        setBookingOrders(bookRes.data.data || []);
+      }
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to submit refund request");
@@ -452,7 +535,9 @@ const Booking = () => {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">Past Bookings</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {myPastBooking.filter(booking => getBookingOrder(booking._id)?.status !== 'Refunded').map((booking) => (
+            {myPastBooking
+              .filter((booking) => isBookingHistoryVisibleStatus(getBookingOrder(booking._id || booking.id)?.status))
+              .map((booking) => (
               <div
                 key={booking._id}
                 className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"

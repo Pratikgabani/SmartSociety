@@ -4,11 +4,27 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { EventOrder } from '../models/eventOrder.model.js';
 import { BookingOrder } from '../models/bookingOrder.models.js';
+import { Event } from '../models/event.models.js';
 import { RefundRequest } from '../models/refundRequest.models.js';
 import { User } from '../models/user.models.js';
 import { sendRefundReviewEmail } from '../utils/mailer.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const removeUserFromEventReadyList = async (eventId, userId) => {
+    if (!eventId || !userId) return;
+
+    const updatedEvent = await Event.findByIdAndUpdate(
+        eventId,
+        { $pull: { readyUsers: userId } },
+        { new: true }
+    );
+
+    if (updatedEvent) {
+        updatedEvent.totalHouseReady = updatedEvent.readyUsers.length;
+        await updatedEvent.save();
+    }
+};
 
 // POST /api/v1/payments/:id/refund
 const requestRefund = asyncHandler(async (req, res) => {
@@ -58,6 +74,11 @@ const requestRefund = asyncHandler(async (req, res) => {
             // Update order status temporarily (will be finalized by webhook)
             order.status = 'Refund Initiated';
             await order.save();
+
+            // If an event refund is initiated, remove the user from attendee list immediately.
+            if (orderType === 'EventOrder') {
+                await removeUserFromEventReadyList(order.eventId, order.userId);
+            }
             
             return res.status(200).json(new ApiResponse(200, {}, "Refund initiated automatically."));
         } catch (error) {
@@ -128,7 +149,15 @@ const approveRefund = asyncHandler(async (req, res) => {
         await refundReq.save();
 
         let OrderModel = refundReq.orderType === 'EventOrder' ? EventOrder : BookingOrder;
-        await OrderModel.findByIdAndUpdate(refundReq.orderId, { status: 'Refund Initiated' });
+        const updatedOrder = await OrderModel.findByIdAndUpdate(
+            refundReq.orderId,
+            { status: 'Refund Initiated' },
+            { new: true }
+        );
+
+        if (refundReq.orderType === 'EventOrder' && updatedOrder) {
+            await removeUserFromEventReadyList(updatedOrder.eventId, updatedOrder.userId);
+        }
 
         return res.status(200).json(new ApiResponse(200, refundReq, "Refund approved and initiated successfully."));
     } catch (error) {

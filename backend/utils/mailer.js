@@ -190,3 +190,113 @@ export const sendRefundProcessedEmail = async (userEmail, amount, orderType, pay
 
   return await transporter.sendMail(mailOptions);
 };
+
+/**
+ * Send new notice broadcast email to society members.
+ */
+export const sendNoticeCreatedEmail = async (memberEmails, noticeTopic, noticeDescription, noticeDate, postedBy) => {
+  if (!Array.isArray(memberEmails) || memberEmails.length === 0) return null;
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'resihubproject@gmail.com',
+      pass: process.env.APP_PASSWORD,
+    },
+  });
+
+  const formattedDate = new Date(noticeDate || Date.now()).toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  const mailOptions = {
+    from: '"Resihub Notices" <resihubproject@gmail.com>',
+    bcc: memberEmails.join(','),
+    subject: `New Society Notice: ${noticeTopic}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background:#f9f9f9; border-radius:12px;">
+        <h2 style="color:#1d4ed8; margin-bottom:8px;">New Notice Published</h2>
+        <p style="color:#374151; font-size:15px;">
+          A new notice has been posted for your society.
+        </p>
+        <div style="background:#fff; padding:16px; border-radius:8px; border:1px solid #e5e7eb; margin: 24px 0;">
+          <p><strong>Topic:</strong> ${noticeTopic}</p>
+          <p><strong>Description:</strong><br/>${noticeDescription}</p>
+          <p><strong>Posted By:</strong> ${postedBy || 'Society Admin'}</p>
+          <p><strong>Published On:</strong> ${formattedDate}</p>
+        </div>
+        <p style="color:#374151; font-size:15px;">
+          Please check the Notices section in the app for complete details.
+        </p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;"/>
+        <p style="color:#9ca3af; font-size:12px; text-align:center;">
+          Resihub – Society Management System
+        </p>
+      </div>
+    `,
+  };
+
+  return await transporter.sendMail(mailOptions);
+};
+
+/**
+ * Send visitor arrival alert email to house owner(s).
+ */
+export const sendVisitorArrivalEmail = async (ownerEmails, visitorDetails) => {
+  if (!Array.isArray(ownerEmails) || ownerEmails.length === 0) return null;
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'resihubproject@gmail.com',
+      pass: process.env.APP_PASSWORD,
+    },
+  });
+
+  const {
+    visitorName,
+    visitorPhone,
+    purpose,
+    visitingBlock,
+    visitingAdd,
+    visitDate,
+    recordedBy,
+  } = visitorDetails || {};
+
+  const formattedDate = new Date(visitDate || Date.now()).toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  const mailOptions = {
+    from: '"Resihub Security" <resihubproject@gmail.com>',
+    bcc: ownerEmails.join(','),
+    subject: `Visitor Alert for ${visitingBlock}-${visitingAdd}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background:#f9f9f9; border-radius:12px;">
+        <h2 style="color:#0f766e; margin-bottom:8px;">Visitor Arrival Alert</h2>
+        <p style="color:#374151; font-size:15px;">
+          A visitor entry has been recorded for your house.
+        </p>
+        <div style="background:#fff; padding:16px; border-radius:8px; border:1px solid #e5e7eb; margin: 24px 0;">
+          <p><strong>Visitor Name:</strong> ${visitorName || 'N/A'}</p>
+          <p><strong>Visitor Phone:</strong> ${visitorPhone || 'N/A'}</p>
+          <p><strong>Purpose:</strong> ${purpose || 'N/A'}</p>
+          <p><strong>Visiting House:</strong> ${visitingBlock || 'N/A'}-${visitingAdd || 'N/A'}</p>
+          <p><strong>Entry Time:</strong> ${formattedDate}</p>
+          <p><strong>Recorded By:</strong> ${recordedBy || 'Security Desk'}</p>
+        </div>
+        <p style="color:#374151; font-size:15px;">
+          You can view visitor details in the Visitors section of the app.
+        </p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;"/>
+        <p style="color:#9ca3af; font-size:12px; text-align:center;">
+          Resihub – Society Management System
+        </p>
+      </div>
+    `,
+  };
+
+  return await transporter.sendMail(mailOptions);
+};

@@ -377,6 +377,19 @@ const stripeWebhook = asyncHandler(async (req, res) => {
           { paymentIntentId },
           { status: 'Refunded' }
       );
+
+      if (eOrder?.eventId && eOrder?.userId) {
+        const updatedEvent = await Event.findByIdAndUpdate(
+          eOrder.eventId,
+          { $pull: { readyUsers: eOrder.userId } },
+          { new: true }
+        );
+
+        if (updatedEvent) {
+          updatedEvent.totalHouseReady = updatedEvent.readyUsers.length;
+          await updatedEvent.save();
+        }
+      }
       
       const reqRecord = await RefundRequest.findOne({ paymentIntentId });
       if (reqRecord && reqRecord.status === 'Approved') {
