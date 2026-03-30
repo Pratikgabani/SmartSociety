@@ -7,6 +7,8 @@ import { Purchase } from "../models/purchase.models .js";
 import { BookingOrder } from "../models/bookingOrder.models.js";
 import { EventOrder } from "../models/eventOrder.model.js";
 import { Event } from "../models/event.models.js";
+import { RefundRequest } from "../models/refundRequest.models.js";
+import { sendRefundProcessedEmail } from "../utils/mailer.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -358,6 +360,43 @@ const stripeWebhook = asyncHandler(async (req, res) => {
     case "payment_intent.payment_failed": {
       const paymentIntent = event.data.object;
       console.error("Payment failed:", paymentIntent.last_payment_error?.message);
+      break;
+    }
+
+    case "charge.refunded": {
+      const charge = event.data.object;
+      const paymentIntentId = charge.payment_intent;
+      
+      // Ensure the orders reflect the final refunded state
+      const bOrder = await BookingOrder.findOneAndUpdate(
+          { paymentIntentId },
+          { status: 'Refunded' }
+      );
+      
+      const eOrder = await EventOrder.findOneAndUpdate(
+          { paymentIntentId },
+          { status: 'Refunded' }
+      );
+      
+      const reqRecord = await RefundRequest.findOne({ paymentIntentId });
+      if (reqRecord && reqRecord.status === 'Approved') {
+        reqRecord.status = 'Refunded';
+        await reqRecord.save();
+      }
+
+      const order = bOrder || eOrder;
+      if (order && order.email) {
+          const type = bOrder ? 'Venue Booking' : 'Event Registration';
+          sendRefundProcessedEmail(order.email, order.amount, type, paymentIntentId).catch(console.error);
+      } else if (order) {
+          // Fallback if email wasn't directly saved on the order document
+          await order.populate('userId');
+          if (order.userId && order.userId.email) {
+            const type = bOrder ? 'Venue Booking' : 'Event Registration';
+            sendRefundProcessedEmail(order.userId.email, order.amount, type, paymentIntentId).catch(console.error);
+          }
+      }
+
       break;
     }
 

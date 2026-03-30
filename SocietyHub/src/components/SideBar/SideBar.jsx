@@ -85,7 +85,13 @@ const clickEvent = async (item) => {
           key={"Visitor"} onClick={() => clickEvent("Visitor")} className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === "Visitor" ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"}`}>
             Visitors
           </div>
-          
+        }
+        {
+          rolee === "admin" && 
+          <div 
+          key={"Refunds"} onClick={() => clickEvent("Refunds")} className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === "Refunds" ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"}`}>
+            Refunds
+          </div>
         }
         <div key={"logout"} onClick={() => clickEvent("logout")} className={`p-3 rounded-lg cursor-pointer transition-colors ${activeTab === "logout" ? "bg-gray-600 text-yellow-300" : "hover:bg-gray-700"}`}>Logout</div>
       </ul>

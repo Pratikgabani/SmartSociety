@@ -1,0 +1,166 @@
+import Stripe from 'stripe';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { ApiError } from '../utils/ApiError.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
+import { EventOrder } from '../models/eventOrder.model.js';
+import { BookingOrder } from '../models/bookingOrder.models.js';
+import { RefundRequest } from '../models/refundRequest.models.js';
+import { User } from '../models/user.models.js';
+import { sendRefundReviewEmail } from '../utils/mailer.js';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// POST /api/v1/payments/:id/refund
+const requestRefund = asyncHandler(async (req, res) => {
+    const { id } = req.params; // orderId
+    const { reason, orderType } = req.body; // 'EventOrder' or 'BookingOrder'
+    
+    if (!reason || !orderType) {
+        throw new ApiError(400, "Reason and orderType are required");
+    }
+
+    if (!['EventOrder', 'BookingOrder'].includes(orderType)) {
+        throw new ApiError(400, "Refunds only applicable to Events and Bookings");
+    }
+
+    let OrderModel = orderType === 'EventOrder' ? EventOrder : BookingOrder;
+    const order = await OrderModel.findById(id);
+
+    if (!order) {
+        throw new ApiError(404, "Order not found");
+    }
+
+    if (order.userId.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "Unauthorized to refund this order");
+    }
+
+    if (order.status === 'Refund Initiated' || order.status === 'Refunded') {
+        throw new ApiError(400, "Refund already processed or initiated");
+    }
+
+    const existingRequest = await RefundRequest.findOne({ orderId: id });
+    if (existingRequest) {
+        throw new ApiError(400, "A refund request already exists for this order");
+    }
+
+    // Checking if 24 hours have passed since payment
+    // Fallbacks just in case paidOn is somehow undefined on legacy records
+    const paymentTime = new Date(order.paidOn || order.createdAt || Date.now()).getTime();
+    const currentTime = Date.now();
+    const hoursElapsed = (currentTime - paymentTime) / (1000 * 60 * 60);
+
+    if (hoursElapsed <= 24) {
+        // Less than 24 hours -> automated refund
+        try {
+            await stripe.refunds.create({
+                payment_intent: order.paymentIntentId,
+            });
+            // Update order status temporarily (will be finalized by webhook)
+            order.status = 'Refund Initiated';
+            await order.save();
+            
+            return res.status(200).json(new ApiResponse(200, {}, "Refund initiated automatically."));
+        } catch (error) {
+            throw new ApiError(500, `Stripe refund failed: ${error.message}`);
+        }
+    } else {
+        // More than 24 hours -> manual review
+        const refundReq = await RefundRequest.create({
+            user: req.user._id,
+            orderId: id,
+            orderType,
+            paymentIntentId: order.paymentIntentId,
+            amount: order.amount,
+            reason,
+        });
+
+        // Send email to admins
+        const admins = await User.find({ role: 'admin', societyId: req.user.societyId }).select('email');
+        if (admins.length > 0) {
+            const adminEmails = admins.map(a => a.email);
+            // Non-blocking fire and forget email
+            sendRefundReviewEmail(adminEmails, req.user.email, reason, order.amount, orderType, order.paymentIntentId)
+                .catch(err => console.error("Failed to send refund review email:", err));
+        }
+
+        return res.status(201).json(new ApiResponse(201, refundReq, "Refund request submitted for admin review."));
+    }
+});
+
+// GET /api/v1/admin/refunds
+const getPendingRefunds = asyncHandler(async (req, res) => {
+    // Admins only
+    if (req.user.role !== 'admin') {
+        throw new ApiError(403, "Admin access required");
+    }
+    
+    // Populate user to get name/email
+    const requests = await RefundRequest.find({ status: 'Pending' })
+        .populate('user', 'name email societyId')
+        .sort({ createdAt: -1 });
+        
+    // Filter to only this society's admins
+    const societyRequests = requests.filter(r => r.user && r.user.societyId === req.user.societyId);
+
+    return res.status(200).json(new ApiResponse(200, societyRequests, "Pending refund requests fetched"));
+});
+
+// POST /api/v1/admin/refunds/:id/approve
+const approveRefund = asyncHandler(async (req, res) => {
+    if (req.user.role !== 'admin') {
+        throw new ApiError(403, "Admin access required");
+    }
+
+    const { id } = req.params;
+    const refundReq = await RefundRequest.findById(id).populate('user', 'societyId');
+
+    if (!refundReq) throw new ApiError(404, "Refund request not found");
+    if (refundReq.status !== 'Pending') throw new ApiError(400, "Request is not pending. Current status: " + refundReq.status);
+    if (refundReq.user.societyId !== req.user.societyId) throw new ApiError(403, "Not authorized for this society");
+
+    // Initiate stripe refund
+    try {
+        await stripe.refunds.create({
+            payment_intent: refundReq.paymentIntentId,
+        });
+        
+        refundReq.status = 'Approved';
+        await refundReq.save();
+
+        let OrderModel = refundReq.orderType === 'EventOrder' ? EventOrder : BookingOrder;
+        await OrderModel.findByIdAndUpdate(refundReq.orderId, { status: 'Refund Initiated' });
+
+        return res.status(200).json(new ApiResponse(200, refundReq, "Refund approved and initiated successfully."));
+    } catch (error) {
+        throw new ApiError(500, `Stripe refund failed: ${error.message}`);
+    }
+});
+
+// POST /api/v1/admin/refunds/:id/reject
+const rejectRefund = asyncHandler(async (req, res) => {
+    if (req.user.role !== 'admin') {
+        throw new ApiError(403, "Admin access required");
+    }
+
+    const { id } = req.params;
+    const { adminNotes } = req.body;
+    
+    const refundReq = await RefundRequest.findById(id).populate('user', 'societyId');
+
+    if (!refundReq) throw new ApiError(404, "Refund request not found");
+    if (refundReq.status !== 'Pending') throw new ApiError(400, "Request is not pending. Current status: " + refundReq.status);
+    if (refundReq.user.societyId !== req.user.societyId) throw new ApiError(403, "Not authorized for this society");
+
+    refundReq.status = 'Rejected';
+    if (adminNotes) refundReq.adminNotes = adminNotes;
+    await refundReq.save();
+
+    return res.status(200).json(new ApiResponse(200, refundReq, "Refund request rejected."));
+});
+
+export {
+    requestRefund,
+    getPendingRefunds,
+    approveRefund,
+    rejectRefund
+};

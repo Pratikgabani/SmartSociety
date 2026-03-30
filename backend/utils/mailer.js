@@ -105,4 +105,88 @@ export const sendResetPasswordEmail = async (to, otp) => {
   return await transporter.sendMail(mailOptions);
 };
 
+/**
+ * Send Refund Request Review email to Admin.
+ */
+export const sendRefundReviewEmail = async (adminEmails, userEmail, reason, amount, orderType, paymentIntentId) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'resihubproject@gmail.com',
+      pass: process.env.APP_PASSWORD,
+    },
+  });
 
+  const mailOptions = {
+    from: '"Resihub Alerts" <resihubproject@gmail.com>',
+    to: adminEmails.join(','),
+    subject: 'Action Required: Pending Refund Request',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background:#f9f9f9; border-radius:12px;">
+        <h2 style="color:#d97706; margin-bottom:8px;">Pending Refund Request Review</h2>
+        <p style="color:#374151; font-size:15px;">
+          A user has requested a refund that requires manual approval (payment made > 24 hours ago).
+        </p>
+        <div style="background:#fff; padding:16px; border-radius:8px; border:1px solid #e5e7eb; margin: 24px 0;">
+          <p><strong>User Email:</strong> ${userEmail}</p>
+          <p><strong>Order Type:</strong> ${orderType}</p>
+          <p><strong>Refund Amount:</strong> ₹${amount}</p>
+          <p><strong>Payment Intent:</strong> ${paymentIntentId}</p>
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0;"/>
+          <p><strong>User Reason for Refund:</strong><br/>
+          <em style="color:#4b5563;">"${reason}"</em></p>
+        </div>
+        <p style="color:#374151; font-size:15px;">
+          Please review this request from the admin dashboard and either approve or reject it.
+        </p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;"/>
+        <p style="color:#9ca3af; font-size:12px; text-align:center;">
+          Resihub – Society Management System
+        </p>
+      </div>
+    `,
+  };
+
+  return await transporter.sendMail(mailOptions);
+};
+
+/**
+ * Send Refund Processed email to User.
+ */
+export const sendRefundProcessedEmail = async (userEmail, amount, orderType, paymentIntentId) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'resihubproject@gmail.com',
+      pass: process.env.APP_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: '"Resihub Updates" <resihubproject@gmail.com>',
+    to: userEmail,
+    subject: 'Refund Processed Successfully',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background:#f9f9f9; border-radius:12px;">
+        <h2 style="color:#10b981; margin-bottom:8px;">Your Refund Has Been Processed</h2>
+        <p style="color:#374151; font-size:15px;">
+          Good news! We have successfully processed your refund. Depending on your bank, it may take 5-10 business days for the funds to ultimately appear in your account.
+        </p>
+        <div style="background:#fff; padding:16px; border-radius:8px; border:1px solid #e5e7eb; margin: 24px 0;">
+          <p><strong>Order Type:</strong> ${orderType}</p>
+          <p><strong>Refund Amount:</strong> ₹${amount}</p>
+          <p><strong>Transaction ID:</strong> ${paymentIntentId}</p>
+        </div>
+        <p style="color:#374151; font-size:15px;">
+          If you have any questions, please contact your society administration.
+        </p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;"/>
+        <p style="color:#9ca3af; font-size:12px; text-align:center;">
+          Resihub – Society Management System
+        </p>
+      </div>
+    `,
+  };
+
+  return await transporter.sendMail(mailOptions);
+};

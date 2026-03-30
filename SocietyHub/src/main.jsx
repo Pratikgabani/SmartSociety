@@ -30,6 +30,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import EventBuy from './components/Buy/EventBuy.jsx';
 import BookingBuy from './components/Buy/BookingBuy.jsx';
 import UserContextProvider from './context/UserContextProvider.jsx';
+import RefundAdmin from './components/RefundAdmin/RefundAdmin.jsx';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -80,6 +81,7 @@ const router = createBrowserRouter(
     <Route path = "Event" element = {<Event/>} />
     
     <Route path = "Notice" element = {<Announcements/>} />
+    <Route path="Refunds" element={<RefundAdmin />} />
     
     </Route>
     </Route>

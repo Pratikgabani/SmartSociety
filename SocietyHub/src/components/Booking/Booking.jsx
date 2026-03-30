@@ -36,6 +36,9 @@ const Booking = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [previousData, setPreviousData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
+  const [selectedRefundOrderId, setSelectedRefundOrderId] = useState(null);
   const { rolee } = useContext(UserContext)
   const navigate = useNavigate();
 
@@ -135,6 +138,35 @@ const Booking = () => {
   const getBookingReceiptUrl = (bookingId) => {
     const match = bookingOrders.find((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
     return match?.receiptUrl || null;
+  };
+
+  const getBookingOrder = (bookingId) => {
+    return bookingOrders.find((order) => order.bookingId === bookingId || order.bookingId?._id === bookingId);
+  };
+
+  const handleRequestRefundClick = (orderId) => {
+    setSelectedRefundOrderId(orderId);
+    setRefundReason("");
+    setIsRefundModalOpen(true);
+  };
+
+  const submitRefundRequest = async (e) => {
+    e.preventDefault();
+    if(!refundReason.trim()) return toast.error("Reason is required");
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/${selectedRefundOrderId}`, {
+        reason: refundReason, 
+        orderType: "BookingOrder"
+      }, { withCredentials: true });
+      toast.success(response.data?.message || "Refund requested successfully");
+      setIsRefundModalOpen(false);
+      // Re-fetch to update status
+      const bookRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
+      setBookingOrders(bookRes.data.data || []);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to submit refund request");
+    }
   };
 
   // Book now
@@ -335,7 +367,7 @@ const Booking = () => {
             ) : myBooking.length === 0 ? (
               <p className="col-span-full text-center text-gray-500 py-10">No upcoming bookings.</p>
             ) : (
-              myBooking.map((booking) => (
+              myBooking.filter(booking => getBookingOrder(booking._id)?.status !== 'Refunded').map((booking) => (
                 <div
                   key={booking._id}
                   className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100 flex flex-col h-full relative"
@@ -360,24 +392,41 @@ const Booking = () => {
                   </div>
 
                   {new Date(booking.date) >= Date.now() && (
-                    <div className="flex justify-between mt-4">
+                    <div className="flex items-start justify-between mt-4 gap-2">
                       <button
                         onClick={() => handleDelete(booking._id)}
-                        className=" px-1 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                        className="px-4 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors h-fit text-sm font-medium"
                       >
                         Cancel Reservation
                       </button>
                       {isBookingPaid(booking._id) ? (
                         <div className="flex flex-col gap-2 w-5/12 justify-center">
                           {getBookingReceiptUrl(booking._id) ? (
-                            <a
-                              href={getBookingReceiptUrl(booking._id)}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="w-full py-2 rounded-lg border border-blue-600 text-blue-600 font-semibold text-center hover:bg-blue-50 transition-colors"
-                            >
-                              View Receipt
-                            </a>
+                            <div className="flex flex-col gap-2">
+                              <a
+                                href={getBookingReceiptUrl(booking._id)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="w-full py-2 rounded-lg border border-blue-600 text-blue-600 font-semibold text-center hover:bg-blue-50 transition-colors"
+                              >
+                                View Receipt
+                              </a>
+                              
+                              {getBookingOrder(booking._id)?.status === 'succeeded' && (
+                                <button
+                                  onClick={() => handleRequestRefundClick(getBookingOrder(booking._id)._id)}
+                                  className="w-full py-2 rounded-lg bg-orange-100 text-orange-700 font-semibold text-center  hover:bg-orange-200 transition-colors"
+                                >
+                                  Request Refund
+                                </button>
+                              )}
+                              {(getBookingOrder(booking._id)?.status === 'Refund Initiated' || getBookingOrder(booking._id)?.status === 'Refund_Initiated' || getBookingOrder(booking._id)?.status === 'Refund_Pending_Approval') && (
+                                <span className="w-full py-2 text-sm text-orange-500 font-semibold text-center bg-orange-50 rounded-lg">Refund Pending</span>
+                              )}
+                              {getBookingOrder(booking._id)?.status === 'Refunded' && (
+                                <span className="w-full py-2 text-sm text-green-500 font-semibold text-center bg-green-50 rounded-lg">Refunded</span>
+                              )}
+                            </div>
                           ) : (
                             <span className="w-full py-2 text-sm text-gray-500 text-center bg-gray-100 rounded-lg cursor-not-allowed">Receipt unavailable</span>
                           )}
@@ -403,7 +452,7 @@ const Booking = () => {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">Past Bookings</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {myPastBooking.map((booking) => (
+            {myPastBooking.filter(booking => getBookingOrder(booking._id)?.status !== 'Refunded').map((booking) => (
               <div
                 key={booking._id}
                 className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
@@ -651,6 +700,50 @@ const Booking = () => {
           </div>
 
 
+        )}
+
+        {/* Refund Form Modal */}
+        {isRefundModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                Request Refund
+              </h2>
+              <form onSubmit={submitRefundRequest}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Reason for Refund
+                    </label>
+                    <textarea
+                      name="refundReason"
+                      rows="4"
+                      value={refundReason}
+                      onChange={(e) => setRefundReason(e.target.value)}
+                      placeholder="Please provide a valid reason..."
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsRefundModalOpen(false)}
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                  >
+                    Submit Request
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
 
         {/* Booking Guidelines */}
