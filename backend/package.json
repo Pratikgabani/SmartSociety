@@ -4,11 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "nodemon src/backend/index.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "dev1": "nodemon src/backend/index.js"
+    "preview": "vite preview"
   },
   "keywords": [
     "nodejs",

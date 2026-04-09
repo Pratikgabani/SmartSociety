@@ -3,6 +3,112 @@ import ImageSlider from '../ImgSlider/ImgSlider';
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from '../../context/UserContext';
 import finalLogo from './../../assets/finalLogo.svg'
+import { motion } from "framer-motion";
+
+const testimonials = [
+  {
+    text: "This society management system revolutionized our operations, streamlining maintenance fee collection and visitor tracking. Highly recommend!",
+    image: "https://randomuser.me/api/portraits/women/1.jpg",
+    name: "Anita Menon",
+    role: "Cultural Secretary",
+  },
+  {
+    text: "Implementing this hub was smooth and quick. The user-friendly interface made community training and complaint filing effortless.",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "Sneha Patel",
+    role: "Society President",
+  },
+  {
+    text: "The support team is exceptional, guiding us through setup and providing ongoing assistance for all our clubhouse event bookings.",
+    image: "https://randomuser.me/api/portraits/women/3.jpg",
+    name: "Rajesh Kumar",
+    role: "Treasurer",
+  },
+  {
+    text: "This seamless integration enhanced our daily operations and overall security efficiency. The digital visitor pass is top-notch.",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "Vikram Reddy",
+    role: "Security Head",
+  },
+  {
+    text: "Its robust features for announcements and quick polls have completely transformed how we take major decisions in our society.",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
+    name: "Pooja Sharma",
+    role: "RWA Member",
+  },
+  {
+    text: "The visitor management feature exceeded expectations. It improved security and overall peace of mind for all flat owners.",
+    image: "https://randomuser.me/api/portraits/women/6.jpg",
+    name: "Neha Gupta",
+    role: "Resident",
+  },
+  {
+    text: "Our day-to-day functions improved massively with a user-friendly app design and extremely positive resident feedback.",
+    image: "https://randomuser.me/api/portraits/men/7.jpg",
+    name: "Arjun Das",
+    role: "Facility Manager",
+  },
+  {
+    text: "They delivered a digital solution that completely replaced our manual registers and reduced the RWA's administrative burden.",
+    image: "https://randomuser.me/api/portraits/women/8.jpg",
+    name: "Kavita Singh",
+    role: "Secretary",
+  },
+  {
+    text: "Using this system, our society funds are easily trackable, and residents are more punctual with their monthly maintenance dues.",
+    image: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "Rohan Desai",
+    role: "Auditor",
+  },
+];
+
+const firstColumn = testimonials.slice(0, 3);
+const secondColumn = testimonials.slice(3, 6);
+const thirdColumn = testimonials.slice(6, 9);
+
+const TestimonialsColumn = (props) => {
+  return (
+    <div className={props.className}>
+      <motion.div
+        animate={{
+          translateY: "-50%",
+        }}
+        transition={{
+          duration: props.duration || 10,
+          repeat: Infinity,
+          ease: "linear",
+          repeatType: "loop",
+        }}
+        className="flex flex-col gap-6 pb-6 bg-white shrink-0"
+      >
+        {[
+          ...new Array(2).fill(0).map((_, index) => (
+            <React.Fragment key={index}>
+              {props.testimonials.map(({ text, image, name, role }, i) => (
+                <div className="p-8 rounded-3xl border border-gray-100 shadow-lg shadow-blue-600/5 max-w-xs w-full bg-gray-50 flex flex-col" key={i}>
+                  <div className="text-gray-700 text-sm sm:text-base leading-relaxed flex-grow">{text}</div>
+                  <div className="flex items-center gap-3 mt-5">
+                    <img
+                      width={40}
+                      height={40}
+                      src={image}
+                      alt={name}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                    <div className="flex flex-col">
+                      <div className="font-semibold tracking-tight text-gray-800 leading-5">{name}</div>
+                      <div className="leading-5 text-gray-500 text-sm tracking-tight">{role}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </React.Fragment>
+          )),
+        ]}
+      </motion.div>
+    </div>
+  );
+};
 // Simple SVG Icons for Mobile Menu
 const MenuIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -220,38 +326,40 @@ function OrgLanding() {
       </div>
 
       {/* Fifth part - Testimonials */}
-      <div id='testimonials' className='py-10 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white'>
-        <div className='text-2xl sm:text-3xl md:text-4xl font-bold text-center text-pretty text-gray-700 mb-5 mt-5'>What Our Users Say</div>
-        <div className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-7 sm:mb-10 text-gray-600'>Trusted by residential societies across the country</div>
-        <div className='flex flex-wrap gap-8 sm:gap-10 justify-center items-stretch mt-12 '>
-          {[
-            { quote: "The event management feature has brought our community closer. We've seen increased participation in social activities since implementing this system.", name: "Anita Menon", role: "Cultural Secretary" },
-            { quote: "The digital payment system has made maintenance fee collection hassle-free. Residents love the convenience, and our accounts are always up to date.", name: "Sneha Patel", role: "Society President" },
-            { quote: "The society management system has completely transformed how we handle our community operations. Everything from visitor management to complaints is now streamlined and efficient.", name: "Rajesh Kumar", role: "Treasurer" }
-          ].map((testimonial, index) => (
-            <div key={index} className='bg-gray-100 shadow-lg p-6 sm:p-8 w-full max-w-md md:w-[calc(33.333%-2rem)] rounded-xl min-h-[280px] sm:min-h-64 relative flex flex-col'>
-              <div className="absolute -top-3 sm:-top-4 left-6 sm:left-8">
-                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.003zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.70.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.003z"></path>
-                </svg>
-              </div>
-              <p className='font-raleway text-gray-700 text-sm sm:text-base flex-grow pt-4'>{testimonial.quote}</p>
-              <div className='flex items-center gap-3 mt-4 sm:mt-6'>
-                <img src="./user-circle-svgrepo-com.svg" className='w-10 h-10 sm:w-12 sm:h-12' alt="User avatar" />
-                <div>
-                  <h2 className='text-base sm:text-lg font-semibold text-gray-800'>{testimonial.name}</h2>
-                  <p className='text-sm sm:text-md text-gray-600'>{testimonial.role}</p>
-                </div>
-              </div>
+      <section id='testimonials' className="bg-white py-16 sm:py-20 md:py-24 relative overflow-hidden">
+        <div className="container z-10 mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
+          >
+            <div className="flex justify-center mb-5 mt-5">
+              <div className="border border-blue-200 bg-blue-50 text-blue-600 font-bold py-1 px-4 rounded-full text-xs tracking-wide uppercase">Testimonials</div>
             </div>
-          ))}
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-gray-800 tracking-tight">
+              What our users say
+            </h2>
+            <p className="text-center text-md sm:text-lg md:text-xl mt-4 text-gray-600">
+              Trusted by residential societies across the country.
+            </p>
+          </motion.div>
+
+          <div className="flex justify-center gap-6 mt-12 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] h-[500px] overflow-hidden">
+            <TestimonialsColumn testimonials={firstColumn} duration={15} />
+            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
+            <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
+          </div>
+
+          {/* <div className='text-center mt-10 sm:mt-12'>
+            <Link to='/pageNotFound'>
+            <button className='bg-blue-600 text-white rounded-lg px-6 py-3 sm:py-4 text-sm sm:text-base hover:bg-blue-700 transition-colors font-semibold shadow-md'>View more testimonials</button>
+            </Link>
+          </div> */}
         </div>
-        <div className='text-center mt-10 sm:mt-12'>
-          <Link to='/pageNotFound'>
-          <button className='bg-blue-600 text-white rounded-lg px-5 py-3 sm:p-4 text-sm sm:text-base hover:bg-blue-700 transition-colors'>View more testimonials</button>
-          </Link>
-        </div>
-      </div>
+      </section>
 
       {/* Sixth part - Contact & Footer */}
       <div id='contact' className="bg-[#1E1B2C] bg-cover bg-center">
