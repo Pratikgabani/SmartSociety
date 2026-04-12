@@ -1,65 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
-import ImageSlider from '../ImgSlider/ImgSlider'; 
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from '../../context/UserContext';
-import finalLogo from './../../assets/finalLogo.svg'
+import finalLogo from './../../assets/finalLogo.svg';
 import { motion } from "framer-motion";
+import GlowCard from './GlowCard';
 
 const testimonials = [
-  {
-    text: "This society management system revolutionized our operations, streamlining maintenance fee collection and visitor tracking. Highly recommend!",
-    image: "https://randomuser.me/api/portraits/women/1.jpg",
-    name: "Anita Menon",
-    role: "Cultural Secretary",
-  },
-  {
-    text: "Implementing this hub was smooth and quick. The user-friendly interface made community training and complaint filing effortless.",
-    image: "https://randomuser.me/api/portraits/men/2.jpg",
-    name: "Sneha Patel",
-    role: "Society President",
-  },
-  {
-    text: "The support team is exceptional, guiding us through setup and providing ongoing assistance for all our clubhouse event bookings.",
-    image: "https://randomuser.me/api/portraits/women/3.jpg",
-    name: "Rajesh Kumar",
-    role: "Treasurer",
-  },
-  {
-    text: "This seamless integration enhanced our daily operations and overall security efficiency. The digital visitor pass is top-notch.",
-    image: "https://randomuser.me/api/portraits/men/4.jpg",
-    name: "Vikram Reddy",
-    role: "Security Head",
-  },
-  {
-    text: "Its robust features for announcements and quick polls have completely transformed how we take major decisions in our society.",
-    image: "https://randomuser.me/api/portraits/women/5.jpg",
-    name: "Pooja Sharma",
-    role: "RWA Member",
-  },
-  {
-    text: "The visitor management feature exceeded expectations. It improved security and overall peace of mind for all flat owners.",
-    image: "https://randomuser.me/api/portraits/women/6.jpg",
-    name: "Neha Gupta",
-    role: "Resident",
-  },
-  {
-    text: "Our day-to-day functions improved massively with a user-friendly app design and extremely positive resident feedback.",
-    image: "https://randomuser.me/api/portraits/men/7.jpg",
-    name: "Arjun Das",
-    role: "Facility Manager",
-  },
-  {
-    text: "They delivered a digital solution that completely replaced our manual registers and reduced the RWA's administrative burden.",
-    image: "https://randomuser.me/api/portraits/women/8.jpg",
-    name: "Kavita Singh",
-    role: "Secretary",
-  },
-  {
-    text: "Using this system, our society funds are easily trackable, and residents are more punctual with their monthly maintenance dues.",
-    image: "https://randomuser.me/api/portraits/men/9.jpg",
-    name: "Rohan Desai",
-    role: "Auditor",
-  },
+  { text: "This society management system revolutionized our operations, streamlining maintenance fee collection and visitor tracking. Highly recommend!", image: "https://randomuser.me/api/portraits/women/1.jpg", name: "Anita Menon", role: "Cultural Secretary" },
+  { text: "Implementing this hub was smooth and quick. The user-friendly interface made community training and complaint filing effortless.", image: "https://randomuser.me/api/portraits/men/2.jpg", name: "Sneha Patel", role: "Society President" },
+  { text: "The support team is exceptional, guiding us through setup and providing ongoing assistance for all our clubhouse event bookings.", image: "https://randomuser.me/api/portraits/women/3.jpg", name: "Rajesh Kumar", role: "Treasurer" },
+  { text: "This seamless integration enhanced our daily operations and overall security efficiency. The digital visitor pass is top-notch.", image: "https://randomuser.me/api/portraits/men/4.jpg", name: "Vikram Reddy", role: "Security Head" },
+  { text: "Its robust features for announcements and quick polls have completely transformed how we take major decisions in our society.", image: "https://randomuser.me/api/portraits/women/5.jpg", name: "Pooja Sharma", role: "RWA Member" },
+  { text: "The visitor management feature exceeded expectations. It improved security and overall peace of mind for all flat owners.", image: "https://randomuser.me/api/portraits/women/6.jpg", name: "Neha Gupta", role: "Resident" },
+  { text: "Our day-to-day functions improved massively with a user-friendly app design and extremely positive resident feedback.", image: "https://randomuser.me/api/portraits/men/7.jpg", name: "Arjun Das", role: "Facility Manager" },
+  { text: "They delivered a digital solution that completely replaced our manual registers and reduced the RWA's administrative burden.", image: "https://randomuser.me/api/portraits/women/8.jpg", name: "Kavita Singh", role: "Secretary" },
+  { text: "Using this system, our society funds are easily trackable, and residents are more punctual with their monthly maintenance dues.", image: "https://randomuser.me/api/portraits/men/9.jpg", name: "Rohan Desai", role: "Auditor" },
 ];
 
 const firstColumn = testimonials.slice(0, 3);
@@ -70,46 +25,31 @@ const TestimonialsColumn = (props) => {
   return (
     <div className={props.className}>
       <motion.div
-        animate={{
-          translateY: "-50%",
-        }}
-        transition={{
-          duration: props.duration || 10,
-          repeat: Infinity,
-          ease: "linear",
-          repeatType: "loop",
-        }}
-        className="flex flex-col gap-6 pb-6 bg-white shrink-0"
+        animate={{ translateY: "-50%" }}
+        transition={{ duration: props.duration || 10, repeat: Infinity, ease: "linear", repeatType: "loop" }}
+        className="flex flex-col gap-6 pb-6 shrink-0"
       >
-        {[
-          ...new Array(2).fill(0).map((_, index) => (
-            <React.Fragment key={index}>
-              {props.testimonials.map(({ text, image, name, role }, i) => (
-                <div className="p-8 rounded-3xl border border-gray-100 shadow-lg shadow-blue-600/5 max-w-xs w-full bg-gray-50 flex flex-col" key={i}>
-                  <div className="text-gray-700 text-sm sm:text-base leading-relaxed flex-grow">{text}</div>
-                  <div className="flex items-center gap-3 mt-5">
-                    <img
-                      width={40}
-                      height={40}
-                      src={image}
-                      alt={name}
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
-                    <div className="flex flex-col">
-                      <div className="font-semibold tracking-tight text-gray-800 leading-5">{name}</div>
-                      <div className="leading-5 text-gray-500 text-sm tracking-tight">{role}</div>
-                    </div>
+        {[...new Array(2).fill(0).map((_, index) => (
+          <React.Fragment key={index}>
+            {props.testimonials.map(({ text, image, name, role }, i) => (
+              <div className="p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] max-w-xs w-full bg-white flex flex-col hover:-translate-y-1 transition-all duration-300" key={i}>
+                <div className="text-slate-600 text-sm sm:text-base leading-relaxed flex-grow">"{text}"</div>
+                <div className="flex items-center gap-4 mt-6 pt-4 border-t border-slate-50">
+                  <img src={image} alt={name} className="h-11 w-11 rounded-full object-cover shadow-sm ring-2 ring-slate-50" />
+                  <div className="flex flex-col">
+                    <div className="font-semibold tracking-tight text-slate-800 leading-tight">{name}</div>
+                    <div className="text-slate-500 text-xs font-medium tracking-tight mt-0.5">{role}</div>
                   </div>
                 </div>
-              ))}
-            </React.Fragment>
-          )),
-        ]}
+              </div>
+            ))}
+          </React.Fragment>
+        ))]}
       </motion.div>
     </div>
   );
 };
-// Simple SVG Icons for Mobile Menu
+
 const MenuIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
@@ -124,9 +64,10 @@ const CloseIcon = () => (
 
 function OrgLanding() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // For mobile navigation
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { rolee } = useContext(UserContext);
+
   useEffect(() => {
     if (rolee == "admin" || rolee == "user") {
       setIsLoggedIn(true);
@@ -137,292 +78,342 @@ function OrgLanding() {
     } else {
       setIsLoggedIn(false);
     }
-  }, [rolee, navigate]); // Added navigate to dependency array, though it's stable. [] is also fine.
+  }, [rolee, navigate]);
+
+  const featureList = [
+    {
+      title: "Bookings",
+      desc: "Easy booking system for community amenities like clubhouse, gym, and party halls.",
+      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>,
+      bgColor: "bg-blue-50", iconColor: "text-blue-600", borderColor: "border-blue-100"
+    },
+    {
+      title: "Complaint Management",
+      desc: "Track and resolve residents' complaints efficiently and keep everyone informed in real-time.",
+      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>,
+      bgColor: "bg-teal-50", iconColor: "text-teal-600", borderColor: "border-teal-100"
+    },
+    {
+      title: "Events & Announcements",
+      desc: "Organize community events and broadcast notices to all residents seamlessly.",
+      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><polygon points="11 19 2 12 11 5 11 19"></polygon><path d="M22 12A10 10 0 0 1 12 22a10 10 0 0 1-10-10"></path></svg>,
+      bgColor: "bg-indigo-50", iconColor: "text-indigo-600", borderColor: "border-indigo-100"
+    },
+    {
+      title: "Payments",
+      desc: "Secure payment gateway for effortless maintenance and amenity charge collection.",
+      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>,
+      bgColor: "bg-emerald-50", iconColor: "text-emerald-600", borderColor: "border-emerald-100"
+    },
+    {
+      title: "Visitors",
+      desc: "Track, approve, and securely manage community visitors with robust digital passes.",
+      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>,
+      bgColor: "bg-purple-50", iconColor: "text-purple-600", borderColor: "border-purple-100"
+    },
+    {
+      title: "Polls",
+      desc: "Understand your residents' interests and make democratic community decisions easily.",
+      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>,
+      bgColor: "bg-orange-50", iconColor: "text-orange-600", borderColor: "border-orange-100"
+    }
+  ];
+
+  const benefitsList = [
+    { title: "Increased Efficiency", desc: "Automate routine tasks and reduce administrative burden with our streamlined solutions.", points: ["Reduced paperwork", "Time-saving automation", "Digital logs"], icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> },
+    { title: "Enhanced Security", desc: "Robust security features to protect your community and manage access effectively.", points: ["Digital visitor tracking", "Emergency alerts", "Secure data access"], icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg> },
+    { title: "Better Communication", desc: "Foster community engagement with fully integrated communication tools.", points: ["Real-time notifications", "Event announcements", "Transparent voting"], icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> }
+  ];
 
   return (
-    <div className='bg-white min-h-screen w-full font-raleway overflow-x-hidden'>
-      {/* Main content wrapper, adjusted height for first section */}
-      <div className='w-full flex flex-col justify-center items-center '>
-        {/* Nav Bar */}
-        <nav className='w-full bg-white mb-3 flex flex-col md:flex-row justify-between md:items-center py-4 md:py-6 px-4 sm:px-6 lg:px-14 rounded-xl shadow-lg sticky top-0 z-50'>
-          <div className='flex justify-between items-center w-full md:w-auto'>
-            <div className='font-bold text-3xl sm:text-4xl text-blue-600 font-raleway'>ResiHub</div>
-            <div className="md:hidden">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-gray-800 hover:text-blue-600 focus:outline-none p-2"
-                aria-label="Toggle menu"
-              >
+    <div className='bg-slate-50 min-h-screen w-full font-raleway overflow-x-hidden selection:bg-blue-100 selection:text-blue-900'>
+
+      {/* Navigation */}
+      <div className="w-full relative z-50">
+        <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300 bg-transparent'>
+          <div className='relative flex justify-between items-center md:justify-center md:gap-12 lg:gap-24 transition-all duration-300'>
+            <div className='font-bold text-2xl sm:text-3xl text-slate-800 tracking-tight flex items-center gap-2 shrink-0 text-center md:text-left'>
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center shadow-inner">
+                <span className="text-white text-lg font-bold">R</span>
+              </div>
+              ResiHub
+            </div>
+            <div className="md:hidden flex justify-end">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600 hover:text-blue-600 focus:outline-none p-2 transition-colors">
                 {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
               </button>
             </div>
-          </div>
 
-          <div className={`w-full md:flex md:items-center md:w-auto ${mobileMenuOpen ? 'block' : 'hidden'} mt-4 md:mt-0`}>
-            <ul className='flex flex-col md:flex-row md:items-center gap-y-3 md:gap-x-4 lg:gap-x-6 text-base lg:text-lg scroll-smooth text-center md:text-left'>
-              {['Home', 'Features', 'Benefits', 'Pricing', 'Testimonials', 'Contact'].map((item) => (
-                <li key={item} className='cursor-pointer hover:text-blue-700 font-semibold relative text-gray-800 px-2 after:absolute after:left-1/2 after:bottom-0 after:w-0 after:h-1 after:bg-blue-600 after:rounded-full after:transition-all after:duration-300 after:ease-in-out hover:after:w-full hover:after:left-0'>
-                  <a href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)}>{item}</a>
-                </li>
-              ))}
-            </ul>
-            <div className='mt-4 md:mt-0 md:ml-6 w-full md:w-auto'>
-              {!isLoggedIn && (
-                <div className="w-full flex justify-center md:justify-end">
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <button className="bg-blue-600 text-white font-bold rounded-3xl py-2 px-4 sm:px-6 text-sm md:text-base lg:text-lg border-white w-full md:w-auto">
+            <div className={`absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 md:mt-0 md:static md:bg-transparent md:shadow-none md:border-none md:p-0 md:contents transition-all z-50 ${mobileMenuOpen ? 'flex flex-col' : 'hidden'}`}>
+              <div className="md:flex md:justify-center">
+                <ul className='flex flex-col md:flex-row items-center gap-4 lg:gap-8 text-sm font-medium text-slate-600 mb-6 md:mb-0'>
+                  {['Home', 'Features', 'Benefits', 'Pricing', 'Testimonials', 'Contact'].map((item) => (
+                    <li key={item} className='hover:text-blue-600 transition-colors w-full md:w-auto text-center'>
+                      <a href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className="block py-2 md:py-0">{item}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="md:flex md:justify-center shrink-0">
+                {!isLoggedIn && (
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="w-full md:w-auto">
+                    <button className="w-full md:w-auto bg-slate-900 text-white font-semibold rounded-xl py-2.5 px-6 text-sm hover:bg-slate-800 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                       Login
                     </button>
                   </Link>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </nav>
-
-        {/* First part - Hero Section */}
-        <div id='home' className='w-full max-w-6xl mx-auto my-10 lg:my-16 px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center  pt-8 pb-8'> {/* Adjusted min-height calculation */}
-          <div className='p-2 sm:p-5 w-full lg:w-1/2 text-center lg:text-left'>
-            <div className='mb-5 mt-8 sm:mt-12'>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-700 ">
-                Smart Society Management System
-              </h1>
-            </div>
-            <div className='mb-7'>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 animate__animated animate__fadeInUp animate__delay-1s">
-                Streamline your residential community with digital solutions for bookings, complaints, visitor management, and more.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 sm:space-x-4 lg:space-x-6 mt-5 justify-center lg:justify-start">
-              {!rolee && (
-                <div className='flex gap-4'>
-                  <Link to="/register" className="bg-blue-600 text-white text-sm sm:text-base lg:text-lg px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-blue-700 text-center">
-                    Join an Existing Society
-                  </Link>
-
-                  <Link to="/SocietyDetails" className="bg-green-600 text-white text-sm sm:text-base lg:text-lg px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-green-700 text-center">
-                    Create a New Society
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className='hidden lg:block mt-8 lg:mt-0 lg:ml-4 w-full max-w-lg mx-auto lg:w-1/2'>
-            <ImageSlider />
-          </div>
-
-        </div>
       </div>
 
-      {/* Second part - Features */}
-      <div id='features' className='text-gray-200 bg-[#1E1B2C] bg-cover bg-center py-10 sm:py-16'>
-        <div className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24'>
-          <h2 className='text-center text-2xl sm:text-3xl md:text-4xl font-bold mt-7 text-pretty'>Comprehensive Society Management Features</h2>
-          <p className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-7 sm:mb-10'>Everything you need to manage your residential community efficiently</p>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-5 mb-2 text-black'>
-            {/* Feature Card 1 */}
-            <div className='bg-gray-100 shadow-xl rounded-xl px-5 py-4 sm:px-7 min-h-[180px] sm:min-h-52 flex flex-col'>
-              <svg fill="#ffffff" className='w-10 h-10 mb-2 self-start' viewBox="-4.8 -4.8 33.60 33.60" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" strokeWidth="0.48"><g id="SVGRepo_bgCarrier" strokeWidth="0"><rect x="-4.8" y="-4.8" width="33.60" height="33.60" rx="4.704" fill="#2563eb" strokeWidth="0"></rect></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M19,4H17V3a1,1,0,0,0-2,0V4H9V3A1,1,0,0,0,7,3V4H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V7A3,3,0,0,0,19,4Zm1,15a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V12H20Zm0-9H4V7A1,1,0,0,1,5,6H7V7A1,1,0,0,0,9,7V6h6V7a1,1,0,0,0,2,0V6h2a1,1,0,0,1,1,1Z"></path></g></svg>
-              <h3 className='text-lg sm:text-xl my-2 font-bold'>Bookings</h3>
-              <p className='text-sm sm:text-base my-2 flex-grow'>Easy booking system for community amenities like clubhouse, gym, and party halls.</p>
-            </div>
-            {/* Feature Card 2 */}
-            <div className='bg-gray-100 shadow-xl rounded-xl px-5 py-4 sm:px-7 min-h-[180px] sm:min-h-52 flex flex-col'>
-              <svg fill="#ffffff" className='w-10 h-10 mb-2 self-start' viewBox="-3.2 -3.2 22.40 22.40" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" strokeWidth="0.16"><g id="SVGRepo_bgCarrier" strokeWidth="0"><rect x="-3.2" y="-3.2" width="22.40" height="22.40" rx="3.136" fill="#2563eb" strokeWidth="0"></rect></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="m13.58 11.6-1.33-2.18V6.33A4.36 4.36 0 0 0 10 2.26a2.45 2.45 0 0 0 0-.38A1.94 1.94 0 0 0 8 0a1.94 1.94 0 0 0-2 1.88 1.64 1.64 0 0 0 0 .38 4.36 4.36 0 0 0-2.25 4.07v3.09L2.42 11.6a1.25 1.25 0 0 0 1.06 1.9h1.77A2.68 2.68 0 0 0 8 16a2.68 2.68 0 0 0 2.75-2.5h1.77a1.25 1.25 0 0 0 1.06-1.9zM7.25 1.88A.7.7 0 0 1 8 1.25a.7.7 0 0 1 .75.63 6 6 0 0 0-.75 0 5.9 5.9 0 0 0-.75 0zM8 14.75a1.44 1.44 0 0 1-1.5-1.25h3A1.44 1.44 0 0 1 8 14.75zm-4.52-2.5 1.34-2.17.18-.31V6.33a4 4 0 0 1 .6-2.12A2.68 2.68 0 0 1 8 3.12a2.68 2.68 0 0 1 2.4 1.09 4 4 0 0 1 .6 2.12v3.44l.18.31 1.34 2.17z"></path></g></svg>
-              <h3 className='text-lg sm:text-xl my-2 font-bold'>Complaint Management</h3>
-              <p className='text-sm sm:text-base my-2 flex-grow'>Track and resolve residents complaints efficiently</p>
-            </div>
-            {/* Feature Card 3 */}
-            <div className='bg-gray-100 shadow-xl rounded-xl px-5 py-4 sm:px-7 min-h-[180px] sm:min-h-52 flex flex-col'>
-              <svg fill="#ffffff" className='w-10 h-10 mb-2 self-start' viewBox="-127.61 -127.61 727.84 727.84" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" strokeWidth="6.616624"><g id="SVGRepo_bgCarrier" strokeWidth="0"><rect x="-127.61" y="-127.61" width="727.84" height="727.84" rx="101.8976" fill="#2563eb" strokeWidth="0"></rect></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M289.966,231.969c0-59.62,10.963-111.865,29.163-149.142c-106.982,61.473-200.795,65.399-247.864,68.235 c-26.466,1.594-50.836,18.818-63.507,45.789c-10.328,21.985-10.267,47.902-0.288,70.044 c12.575,27.909,37.087,46.209,63.794,45.979c4.422-0.038,9.716,0.029,15.604,0.228c-9.535,42.911,15.044,88.307,59.25,107.464 c13.51,5.855,27.754,8.798,41.875,8.798c11.005,0,21.937-1.788,32.38-5.394c24.149-8.327,42.817-25.308,52.563-47.798 c2.269-5.231,3.807-10.71,4.981-16.27c13.534,6.253,27.315,13.293,41.251,21.284C300.946,343.904,289.966,291.633,289.966,231.969 z M254.87,368.344c-7.524,17.356-22.052,30.499-40.919,37.01c-19.177,6.615-40.494,5.596-60.004-2.866 c-36.58-15.848-56.599-53.562-47.13-88.204c37.589,3.05,91.884,12.199,152.715,37.529 C258.702,357.498,257.161,363.056,254.87,368.344z"></path> </g> </g> <g> <g> <path d="M391.137,43.253c-32.566,0-60.587,44.358-73.632,108.315c43.489,1.036,78.566,36.668,78.566,80.402 c0,43.733-35.079,79.356-78.567,80.392c13.043,63.959,41.065,108.319,73.633,108.319c45,0,81.479-84.491,81.479-188.714 S436.137,43.253,391.137,43.253z"></path> </g> </g> </g></svg>
-              <h3 className='text-lg sm:text-xl my-2 font-bold'>Events & Announcements</h3>
-              <p className='text-sm sm:text-base my-2 flex-grow'>Organize and manage community events. Broadcast important announcements and notices to residents instantly</p>
-            </div>
-            {/* Feature Card 4 */}
-            <div className='bg-gray-100 shadow-xl rounded-xl px-5 py-4 sm:px-7 min-h-[180px] sm:min-h-52 flex flex-col'>
-              <svg className='w-10 h-10 mb-2 self-start' viewBox="-3.6 -3.6 31.20 31.20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" transform="rotate(0)matrix(1, 0, 0, 1, 0, 0)" strokeWidth="0.00024"><g id="SVGRepo_bgCarrier" strokeWidth="0"><rect x="-3.6" y="-3.6" width="31.20" height="31.20" rx="4.368" fill="#2563eb" strokeWidth="0"></rect></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fillRule="evenodd" clipRule="evenodd" d="M12.052 1.25H11.948C11.0495 1.24997 10.3003 1.24995 9.70552 1.32991C9.07773 1.41432 8.51093 1.59999 8.05546 2.05546C7.59999 2.51093 7.41432 3.07773 7.32991 3.70552C7.27259 4.13189 7.25637 5.15147 7.25179 6.02566C5.22954 6.09171 4.01536 6.32778 3.17157 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.17157 20.8284C4.34314 22 6.22876 22 9.99998 22H14C17.7712 22 19.6569 22 20.8284 20.8284C22 19.6569 22 17.7712 22 14C22 10.2288 22 8.34315 20.8284 7.17157C19.9846 6.32778 18.7705 6.09171 16.7482 6.02566C16.7436 5.15147 16.7274 4.13189 16.6701 3.70552C16.5857 3.07773 16.4 2.51093 15.9445 2.05546C15.4891 1.59999 14.9223 1.41432 14.2945 1.32991C13.6997 1.24995 12.9505 1.24997 12.052 1.25ZM15.2479 6.00188C15.2434 5.15523 15.229 4.24407 15.1835 3.9054C15.1214 3.44393 15.0142 3.24644 14.8839 3.11612C14.7536 2.9858 14.5561 2.87858 14.0946 2.81654C13.6116 2.7516 12.964 2.75 12 2.75C11.036 2.75 10.3884 2.7516 9.90539 2.81654C9.44393 2.87858 9.24644 2.9858 9.11612 3.11612C8.9858 3.24644 8.87858 3.44393 8.81654 3.9054C8.771 4.24407 8.75661 5.15523 8.75208 6.00188C9.1435 6 9.55885 6 10 6H14C14.4412 6 14.8565 6 15.2479 6.00188ZM12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V10.0102C13.8388 10.2845 14.75 11.143 14.75 12.3333C14.75 12.7475 14.4142 13.0833 14 13.0833C13.5858 13.0833 13.25 12.7475 13.25 12.3333C13.25 11.9493 12.8242 11.4167 12 11.4167C11.1758 11.4167 10.75 11.9493 10.75 12.3333C10.75 12.7174 11.1758 13.25 12 13.25C13.3849 13.25 14.75 14.2098 14.75 15.6667C14.75 16.857 13.8388 17.7155 12.75 17.9898V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.9898C10.1612 17.7155 9.25 16.857 9.25 15.6667C9.25 15.2525 9.58579 14.9167 10 14.9167C10.4142 14.9167 10.75 15.2525 10.75 15.6667C10.75 16.0507 11.1758 16.5833 12 16.5833C12.8242 16.5833 13.25 16.0507 13.25 15.6667C13.25 15.2826 12.8242 14.75 12 14.75C10.6151 14.75 9.25 13.7903 9.25 12.3333C9.25 11.143 10.1612 10.2845 11.25 10.0102V10C11.25 9.58579 11.5858 9.25 12 9.25Z" fill="#ffffff"></path> </g></svg>
-              <h3 className='text-lg sm:text-xl my-2 font-bold'>Payments</h3>
-              <p className='text-sm sm:text-base my-2 flex-grow'>Secure payment gateway for maintainance and other charges</p>
-            </div>
-            {/* Feature Card 5 */}
-            <div className='bg-gray-100 shadow-xl rounded-xl px-5 py-4 sm:px-7 min-h-[180px] sm:min-h-52 flex flex-col'>
-              <svg className='w-10 h-10 mb-2 self-start' version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="-58.74 -58.74 411.19 411.19" xmlSpace="preserve" fill="#ffffff" stroke="#ffffff" strokeWidth="0.00293709"><g id="SVGRepo_bgCarrier" strokeWidth="0"><rect x="-58.74" y="-58.74" width="411.19" height="411.19" rx="57.5666" fill="#2563eb" strokeWidth="0"></rect></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M251.742,58.307c0,0,0-2.502,0-5.58s-0.386-9.894-3.878-13.168c-1.757-1.648-4.297-2.904-7.93-2.904 h-19.668c0,0-10.481,0-10.481,9.834V56.98c0,11.166-20.511,10.878-20.511,10.878l-84.469,0.044c0,0-20.897-0.462-20.897-9.589 V44.954c0,0,0.658-8.501-10.492-8.501H52.449c0,0-10.514,0-10.514,9.159v12.706c0,0,0.375,5.461-8.126,8.246 c-6.478,2.121-20.641,0.109-27.489,5.972C2.768,75.57,0,80.65,0,89.097v147.839c0,0,0.647,20.32,20.973,20.32h250.436 c0,0,22.3-1.305,22.3-19.662V88.45c0,0-0.68-20.309-21.647-20.309C272.062,68.135,251.742,66.803,251.742,58.307z M220.26,57.627 c0-5.776,4.068-10.487,9.834-10.487h0.658c5.798,0,10.508,4.71,10.508,10.487v20.989c0,5.776-4.373,10.481-10.171,10.481h-0.658 c-5.798,0-10.171-4.699-10.171-10.481V57.627z M184.335,162.525h52.449c2.888,0,5.232,2.339,5.232,5.254 c0,2.888-2.344,5.238-5.232,5.238h-52.449c-2.888,0-5.254-2.35-5.254-5.238C179.081,164.863,181.447,162.525,184.335,162.525z M241.701,189.405c0,3.089-2.491,4.911-5.564,4.911h-51.144c-3.073,0-5.575-1.822-5.575-4.911c0-3.073,2.497-5.575,5.575-5.575 h51.144C239.21,183.829,241.701,186.331,241.701,189.405z M89.674,99.627c16.176,0,29.289,14.354,29.289,33.711 c0,19.363-13.114,35.077-29.289,35.077s-29.278-15.713-29.278-35.077C60.395,113.981,73.498,99.627,89.674,99.627z M52.764,57.072 c0-5.776,4.036-9.834,9.834-9.834h0.658c5.798,0,10.16,4.052,10.16,9.834v21.544c0,5.776-4.71,10.481-10.481,10.481H62.25 c-5.765,0-9.486-4.699-9.486-10.481C52.764,78.616,52.764,57.072,52.764,57.072z M144.489,212.64 c-2.567,3.688-8.322,3.198-8.322,3.198H44.133c0,0-6.211,0.408-8.947-3.361c-1.474-2.034-0.451-6.162,0.566-8.469l2.48-5.64 c0,0,6.842-15.306,14.637-24.182c4.786-5.439,10.481-4.199,14.163-2.431c2.268,1.088,4.835,4.264,6.706,5.945 c2.584,2.317,7.141,4.95,14.598,5.096h4.574c7.452-0.141,12.009-2.779,14.588-5.096c1.876-1.681,4.368-4.95,6.614-6.075 c3.383-1.692,8.523-2.73,13.184,2.567c7.8,8.877,13.968,24.465,13.968,24.465l2.535,5.532 C144.848,206.467,145.925,210.573,144.489,212.64z M237.285,214.968h-53.439c-2.807,0-5.075-2.252-5.075-5.069 c0-2.812,2.268-5.096,5.075-5.096h53.439c2.779,0,5.075,2.284,5.075,5.096C242.359,212.716,240.064,214.968,237.285,214.968z"></path> </g> </g></svg>
-              <h3 className='text-lg sm:text-xl my-2 font-bold'>Visitors</h3>
-              <p className='text-sm sm:text-base my-2 flex-grow'>Track, Approve & Securely Manage Community Visitors!</p>
-            </div>
-            {/* Feature Card 6 */}
-            <div className='bg-gray-100 shadow-xl rounded-xl px-5 py-4 sm:px-7 min-h-[180px] sm:min-h-52 flex flex-col'>
-              <svg className='w-10 h-10 mb-2 self-start' fill="#ffffff" viewBox="-3.36 -3.36 30.72 30.72" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" strokeWidth="0.312"><g id="SVGRepo_bgCarrier" strokeWidth="0"><rect x="-3.36" y="-3.36" width="30.72" height="30.72" rx="4.3008" fill="#2563eb" strokeWidth="0"></rect></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M7 11h7v2H7zm0-4h10.97v2H7zm0 8h13v2H7zM4 4h2v16H4z"></path></g></svg>
-              <h3 className='text-lg sm:text-xl my-2 font-bold'>Polls</h3>
-              <p className='text-sm sm:text-base my-2 flex-grow'>Know about your residents interests and thinking</p>
-            </div>
+      {/* Hero Section */}
+      <div id='home' className='relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center overflow-visible z-10 min-h-[calc(100vh-88px)]'>
+        {/* Decorative Grid Background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_70%,transparent_100%)] -z-10 opacity-70"></div>
+        <div className="absolute top-10 right-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-teal-400/20 rounded-full blur-[100px] pointer-events-none -z-10 hidden lg:block"></div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className='w-full max-w-5xl z-10'
+        >
+          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white text-blue-700 text-sm font-bold mb-10 border border-blue-200 shadow-[0_4px_14px_0_rgb(59,130,246,0.1)] cursor-default">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+            </span>
+            <span>Welcome to ResiHub</span>
           </div>
-        </div>
+
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-8">
+            Manage Your Society with <br className="hidden sm:block" />
+            <span className="text-blue-600">Seamless Elegance</span>
+          </h1>
+
+          <p className="text-xl sm:text-2xl text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed mb-12">
+            Streamline your residential community with digital solutions for bookings, complaints, visitor management, and more.
+          </p>
+
+          {!rolee && (
+            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+              <Link to="/register" className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-blue-600 border border-blue-600 rounded-xl overflow-hidden hover:bg-blue-700 hover:shadow-[0_8px_30px_rgb(37,99,235,0.3)] hover:-translate-y-1 w-full sm:w-auto">
+                Join an Existing Society
+              </Link>
+              <Link to="/SocietyDetails" className="group inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-700 transition-all duration-300 bg-white border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 w-full sm:w-auto">
+                Create a New Society
+              </Link>
+            </div>
+          )}
+        </motion.div>
       </div>
 
-      {/* Third part - Benefits */}
-      <div id='benefits' className='pb-12 sm:pb-16 bg-white'>
-        <div className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-10 sm:py-12'>
-          <h1 className='text-center text-2xl sm:text-3xl md:text-4xl font-bold mt-7 text-pretty text-gray-700'>Why Choose Our Solutions</h1>
-          <p className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-7 sm:mb-10 text-gray-600'>Transform your society management with these key benefits</p>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'>
-            {[
-              { title: "Increased Efficiency", desc: "Automate routine tasks and reduce administrative burden with our streamlined digital solutions.", points: ["Reduced paperwork", "Time-Saving Automation", "Digital payments"], icon: "/efficiency-system-production-productivity-svgrepo-com.svg" },
-              { title: "Enhanced Security", desc: "Robust security features to protect your community and manage access control effectively.", points: ["Digital visitor tracking", "Emergency response system", "Community forums"], icon: "/security-verified-solid-svgrepo-com.svg" },
-              { title: "Better Communication", desc: "Foster community engagement with integrated communication tools.", points: ["Real-time notifications", "Event announcements", "Conduct transparent society elections"], icon: "/communication-3-svgrepo-com.svg" }
-            ].map((benefit, index) => (
-              <div key={index} className='border-2 border-gray-200 px-4 py-4 sm:px-6 sm:py-6 rounded-xl flex flex-col sm:flex-row gap-3 sm:gap-4 items-start bg-gray-100'>
-                <img src={benefit.icon} className='w-8 h-8 sm:w-10 sm:h-10 mt-1 flex-shrink-0' alt={`${benefit.title} icon`} />
-                <div className='flex-grow'>
-                  <h2 className='text-lg sm:text-xl my-1 sm:my-2 font-bold text-gray-800'>{benefit.title}</h2>
-                  <p className='text-sm sm:text-base text-gray-600'>{benefit.desc}</p>
-                  <ul className='flex flex-col gap-2 pt-3 pb-2 sm:pb-4'>
-                    {benefit.points.map((point, pIndex) => (
-                      <li key={pIndex} className='flex gap-2 items-center text-sm text-gray-700'>
-                        <svg className='w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0' viewBox="-13.6 -13.6 197.20 197.20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2563eb" strokeWidth="12.41"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M142.196 30.4125C142.586 30.0637 142.897 29.6356 143.109 29.1567C143.32 28.6778 143.427 28.1592 143.422 27.6357C143.417 27.1122 143.3 26.5959 143.079 26.1213C142.858 25.6467 142.538 25.2248 142.141 24.8838C141.722 24.5249 141.307 24.1678 140.895 23.8127C137.751 21.1093 134.5 18.3102 131.1 15.9225C105.123 -2.36044 78.1316 -2.4633 50.8803 7.23287C26.2068 16.0055 10.3619 33.5563 3.77909 59.3882C-3.56415 88.249 2.86618 113.71 22.9048 135.073C23.4261 135.625 23.9582 136.177 24.4895 136.704C35.2539 147.469 48.6614 154.115 59.2847 158.739C63.8445 160.731 87.2404 163.149 93.5707 162.206C131.19 156.588 155.946 135.37 164.569 99.8725C166.215 92.9194 167.035 85.7962 167.011 78.6508C166.974 71.1466 165.712 63.6988 163.275 56.6012C163.097 56.0703 162.805 55.5851 162.418 55.1805C162.031 54.7759 161.56 54.4618 161.037 54.2606C160.515 54.0595 159.954 53.9764 159.396 54.0171C158.838 54.0579 158.295 54.2216 157.808 54.4965L157.706 54.5547C156.931 54.9984 156.336 55.7005 156.027 56.5381C155.717 57.3757 155.712 58.2954 156.012 59.1364C158.212 65.2371 159.334 71.674 159.327 78.1592C159.251 85.9394 158.198 93.6792 156.192 101.197C150.248 122.8 136.038 138.545 112.75 149.315C89.0741 160.65 55.1215 149.19 46.0879 143.226C36.1031 136.4 27.3663 127.908 20.2596 118.121C9.11418 102.34 6.61369 79.6587 12.6028 58.9229C15.4055 49.3489 20.3036 40.5185 26.9421 33.0722C33.5806 25.6259 41.793 19.7503 50.9838 15.8714C74.8941 5.93474 98.8852 4.18192 122.285 19.0635C125.422 21.061 133.422 27.3424 137.465 30.5501C138.143 31.0882 138.99 31.3691 139.855 31.3432C140.721 31.3172 141.549 30.986 142.194 30.4082L142.196 30.4125Z" fill="#2563eb"></path> <path d="M74.6287 104.313C76.2312 102.79 77.1115 102.019 77.9173 101.177C103.753 74.1855 132.047 49.8851 160.508 25.7727C161.584 24.8619 162.685 23.7 163.958 23.3737C165.493 22.9815 167.996 23.4326 168.682 24.2661C169.133 24.8821 169.418 25.6035 169.509 26.3612C169.601 27.1189 169.496 27.8875 169.206 28.5932C168.537 30.3474 166.907 31.8498 165.429 33.1629C156.607 41.0019 147.538 48.5708 138.872 56.5716C120.756 73.3024 102.756 90.1576 84.8704 107.137C77.0334 114.561 74.0173 114.862 66.8059 106.929C62.0589 101.705 47.7328 84.0973 43.3455 78.5495C42.7256 77.6872 42.1735 76.7781 41.6941 75.8305C40.7045 74.0756 40.0576 72.1419 42.0246 70.7814C44.2158 69.2662 45.7707 70.8473 47.0696 72.4937C48.384 74.1607 49.5048 75.9916 50.9121 77.5713C55.2811 82.4737 69.908 99.1421 74.6287 104.313Z" fill="#2563eb"></path> </g></svg>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
+      {/* Features Section */}
+      <div id='features' className='bg-white py-20 sm:py-32 relative'>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] pointer-events-none"></div>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
+          <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+            <h2 className='text-3xl sm:text-4xl font-bold text-slate-900 mb-6 tracking-tight'>Comprehensive Society Management</h2>
+            <p className='text-lg text-slate-600 font-medium'>Everything you need to manage your residential community effortlessly and efficiently.</p>
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8'>
+            {featureList.map((feature, index) => (
+              <div key={index} className='group bg-white rounded-2xl p-8 border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 flex flex-col'>
+                <div className={`w-14 h-14 rounded-xl ${feature.bgColor} ${feature.iconColor} flex items-center justify-center mb-6 border ${feature.borderColor} group-hover:scale-110 transition-transform duration-300`}>
+                  {feature.icon}
                 </div>
+                <h3 className='text-xl text-slate-900 font-bold mb-3'>{feature.title}</h3>
+                <p className='text-slate-600 leading-relaxed text-sm sm:text-base'>{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Fourth part - Pricing */}
-      <div id='pricing' className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-12 sm:py-16 md:py-20 mb-4 bg-[#1E1B2C] bg-cover bg-center min-h-screen text-gray-200'>
-        <h1 className='text-center font-bold text-2xl sm:text-3xl md:text-4xl'>Simple & Transparent Pricing</h1>
-        <h2 className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-12 sm:mb-16 md:mb-20'>Choose the perfect plan for you</h2>
-        <div className='flex flex-col lg:flex-row gap-8 justify-center items-center lg:items-stretch'>
-          {[
-            { name: "Basic", price: "₹999", desc: "Perfect for small societies", features: ["Visitor Management", "Complaint Management", "Basic Announcements", "5GB Storage"], popular: false },
-            { name: "Pro", price: "₹1999", desc: "Ideal for medium societies", features: ["Everything in Basic", "Facility Booking", "Event Management", "Payment Gateway", "20GB Storage"], popular: true },
-            { name: "Enterprise", price: "₹2999", desc: "For large societies", features: ["Everything in Pro", "Advanced Analytics", "24/7 Support", "Unlimited Storage"], popular: false }
-          ].map((plan, index) => (
-            <div key={index} className={`w-full max-w-sm md:max-w-md lg:w-1/3 border-2 ${plan.popular ? 'border-blue-500 bg-blue-700' : 'border-gray-500 bg-[rgba(57,77,105,0.5)] backdrop-blur-sm'} px-6 sm:px-8 md:px-10 py-8 rounded-xl flex flex-col`}>
-              <h2 className={`text-center font-bold text-xl sm:text-2xl py-4 ${plan.popular ? 'text-white' : 'text-gray-100'}`}>{plan.name}</h2>
-              <div className={`text-center text-4xl sm:text-5xl font-bold pb-4 ${plan.popular ? 'text-white' : 'text-gray-100'}`}>{plan.price}<span className='text-lg sm:text-xl font-semibold'>/month</span></div>
-              <div className={`text-center pb-4 ${plan.popular ? 'text-gray-200' : 'text-gray-300'}`}>{plan.desc}</div>
-              <ul className='flex flex-col gap-3 pb-4 mb-6 flex-grow'>
-                {plan.features.map((feature, fIndex) => (
-                  <li key={fIndex} className='flex gap-2 items-center'>
-                    <div className={`flex-shrink-0 w-5 h-5 ${plan.popular ? 'bg-white text-blue-700' : 'bg-blue-600 text-white'} rounded-full flex items-center justify-center`}>
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                      </svg>
-                    </div>
-                    <span className={`${plan.popular ? 'text-gray-100' : 'text-gray-200'} text-sm sm:text-base`}>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link to = "/pageNotFound" className='w-full'>
-              <button className={`px-5 py-3 w-full ${plan.popular ? 'bg-white text-blue-700 hover:bg-gray-100' : 'bg-blue-600 text-white hover:bg-blue-700'} rounded-lg font-semibold transition-colors`}>Get Started</button>
-              </Link>
-            </div>
-          ))}
+      {/* Benefits Section */}
+      <div id='benefits' className='bg-white py-20 sm:py-28 border-t border-slate-100 relative overflow-hidden'>
+        {/* Decorative background shape */}
+        <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[800px] bg-gradient-to-br from-blue-50 to-teal-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
+          <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+            <span className="text-blue-600 font-bold tracking-wider uppercase text-sm mb-3 block">Core Benefits</span>
+            <h2 className='text-3xl sm:text-4xl font-extrabold text-slate-900 mb-6 tracking-tight'>Why Choose Our Solutions</h2>
+            <p className='text-lg text-slate-600 font-medium'>
+              Transform your society management with these exclusive advantages designed for modern living.
+            </p>
+          </div>
+
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8'>
+            {benefitsList.map((benefit, index) => (
+              <GlowCard
+                key={index}
+                glowColor={['blue', 'green', 'purple'][index % 3]}
+                className='text-left'
+              >
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 mb-5 transform group-hover:scale-110 transition-transform duration-500">
+                    {benefit.icon}
+                  </div>
+
+                  <h3 className='text-xl font-bold text-slate-900 mb-3'>{benefit.title}</h3>
+                  <p className='text-sm text-slate-600 leading-relaxed mb-6'>{benefit.desc}</p>
+
+                  <ul className='flex flex-col gap-3 mt-auto'>
+                    {benefit.points.map((point, pIndex) => (
+                      <li key={pIndex} className='flex items-center gap-3 text-slate-700 text-sm font-medium bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100 group-hover:bg-white group-hover:border-blue-100 transition-colors duration-300'>
+                        <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </GlowCard>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Fifth part - Testimonials */}
-      <section id='testimonials' className="bg-white py-16 sm:py-20 md:py-24 relative overflow-hidden">
-        <div className="container z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            viewport={{ once: true }}
-            className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
-          >
-            <div className="flex justify-center mb-5 mt-5">
-              <div className="border border-blue-200 bg-blue-50 text-blue-600 font-bold py-1 px-4 rounded-full text-xs tracking-wide uppercase">Testimonials</div>
-            </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-gray-800 tracking-tight">
-              What our users say
-            </h2>
-            <p className="text-center text-md sm:text-lg md:text-xl mt-4 text-gray-600">
-              Trusted by residential societies across the country.
-            </p>
-          </motion.div>
-
-          <div className="flex justify-center gap-6 mt-12 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] h-[500px] overflow-hidden">
-            <TestimonialsColumn testimonials={firstColumn} duration={15} />
-            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
-            <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
+      {/* Pricing Section */}
+      <div id='pricing' className='bg-white py-20 sm:py-32 border-t border-slate-100'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+            <h2 className='text-3xl sm:text-4xl font-bold text-slate-900 mb-6 tracking-tight'>Simple & Transparent Pricing</h2>
+            <p className='text-lg text-slate-600 font-medium'>Choose the perfect plan tailored for your residential society.</p>
           </div>
 
-          {/* <div className='text-center mt-10 sm:mt-12'>
-            <Link to='/pageNotFound'>
-            <button className='bg-blue-600 text-white rounded-lg px-6 py-3 sm:py-4 text-sm sm:text-base hover:bg-blue-700 transition-colors font-semibold shadow-md'>View more testimonials</button>
-            </Link>
-          </div> */}
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center max-w-5xl mx-auto'>
+            {[
+              { name: "Basic", price: "₹999", desc: "Perfect for small societies", features: ["Visitor Management", "Complaint Management", "Basic Announcements", "5GB Storage"], popular: false },
+              { name: "Pro", price: "₹1999", desc: "Ideal for medium societies", features: ["Everything in Basic", "Facility Booking", "Event Management", "Payment Gateway", "20GB Storage"], popular: true },
+              { name: "Enterprise", price: "₹2999", desc: "For large societies", features: ["Everything in Pro", "Advanced Analytics", "24/7 Support", "Unlimited Storage"], popular: false }
+            ].map((plan, index) => (
+              <div key={index} className={`relative flex flex-col p-8 sm:p-10 rounded-3xl transition-all duration-300 ${plan.popular ? 'bg-blue-600 border-none shadow-[0_20px_40px_rgb(37,99,235,0.2)] md:-translate-y-4' : 'bg-slate-50 border border-slate-200'}`}>
+                {plan.popular && (
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-teal-400 to-blue-400 text-slate-900 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className={`text-xl font-bold mb-2 ${plan.popular ? 'text-blue-50' : 'text-slate-800'}`}>{plan.name}</h3>
+                <div className={`text-5xl font-extrabold mb-4 tracking-tight ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
+                  {plan.price}<span className={`text-base font-medium ml-1 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>/month</span>
+                </div>
+                <p className={`text-sm mb-8 ${plan.popular ? 'text-blue-100' : 'text-slate-600'}`}>{plan.desc}</p>
+                <ul className='flex flex-col gap-4 mb-10 flex-grow'>
+                  {plan.features.map((feature, fIndex) => (
+                    <li key={fIndex} className='flex items-center gap-3'>
+                      <svg className={`w-5 h-5 shrink-0 ${plan.popular ? 'text-blue-200' : 'text-blue-600'}`} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span className={`text-sm font-medium ${plan.popular ? 'text-white' : 'text-slate-700'}`}>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/pageNotFound" className="mt-auto w-full">
+                  <button className={`w-full py-3.5 px-6 rounded-xl font-bold transition-all duration-300 ${plan.popular ? 'bg-white text-blue-600 hover:bg-slate-50' : 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-100 hover:shadow-sm'}`}>
+                    Get Started
+                  </button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <section id='testimonials' className="bg-slate-50 py-20 sm:py-32 relative overflow-hidden border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col items-center justify-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center text-slate-900 tracking-tight mb-6">
+              Trusted by Communities
+            </h2>
+            <p className="text-center text-lg text-slate-600 font-medium">
+              See what residents and committee members have to say about ResiHub.
+            </p>
+          </div>
+
+          <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] h-[560px] overflow-hidden">
+            <TestimonialsColumn testimonials={firstColumn} duration={20} />
+            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={25} />
+            <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={22} />
+          </div>
         </div>
       </section>
 
-      {/* Sixth part - Contact & Footer */}
-      <div id='contact' className="bg-[#1E1B2C] bg-cover bg-center">
-        <div className='py-10 sm:py-12 md:py-16 px-4 sm:p-7 text-gray-200'>
-          <div className='text-center font-bold text-2xl sm:text-3xl md:text-4xl'>Get in touch with us</div>
-          <div className='text-center text-md sm:text-lg md:text-xl mt-4 text-pretty mb-12 sm:mb-16 md:mb-20'>Have questions? We'd love to answer that!</div>
-          <div className='flex flex-col lg:flex-row gap-8 lg:gap-10 justify-center items-center lg:items-start max-w-6xl mx-auto'>
-            <div className="w-full lg:w-1/2 max-w-xl shadow-black shadow-md rounded-xl p-6 sm:p-8 bg-gray-200 bg-opacity-90 backdrop-blur-sm">
-              <form className="space-y-4 sm:space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      {/* Contact & Footer */}
+      <div id='contact' className="bg-white border-t border-slate-100">
+        <div className='max-w-7xl mx-auto py-20 sm:py-32 px-4 sm:px-6 lg:px-8'>
+          <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+            <h2 className='text-3xl sm:text-4xl font-bold text-slate-900 mb-6 tracking-tight'>Get in touch with us</h2>
+            <p className='text-lg text-slate-600 font-medium'>Have questions? Our support team is here to help.</p>
+          </div>
+
+          <div className='flex flex-col lg:flex-row gap-12 lg:gap-16 items-start'>
+            <div className="w-full lg:w-3/5 bg-slate-50 rounded-3xl p-8 sm:p-10 border border-slate-100 shadow-sm">
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-black mb-1 sm:mb-2">First Name</label>
-                    <input type="text" id="firstName" className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter first name" />
+                    <label htmlFor="firstName" className="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
+                    <input type="text" id="firstName" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="John" />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-black mb-1 sm:mb-2">Last Name</label>
-                    <input type="text" id="lastName" className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter last name" />
+                    <label htmlFor="lastName" className="block text-sm font-semibold text-slate-700 mb-2">Last Name</label>
+                    <input type="text" id="lastName" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="Doe" />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="emailAddress" className="block text-sm font-medium text-black mb-1 sm:mb-2">Email Address</label>
-                  <input type="email" id="emailAddress" className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter email address" />
+                  <label htmlFor="emailAddress" className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                  <input type="email" id="emailAddress" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="john@example.com" />
                 </div>
                 <div>
-                  <label htmlFor="societyName" className="block text-sm font-medium text-black mb-1 sm:mb-2">Society Name</label>
-                  <input type="text" id="societyName" className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter society name" />
+                  <label htmlFor="societyName" className="block text-sm font-semibold text-slate-700 mb-2">Society Name</label>
+                  <input type="text" id="societyName" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="Palm Residency" />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-black mb-1 sm:mb-2">Message</label>
-                  <textarea id="message" rows="4" className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 sm:px-4 sm:py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your message..."></textarea>
+                  <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
+                  <textarea id="message" rows="4" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors resize-none" placeholder="How can we help you?"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-blue-600 text-white rounded-lg py-2.5 sm:py-3 font-medium hover:bg-blue-700 transition-colors">
+                <button type="submit" className="w-full bg-slate-900 text-white rounded-xl py-4 font-bold hover:bg-slate-800 transition-colors shadow-md shadow-slate-900/10">
                   Send Message
                 </button>
               </form>
             </div>
-            <div className='w-full lg:w-auto flex flex-col gap-8'>
-              <div className="w-full max-w-md mx-auto lg:mx-0 p-6 bg-gray-200 bg-opacity-90 backdrop-blur-sm text-black rounded-lg shadow-md shadow-black">
-                <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
-                <div className="space-y-4">
-                  {[
-                    { icon: "https://www.svgrepo.com/show/533288/phone-incoming.svg", label: "Phone", value: "+91 123 456 7890" },
-                    { icon: "https://www.svgrepo.com/show/511917/email-1572.svg", label: "Email", value: "support@resihub.com" },
-                    { icon: "https://www.svgrepo.com/show/493957/address.svg", label: "Address", value: "123 Tech Park, Silicon Valley, Bangalore, Karnataka 560001" }
-                  ].map((info, index) => (
-                    <div key={index} className="flex items-center space-x-3 sm:space-x-4">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-blue-100">
-                        <img src={info.icon} className='h-5 w-5 sm:h-6 sm:w-6' alt={`${info.label} icon`} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm sm:text-base">{info.label}</p>
-                        <p className="text-gray-500 text-xs sm:text-sm">{info.value}</p>
-                      </div>
+
+            <div className='w-full lg:w-2/5 flex flex-col gap-8'>
+              <div className="bg-slate-50 p-8 sm:p-10 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center h-full">
+                <h3 className="text-xl font-bold text-slate-900 mb-8">Contact Information</h3>
+                <div className="space-y-8">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className="w-full max-w-md mx-auto lg:mx-0 bg-gray-200 bg-opacity-90 backdrop-blur-sm shadow-md shadow-black rounded-xl p-6 sm:p-8">
-                <h3 className="text-lg sm:text-xl font-bold text-black mb-4 sm:mb-6">Business Hours</h3>
-                <div className="space-y-2 text-sm sm:text-base">
-                  <p className="text-black">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                  <p className="text-black">Saturday: 10:00 AM - 4:00 PM</p>
-                  <p className="text-black">Sunday: Closed</p>
+                    <div>
+                      <p className="font-semibold text-slate-900">Phone</p>
+                      <p className="text-slate-600 mt-1">+91 123 456 7890</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">Email</p>
+                      <p className="text-slate-600 mt-1">support@resihub.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">Office</p>
+                      <p className="text-slate-600 mt-1 leading-relaxed">123 Tech Park, Silicon Valley, <br />Bangalore, Karnataka 560001</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -430,55 +421,58 @@ function OrgLanding() {
         </div>
 
         {/* Footer */}
-        <div className="pt-12 sm:pt-16 pb-8 bg-[rgb(40,55,80)] text-gray-300"> {/* Slightly darker footer bg */}
+        <footer className="bg-slate-50 text-slate-600 py-16 border-t border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 sm:pb-12 border-b border-neutral-700 text-center md:text-left">
-              <div className="flex flex-col items-center md:items-start">
-                <h3 className="text-xl font-bold mb-4 text-white">ResiHub</h3>
-                <p className="mb-6 text-gray-400 text-sm max-w-sm mx-auto md:mx-0">
-                  We are a dedicated platform designed to streamline society management, helping residents
-                  with communication, maintenance requests, and community engagement. Our goal is to make
-                  society living hassle-free and organized.
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 border-b border-slate-200 pb-12">
+              <div className="md:col-span-5 flex flex-col">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-lg font-bold">R</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 tracking-tight">ResiHub</h3>
+                </div>
+                <p className="text-sm leading-relaxed max-w-sm text-slate-600">
+                  We are a dedicated platform designed to streamline society management, ensuring communication, maintenance, and community engagement are always hassle-free.
                 </p>
-                <div className="flex space-x-4 justify-center md:justify-start">
-                  {[
-                    { href: "#", src: "https://www.svgrepo.com/show/521654/facebook.svg", alt: "Facebook" },
-                    { href: "#", src: "https://www.svgrepo.com/show/521900/twitter.svg", alt: "Twitter" },
-                    { href: "#", src: "https://www.svgrepo.com/show/458756/insta.svg", alt: "Instagram" }
-                  ].map(social => (
-                    <a key={social.alt} href={social.href} className="text-gray-400 hover:text-blue-500 transition-colors">
-                      <img className='h-7 w-7 sm:h-8 sm:w-8' src={social.src} alt={social.alt} />
+                <div className="flex space-x-5 mt-8">
+                  {/* {['github', 'twitter', 'linkedin'].map(social => (
+                    <a key={social} href="#" className="text-slate-400 hover:text-blue-600 transition-colors">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
                     </a>
-                  ))}
+                  ))} */}
                 </div>
               </div>
 
-              <div className="flex flex-col items-center md:items-start">
-                <h3 className="font-semibold text-white mb-4">Quick Links</h3>
-                <ul className="space-y-2 text-sm">
-                  {['Visitor Management', 'Complaint System', 'Facility Booking', 'Event Management', 'Payment Gateway', 'Polls'].map(link => (
-                    <li key={link}><a href="/login" className="hover:text-blue-400 transition-colors">{link}</a></li>
+              <div className="md:col-span-3">
+                <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Solutions</h3>
+                <ul className="space-y-3 text-sm">
+                  {['Visitor Management', 'Complaint System', 'Facility Booking', 'Payment Gateway'].map(link => (
+                    <li key={link}><a href="/login" className="text-slate-600 hover:text-blue-600 transition-colors">{link}</a></li>
                   ))}
                 </ul>
               </div>
 
-              <div className="flex flex-col items-center md:items-start">
-                <h3 className="font-semibold text-white mb-4">Legal</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
-                  <li><a href="#" className="hover:text-blue-400 transition-colors">Terms of Service</a></li>
-                  <li><a href="#contact" className="hover:text-blue-400 transition-colors">Contact</a></li>
-                </ul>
+              <div className="md:col-span-4">
+                <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Stay Updated</h3>
+                <p className="text-sm mb-4 text-slate-600">Subscribe to our newsletter for the latest updates.</p>
+                <div className="flex gap-2">
+                  <input type="email" placeholder="Enter email" className="bg-white border border-slate-300 text-slate-900 placeholder-slate-400 text-sm rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 w-full transition-colors" />
+                  <button className="bg-slate-900 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition-colors shadow-sm">Submit</button>
+                </div>
               </div>
             </div>
-            <div className="pt-8 text-center">
-              <p className="text-gray-400 text-xs sm:text-sm">© {new Date().getFullYear()} ResiHub. All rights reserved.</p>
+            <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-500">
+              <p>© {new Date().getFullYear()} ResiHub. All rights reserved.</p>
+              <div className="flex gap-6">
+                <a href="#" className="hover:text-slate-900 transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-slate-900 transition-colors">Terms of Service</a>
+              </div>
             </div>
           </div>
-        </div>
+        </footer>
       </div>
     </div>
-  )
+  );
 }
 
 export default OrgLanding;
