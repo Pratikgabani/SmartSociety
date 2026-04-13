@@ -25,7 +25,7 @@ const visitorSchema = new Schema({
     },
     visitDate : {
         type : Date,
-        
+        index: true
     },
     
  
@@ -40,7 +40,7 @@ const visitorSchema = new Schema({
     },
     societyId : {
         type : String,
-        
+        index: true
     }
 
     

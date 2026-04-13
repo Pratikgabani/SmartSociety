@@ -5,6 +5,7 @@ const paymentSchema = new mongoose.Schema({
   societyId : {
     type : String,
     // required : true
+    index : true
   },
   
    amount : {

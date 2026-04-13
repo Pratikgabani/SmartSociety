@@ -1,36 +1,45 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import SocietyDetails from './components/SocietyDetail/SocietyDetail.jsx';
 import { createBrowserRouter,createRoutesFromElements } from "react-router-dom";
-import { Route, RouterProvider, BrowserRouter } from "react-router-dom";
-import Login from './components/Login/Login.jsx';
-import Register from './components/Register/Register.jsx';
-import Payment from './components/Payment/Payment.jsx';
-import Visitor from './components/visitor/Visitor.jsx';
-import Complaint from './components/Complaint/Complaint.jsx';
+import { Route, RouterProvider } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
-import Booking from './components/Booking/Booking.jsx';
-import PollApp from './components/polls/polls.jsx';
-import Event from './components/Event/Event.jsx';
-import SecurityRegister from './components/Security/Security.jsx';
-import Announcements from './components/Notice/Notice.jsx';
-import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
-import Dashboard from   './components/dashboard/dashboard.jsx';
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import Layout from "./Layout.jsx"
 import RequireAuth from './RequireAuth.jsx';
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import PageNotFound from './components/PageNotFound/PageNotFound.jsx';
-import GoogleLogin from './components/Login/Login.jsx';
-import Buy from './components/Buy/Buy.jsx';
-import PreviousDataModal from './components/history/PreviousDataModal .jsx';
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import EventBuy from './components/Buy/EventBuy.jsx';
-import BookingBuy from './components/Buy/BookingBuy.jsx';
+import OrgLanding from './components/OrgLanding/OrgLanding.jsx';
 import UserContextProvider from './context/UserContextProvider.jsx';
-import RefundAdmin from './components/RefundAdmin/RefundAdmin.jsx';
+import Login from './components/Login/Login.jsx';
+
+// 🔥 Lazy Loading Implementation
+// Instead of downloading all these modules on initial page load, 
+// they are now split into smaller JS chunks and downloaded only when the user navigates to them!
+const Load = (Component) => (props) => (
+  <Suspense fallback={<div className="flex h-screen items-center justify-center font-bold text-gray-500 animate-pulse">Loading Module...</div>}>
+    <Component {...props} />
+  </Suspense>
+);
+
+const SocietyDetails = Load(lazy(() => import('./components/SocietyDetail/SocietyDetail.jsx')));
+const Register = Load(lazy(() => import('./components/Register/Register.jsx')));
+const Payment = Load(lazy(() => import('./components/Payment/Payment.jsx')));
+const Visitor = Load(lazy(() => import('./components/visitor/Visitor.jsx')));
+const Complaint = Load(lazy(() => import('./components/Complaint/Complaint.jsx')));
+const Booking = Load(lazy(() => import('./components/Booking/Booking.jsx')));
+const PollApp = Load(lazy(() => import('./components/polls/polls.jsx')));
+const Event = Load(lazy(() => import('./components/Event/Event.jsx')));
+const SecurityRegister = Load(lazy(() => import('./components/Security/Security.jsx')));
+const Announcements = Load(lazy(() => import('./components/Notice/Notice.jsx')));
+const Dashboard = Load(lazy(() => import('./components/dashboard/dashboard.jsx')));
+const PageNotFound = Load(lazy(() => import('./components/PageNotFound/PageNotFound.jsx')));
+const Buy = Load(lazy(() => import('./components/Buy/Buy.jsx')));
+const PreviousDataModal = Load(lazy(() => import('./components/history/PreviousDataModal .jsx')));
+const EventBuy = Load(lazy(() => import('./components/Buy/EventBuy.jsx')));
+const BookingBuy = Load(lazy(() => import('./components/Buy/BookingBuy.jsx')));
+const RefundAdmin = Load(lazy(() => import('./components/RefundAdmin/RefundAdmin.jsx')));
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 

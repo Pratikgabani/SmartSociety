@@ -142,8 +142,8 @@ function dashboard() {
           withCredentials: true,
         });
         setLoading(false);
-        // console.log(response.data.data)
-        setPayments(response.data.data);
+        // Destructure the new paginated object layout!
+        setPayments(response.data.data?.data || []);
       } catch (error) {
         console.error("Error fetching visitors:", error);
       }

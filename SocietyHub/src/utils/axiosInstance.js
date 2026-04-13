@@ -1,8 +1,20 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_URL_BACKEND}/api/v1`,
   withCredentials: true,
+});
+
+// 🔥 Network Resilience: Automatically retry failed requests (Network Timeouts or 5xx Server Errors) up to 3 times.
+// Uses an Exponential Backoff delay so we don't bombard a reviving server.
+axiosRetry(api, {
+  retries: 3,
+  retryDelay: axiosRetry.exponentialDelay,
+  retryCondition: (error) => {
+    // Retry on standard network timeouts, OR any 5xx (Internal Server Errors) thrown by your Node.js backend.
+    return axiosRetry.isNetworkOrIdempotentRequestError(error) || error.response?.status >= 500;
+  }
 });
 
 // Routes that are public — never attempt a token refresh for these

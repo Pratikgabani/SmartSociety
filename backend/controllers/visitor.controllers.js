@@ -113,7 +113,7 @@ const deleteVisitor = asyncHandler(async (req, res) => {
 
 const getRecentVisitors = asyncHandler(async (req, res) => {
     try {
-        const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -createdAt -updatedAt");
+        const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -createdAt -updatedAt").lean();
 
         // if (!visitors || visitors.length === 0) {
         //     throw new ApiError(404, "No recent visitors found");
@@ -133,7 +133,7 @@ const getRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     }
  
     try {
-        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v  -createdAt -updatedAt");
+        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v  -createdAt -updatedAt").lean();
 
         // if (!visitors || visitors.length === 0) {
         //     return res.status(404).json({ message: "No recent visitors found" });
@@ -153,7 +153,7 @@ const getHisRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     }
  
     try {
-        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v -_id -isActive -createdAt -updatedAt");
+        const visitors = await Visitor.find({ isActive: false ,visitingBlock : visitingBlock, visitingAdd : userHouse, societyId : req.user.societyId}).select(" -societyId -__v -_id -isActive -createdAt -updatedAt").lean();
 
         // if (!visitors || visitors.length === 0) {
         //     return res.status(404).json({ message: "No recent visitors found" });
@@ -166,7 +166,7 @@ const getHisRecentVisitorsByUserId = asyncHandler(async (req, res) => {
 });
     const getHisAllRecentVisitors = asyncHandler(async (req, res) => {
         try {
-            const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -_id -isActive  -createdAt -updatedAt");
+            const visitors = await Visitor.find({ isActive: false }).select(" -societyId -__v  -_id -isActive  -createdAt -updatedAt").lean();
     
             // if (!visitors || visitors.length === 0) {
             //     throw new ApiError(404, "No recent visitors found");
@@ -179,7 +179,7 @@ const getHisRecentVisitorsByUserId = asyncHandler(async (req, res) => {
     });
 const getActiveVisitors = asyncHandler(async (req, res) => {
     //get the visiting add from visitors and match it to the users houseNo and then provide all the visitors with same houseNo as visitingAdd
-    const visitors = await Visitor.find({ isActive: true, societyId : req.user.societyId});
+    const visitors = await Visitor.find({ isActive: true, societyId : req.user.societyId}).lean();
    if(!visitors){
    return res
    .status(404)
@@ -200,7 +200,7 @@ const getActiveVisitorsByUserId = asyncHandler(async (req, res) => {
     }
  
     try {
-        const visitors = await Visitor.find({ societyId : req.user.societyId,isActive: true ,visitingBlock : visitingBlock, visitingAdd : userHouse});
+        const visitors = await Visitor.find({ societyId : req.user.societyId,isActive: true ,visitingBlock : visitingBlock, visitingAdd : userHouse}).lean();
 
         // if (!visitors || visitors.length === 0) {
         //     return res.status(404).json({ message: "No recent visitors found" });
@@ -218,7 +218,7 @@ const getVisitorById = asyncHandler(async (req, res) => {
     const visitingBlock = req.user.block
     // console.log("userHome"+ userHome)
     // console.log("visitingBlock"+ visitingBlock)
-    const visitor = await Visitor.find({visitingAdd : userHome, visitingBlock : visitingBlock, societyId : req.user.societyId})
+    const visitor = await Visitor.find({visitingAdd : userHome, visitingBlock : visitingBlock, societyId : req.user.societyId}).lean()
 
     if(!visitor){
      return res

@@ -123,6 +123,7 @@ const Booking = () => {
   const isPaidBookingOrderStatus = (status) => {
     return [
       "succeeded",
+      "Paid",            // ✅ Fix #2: our new normalized status enum
       "Refund Initiated",
       "Refund_Initiated",
       "Refund_Pending_Approval",
@@ -131,7 +132,8 @@ const Booking = () => {
   };
 
   const isBookingHistoryVisibleStatus = (status) => {
-    return status === "succeeded";
+    // ✅ Fix #2: include both old "succeeded" (legacy DB records) and new "Paid" (after our model fix)
+    return status === "succeeded" || status === "Paid";
   };
 
   // Fetch previous data (for admin only)
@@ -229,24 +231,36 @@ const Booking = () => {
         reason: refundReason, 
         orderType: "BookingOrder"
       }, { withCredentials: true });
+
+      // ✅ Fix #1: Show success and close modal FIRST — before any follow-up data fetching
       toast.success(response.data?.message || "Refund requested successfully");
       setIsRefundModalOpen(false);
       
-      if (response.status === 200) {
-        // Optimistically mark as Refunded to remove it instantly without requiring a page refresh
-        setBookingOrders((prev) =>
-          prev.map((order) =>
-            order._id === selectedRefundOrderId
-              ? { ...order, status: "Refunded" }
-              : order
-          )
-        );
-      } else {
-        // Re-fetch to update status for pending refunds
-        const bookRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
-        setBookingOrders(bookRes.data.data || []);
+      // ✅ Fix #1: Isolated inner try-catch — if the data refresh fails, it NEVER
+      // bleeds into the outer catch and never overwrites the success toast with an error
+      try {
+        if (response.status === 200) {
+          // Auto-refund (<24h): optimistically mark as "Refund Initiated" (what backend actually sets)
+          // ✅ Fix #3: was incorrectly "Refunded", corrected to "Refund Initiated"
+          setBookingOrders((prev) =>
+            prev.map((order) =>
+              order._id === selectedRefundOrderId
+                ? { ...order, status: "Refund Initiated" }
+                : order
+            )
+          );
+        } else {
+          // Manual review (>24h): re-fetch the latest order statuses from server
+          const bookRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
+          setBookingOrders(bookRes.data.data || []);
+        }
+      } catch (refreshErr) {
+        // Non-critical: the 5-second polling interval will sync state automatically
+        console.error("Order status refresh failed (non-critical):", refreshErr);
       }
+
     } catch (error) {
+      // Only real POST failures (network down, 4xx/5xx from backend) reach here
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to submit refund request");
     }

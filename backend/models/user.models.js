@@ -17,7 +17,8 @@ const userSchema = new Schema({
   },
   societyId: {
     type: String,
-    required: true
+    required: true,
+    index: true
   },
   email: {
     type: String,

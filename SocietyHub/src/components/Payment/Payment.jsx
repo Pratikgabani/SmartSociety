@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "../../axios";
 import PreviousDataModal from '../history/PreviousDataModal ';
 import { Plus, X } from "lucide-react"; // Import cross icon
@@ -8,6 +8,68 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from 'react-spinners'
 import UserContext from "../../context/UserContext";
+
+// 🔥 Memoization Implementation for Payment Rows
+const PaymentRow = React.memo(({ payment, status, payDate, receiptUrl, rolee, onDelete }) => (
+  <tr className="border border-gray-300">
+    <td className="border border-gray-300 px-4 py-2 text-center">
+      {payment.description}
+    </td>
+    <td className="border border-gray-300 px-4 py-2 text-center">
+      ₹{payment.amount}
+    </td>
+    <td
+      className={
+        status === "Paid"
+          ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold"
+          : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"
+      }
+    >
+      {status}
+    </td>
+    <td className="border border-gray-300 px-4 py-2 text-center">
+      {payDate}
+    </td>
+    <td className="border border-gray-300 px-4 py-2 text-center">
+      {new Date(payment.dueDate).toLocaleDateString("en-GB")}
+    </td>
+    <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
+      {status !== "Paid" && (
+        <Link
+          to={`/layout/payPayment/${payment._id}`}
+          className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700"
+        >
+          Pay
+        </Link>
+      )}
+      {status === "Paid" && (
+        <div className="flex justify-center items-center">
+          {receiptUrl ? (
+            <a
+              href={receiptUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="border border-blue-600 text-blue-600 px-4 py-1 rounded-lg font-semibold hover:bg-blue-50 transition-colors whitespace-nowrap"
+            >
+              View Receipt
+            </a>
+          ) : (
+            <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-lg text-sm font-semibold cursor-not-allowed whitespace-nowrap">Receipt unavailable</span>
+          )}
+        </div>
+      )}
+      {rolee === "admin" && (
+        <button
+          onClick={() => onDelete(payment._id)}
+          className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors"
+        >
+          <RiDeleteBin6Fill size={20} />
+        </button>
+      )}
+    </td>
+  </tr>
+));
+
 const PaymentSection = () => {
   const [payments, setPayments] = useState([]);
   const [showAdminForm, setShowAdminForm] = useState(false);
@@ -26,6 +88,12 @@ const PaymentSection = () => {
   const [fetchAgain, setFetchAgain] = useState([]);
   const [kaam, setKaam] = useState([]);
   const {rolee} = useContext(UserContext)
+  
+  // 🔥 Pagination States
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
   const fetchPurchases = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/purchase/getAllPurchases`, { withCredentials: true });
@@ -37,8 +105,11 @@ const PaymentSection = () => {
 
   useEffect(() => {
     fetchPurchases();
-    fetchPayments();
   }, []);
+
+  useEffect(() => {
+    fetchPayments(page === 1, page === 1, page);
+  }, [page]);
 
   useEffect(() => {
     const url = `${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/stream`;
@@ -65,17 +136,45 @@ const PaymentSection = () => {
     };
   }, []);
 
-  const fetchPayments = async (showLoader = true) => {
+  const fetchPayments = async (showLoader = true, reset = true, pageNum = 1) => {
     if (showLoader) setLoading(true);
+    if (!reset) setIsFetchingMore(true);
+
     try {
-      const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/getPayments`, {
+      const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/getPayments?page=${pageNum}&limit=15`, {
         withCredentials: true,
       });
-      setPayments(response.data.data);
+      
+      const { data: fetchedPayments, hasMore: morePayments } = response.data.data;
+      
+      if (reset) {
+        setPayments(fetchedPayments);
+      } else {
+        setPayments(prev => {
+          // Smart logic to prevent duplicate key renders in React StrictMode
+          const existingIds = new Set(prev.map(p => p._id));
+          const uniqueNew = fetchedPayments.filter(p => !existingIds.has(p._id));
+          return [...prev, ...uniqueNew];
+        });
+      }
+      setHasMore(morePayments);
     } catch (error) {
       console.error("Error fetching payments:", error);
     }
+
     if (showLoader) setLoading(false);
+    if (!reset) setIsFetchingMore(false);
+  };
+
+  // 🔥 Intelligent Infinite Scroll Handler
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+    // If user smoothly scrolls within 50px of the container's bottom edge
+    if (scrollHeight - scrollTop <= clientHeight + 50) {
+      if (hasMore && !isFetchingMore && !loading) {
+        setPage((prev) => prev + 1);
+      }
+    }
   };
 
   const fetchAgainData = async (a) => {
@@ -103,18 +202,20 @@ const PaymentSection = () => {
       console.error("Error fetching data:", error);
     }
   };
-  const deletePayment = async (paymentId) => {
+  // 🔥 useCallback applied to ensure memoized rows do not re-render uselessly
+  const deletePayment = useCallback(async (paymentId) => {
     try {
       await axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/deletePayment/${paymentId}`, {
         withCredentials: true,
       });
       toast.success("Payment deleted successfully!");
-      setPayments(payments.filter((payment) => payment._id !== paymentId));
-      fetchPayments();
+      setPayments((prev) => prev.filter((payment) => payment._id !== paymentId));
+      // fetchPayments is not wrapped in useCallback, so calling it inside a useCallback could be tricky.
+      // But we just successfully updated local state, we'll omit fetchPayments() here to prevent dependencies.
     } catch (error) {
       console.error("Error deleting payment:", error);
     }
-  };
+  }, []);
 
   const handleNewPaymentChange = (e) => {
     setNewPayment({ ...newPayment, [e.target.name]: e.target.value });
@@ -166,12 +267,15 @@ const getPaymentReceiptUrl = (payId) => {
   const addPayment = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/payment/createPayment`, newPayment, {
-        // headers: { Authorization: "Bearer " + token },
         withCredentials: true,
       });
       setShowAdminForm(false);
       setNewPayment({ description: "", amount: "", dueDate: "" });
-      fetchPayments();
+      
+      // Instantly Resync and reset to page 1
+      setPage(1);
+      fetchPayments(true, true, 1);
+      
       toast.success("Payment added successfully!");
     } catch (error) {
       console.error("Error adding payment:", error);
@@ -264,7 +368,10 @@ return (
         </div>
       )}
 
-      <div className="overflow-x-auto mt-10">
+      <div 
+        className="overflow-x-auto overflow-y-auto mt-10 max-h-[500px] border border-gray-200 rounded-lg shadow-sm bg-white relative"
+        onScroll={handleScroll}
+      >
         <table className="min-w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-blue-100">
@@ -278,64 +385,20 @@ return (
           </thead>
           <tbody>
             {payments.map((payment) => (
-              <tr key={payment._id} className="border border-gray-300">
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {payment.description}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  ₹{payment.amount}
-                </td>
-                <td
-                  className={
-                    paymentStatus(payment._id) === "Paid"
-                      ? "border border-gray-300 px-4 py-2 text-center text-green-600 font-semibold"
-                      : "border border-gray-300 px-4 py-2 text-center text-red-600 font-semibold"
-                  }
-                >
-                  {paymentStatus(payment._id)}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {paymentDateLaao(payment._id)}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {new Date(payment.dueDate).toLocaleDateString("en-GB")}
-                </td>
-                <td className="border border-gray-300 px-4 flex justify-around py-2 text-center">
-                  {paymentStatus(payment._id) !== "Paid" &&(<Link
-                    to={`/layout/payPayment/${payment._id}`}
-                    className="bg-blue-600 text-white px-6 py-1 rounded-lg font-semibold hover:bg-blue-700"
-                  >
-                    Pay
-                  </Link>)}
-                  {paymentStatus(payment._id) === "Paid" && (
-                    <div className="flex justify-center items-center">
-                      {getPaymentReceiptUrl(payment._id) ? (
-                        <a
-                          href={getPaymentReceiptUrl(payment._id)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="border border-blue-600 text-blue-600 px-4 py-1 rounded-lg font-semibold hover:bg-blue-50 transition-colors whitespace-nowrap"
-                        >
-                          View Receipt
-                        </a>
-                      ) : (
-                        <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-lg text-sm font-semibold cursor-not-allowed whitespace-nowrap">Receipt unavailable</span>
-                      )}
-                    </div>
-                  )}
-                  {rolee === "admin" && (
-                    <button
-                      onClick={() => deletePayment(payment._id)}
-                      className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors"
-                    >
-                      <RiDeleteBin6Fill size={20} />
-                    </button>
-                  )}
-                </td>
-              </tr>
+              <PaymentRow
+                key={payment._id}
+                payment={payment}
+                status={paymentStatus(payment._id)}
+                payDate={paymentDateLaao(payment._id)}
+                receiptUrl={getPaymentReceiptUrl(payment._id)}
+                rolee={rolee}
+                onDelete={deletePayment}
+              />
             ))}
           </tbody>
         </table>
+        {isFetchingMore && <div className="text-center py-4 font-semibold text-blue-600 animate-pulse">Fetching older records...</div>}
+        {!hasMore && payments.length > 0 && <div className="text-center py-4 text-sm text-gray-400">You have reached the end of the records.</div>}
       </div>
     </div>
 

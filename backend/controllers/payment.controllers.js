@@ -53,11 +53,25 @@ const paymentStream = asyncHandler(async (req, res) => {
 
 
 
-// 1. Get all payments (Admin View)
+// 1. Get all payments (Admin View) with Pagination!
 const getPayments = async (req, res) => {
   try {
-    const payments = await Payment.find({ societyId: req.user.societyId, });
-    res.status(200).json(new ApiResponse(200, payments, "Payments fetched successfully"));
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+    const skip = (page - 1) * limit;
+
+    const payments = await Payment.find({ societyId: req.user.societyId })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const totalDocCount = await Payment.countDocuments({ societyId: req.user.societyId });
+    const hasMore = skip + payments.length < totalDocCount;
+
+    // Send back a structured pagination response
+    res.status(200).json(
+      new ApiResponse(200, { data: payments, hasMore, currentPage: page, total: totalDocCount }, "Payments fetched successfully")
+    );
   } catch (error) {
     throw new ApiError(500, "Failed to fetch payments");
   }
@@ -67,7 +81,7 @@ const getPayments = async (req, res) => {
 const getUserPayments = async (req, res) => {
   const { userId } = req.params;
   try {
-    const payments = await Payment.find({ userId, societyId: req.user.societyId });
+    const payments = await Payment.find({ userId, societyId: req.user.societyId }).lean();
     res.status(200).json(new ApiResponse(200, payments, "User payments fetched successfully"));
   } catch (error) {
     throw new ApiError(500, "Failed to fetch user payments");
@@ -257,7 +271,7 @@ const handleBookingSuccess = async ({ paymentIntent, metadata, receiptUrl }) => 
       societyId,
       paymentIntentId: paymentIntent.id,
       amount: paymentIntent.amount,
-      status: paymentIntent.status,
+      status: "Paid",  // Normalized to our enum, not Stripe's raw "succeeded"
       paidOn: new Date(),
       email: email || "",
       receiptUrl: receiptUrl || "",
@@ -286,7 +300,7 @@ const handleEventSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
       societyId,
       paymentIntentId: paymentIntent.id,
       amount: paymentIntent.amount,
-      status: paymentIntent.status,
+      status: "Paid",  // Normalized to our enum, not Stripe's raw "succeeded"
       paidOn: new Date(),
       email: email || "",
       receiptUrl: receiptUrl || "",
@@ -422,7 +436,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 
 const getAdminData = async (req, res) => {
   try {
-    const payments = await Payment.find({ societyId: req.user.societyId }).populate("paidBy", "name phoneNo houseNo block -_id").select(" -updatedAt -__v -societyId -_id");
+    const payments = await Payment.find({ societyId: req.user.societyId }).populate("paidBy", "name phoneNo houseNo block -_id").select(" -updatedAt -__v -societyId -_id").lean();
 
     res.status(200).json(new ApiResponse(200, payments, "Payments fetched successfully"));
   } catch (error) {

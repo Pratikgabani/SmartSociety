@@ -4,8 +4,8 @@ import { User } from "./user.models.js";
 const complainSchema = new Schema({
     complainId : {
         type : Schema.Types.ObjectId,
-        ref : "User"
-        
+        ref : "User",
+        index: true
       },
 subject : {
     type : String,
@@ -22,7 +22,8 @@ date : {
 },
 isResolved : {
     type : Boolean,
-    default : false
+    default : false,
+    index: true
 },
 byHouse : {
     type : Number,
@@ -34,7 +35,7 @@ proof : {
 },
 societyId : {
     type : String,
-    
+    index: true
 },
 isActive : {
    type  : Boolean,

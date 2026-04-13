@@ -87,7 +87,7 @@ const createVenue = asyncHandler(async (req , res) =>{
 
 const getVenue = asyncHandler(async (req , res) => {
     // Fetches all venues for the logged-in user's society.
-    const allVenues = await Venue.find({societyId: req.user?.societyId})
+    const allVenues = await Venue.find({societyId: req.user?.societyId}).lean()
     if(!allVenues){
         throw new ApiError(500 , "Failed to get venues")
     }
@@ -135,7 +135,7 @@ const getBookings = asyncHandler(async (req, res) => {
     const allBookings = await Booking.find({ societyId: req.user?.societyId })
         .sort({ date: -1 }) // Sort by date in descending order
         .select("-__v -updatedAt -societyId")
-        .populate("bookingOwner", "houseNo block -_id" ); // Populating houseNo & block from User model
+        .populate("bookingOwner", "houseNo block -_id" ).lean(); // Populating houseNo & block from User model
 
     if (!allBookings) {
         throw new ApiError(500, "Failed to get bookings");
@@ -194,7 +194,7 @@ const getPastBookings = asyncHandler(async (req, res) => {
     const allBooking = await Booking.find({
         societyId: req.user?.societyId,
         date: { $lt: new Date() },
-            }).select("-__v -updatedAt -societyId").populate("bookingOwner" , "houseNo block -_id" )
+            }).select("-__v -updatedAt -societyId").populate("bookingOwner" , "houseNo block -_id" ).lean()
     if(!allBooking){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -207,7 +207,7 @@ const getPastBookings = asyncHandler(async (req, res) => {
 const getPastBookingsByUserId = asyncHandler(async (req, res) => {
     // Retrieves past bookings made by the authenticated user.
     const userId = req.user._id 
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $lt: new Date() }}).select("-__v -updatedAt -bookingOwner -societyId")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $lt: new Date() }}).select("-__v -updatedAt -bookingOwner -societyId").lean()
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -225,7 +225,7 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
         throw new ApiError(400 , "User not found")
     }
 
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId}).select("-__v -updatedAt -bookingOwner -societyId")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId}).select("-__v -updatedAt -bookingOwner -societyId").lean()
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -237,7 +237,7 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
 const getUpcomingBookingsByUserId = asyncHandler(async (req, res) => {
     // Retrieves upcoming bookings for the authenticated user.
     const userId = req.user._id
-    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $gte: new Date() }}).select("-__v -updatedAt -bookingOwner -societyId")
+    const allBookings = await Booking.find({societyId: req.user?.societyId , bookingOwner : userId , date: { $gte: new Date() }}).select("-__v -updatedAt -bookingOwner -societyId").lean()
     if(!allBookings){
         throw new ApiError(500 , "Failed to get bookings")
     }
@@ -366,7 +366,7 @@ const getBookingOrdersForUser = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Unauthorized");
     }
 
-    const orders = await BookingOrder.find({ userId }).select("bookingId paymentIntentId status paidOn amount receiptUrl");
+    const orders = await BookingOrder.find({ userId }).select("bookingId paymentIntentId status paidOn amount receiptUrl").lean();
 
     return res
         .status(200)

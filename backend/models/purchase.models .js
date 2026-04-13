@@ -26,6 +26,6 @@ const purchaseSchema = new mongoose.Schema({
     default : Date.now
   }
 
-});
+}, { timestamps: true });
 
 export const Purchase = mongoose.model('Purchase', purchaseSchema);

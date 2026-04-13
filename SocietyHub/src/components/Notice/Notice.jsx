@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import axios from "../../axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,33 @@ import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import { HashLoader } from 'react-spinners'
 import UserContext from "../../context/UserContext";
+
+// 🔥 Memoization Implementation for Notices
+const NoticeCard = React.memo(({ notice, rolee, onDelete }) => (
+  <div className="bg-white shadow-md border rounded-lg p-4 h-full flex flex-col justify-between">
+    <div>
+      <h3 className="text-lg font-semibold">{notice.topic}</h3>
+      <p className="text-gray-700 mt-1">
+        {notice.description.length > 100
+          ? notice.description.slice(0, 100) + "..."
+          : notice.description}
+      </p>
+      <span className="text-sm text-gray-500 block mt-2">
+        Announced on: {format(new Date(notice.Date), "PPP p")}
+      </span>
+    </div>
+
+    {rolee === "admin" && (
+      <button
+        onClick={() => onDelete(notice._id)}
+        className="bg-red-500 text-white mt-4 px-4 py-1 rounded hover:bg-red-600"
+      >
+        Delete Notice
+      </button>
+    )}
+  </div>
+));
+
 export default function Announcements() {
   const [notices, setNotices] = useState([]);
   const [topic, setTopic] = useState("");
@@ -62,18 +89,19 @@ export default function Announcements() {
     }
 
   };
-  const deleteNotice = async (id) => {
+  // 🔥 useCallback to lock the function reference and prevent NoticeCard re-renders
+  const deleteNotice = useCallback(async (id) => {
     try {
       await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/v1/notices/deleteNotice/${id}`, {}, {
         withCredentials: true,
       });
-      setNotices(notices.filter((notice) => notice._id !== id));
+      setNotices((prevNotices) => prevNotices.filter((notice) => notice._id !== id));
       toast.success("Notice deleted successfully!");
     } catch (error) {
       console.error("Error deleting notice", error);
       toast.error("Error deleting notice");
     }
-  };
+  }, []);
 
 if (loading) {
     return (
@@ -153,34 +181,15 @@ if (loading) {
       {/* Notices List */}
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-4">
-  {notices.slice(0, 5).map((notice) => (
-    <div
-      key={notice._id}
-      className="bg-white shadow-md border rounded-lg p-4 h-full flex flex-col justify-between"
-    >
-      <div>
-        <h3 className="text-lg font-semibold">{notice.topic}</h3>
-        <p className="text-gray-700 mt-1">
-          {notice.description.length > 100
-            ? notice.description.slice(0, 100) + "..."
-            : notice.description}
-        </p>
-        <span className="text-sm text-gray-500 block mt-2">
-          Announced on: {format(new Date(notice.Date), "PPP p")}
-        </span>
-      </div>
-
-      {rolee === "admin" && (
-        <button
-          onClick={() => deleteNotice(notice._id)}
-          className="bg-red-500 text-white mt-4 px-4 py-1 rounded hover:bg-red-600"
-        >
-          Delete Notice
-        </button>
-      )}
-    </div>
-  ))}
-</div>
+          {notices.slice(0, 5).map((notice) => (
+            <NoticeCard
+              key={notice._id}
+              notice={notice}
+              rolee={rolee}
+              onDelete={deleteNotice}
+            />
+          ))}
+        </div>
 
 
       </div>

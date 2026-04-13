@@ -1,9 +1,67 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import axios from "../../axios";
 import { HashLoader } from 'react-spinners'
 import UserContext from "../../context/UserContext.js";
+
+// 🔥 Memoization Implementation
+// We extract the Card into its own component and wrap it in React.memo.
+// Now, if the user types into the "Add Complaint" form (triggering parent re-renders),
+// React will smartly skip re-rendering all these active cards, saving CPU cycles!
+const ComplaintCard = React.memo(({ complaint, rolee, onResolve, onDelete }) => (
+  <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col justify-between">
+    <div>
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">{complaint.subject}</h3>
+        <span
+          className={`px-3 py-1 text-sm rounded-full ${
+            complaint.isResolved
+              ? "bg-green-200 text-green-800"
+              : "bg-yellow-200 text-yellow-800"
+          }`}
+        >
+          {complaint.isResolved ? "Resolved" : "Pending"}
+        </span>
+      </div>
+
+      <p className="text-gray-700 mt-2">
+        {complaint.description.length > 100
+          ? complaint.description.slice(0, 100) + "..."
+          : complaint.description}
+      </p>
+
+      {complaint.proof && (
+        <a
+          href={complaint.proof}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline block mt-2"
+        >
+          View Proof
+        </a>
+      )}
+    </div>
+
+    <div className="flex gap-4 mt-4">
+      {!complaint.isResolved && rolee === "admin" && (
+        <button
+          onClick={() => onResolve(complaint._id)}
+          className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+        >
+          Mark Resolved
+        </button>
+      )}
+      <button
+        onClick={() => onDelete(complaint._id)}
+        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+));
+
 function Complaint() {
   const navigate = useNavigate();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -87,21 +145,23 @@ function Complaint() {
     }
   };
 
-  const handleDelete = async (complaintId) => {
+  // 🔥 We wrap these handlers in useCallback so their memory reference never changes.
+  // This ensures the ComplaintCards don't re-render needlessly!
+  const handleDelete = useCallback(async (complaintId) => {
     try {
       await axios.delete(
         `${import.meta.env.VITE_URL_BACKEND}/api/v1/complain/deleteComplain/${complaintId}`,
         { withCredentials: true }
       );
       toast.success("Complaint deleted successfully!");
-      setRefresh(!refresh);
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error("Error deleting complaint:", error);
       toast.error("Failed to delete complaint");
     }
-  };
+  }, []);
 
-  const handleResolve = async (complaintId) => {
+  const handleResolve = useCallback(async (complaintId) => {
     if (rolee !== "admin") {
       alert("You are not authorized to resolve this complaint");
       return;
@@ -114,12 +174,12 @@ function Complaint() {
         { withCredentials: true }
       );
       toast.success("Complaint marked as resolved!");
-      setRefresh(!refresh);
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error("Error resolving complaint:", error);
       toast.error("Failed to resolve complaint");
     }
-  };
+  }, [rolee]);
 
   if (loading) {
     return (
@@ -208,62 +268,16 @@ function Complaint() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-4">
-  {complaints.map((complaint) => (
-    <div
-      key={complaint._id}
-      className="bg-white p-6 rounded-md shadow-md h-full flex flex-col justify-between"
-    >
-      <div>
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">{complaint.subject}</h3>
-          <span
-            className={`px-3 py-1 text-sm rounded-full ${
-              complaint.isResolved
-                ? "bg-green-200 text-green-800"
-                : "bg-yellow-200 text-yellow-800"
-            }`}
-          >
-            {complaint.isResolved ? "Resolved" : "Pending"}
-          </span>
-        </div>
-
-        <p className="text-gray-700 mt-2">
-          {complaint.description.length > 100
-            ? complaint.description.slice(0, 100) + "..."
-            : complaint.description}
-        </p>
-
-        {complaint.proof && (
-          <a
-            href={complaint.proof}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline block mt-2"
-          >
-            View Proof
-          </a>
-        )}
+        {complaints.map((complaint) => (
+          <ComplaintCard
+            key={complaint._id}
+            complaint={complaint}
+            rolee={rolee}
+            onResolve={handleResolve}
+            onDelete={handleDelete}
+          />
+        ))}
       </div>
-
-      <div className="flex gap-4 mt-4">
-        {!complaint.isResolved && rolee === "admin" && (
-          <button
-            onClick={() => handleResolve(complaint._id)}
-            className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-          >
-            Mark Resolved
-          </button>
-        )}
-        <button
-          onClick={() => handleDelete(complaint._id)}
-          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  ))}
-</div>
 
 
       <div>
