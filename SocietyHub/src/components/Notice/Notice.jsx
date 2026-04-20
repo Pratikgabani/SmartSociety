@@ -2,56 +2,78 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import axios from "../../axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
-import { HashLoader } from 'react-spinners'
+import { toast, Toaster } from "react-hot-toast";
+import { HashLoader } from 'react-spinners';
 import UserContext from "../../context/UserContext";
+import { Calendar, Trash2, Bell, MessageSquare, AlertCircle } from "lucide-react";
 
 // 🔥 Memoization Implementation for Notices
-const NoticeCard = React.memo(({ notice, rolee, onDelete }) => (
-  <div className="bg-white shadow-md border rounded-lg p-4 h-full flex flex-col justify-between">
-    <div>
-      <h3 className="text-lg font-semibold">{notice.topic}</h3>
-      <p className="text-gray-700 mt-1">
-        {notice.description.length > 100
-          ? notice.description.slice(0, 100) + "..."
-          : notice.description}
-      </p>
-      <span className="text-sm text-gray-500 block mt-2">
-        Announced on: {format(new Date(notice.Date), "PPP p")}
-      </span>
-    </div>
+const NoticeCard = React.memo(({ notice, rolee, onDeleteRequest }) => {
+  const displayDate = notice.Date ? format(new Date(notice.Date), "PPP p") : "";
 
-    {rolee === "admin" && (
-      <button
-        onClick={() => onDelete(notice._id)}
-        className="bg-red-500 text-white mt-4 px-4 py-1 rounded hover:bg-red-600"
-      >
-        Delete Notice
-      </button>
-    )}
-  </div>
-));
+  return (
+    <div className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 transition-all duration-300 flex flex-col h-full group">
+      
+      {/* Delete Button - Top Right Absolute */}
+      {rolee === "admin" && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            onDeleteRequest(notice._id, notice.topic);
+          }}
+          className="absolute top-3 right-3 z-30 flex items-center justify-center p-2 bg-white/90 hover:bg-red-50 text-red-500 hover:text-red-700 border border-red-100 hover:border-red-300 rounded-full shadow-sm backdrop-blur-md cursor-pointer transition-all active:scale-95"
+          title="Delete Notice"
+        >
+          <Trash2 strokeWidth={2.5} className="w-[18px] h-[18px]" />
+        </button>
+      )}
+
+      {/* Card Content */}
+      <div className="p-5 flex-1 flex flex-col relative z-20 bg-white">
+        {/* Header row */}
+        <div className="flex items-start justify-between gap-4 mb-4 pr-8">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[1.12rem] font-extrabold text-gray-900 m-0 leading-snug tracking-tight pb-2 break-words" title={notice.topic}>
+              {notice.topic}
+            </h3>
+            
+            <div className="flex flex-col gap-2 mt-1">
+              {displayDate && (
+                <div className="flex items-center gap-1.5 text-[0.8rem] text-gray-500 font-medium">
+                  <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                  <span>{displayDate}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Description body */}
+        <div className="text-[0.9rem] text-gray-600 leading-relaxed mb-2 flex-1 break-words whitespace-pre-wrap">
+          <p className="m-0">
+            {notice.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 export default function Announcements() {
   const [notices, setNotices] = useState([]);
   const [topic, setTopic] = useState("");
   const [description, setDescription] = useState("");
-  // const token = localStorage.getItem("user");
-  // const roled = token ? JSON.parse(token) : null;
-  // const role = roled?.data?.user?.role
-  const [ isNoticeModalOpen ,setIsNoticeModalOpen] = useState(false)
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const {rolee} = useContext(UserContext)
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState({ open: false, noticeId: null, topic: "" });
+  
+  const { rolee } = useContext(UserContext);
   const navigate = useNavigate();
-  const fetchPreviousData = async () => {
 
+  const fetchPreviousData = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/notices/getAllNotices`, { withCredentials: true });
-      // Update API URL) // Update API URL
-
       navigate("/history", { state: { data: response.data.data } });
-      // Open modal after fetching
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -62,141 +84,212 @@ export default function Announcements() {
     const fetchNotices = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/notices/getNotices`, { withCredentials: true });
+        // The API returns all active notices.
         setNotices(response.data.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching notices", error);
+        setLoading(false);
       }
     };
     fetchNotices();
   }, []);
 
   // Add Notice
-  const handleAddNotice = async () => {
+  const handleAddNotice = async (e) => {
+    if (e) e.preventDefault();
     if (!topic || !description) return;
     try {
       const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/notices/addNotice`, {
         topic,
         description
       }, { withCredentials: true });
-      setNotices([...notices, response.data.data]);
+      setNotices([response.data.data, ...notices]);
       setTopic("");
       setDescription("");
       setIsNoticeModalOpen(false);
       toast.success("Notice added successfully!");
     } catch (error) {
       console.error("Error adding notice", error);
+      toast.error("Failed to add notice");
     }
-
   };
-  // 🔥 useCallback to lock the function reference and prevent NoticeCard re-renders
-  const deleteNotice = useCallback(async (id) => {
+
+  const handleRequestDelete = useCallback((noticeId, topic) => {
+    setConfirmDeleteModal({ open: true, noticeId, topic });
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!confirmDeleteModal.noticeId) return;
     try {
-      await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/v1/notices/deleteNotice/${id}`, {}, {
+      await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/v1/notices/deleteNotice/${confirmDeleteModal.noticeId}`, {}, {
         withCredentials: true,
       });
-      setNotices((prevNotices) => prevNotices.filter((notice) => notice._id !== id));
+      setNotices((prevNotices) => prevNotices.filter((notice) => notice._id !== confirmDeleteModal.noticeId));
       toast.success("Notice deleted successfully!");
     } catch (error) {
       console.error("Error deleting notice", error);
       toast.error("Error deleting notice");
+    } finally {
+      setConfirmDeleteModal({ open: false, noticeId: null, topic: "" });
     }
-  }, []);
+  }, [confirmDeleteModal.noticeId]);
 
-if (loading) {
+  if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <HashLoader size={60} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <HashLoader size={52} color="#2563eb" loading={loading} />
+        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading announcements…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
       <Toaster />
-      <div className="flex justify-between items-center">
-
-        <h2 className="text-3xl font-bold mb-2">Announcements & Notices</h2>
-        <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 bg-blue-400'>History</button>
-
-        </div>
-      </div>
-<p className="text-gray-600 text-lg"> Stay informed with important society announcements and notices at one place. </p>
-      <div className="flex justify-between items-center">
-        <div className="text-2xl font-semibold mt-4">Recent Notices</div>
-        {
-        rolee === "admin" && (
-          <button
-            onClick={() => setIsNoticeModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded mt-4 mb-4"
-          >
-            Add Notice 
-          </button>
-
-        )
-      }
-      </div>
       
-
-      {isNoticeModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-
-        <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-          <h3 className="text-lg font-medium mb-2">Add a Notice</h3>
-          <form onSubmit={handleAddNotice}>
-             <input 
-              type="text" 
-              placeholder="Topic" 
-              value={topic} 
-              onChange={(e) => setTopic(e.target.value)} 
-              className="w-full p-2 border border-gray-300 rounded mb-3" 
-              />
-            <textarea 
-              placeholder="Description" 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)} 
-              className="w-full p-2 border border-gray-300 rounded mb-3"
-              />
-              </form>
-            <div className="mt-6 flex justify-end gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setIsNoticeModalOpen(false)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        onClick={handleAddNotice}
-                        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        Add Notice
-                      </button>
-                    </div>
+      {/* PAGE HEADER */}
+      <div className="flex justify-between items-start mb-7">
+        <div>
+          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Announcements & Notices</h1>
+          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Stay informed with important society announcements and notices at one place.</p>
         </div>
-              </div>
-      )}
-      {/* Notices List */}
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-4">
-          {notices.slice(0, 5).map((notice) => (
+        <div className="flex gap-2.5 items-center">
+          {rolee === "admin" && (
+            <button
+              onClick={() => setIsNoticeModalOpen(true)}
+              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            >
+              + Add Notice
+            </button>
+          )}
+          <button
+            onClick={fetchPreviousData}
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            History
+          </button>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 mb-6 mt-8">
+        {/* <Bell className="w-5 h-5 text-blue-600" /> */}
+        <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Recent Notices</h2>
+      </div>
+
+      {/* NOTICES GRID */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(330px,1fr))] gap-5 items-start">
+        {notices.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
+            <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
+              <MessageSquare className="w-8 h-8" />
+            </div>
+            <p className="font-bold text-[1.1rem] text-gray-700 mb-1.5">No recent notices!</p>
+            <p className="text-[0.875rem] text-gray-400">There are no new announcements to show.</p>
+          </div>
+        ) : (
+          notices.map((notice) => (
             <NoticeCard
               key={notice._id}
               notice={notice}
               rolee={rolee}
-              onDelete={deleteNotice}
+              onDeleteRequest={handleRequestDelete}
             />
-          ))}
+          ))
+        )}
+      </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {confirmDeleteModal.open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center animate-in fade-in duration-200 zoom-in-95">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+              <Trash2 className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-[1.2rem] font-bold text-gray-900 m-0 mb-2">Delete Notice?</h2>
+            <p className="text-[0.9rem] text-gray-500 mb-2">Are you sure you want to permanently remove:</p>
+            <p className="font-semibold text-gray-900 text-[0.95rem] mb-2 line-clamp-2 px-2">
+              &ldquo;{confirmDeleteModal.topic}&rdquo;
+            </p>
+            <p className="text-[0.8rem] text-red-500 mb-6 font-medium bg-red-50 py-1.5 px-3 rounded-md inline-block">This action cannot be undone.</p>
+            
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => setConfirmDeleteModal({ open: false, noticeId: null, topic: "" })}
+                className="flex-1 py-2.5 px-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-500/30 border-none rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
         </div>
+      )}
 
+      {/* ADD NOTICE MODAL */}
+      {isNoticeModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Add a Notice</h2>
+                <p className="text-[0.8rem] text-gray-400 mt-0.5 mb-0">Create a new announcement</p>
+              </div>
+              <button 
+                onClick={() => setIsNoticeModalOpen(false)} 
+                className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none"
+              >✕</button>
+            </div>
+            
+            <form onSubmit={handleAddNotice} className="space-y-4">
+              <div>
+                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Topic *</label>
+                <input
+                  type="text"
+                  placeholder="E.g., Water Supply Disruption"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  required
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                />
+              </div>
 
-      </div>
-      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600'>History</button>
+              <div>
+                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Description *</label>
+                <textarea
+                  placeholder="Provide details about the notice..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  rows={4}
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors resize-y"
+                />
+              </div>
 
-
-      </div>
+              <div className="flex justify-end gap-2.5 mt-6 pt-3 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setIsNoticeModalOpen(false)}
+                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                >
+                  Add Notice
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

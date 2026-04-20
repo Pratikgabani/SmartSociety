@@ -2,8 +2,44 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from '../../axios';
 import { useNavigate } from 'react-router-dom';
 import { HashLoader } from 'react-spinners';
-import {toast ,  Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import UserContext from '../../context/UserContext';
+import { RiDeleteBin6Fill } from 'react-icons/ri';
+
+// ── Initials Avatar ──────────────────────────────────────────────────────────
+const Avatar = ({ name }) => {
+  const initials = name
+    ? name.trim().split(' ').slice(0, 2).map(w => w[0].toUpperCase()).join('')
+    : '?';
+  const colors = [
+    'bg-blue-100 text-blue-700',
+    'bg-violet-100 text-violet-700',
+    'bg-emerald-100 text-emerald-700',
+    'bg-orange-100 text-orange-700',
+    'bg-pink-100 text-pink-700',
+    'bg-teal-100 text-teal-700',
+  ];
+  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
+  return (
+    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-[0.78rem] font-bold flex-shrink-0 ${color}`}>
+      {initials}
+    </div>
+  );
+};
+
+// ── Format visit date/time ───────────────────────────────────────────────────
+const formatVisitTime = (dateStr) => {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return isToday ? `Today, ${time}` : `${d.toLocaleDateString('en-GB')}, ${time}`;
+};
+
+
+
+// ── Main Component ────────────────────────────────────────────────────────────
 function Visitor() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newVisitor, setNewVisitor] = useState({
@@ -16,45 +52,40 @@ function Visitor() {
     visitTime: '',
     duration: '',
   });
-  const [loading, setLoading] = useState(false);
-  // const token = JSON.parse(localStorage.getItem('user'));
-  // const roles = token?.data?.user?.role;
-  // const userId = token?.data?.user?._id;
+  const [loading, setLoading] = useState(true);
   const [activeVisitors, setActiveVisitors] = useState([]);
   const [recentVisitors, setRecentVisitors] = useState([]);
   const [vari, setVari] = useState(false);
+  const [activeTab, setActiveTab] = useState('active');
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const { rolee } = useContext(UserContext);
+
+  // ── Data fetching ──────────────────────────────────────────────────────────
   const fetchPreviousData = async () => {
-    let response;
     try {
-      setLoading(true);
-      if (rolee === "security") {
+      let response;
+      if (rolee === 'security') {
         response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/getHisAllRecentVisitors`, { withCredentials: true });
-      }
-      else {
+      } else {
         response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/getHisRecentVisitorsByUserId`, { withCredentials: true });
       }
-      navigate("/history", { state: { data: response.data.data } });
+      navigate('/history', { state: { data: response.data.data } });
     } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
+      console.error('Error fetching data:', error);
     }
   };
 
   useEffect(() => {
     const fetchRecentVisitors = async () => {
-      let response;
       try {
-        if (rolee === "security") {
+        let response;
+        if (rolee === 'security') {
           response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/getRecentVisitors`, { withCredentials: true });
         } else {
           response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/getRecentVisitorsByUserId`, { withCredentials: true });
         }
-        const visitors = response.data.data || response.data;
-        setRecentVisitors(visitors);
-        setLoading(false);
+        setRecentVisitors(response.data.data || response.data);
       } catch (error) {
         console.error('Error fetching recent visitors:', error);
       }
@@ -64,18 +95,18 @@ function Visitor() {
 
   useEffect(() => {
     const fetchActiveVisitors = async () => {
-      let response;
       try {
-        if (rolee === "security") {
+        let response;
+        if (rolee === 'security') {
           response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/getActiveVisitors`, { withCredentials: true });
         } else {
           response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/getActiveVisitorsByUserId`, { withCredentials: true });
         }
-        const visitors = response.data.data || response.data;
-        setActiveVisitors(visitors);
+        setActiveVisitors(response.data.data || response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching active visitors:', error);
+        setLoading(false);
       }
     };
     fetchActiveVisitors();
@@ -85,268 +116,399 @@ function Visitor() {
     try {
       await axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/deleteVisitor/${id}`, { withCredentials: true });
       setVari(!vari);
+      toast.success('Visitor removed');
     } catch (error) {
       console.error('Error deleting visitor:', error);
     }
-  }
+  };
 
   const handleAddVisitor = async (e) => {
     e.preventDefault();
-    const newVisitorObj = {
-      visitorName: newVisitor.visitorName,
-      visitorPhone: newVisitor.visitorPhone,
-      visitingAdd: newVisitor.visitingAdd,
-      purpose: newVisitor.purpose,
-      visitingBlock: newVisitor.visitingBlock,
-      duration: ""
-    };
-
     try {
-      await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/createVisitor`, newVisitorObj, { withCredentials: true });
+      await axios.post(
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/createVisitor`,
+        {
+          visitorName: newVisitor.visitorName,
+          visitorPhone: newVisitor.visitorPhone,
+          visitingAdd: newVisitor.visitingAdd,
+          purpose: newVisitor.purpose,
+          visitingBlock: newVisitor.visitingBlock,
+          duration: '',
+        },
+        { withCredentials: true }
+      );
       setShowAddModal(false);
-      setNewVisitor({
-        visitorName: '',
-        visitorPhone: '',
-        visitingAdd: '',
-        purpose: '',
-        visitingBlock: '',
-        duration: '',
-      });
+      setNewVisitor({ visitorName: '', visitorPhone: '', visitingAdd: '', purpose: '', visitingBlock: '', duration: '' });
       setVari(!vari);
       toast.success('Visitor added successfully');
     } catch (error) {
       console.error('Error adding visitor:', error);
+      toast.error('Failed to add visitor');
     }
   };
 
   const handleCheckOut = async (id) => {
-    if (rolee === "security") {
-      try {
-        const checkoutTime = new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true
-        });
-        await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/updateVisitorDuration/${id}`, { duration: checkoutTime }, { withCredentials: true });
-
-        const checkedOutVisitor = activeVisitors.find(visitor => visitor._id === id);
-        if (!checkedOutVisitor) {
-          console.warn("Visitor not found in active visitors list");
-          return;
-        }
-
+    if (rolee !== 'security') return;
+    try {
+      const checkoutTime = new Date().toLocaleTimeString('en-US', {
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
+      });
+      await axios.patch(
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/visitor/updateVisitorDuration/${id}`,
+        { duration: checkoutTime },
+        { withCredentials: true }
+      );
+      const checkedOutVisitor = activeVisitors.find(v => v._id === id);
+      if (checkedOutVisitor) {
         checkedOutVisitor.duration = checkoutTime;
         checkedOutVisitor.isActive = false;
-
-        setActiveVisitors(activeVisitors.filter(visitor => visitor._id !== id));
-        setRecentVisitors(prevVisitors => [...prevVisitors, checkedOutVisitor]);
-      } catch (error) {
-        console.error('Error checking out visitor:', error);
+        setActiveVisitors(activeVisitors.filter(v => v._id !== id));
+        setRecentVisitors(prev => [...prev, checkedOutVisitor]);
       }
+      toast.success('Visitor checked out');
+    } catch (error) {
+      console.error('Error checking out visitor:', error);
     }
   };
 
-  if (loading) {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center">
-      <HashLoader size={60} color="#2563eb" />
-      <p className="mt-4 text-lg text-gray-700">Loading...</p>
-    </div>
-  );
-}
+  // ── Derived stats ──────────────────────────────────────────────────────────
+  const todayVisits = recentVisitors.filter(v => {
+    if (!v.visitDate) return false;
+    return new Date(v.visitDate).toDateString() === new Date().toDateString();
+  }).length;
 
-return (
-  <div className="container relative mx-auto px-4 py-8 bg-gray-100">
-    {/* Add Visitor Modal */}
-    {rolee === "security" && showAddModal && (
-      <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
-          <h3 className="text-xl font-semibold text-blue-800 mb-4">Add New Visitor</h3>
-          <form onSubmit={handleAddVisitor}>
-            {['visitorName', 'visitorPhone', 'visitingAdd', 'visitingBlock', 'purpose'].map((field, i) => (
-              <div className="mb-4" key={i}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {field.replace('visitor', 'Visitor ').replace(/([A-Z])/g, ' $1')} *
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={newVisitor[field]}
-                  onChange={(e) => setNewVisitor({ ...newVisitor, [field]: e.target.value })}
-                />
-              </div>
-            ))}
-            <div className="flex justify-end gap-3 mt-6">
-              <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                Cancel
-              </button>
-              <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Add Visitor
-              </button>
-            </div>
-          </form>
+  // ── Filter helpers ─────────────────────────────────────────────────────────
+  const filterVisitors = (list) =>
+    list.filter(v =>
+      v.visitorName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(v.visitorPhone || '').includes(searchQuery) ||
+      v.purpose?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+  const filteredActive = filterVisitors(activeVisitors);
+  const filteredRecent = filterVisitors(recentVisitors);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <HashLoader size={52} color="#2563eb" />
+        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading visitors…</p>
+      </div>
+    );
+  }
+
+  // ── Field config for Add Visitor form ──────────────────────────────────────
+  const formFields = [
+    { key: 'visitorName', label: 'Visitor Name', placeholder: 'e.g. Rahul Sharma' },
+    { key: 'visitorPhone', label: 'Phone Number', placeholder: 'e.g. 9876543210' },
+    { key: 'visitingBlock', label: 'Visiting Block', placeholder: 'e.g. A' },
+    { key: 'visitingAdd', label: 'Visiting Flat / Address', placeholder: 'e.g. 304' },
+    { key: 'purpose', label: 'Purpose of Visit', placeholder: 'e.g. Delivery, Guest, etc.' },
+  ];
+
+  return (
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+
+      {/* PAGE HEADER */}
+      <div className="flex justify-between items-start mb-7">
+        <div>
+          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Visitors</h1>
+          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Manage and track your society visitors</p>
+        </div>
+        <div className="flex gap-2.5 items-center">
+          {rolee === 'security' && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            >
+              + Add Visitor
+            </button>
+          )}
+          <button
+            onClick={fetchPreviousData}
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            History
+          </button>
         </div>
       </div>
-    )}
 
-    {/* Header */}
-    <div className="mb-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Visitors</h1>
-      <p className="text-gray-600 text-lg">Manage and track your visitors</p>
-    </div>
+      {/* TAB BAR & SEARCH */}
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-gray-200 mb-5 gap-3">
+        <div className="flex gap-1 -mb-[2px]">
+          {[
+            { id: 'active', label: 'Active Visitors', count: activeVisitors.length },
+            { id: 'history', label: 'Visitor History', count: recentVisitors.length },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 py-2.5 px-5 border-none border-b-2 font-medium cursor-pointer transition-colors rounded-none ${
+                activeTab === tab.id
+                  ? "text-blue-600 border-b-blue-600 font-semibold"
+                  : "border-b-transparent bg-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.75rem] font-semibold ${
+                activeTab === tab.id ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
 
-    {/* Buttons */}
-    {/*  */}
-
-    {/* Active Visitors */}
-    <div className='flex justify-between items-center'>
-    <h2 className="text-xl font-semibold text-gray-800 mb-4">Active Visitors</h2>
-    <div className="mb-4">
-      {rolee=== "security" && (
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          + Add New Visitor
-        </button>
-      )}
+        {/* Search */}
+        <div className="relative w-full max-w-[280px] pb-2 pt-1">
+          <svg className="absolute left-2.5 top-[calc(50%-2px)] -translate-y-1/2 text-gray-400 w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search visitors…"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full pl-[34px] pr-3 py-1.5 border border-gray-300 rounded-lg text-[0.85rem] text-gray-900 outline-none bg-white box-border focus:border-blue-400 transition-colors"
+          />
+        </div>
       </div>
-    </div>
-    <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
-      <div className="overflow-x-auto">
-  <table className="min-w-full border-collapse border border-gray-300">
-    <thead>
-      <tr className="bg-blue-100">
-        <th className="border border-gray-300 px-4 py-2 text-center">Visitor</th>
-        <th className="border border-gray-300 px-4 py-2 text-center">Purpose</th>
-        <th className="border border-gray-300 px-4 py-2 text-center">Phone</th>
-        <th className="border border-gray-300 px-4 py-2 text-center">Status</th>
-        <th className="border border-gray-300 px-4 py-2 text-center">Check IN</th>
-        {rolee === "security" && (
-          <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
-        )}
-      </tr>
-    </thead>
-    <tbody>
-      {activeVisitors.length === 0 && (
-        <tr>
-          <td colSpan="6" className="border border-gray-300 px-4 py-2 text-center">
-            No active visitors found.
-          </td>
-        </tr>
+
+      {/* ACTIVE VISITORS TAB */}
+      {activeTab === 'active' && (
+        <section>
+
+
+          <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
+
+          {filteredActive.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+              <span className="text-5xl mb-3">🚶</span>
+              <p className="text-[1.05rem] font-semibold text-gray-700 m-0">
+                {searchQuery ? 'No visitors match your search' : 'No active visitors'}
+              </p>
+              <p className="text-sm text-gray-400 mt-1.5 mb-0">
+                {searchQuery ? 'Try a different name or phone number' : 'Active visitors will appear here when they check in'}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse min-w-[640px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Visitor</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Purpose</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Phone</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Check-In</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Status</th>
+                    {rolee === 'security' && (
+                      <th className="py-3 px-5 text-right text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Actions</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredActive.map((visitor) => (
+                    <tr
+                      key={visitor._id}
+                      className="border-t border-gray-100 hover:bg-green-50/40 transition-colors group"
+                    >
+                      {/* Visitor name + avatar */}
+                      <td className="py-3.5 px-5 align-middle">
+                        <div className="flex items-center gap-3">
+                          <Avatar name={visitor.visitorName} />
+                          <div>
+                            <p className="text-[0.88rem] font-semibold text-gray-900 m-0">{visitor.visitorName}</p>
+                            {visitor.visitingBlock && (
+                              <p className="text-[0.75rem] text-gray-400 m-0">Block {visitor.visitingBlock}{visitor.visitingAdd ? ` · ${visitor.visitingAdd}` : ''}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.85rem] text-gray-600">{visitor.purpose || '—'}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.85rem] text-gray-700 font-medium">{visitor.visitorPhone || '—'}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.83rem] text-gray-600">{formatVisitTime(visitor.visitDate)}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="inline-flex items-center gap-1.5 py-[3px] px-2.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-[0.72rem] font-bold">
+                          <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                          Active
+                        </span>
+                      </td>
+                      {rolee === 'security' && (
+                        <td className="py-3.5 px-5 align-middle">
+                          <div className="flex items-center gap-2 justify-end">
+                            <button
+                              onClick={() => handleCheckOut(visitor._id)}
+                              className="py-1.5 px-3.5 bg-green-600 hover:bg-green-700 text-white border-none rounded-lg text-[0.78rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                            >
+                              Check Out
+                            </button>
+                            <button
+                              onClick={() => deleteVisitor(visitor._id)}
+                              className="inline-flex items-center justify-center p-1.5 bg-transparent hover:bg-red-50 text-red-400 hover:text-red-600 border border-transparent hover:border-red-200 rounded-lg cursor-pointer transition-colors"
+                              title="Delete visitor"
+                            >
+                              <RiDeleteBin6Fill size={15} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          </div>
+        </section>
       )}
-      {activeVisitors.map((visitor) => (
-        <tr
-          key={visitor._id}
-          className="border border-gray-300 hover:bg-gray-50 transition"
-        >
-          <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-            {visitor.visitorName}
-          </td>
-          <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-            {visitor.purpose}
-          </td>
-          <td className="border border-gray-300 px-4 py-2 text-center text-black">
-            {visitor.visitorPhone}
-          </td>
-          <td className="border border-gray-300 px-4 py-2 text-center font-semibold text-green-600">
-            Active
-          </td>
-          <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-            {visitor.visitDate
-              ? new Date(visitor.visitDate).toLocaleString("en-GB")
-              : "-"}
-          </td>
-          {rolee === "security" && (
-            <td className="border border-gray-300 px-4 py-2 text-center flex justify-center gap-2">
-              <button
-                onClick={() => handleCheckOut(visitor._id)}
-                className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 text-sm"
-              >
-                Check-Out
-              </button>
-              <button
-                onClick={() => deleteVisitor(visitor._id)}
-                className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 text-sm"
-              >
-                Delete
-              </button>
-            </td>
-          )}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
 
-    </div>
+      {/* VISITOR HISTORY TAB */}
+      {activeTab === 'history' && (
+        <section>
 
-    {/* Recent Visitors */}
-    <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Visitors</h2>
-    <div className="bg-white rounded-lg shadow overflow-hidden mb-8 mt-4">
-  <div className="overflow-x-auto">
-    <table className="min-w-full border-collapse border border-gray-300">
-      <thead>
-        <tr className="bg-blue-100">
-          <th className="border border-gray-300 px-4 py-2 text-center">Visitor</th>
-          <th className="border border-gray-300 px-4 py-2 text-center">Purpose</th>
-          <th className="border border-gray-300 px-4 py-2 text-center">Visitor Phone</th>
-          <th className="border border-gray-300 px-4 py-2 text-center">Visit Time</th>
-          <th className="border border-gray-300 px-4 py-2 text-center">Checkout</th>
-          {rolee === "security" && (
-            <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
+
+          <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden opacity-[0.95]">
+
+          {filteredRecent.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+              <span className="text-5xl mb-3">🗂️</span>
+              <p className="text-[1.05rem] font-semibold text-gray-700 m-0">
+                {searchQuery ? 'No visitors match your search' : 'No visitor history'}
+              </p>
+              <p className="text-sm text-gray-400 mt-1.5 mb-0">
+                {searchQuery ? 'Try a different search term' : 'Checked-out visitors will appear here'}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse min-w-[640px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Visitor</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Purpose</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Phone</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Visit Time</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Checkout</th>
+                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Status</th>
+                    {rolee === 'security' && (
+                      <th className="py-3 px-5 text-right text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Actions</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRecent.map((visitor) => (
+                    <tr
+                      key={visitor._id}
+                      className="border-t border-gray-100 hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="py-3.5 px-5 align-middle">
+                        <div className="flex items-center gap-3">
+                          <Avatar name={visitor.visitorName} />
+                          <div>
+                            <p className="text-[0.88rem] font-semibold text-gray-700 m-0">{visitor.visitorName}</p>
+                            {visitor.visitingBlock && (
+                              <p className="text-[0.75rem] text-gray-400 m-0">Block {visitor.visitingBlock}{visitor.visitingAdd ? ` · ${visitor.visitingAdd}` : ''}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.85rem] text-gray-500">{visitor.purpose || '—'}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.85rem] text-gray-600">{visitor.visitorPhone || '—'}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.83rem] text-gray-500">{formatVisitTime(visitor.visitDate)}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="text-[0.83rem] text-gray-500">{visitor.duration || '—'}</span>
+                      </td>
+                      <td className="py-3.5 px-5 align-middle">
+                        <span className="inline-flex items-center gap-1.5 py-[3px] px-2.5 bg-gray-100 text-gray-500 border border-gray-200 rounded-full text-[0.72rem] font-bold">
+                          Checked Out
+                        </span>
+                      </td>
+                      {rolee === 'security' && (
+                        <td className="py-3.5 px-5 align-middle">
+                          <div className="flex items-center gap-2 justify-end">
+                            <button
+                              onClick={() => deleteVisitor(visitor._id)}
+                              className="inline-flex items-center justify-center p-1.5 bg-transparent hover:bg-red-50 text-red-400 hover:text-red-600 border border-transparent hover:border-red-200 rounded-lg cursor-pointer transition-colors"
+                              title="Delete visitor"
+                            >
+                              <RiDeleteBin6Fill size={15} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </tr>
-      </thead>
-      <tbody>
-        {recentVisitors.slice(0, 5).map((visitor) => (
-          <tr
-            key={visitor._id}
-            className="border border-gray-300 hover:bg-gray-50 transition"
-          >
-            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-              {visitor.visitorName}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-              {visitor.purpose}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-              {visitor.visitorPhone}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-              {visitor.visitDate
-                ? new Date(visitor.visitDate).toLocaleString("en-GB")
-                : "-"}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 text-center text-gray-800">
-              {visitor.duration || "-"}
-            </td>
-            {rolee === "security" && (
-              <td className="border border-gray-300 px-4 py-2 text-center">
+          </div>
+        </section>
+      )}
+
+      {/* ── ADD VISITOR MODAL ── */}
+      {rolee === 'security' && showAddModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Add New Visitor</h2>
+                <p className="text-[0.8rem] text-gray-400 mt-0.5 mb-0">Fill in visitor details below</p>
+              </div>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none"
+              >✕</button>
+            </div>
+            <form onSubmit={handleAddVisitor}>
+              {formFields.map(({ key, label, placeholder }) => (
+                <div key={key} className="mb-4">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">
+                    {label} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={placeholder}
+                    value={newVisitor[key] || ''}
+                    onChange={(e) => setNewVisitor({ ...newVisitor, [key]: e.target.value })}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                  />
+                </div>
+              ))}
+              <div className="flex justify-end gap-2.5 mt-6">
                 <button
-                  onClick={() => deleteVisitor(visitor._id)}
-                  className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 text-sm"
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
                 >
-                  Delete
+                  Cancel
                 </button>
-              </td>
-            )}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-    {/* History Button */}
-    <div>
-      <button onClick={fetchPreviousData} className="absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600">
-        History
-      </button>
+                <button
+                  type="submit"
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                >
+                  Add Visitor
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-);
-
+  );
 }
 
 export default Visitor;

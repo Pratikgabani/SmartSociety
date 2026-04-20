@@ -154,7 +154,11 @@ const createComplain = asyncHandler(async (req, res, next) => {
 // };
 
 const getAllComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : false}).select("-__v  -societyId -createdAt -updatedAt -complainId -byuser").sort({ createdAt: -1 }).lean();
+        const complains = await Complain.find({societyId: req.user?.societyId , isResolved : false})
+            .populate("complainId", "block houseNo name")
+            .select("-__v -societyId -updatedAt -byuser")
+            .sort({ createdAt: -1 })
+            .lean();
   
     if (!complains) {
       throw new ApiError(404, "No complains found");
@@ -166,7 +170,11 @@ const getAllComplains = asyncHandler(async (req, res) => {
 });
 
 const getComplains = asyncHandler(async (req, res) => {
-    const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true }).select("-__v -_id -isResolved -isActive -societyId -createdAt -updatedAt -complainId -byuser ").sort({ createdAt: -1 }).lean();
+        const complains = await Complain.find({societyId: req.user?.societyId , isResolved : true })
+            .populate("complainId", "block houseNo name")
+            .select("-__v -isActive -societyId -updatedAt -byuser")
+            .sort({ createdAt: -1 })
+            .lean();
   
     if (!complains) {
         throw new ApiError(404, "No complains found");
@@ -183,8 +191,33 @@ const deleteComplain = asyncHandler(async (req, res) => {
     if (!complainId) {
       throw new ApiError(400, "Complain ID is required");
     }
-  
-  const deletedComplain = await Complain.findByIdAndDelete(complainId);
+
+    const complain = await Complain.findById(complainId).select("complainId societyId isResolved");
+
+        if (!complain) {
+            throw new ApiError(404, "Complain not found");
+        }
+
+        const isSameSociety =
+            !complain.societyId ||
+            !req.user?.societyId ||
+            complain.societyId.toString() === req.user.societyId.toString();
+
+        if (!isSameSociety) {
+            throw new ApiError(403, "You are not allowed to delete this complaint");
+        }
+
+        if (complain.isResolved) {
+            throw new ApiError(403, "Resolved complaints cannot be deleted");
+        }
+
+        const isOwner = complain.complainId?.toString() === req.user?._id?.toString();
+
+        if (!isOwner) {
+            throw new ApiError(403, "You can only delete your own complaint");
+        }
+
+    const deletedComplain = await Complain.findByIdAndDelete(complainId);
   
     if (!deletedComplain) {
       throw new ApiError(404, "Complain not found");

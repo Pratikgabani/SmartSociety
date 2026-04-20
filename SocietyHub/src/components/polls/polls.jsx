@@ -2,9 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { HashLoader } from "react-spinners";
+import { Trash2 } from "lucide-react";
 import UserContext from "../../context/UserContext.js";
+
 const PollApp = () => {
   const [polls, setPolls] = useState([]);
   const [question, setQuestion] = useState("");
@@ -13,17 +15,23 @@ const PollApp = () => {
   const [isPollModalOpen, setIsPollModalOpen] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  // const token = localStorage.getItem("user");
-  // const user = token ? JSON.parse(token) : null;
-  // const role = user?.data.user.role;
+  const [activePollTab, setActivePollTab] = useState("open");
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState({ open: false, pollId: null, question: "" });
   const { rolee } = useContext(UserContext);
+
+  const [currentUserId, setCurrentUserId] = useState(null);
+  useEffect(() => {
+    axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/users/currentUser`, { withCredentials: true })
+      .then(res => setCurrentUserId(res.data.data._id))
+      .catch(() => {});
+  }, []);
+
   const fetchPreviousData = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/polls/getPolls`, {
         withCredentials: true,
       });
       navigate("/history", { state: { data: response.data.data } });
-      // console.log(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -32,9 +40,7 @@ const PollApp = () => {
   useEffect(() => {
     fetchPolls();
   }, [vari]);
-  // useEffect(() => {
-  //   toast.success("toast is working")
-  // })
+
   const fetchPolls = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/polls/getAllPolls`, {
@@ -49,12 +55,13 @@ const PollApp = () => {
 
   const handleVote = async (pollId, optionId) => {
     try {
-      await axios.patch(
+      const res = await axios.patch(
         `${import.meta.env.VITE_URL_BACKEND}/api/v1/polls/votePoll/${pollId}/${optionId}`,
         {},
         { withCredentials: true }
       );
-      toast.success("Vote cast successfully");
+      const msg = res.data?.message || "";
+      toast.success(msg.toLowerCase().includes("removed") ? "Vote removed" : "Vote cast successfully");
       setVari(!vari);
     } catch (err) {
       console.error("Error voting", err);
@@ -112,6 +119,15 @@ const PollApp = () => {
     }
   };
 
+  const handleRequestDelete = (pollId, question) => {
+    setConfirmDeleteModal({ open: true, pollId, question });
+  };
+
+  const handleConfirmDelete = () => {
+    handleDeletePoll(confirmDeleteModal.pollId);
+    setConfirmDeleteModal({ open: false, pollId: null, question: "" });
+  };
+
   const addOption = () => {
     setOptions([...options, ""]);
   };
@@ -123,170 +139,312 @@ const PollApp = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <HashLoader size={60} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <HashLoader size={52} color="#2563eb" loading={loading} />
+        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading polls…</p>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen relative w-full bg-gray-100 px-4 py-8">
-      <Toaster />
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Polls & Voting</h1>
-        <p className="text-gray-600 text-lg">
-          Effortlessly create and participate in society polls for collective decision-making
-        </p>
+  const openPolls = polls.filter(p => p.isClosed !== true);
+  const pastPolls = polls.filter(p => p.isClosed === true);
+  const tabPolls  = activePollTab === "open" ? openPolls : pastPolls;
 
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl mt-4 font-semibold text-gray-800 mb-2">Active Polls</h2>
+  return (
+    <div className="max-w-[1100px] mx-auto py-8 px-6 pb-14 font-sans text-gray-900 bg-gray-50 min-h-screen">
+
+      {/* PAGE HEADER */}
+      <div className="flex justify-between items-start mb-7">
+        <div>
+          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Polls &amp; Voting</h1>
+          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Create and participate in society polls for collective decisions</p>
+        </div>
+        <div className="flex gap-2.5 items-center">
           {rolee === "admin" && (
-            <div className="flex justify-end">
-              <button
-                onClick={() => setIsPollModalOpen(true)}
-                className="bg-blue-600 font-semibold text-white px-4 py-2 rounded shadow-lg hover:bg-blue-700 transition duration-200"
+            <button
+              onClick={() => setIsPollModalOpen(true)}
+              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            >
+              + Create Poll
+            </button>
+          )}
+          <button
+            onClick={fetchPreviousData}
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            History
+          </button>
+        </div>
+      </div>
+
+      {/* TAB BAR */}
+      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max mb-6 overflow-x-auto no-scrollbar">
+        {[
+          { id: "open", label: "Open Polls", count: openPolls.length },
+          { id: "past", label: "Past Polls", count: pastPolls.length },
+        ].map(tab => {
+          const isActive = activePollTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActivePollTab(tab.id)}
+              className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                isActive
+                  ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
+                  : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* POLLS LIST */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-5 items-start">
+        {tabPolls.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
+            <p className="text-[2.4rem] mb-3">🗳️</p>
+            <p className="font-bold text-[1.1rem] text-gray-700 mb-1.5">
+              {activePollTab === "open" ? "No open polls" : "No past polls"}
+            </p>
+            <p className="text-[0.875rem] text-gray-400">
+              {activePollTab === "open"
+                ? (rolee === "admin" ? "Create the first poll to get started." : "No active polls right now.")
+                : "Closed polls will appear here."}
+            </p>
+          </div>
+        ) : (
+          tabPolls.map((poll) => {
+            const isOpen = poll.isClosed !== true;
+            const totalVotes = poll.options.reduce((s, o) => s + (o.votes || 0), 0);
+            const votedOptionId = currentUserId
+              ? (poll.options.find(o =>
+                  Array.isArray(o.voting) && o.voting.some(v => v.toString() === currentUserId.toString())
+                )?._id || null)
+              : null;
+
+            return (
+              <div
+                key={poll._id}
+                className="bg-white border border-gray-200 rounded-2xl py-[22px] px-6 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.10)] hover:border-gray-300 transition-all duration-200"
               >
-                Create Poll
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-3 mb-2.5">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-[1.08rem] font-bold text-gray-900 m-0 leading-[1.45] tracking-[-0.2px]">
+                      {poll.question}
+                    </h3>
+                    <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
+                      <p className="text-[0.78rem] text-gray-400 m-0">
+                        {totalVotes} vote{totalVotes !== 1 ? "s" : ""} · {poll.options.length} options
+                      </p>
+                      {votedOptionId && (
+                        <span className="inline-flex items-center gap-1 py-[3px] px-2.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-full text-[0.72rem] font-bold">
+                          ✓ You voted
+                        </span>
+                      )}
+                      <span className={`inline-block py-[2px] px-2 rounded-full text-[0.67rem] font-bold tracking-[0.3px] whitespace-nowrap ${
+                        isOpen ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500"
+                      }`}>
+                        {isOpen ? "Open" : "Closed"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Admin actions */}
+                  {rolee === "admin" && (
+                    <div className="flex gap-1.5 items-center flex-shrink-0">
+                      {isOpen && (
+                        <button
+                          onClick={() => handleClosePoll(poll._id)}
+                          className="py-[5px] px-3 bg-green-600 hover:bg-green-700 text-white border-none rounded-[7px] text-[0.78rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                        >
+                          Close
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleRequestDelete(poll._id, poll.question)}
+                        className="inline-flex items-center justify-center p-[5px] bg-transparent hover:bg-red-50 text-red-400 hover:text-red-600 border-none rounded-[7px] cursor-pointer transition-colors"
+                        title="Delete poll"
+                      >
+                        <Trash2 strokeWidth={2.5} className="w-[18px] h-[18px]" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Options */}
+                <div className="flex flex-col gap-2 min-w-0">
+                  {poll.options.map(opt => {
+                    const isMyVote = Boolean(votedOptionId && opt._id && opt._id.toString() === votedOptionId.toString());
+                    return (
+                      <button
+                        key={opt._id}
+                        onClick={() => handleVote(poll._id, opt._id)}
+                        disabled={!isOpen}
+                        className="relative flex justify-between items-center gap-3 py-2 px-3 bg-white border rounded-lg text-left w-full overflow-hidden transition-all duration-150"
+                        style={{
+                          borderColor: isMyVote ? "#2563eb" : "#e5e7eb",
+                          boxShadow: isMyVote ? "0 0 0 2px #bfdbfe" : "none",
+                          cursor: isOpen ? "pointer" : "default",
+                        }}
+                      >
+                        {/* Progress bar background fill */}
+                        <div
+                          className="absolute inset-0 left-0 rounded-lg transition-all duration-500"
+                          style={{
+                            width: `${opt.percent || 0}%`,
+                            backgroundColor: isMyVote ? "#dbeafe" : (isOpen ? "#eff6ff" : "#f3f4f6"),
+                            zIndex: 0,
+                          }}
+                        />
+                        {/* Option label */}
+                        <span
+                          className="relative flex items-center gap-1.5 text-[0.83rem]"
+                          style={{
+                            zIndex: 1,
+                            fontWeight: isMyVote ? 700 : 500,
+                            color: isMyVote ? "#1e40af" : "#374151",
+                          }}
+                        >
+                          {isMyVote && <span className="text-[0.7rem] text-blue-600">✓</span>}
+                          {opt.option}
+                        </span>
+                        {/* Percent badge */}
+                        <span
+                          className="relative text-[0.75rem] font-bold px-2 py-[2px] rounded-full whitespace-nowrap"
+                          style={{
+                            zIndex: 1,
+                            color: isMyVote ? "#fff" : (isOpen ? "#2563eb" : "#6b7280"),
+                            backgroundColor: isMyVote ? "#2563eb" : (isOpen ? "#dbeafe" : "#e5e7eb"),
+                          }}
+                        >
+                          {opt.percent || 0}%
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {confirmDeleteModal.open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+              <Trash2 className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-[1.2rem] font-bold text-gray-900 m-0 mb-2.5 flex justify-center">Delete Poll?</h2>
+            <p className="text-[0.875rem] text-gray-500 mb-1.5">Are you sure you want to delete:</p>
+            <p className="font-semibold text-gray-900 text-[0.9rem] mb-1.5">
+              &ldquo;{confirmDeleteModal.question}&rdquo;
+            </p>
+            <p className="text-[0.8rem] text-red-500 mb-6">This action cannot be undone.</p>
+            <div className="flex gap-2.5 justify-center">
+              <button
+                onClick={() => setConfirmDeleteModal({ open: false, pollId: null, question: "" })}
+                className="flex-1 max-w-[130px] py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="flex-1 max-w-[130px] py-2 px-4 bg-red-600 hover:bg-red-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+              >
+                Yes, Delete
               </button>
             </div>
-          )}
+          </div>
         </div>
+      )}
 
-        {isPollModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-md mt-4 mb-8 p-6 w-1/3">
-              <h2 className="text-xl font-semibold mb-4">Create a Poll</h2>
-              <form onSubmit={handleCreatePoll} className="space-y-4">
-
+      {/* CREATE POLL MODAL */}
+      {isPollModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Create a Poll</h2>
+              <button onClick={() => setIsPollModalOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+            </div>
+            <form onSubmit={handleCreatePoll}>
+              <div className="mb-[18px]">
+                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-[7px] uppercase tracking-[0.3px]">Question *</label>
                 <input
                   type="text"
                   value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="Poll question"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={e => setQuestion(e.target.value)}
+                  placeholder="What would you like to ask?"
                   required
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                 />
-                {options.map((opt, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      value={opt}
-                      onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index] = e.target.value;
-                        setOptions(newOptions);
-                      }}
-                      placeholder={`Option ${index + 1}`}
-                      className="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeOption(index)}
-                      className="p-2 text-red-500 hover:bg-red-100 rounded-md transition-colors"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+              </div>
+
+              <div className="mb-[18px]">
+                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-[7px] uppercase tracking-[0.3px]">Options</label>
+                <div className="flex flex-col gap-2">
+                  {options.map((opt, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        value={opt}
+                        onChange={e => {
+                          const newOptions = [...options];
+                          newOptions[index] = e.target.value;
+                          setOptions(newOptions);
+                        }}
+                        placeholder={`Option ${index + 1}`}
+                        required
+                        className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeOption(index)}
+                        className="inline-flex items-center justify-center py-2 px-2.5 flex-shrink-0 bg-transparent text-red-400 border border-red-200 rounded-[7px] text-[0.78rem] font-bold cursor-pointer hover:bg-red-50 transition-colors"
+                        title="Remove option"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-                <div className="flex justify-between ">
-                  <button
-                    type="button"
-                    onClick={addOption}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"                >
-                    Add Option
-                  </button>
-                  <button
-                    onClick={() => setIsPollModalOpen(false)}
-                    type="button"
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                  >
-                    Create Poll
-                  </button>
+                        ✕
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              </form>
-            </div>
-          </div>
-        )}
+                <button
+                  type="button"
+                  onClick={addOption}
+                  className="mt-2 py-[7px] px-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-[7px] text-[0.82rem] font-semibold cursor-pointer transition-colors"
+                >
+                  + Add Option
+                </button>
+              </div>
 
-        {/* <h2 className="text-2xl mt-4 font-semibold text-gray-800 mb-2">Active Polls</h2> */}
-<div className="container mx-auto px-2 py-4">
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {polls.map((poll) => (
-      <div
-        key={poll._id}
-        className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between h-full min-h-[300px]"
-      >
-        <div>
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">
-            {poll.question}
-          </h3>
-
-          <div className="space-y-2">
-            {poll.options.map((opt) => (
-              <button
-                key={opt._id}
-                onClick={() => handleVote(poll._id, opt._id)}
-                className="w-full p-3 bg-gray-100 text-left rounded-md hover:bg-gray-200 transition-colors flex justify-between items-center"
-              >
-                <span>{opt.option}</span>
-                <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs">
-                  {opt.percent} %
-                </span>
-              </button>
-            ))}
+              <div className="flex justify-end gap-2.5 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsPollModalOpen(false)}
+                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                >
+                  Create Poll
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        {/* Admin Buttons */}
-        {rolee === "admin" && (
-          <div className="flex justify-between gap-2 mt-6 pt-4 border-t">
-            <button
-              onClick={() => handleDeletePoll(poll._id)}
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-full"
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => handleClosePoll(poll._id)}
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors w-full"
-            >
-              Close
-            </button>
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-</div>
-
-      </div>
-
-      <div>
-        <button
-          onClick={fetchPreviousData}
-          className="absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600"
-        >
-          History
-        </button>
-      </div>
+      )}
     </div>
   );
 };

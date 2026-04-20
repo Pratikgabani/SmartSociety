@@ -64,7 +64,7 @@ const getPolls = asyncHandler(async (req, res) => {
 })
 
 const getAllPolls = asyncHandler(async (req, res) => {
-    const polls = await Poll.find({societyId : req.user.societyId,isClosed : false}).select(" -__v  -societyId")
+    const polls = await Poll.find({societyId : req.user.societyId}).select(" -__v  -societyId")
     return res
     .status(200)
     .json(new ApiResponse(200 , polls , "Polls found successfully"))
@@ -116,6 +116,16 @@ const votePoll = asyncHandler(async (req, res) => {
             (voter) => voter.toString() !== userId.toString()
         );
         poll.totalVotes -= 1;
+
+        // ── Toggle / Unvote: same option clicked again → just remove the vote ──
+        if (previousOption._id.toString() === optionId) {
+            poll.voters = poll.options.flatMap((opt) => opt.voting);
+            poll.options.forEach((opt) => {
+                opt.percent = poll.totalVotes > 0 ? Math.floor((opt.votes / poll.totalVotes) * 100) : 0;
+            });
+            await poll.save();
+            return res.status(200).json(new ApiResponse(200, poll, "Vote removed successfully"));
+        }
     }
 
     // Find the new option to vote for
@@ -141,6 +151,7 @@ const votePoll = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, poll, "Poll voted successfully"));
 });
+
 
 
 

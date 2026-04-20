@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
 import { Link } from "react-router-dom";
@@ -32,6 +32,7 @@ function Event() {
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [refundReason, setRefundReason] = useState("");
   const [selectedRefundOrderId, setSelectedRefundOrderId] = useState(null);
+  const [activeTab, setActiveTab] = useState("upcoming");
   const navigate = useNavigate();
   const { rolee } = useContext(UserContext);
 
@@ -162,15 +163,14 @@ function Event() {
 
   const submitRefundRequest = async (e) => {
     e.preventDefault();
-    if(!refundReason.trim()) return toast.error("Reason is required");
+    if (!refundReason.trim()) return toast.error("Reason is required");
     try {
       const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/${selectedRefundOrderId}`, {
-        reason: refundReason, 
+        reason: refundReason,
         orderType: "EventOrder"
       }, { withCredentials: true });
       toast.success(response.data?.message || "Refund requested successfully");
       setIsRefundModalOpen(false);
-      // Re-fetch to update status
       const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/events/orders/me`, { withCredentials: true });
       setEventOrders(res.data.data || []);
     } catch (error) {
@@ -218,7 +218,6 @@ function Event() {
       );
 
       const paidEventHistoryWithoutId = stripTopLevelId(paidEventHistory);
-
       navigate("/history", { state: { data: paidEventHistoryWithoutId } });
       setIsModalOpen(true);
     } catch (error) {
@@ -242,7 +241,6 @@ function Event() {
         formData,
         { withCredentials: true }
       );
-
       setEvents([...events, response.data.data]);
       setShowAddEventForm(false);
       toast.success("Event created successfully");
@@ -268,7 +266,6 @@ function Event() {
         `${import.meta.env.VITE_URL_BACKEND}/api/v1/events/deleteEvent/${eventId}`,
         { withCredentials: true }
       );
-
       if (response.status === 200) {
         setEvents(events.filter(event => event._id !== eventId));
         toast.success("Event deleted successfully");
@@ -281,252 +278,368 @@ function Event() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <HashLoader size={60} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <HashLoader size={52} color="#2563eb" loading={loading} />
+        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading events…</p>
       </div>
     );
   }
 
-  return (
-    <div className="container relative mx-auto px-4 py-8 bg-gray-100">
-      <Toaster />
-      <div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Events</h1>
-        <p className="text-gray-600 text-lg">Stay updated with society events and celebrations</p>
+  const getCategoryClass = (cat) => {
+    if (cat === "Festival") return "bg-violet-100 text-violet-700";
+    if (cat === "Meeting") return "bg-teal-100 text-teal-700";
+    return "bg-pink-100 text-pink-700";
+  };
 
-        <div className="flex justify-between items-center">
-          <h3 className="text-2xl font-semibold mt-4">Upcoming Events</h3>
+  const tabs = [
+    { id: "upcoming", label: "Upcoming Events", count: events.length },
+    {
+      id: "past",
+      label: "Past Events",
+      count: pastData.filter(ev => rolee === "admin" || hasAttendedEventOrder(ev._id || ev.id)).length,
+    },
+  ];
+
+  const renderEventCard = (event, isPast = false) => {
+    const order = getEventOrder(event._id);
+    const isPaid = paymentStatusMap[event._id] === true;
+    const isUnpaid = paymentStatusMap[event._id] === false;
+    const isRefunded = order?.status === "Refunded";
+
+    return (
+      <div
+        key={event._id || event.id || `${event.eventName}-${event.eventDate}`}
+        className={`bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow${isPast ? " opacity-[0.82]" : ""}`}
+      >
+        {/* Title + category */}
+        <div className="flex justify-between items-start gap-2.5">
+          <h3 className="text-base font-bold text-gray-900 m-0 leading-[1.35]">{event.eventName}</h3>
+          <span className={`py-[3px] px-2.5 rounded-full text-[0.72rem] font-semibold whitespace-nowrap flex-shrink-0 ${getCategoryClass(event.category)}`}>
+            {event.category}
+          </span>
+        </div>
+
+        {/* Description */}
+        <p className="text-[0.84rem] text-gray-500 m-0 leading-[1.55] line-clamp-2">{event.description}</p>
+
+        {/* Info rows */}
+        <div className="flex flex-col gap-[5px] py-2.5 border-y border-gray-100">
+          <div className="flex items-center gap-2 text-[0.84rem] text-gray-600">
+            <BsCalendar2Date className="text-gray-400 flex-shrink-0 text-[0.9rem]" />
+            <span>{new Date(event.eventDate).toLocaleDateString("en-GB")}</span>
+          </div>
+          <div className="flex items-center gap-2 text-[0.84rem] text-gray-600">
+            <FaRegClock className="text-gray-400 flex-shrink-0 text-[0.9rem]" />
+            <span>{event.time}</span>
+          </div>
+          <div className="flex items-center gap-2 text-[0.84rem] text-gray-600">
+            <IoLocationOutline className="text-gray-400 flex-shrink-0 text-[0.9rem]" />
+            <span>{event.venue}</span>
+          </div>
+        </div>
+
+        {/* Price + last date footer */}
+        <div className="flex justify-between items-center text-[0.78rem] text-gray-500">
+          <span className="text-[0.95rem] font-bold text-gray-900">
+            ₹{event.amtPerPerson} <span className="text-[0.78rem] font-normal text-gray-400">/person</span>
+          </span>
+          <span className="text-[0.78rem] text-gray-400">Pay by {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}</span>
+        </div>
+
+        {/* Action buttons */}
+        {!isPast && (
+          <div className="flex flex-col gap-1.5">
+            {!loading && isRefunded && (
+              <button type="button" disabled className="block w-full py-2 px-0 bg-gray-100 text-gray-400 border-none rounded-lg text-[0.82rem] cursor-not-allowed box-border">
+                Refund Taken
+              </button>
+            )}
+
+            {!loading && isUnpaid && !isRefunded && (
+              <Link
+                to={`/layout/payEvent/${event._id}`}
+                className="block w-full py-[9px] px-0 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.85rem] font-semibold text-center no-underline transition-colors box-border"
+              >
+                Pay Now
+              </Link>
+            )}
+
+            {!loading && isPaid && !isRefunded && (
+              <div className="flex flex-col gap-1.5">
+                {getReceiptUrl(event._id) ? (
+                  <>
+                    <a
+                      href={getReceiptUrl(event._id)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block w-full py-2 px-0 bg-transparent hover:bg-blue-50 text-blue-600 border border-blue-600 rounded-[7px] text-[0.82rem] font-semibold text-center no-underline transition-colors box-border"
+                    >
+                      View Receipt
+                    </a>
+
+                    {order?.status === "succeeded" && (
+                      <button
+                        onClick={() => handleRequestRefundClick(getEventOrder(event._id)._id)}
+                        className="block w-full py-2 px-0 bg-transparent hover:bg-orange-50 text-orange-700 border border-orange-400 rounded-[7px] text-[0.82rem] font-semibold cursor-pointer transition-colors box-border"
+                      >
+                        Request Refund
+                      </button>
+                    )}
+
+                    {(order?.status === "Refund Initiated" || order?.status === "Refund_Initiated" || order?.status === "Refund_Pending_Approval") && (
+                      <span className="block py-[7px] px-2.5 bg-orange-50 text-orange-700 rounded-[6px] text-[0.78rem] font-semibold text-center">Refund Pending</span>
+                    )}
+
+                    {order?.status === "Refunded" && (
+                      <span className="block py-[7px] px-2.5 bg-green-50 text-green-800 rounded-[6px] text-[0.78rem] font-semibold text-center">Refunded</span>
+                    )}
+                  </>
+                ) : (
+                  <span className="block py-[7px] px-2.5 bg-gray-50 text-gray-400 rounded-[6px] text-[0.78rem] text-center">Receipt unavailable</span>
+                )}
+              </div>
+            )}
+
+            {rolee === "admin" && (
+              <button
+                onClick={() => handleDeleteEvent(event._id)}
+                className="block w-full py-2 px-0 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-[7px] text-[0.82rem] font-semibold cursor-pointer transition-colors box-border"
+              >
+                Delete Event
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const upcomingEvents = events;
+  const filteredPast = pastData.filter(ev => rolee === "admin" || hasAttendedEventOrder(ev._id || ev.id));
+
+  return (
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+
+      {/* PAGE HEADER */}
+      <div className="flex justify-between items-start mb-7">
+        <div>
+          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Events</h1>
+          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Stay updated with society events and celebrations</p>
+        </div>
+        <div className="flex gap-2.5 items-center">
           {rolee === "admin" && (
             <button
-              className="bg-blue-600 text-white font-semibold py-2 px-4 rounded mt-4"
               onClick={() => setShowAddEventForm(!showAddEventForm)}
+              className={`py-[9px] px-[18px] border rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors ${
+                showAddEventForm
+                  ? "bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
+                  : "bg-blue-600 hover:bg-blue-700 text-white border-transparent"
+              }`}
             >
-              {showAddEventForm ? "Cancel" : "Add Event"}
+              {showAddEventForm ? "✕ Cancel" : "+ Add Event"}
             </button>
           )}
+          <button
+            onClick={fetchPreviousData}
+            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            History
+          </button>
         </div>
-
-        {/* Event Creation Form (same as before) */}
-        {showAddEventForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">New Event</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-4">
-                  {[{ label: "Event Name", name: "eventName", type: "text" },
-                    { label: "Description", name: "description", type: "text" }].map(({ label, name, type }) => (
-                    <div key={name}>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-                      <input type={type} name={name} value={formData[name]} onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                        required />
-                    </div>
-                  ))}
-                  <div className="flex space-x-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                      <input type="date" name="eventDate" min={new Date().toISOString().split("T")[0]}
-                        value={formData.eventDate} onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                        required />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                      <input placeholder="06:00 AM - 09:00 AM" type="text" name="time" value={formData.time}
-                        onChange={handleInputChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                        required />
-                    </div>
-                  </div>
-                  <div className="flex space-x-4">
-                    {[{ label: "Venue", name: "venue", type: "text" },
-                      { label: "Amount Per Person", name: "amtPerPerson", type: "number" }]
-                      .map(({ label, name, type }) => (
-                        <div key={name}>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-                          <input type={type} name={name} value={formData[name]} onChange={handleInputChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                            required />
-                        </div>
-                      ))}
-                  </div>
-                  <div className="flex space-x-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Date to Pay</label>
-                      <input type="date" name="lastDateOfPay" min={new Date().toISOString().split("T")[0]} max={formData.eventDate}
-                        value={formData.lastDateOfPay} onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                        required />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                      <input type="text" name="category" value={formData.category} onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                        required />
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end gap-3">
-                  <button type="button" onClick={() => setShowAddEventForm(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-                  <button type="submit"
-                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Event</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Events Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
-          {events.map((event) => (
-            <div key={event._id} className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-gray-800">{event.eventName}</h2>
-                  <span className={`px-2 py-1 rounded-full text-sm ${event.category === "Festival" ? "bg-purple-100 text-purple-700"
-                    : event.category === "Meeting" ? "bg-teal-100 text-teal-700"
-                      : "bg-pink-100 text-pink-700"}`}>{event.category}</span>
-                </div>
-                <p className="text-gray-600 mt-2">{event.description}</p>
-                <div className="text-sm text-gray-600 mt-4 space-y-1">
-                  <div className="flex items-center"><BsCalendar2Date className="mr-2" /> {new Date(event.eventDate).toLocaleDateString("en-GB")}</div>
-                  <div className="flex items-center"><FaRegClock className="mr-2" /> {event.time}</div>
-                  <div className="flex items-center"><IoLocationOutline className="mr-2" /> {event.venue}</div>
-                  <p>Amount: ₹{event.amtPerPerson}</p>
-                  <p>Last Date: {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}</p>
-                </div>
-              </div>
-              <div className="mt-4 flex gap-3">
-                {!loading && getEventOrder(event._id)?.status === 'Refunded' && (
-                  <button
-                    type="button"
-                    disabled
-                    className="flex-1 py-2 rounded-lg bg-gray-200 text-gray-600 text-center cursor-not-allowed"
-                  >
-                    Refund taken 
-                  </button>
-                )}
-                {!loading && paymentStatusMap[event._id] === false && getEventOrder(event._id)?.status !== 'Refunded' && (
-                  <Link to={`/layout/payEvent/${event._id}`}
-                    className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-center hover:bg-blue-700">Pay Now</Link>
-                )}
-                {!loading && paymentStatusMap[event._id] === true && getEventOrder(event._id)?.status !== 'Refunded' && (
-                  <div className="flex-1 flex flex-col justify-center gap-2">
-                    {getReceiptUrl(event._id) ? (
-                      <div className="flex flex-col gap-2">
-                        <a
-                          href={getReceiptUrl(event._id)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="w-full py-2 rounded-lg border border-blue-600 text-blue-600 font-semibold text-center hover:bg-blue-50 block transition-colors"
-                        >
-                          View receipt
-                        </a>
-                        
-                        {getEventOrder(event._id)?.status === 'succeeded' && (
-                          <button
-                            onClick={() => handleRequestRefundClick(getEventOrder(event._id)._id)}
-                            className="w-full py-2 rounded-lg bg-orange-100 text-orange-700 font-semibold text-center hover:bg-orange-200 transition-colors"
-                          >
-                            Request Refund
-                          </button>
-                        )}
-                        {(getEventOrder(event._id)?.status === 'Refund Initiated' || getEventOrder(event._id)?.status === 'Refund_Initiated' || getEventOrder(event._id)?.status === 'Refund_Pending_Approval') && (
-                          <span className="w-full py-2 text-sm text-orange-500 font-semibold text-center bg-orange-50 rounded-lg">Refund Pending</span>
-                        )}
-                        {getEventOrder(event._id)?.status === 'Refunded' && (
-                          <span className="w-full py-2 text-sm text-green-500 font-semibold text-center bg-green-50 rounded-lg">Refunded</span>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="w-full py-2 text-sm text-gray-500 font-semibold text-center bg-gray-100 rounded-lg cursor-not-allowed">Receipt unavailable</span>
-                    )}
-                  </div>
-                )}
-                {rolee === "admin" && (
-                  <button onClick={() => handleDeleteEvent(event._id)}
-                    className="flex-1 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">Delete</button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Past Events */}
-        <h3 className="text-2xl font-semibold mt-8">Past Events</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
-          {pastData
-            .filter((event) => rolee === "admin" || hasAttendedEventOrder(event._id || event.id))
-            .map((event) => (
-            <div key={event._id || event.id || `${event.eventName}-${event.eventDate}`} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-800">{event.eventName}</h2>
-                <span className={`px-2 py-1 rounded-full text-sm ${event.category === "Festival" ? "bg-purple-100 text-purple-700"
-                  : event.category === "Meeting" ? "bg-teal-100 text-teal-700"
-                    : "bg-pink-100 text-pink-700"}`}>{event.category}</span>
-              </div>
-              <p className="text-gray-600 mt-2">{event.description}</p>
-              <div className="text-sm text-gray-600 mt-4 space-y-1">
-                <div className="flex items-center"><BsCalendar2Date className="mr-2" /> {new Date(event.eventDate).toLocaleDateString("en-GB")}</div>
-                <div className="flex items-center"><FaRegClock className="mr-2" /> {event.time}</div>
-                <div className="flex items-center"><IoLocationOutline className="mr-2" /> {event.venue}</div>
-                <p>Amount: ₹{event.amtPerPerson}</p>
-                <p>Last Date: {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <button onClick={fetchPreviousData} className="absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600">
-          History
-        </button>
-
-        {/* Refund Form Modal */}
-        {isRefundModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                Request Refund
-              </h2>
-              <form onSubmit={submitRefundRequest}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Reason for Refund
-                    </label>
-                    <textarea
-                      name="refundReason"
-                      rows="4"
-                      value={refundReason}
-                      onChange={(e) => setRefundReason(e.target.value)}
-                      placeholder="Please provide a valid reason..."
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsRefundModalOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                  >
-                    Submit Request
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
       </div>
+
+      {/* TAB BAR */}
+      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max mb-6 overflow-x-auto no-scrollbar">
+        {tabs.map(tab => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                isActive
+                  ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
+                  : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* TAB CONTENT */}
+      <div className="min-h-[400px]">
+
+        {/* UPCOMING */}
+        {activeTab === "upcoming" && (
+          <section>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 m-0">Upcoming Events</h2>
+                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Browse and register for society events</p>
+              </div>
+            </div>
+
+            {upcomingEvents.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+                <span className="text-5xl mb-3">🎉</span>
+                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No upcoming events</p>
+                <p className="text-sm text-gray-400 mt-1.5 mb-0">Stay tuned — new events will appear here</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                {upcomingEvents.map(ev => renderEventCard(ev, false))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* PAST */}
+        {activeTab === "past" && (
+          <section>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 m-0">Past Events</h2>
+                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Events you attended or that have ended</p>
+              </div>
+            </div>
+
+            {filteredPast.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+                <span className="text-5xl mb-3">🗂️</span>
+                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No past events</p>
+                <p className="text-sm text-gray-400 mt-1.5 mb-0">Events you attended will appear here</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                {filteredPast.map(ev => renderEventCard(ev, true))}
+              </div>
+            )}
+          </section>
+        )}
+      </div>
+
+      {/* ADD EVENT MODAL */}
+      {showAddEventForm && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[500px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">New Event</h2>
+              <button onClick={() => setShowAddEventForm(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              {[
+                { label: "Event Name", name: "eventName", type: "text" },
+                { label: "Description", name: "description", type: "text" },
+              ].map(({ label, name, type }) => (
+                <div key={name} className="mb-4">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">{label}</label>
+                  <input
+                    type={type} name={name} value={formData[name]}
+                    onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required
+                  />
+                </div>
+              ))}
+
+              <div className="flex gap-3">
+                <div className="mb-4 flex-1">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Date</label>
+                  <input type="date" name="eventDate"
+                    min={new Date().toISOString().split("T")[0]}
+                    value={formData.eventDate} onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required />
+                </div>
+                <div className="mb-4 flex-1">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Time</label>
+                  <input placeholder="06:00 AM – 09:00 AM" type="text" name="time"
+                    value={formData.time} onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="mb-4 flex-1">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Venue</label>
+                  <input type="text" name="venue" value={formData.venue}
+                    onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required />
+                </div>
+                <div className="mb-4 flex-1">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Amount / Person (₹)</label>
+                  <input type="number" name="amtPerPerson" value={formData.amtPerPerson}
+                    onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="mb-4 flex-1">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Last Date to Pay</label>
+                  <input type="date" name="lastDateOfPay"
+                    min={new Date().toISOString().split("T")[0]}
+                    max={formData.eventDate}
+                    value={formData.lastDateOfPay} onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required />
+                </div>
+                <div className="mb-4 flex-1">
+                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Category</label>
+                  <input type="text" name="category" value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    required />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2.5 mt-6">
+                <button type="button" onClick={() => setShowAddEventForm(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Create Event</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* REFUND MODAL */}
+      {isRefundModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Request Refund</h2>
+              <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+            </div>
+            <form onSubmit={submitRefundRequest}>
+              <div className="mb-4">
+                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Reason for Refund</label>
+                <textarea
+                  name="refundReason" rows="4"
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                  placeholder="Please provide a valid reason..."
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors resize-y font-sans"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-2.5 mt-6">
+                <button type="button" onClick={() => setIsRefundModalOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Submit Request</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
