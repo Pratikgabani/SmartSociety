@@ -7,6 +7,7 @@ import { Menu, X } from 'lucide-react'
 
 function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false)
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
@@ -24,10 +25,12 @@ function Layout() {
         <h1 className='text-3xl font-bold'>ResiHub</h1>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar Wrapper — tracks hover to sync main content margin */}
       <div
+        onMouseEnter={() => setIsSidebarHovered(true)}
+        onMouseLeave={() => setIsSidebarHovered(false)}
         className={`
-          fixed top-0 left-0 h-screen w-64 bg-[#111827] text-white z-40
+          fixed top-0 left-0 h-screen z-40
           transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
@@ -44,14 +47,20 @@ function Layout() {
         />
       )}
 
-      {/* Main Content Area */}
-      <div className='md:ml-64 pt-20 md:pt-4 p-4'>
+      {/* Main Content Area — margin syncs with sidebar width */}
+      <div
+        className='pt-20 md:pt-4 p-4 transition-all duration-300 ease-in-out hidden md:block'
+        style={{ marginLeft: isSidebarHovered ? '230px' : '70px' }}
+      >
+        <Outlet />
+      </div>
+
+      {/* Mobile main content (no sidebar margin needed) */}
+      <div className='pt-20 p-4 block md:hidden'>
         <Outlet />
       </div>
     </div>
   )
 }
-
-
 
 export default Layout

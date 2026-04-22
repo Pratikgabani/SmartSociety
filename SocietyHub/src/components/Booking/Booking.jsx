@@ -1,13 +1,11 @@
 import axios from "../../axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
-// import PreviousDataModal from "../history/PreviousDataModal .jsx";
-// import PratikPreviousDataModal from "../history/PratikPreviousDataModel.jsx";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import { HashLoader } from 'react-spinners'
+import { Trash2 } from "lucide-react";
+import { HashLoader } from 'react-spinners';
 import UserContext from "../../context/UserContext.js";
+
 const Booking = () => {
   const [venues, setVenues] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -26,7 +24,7 @@ const Booking = () => {
     capacity: "",
     price: "",
     societyId: ""
-  })
+  });
   const [amenityInput, setAmenityInput] = useState("");
   const [myBooking, setMyBooking] = useState([]);
   const [bookingOrders, setBookingOrders] = useState([]);
@@ -39,7 +37,9 @@ const Booking = () => {
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [refundReason, setRefundReason] = useState("");
   const [selectedRefundOrderId, setSelectedRefundOrderId] = useState(null);
-  const { rolee } = useContext(UserContext)
+  const [activeTab, setActiveTab] = useState("venues");
+  const [confirmModal, setConfirmModal] = useState({ open: false, type: null, id: null, venueName: "" });
+  const { rolee } = useContext(UserContext);
   const navigate = useNavigate();
 
   // Fetch venues
@@ -49,10 +49,8 @@ const Booking = () => {
         const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/getVenue`, { withCredentials: true });
         setVenues(response.data.data);
         setLoading(false);
-        // if (response.data.data.length === 0) toast.error("No Venues found!");
       } catch (error) {
         console.error("Error fetching venues:", error);
-        // toast.error("Failed to fetch venues!"); // Toast for error
       }
     };
     fetchVenues();
@@ -65,11 +63,8 @@ const Booking = () => {
         const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/getUpcomingBookingsByUserId`, { withCredentials: true });
         setMyBooking(response.data.data);
         setLoading(false);
-
-        // toast.success("Bookings fetched successfully!"); // Toast for success
       } catch (error) {
         console.log(error);
-        // toast.error("Failed to fetch bookings!"); // Toast for error
       }
     };
     fetchMyBookings();
@@ -110,11 +105,8 @@ const Booking = () => {
         const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/getPastBookingsByUserId`, { withCredentials: true });
         setMyPastBooking(response.data.data);
         setLoading(false);
-
-        // toast.success("Bookings fetched successfully!"); // Toast for success
       } catch (error) {
         console.log(error);
-        // toast.error("Failed to fetch bookings!"); // Toast for error
       }
     };
     fetchMyPastBookings();
@@ -123,7 +115,7 @@ const Booking = () => {
   const isPaidBookingOrderStatus = (status) => {
     return [
       "succeeded",
-      "Paid",            // ✅ Fix #2: our new normalized status enum
+      "Paid",
       "Refund Initiated",
       "Refund_Initiated",
       "Refund_Pending_Approval",
@@ -132,11 +124,9 @@ const Booking = () => {
   };
 
   const isBookingHistoryVisibleStatus = (status) => {
-    // ✅ Fix #2: include both old "succeeded" (legacy DB records) and new "Paid" (after our model fix)
     return status === "succeeded" || status === "Paid";
   };
 
-  // Fetch previous data (for admin only)
   const fetchPreviousData = async () => {
     try {
       const stripTopLevelId = (rows = []) =>
@@ -178,7 +168,6 @@ const Booking = () => {
       );
 
       const paidBookingHistoryWithoutId = stripTopLevelId(paidBookingHistory);
-
       setPreviousData(paidBookingHistoryWithoutId);
       navigate("/history", { state: { data: paidBookingHistoryWithoutId } });
       setIsModalOpen(true);
@@ -187,16 +176,8 @@ const Booking = () => {
     }
   };
 
-  // Delete booking
-  const handleDelete = async (bookingId) => {
-    try {
-      const response = await axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/delete/${bookingId}`, { withCredentials: true });
-      setMyBooking(myBooking.filter((booking) => booking._id !== bookingId));
-      toast.success("Booking deleted successfully!"); // Toast for success
-    } catch (error) {
-      console.error("Error deleting booking:", error);
-      toast.error("Failed to delete booking!"); // Toast for error
-    }
+  const handleDelete = (bookingId) => {
+    setConfirmModal({ open: true, type: "booking", id: bookingId, venueName: "" });
   };
 
   const isBookingPaid = (bookingId) => {
@@ -225,23 +206,17 @@ const Booking = () => {
 
   const submitRefundRequest = async (e) => {
     e.preventDefault();
-    if(!refundReason.trim()) return toast.error("Reason is required");
+    if (!refundReason.trim()) return toast.error("Reason is required");
     try {
-      const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/${selectedRefundOrderId}`, {
-        reason: refundReason, 
-        orderType: "BookingOrder"
-      }, { withCredentials: true });
-
-      // ✅ Fix #1: Show success and close modal FIRST — before any follow-up data fetching
+      const response = await axios.post(
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/${selectedRefundOrderId}`,
+        { reason: refundReason, orderType: "BookingOrder" },
+        { withCredentials: true }
+      );
       toast.success(response.data?.message || "Refund requested successfully");
       setIsRefundModalOpen(false);
-      
-      // ✅ Fix #1: Isolated inner try-catch — if the data refresh fails, it NEVER
-      // bleeds into the outer catch and never overwrites the success toast with an error
       try {
         if (response.status === 200) {
-          // Auto-refund (<24h): optimistically mark as "Refund Initiated" (what backend actually sets)
-          // ✅ Fix #3: was incorrectly "Refunded", corrected to "Refund Initiated"
           setBookingOrders((prev) =>
             prev.map((order) =>
               order._id === selectedRefundOrderId
@@ -250,71 +225,52 @@ const Booking = () => {
             )
           );
         } else {
-          // Manual review (>24h): re-fetch the latest order statuses from server
           const bookRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/orders/me`, { withCredentials: true });
           setBookingOrders(bookRes.data.data || []);
         }
       } catch (refreshErr) {
-        // Non-critical: the 5-second polling interval will sync state automatically
         console.error("Order status refresh failed (non-critical):", refreshErr);
       }
-
     } catch (error) {
-      // Only real POST failures (network down, 4xx/5xx from backend) reach here
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to submit refund request");
     }
   };
 
-  // Book now
   const handleBookNow = (venue) => {
     setSelectedVenue(venue);
     setIsFormOpen(true);
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // If the input field is for "duration", ensure it's 18 or less
     if (name === "duration" && value > 18) {
       toast.error("Booking duration cannot exceed 18 hours!");
       return;
     }
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Handle venue form input changes
   const handleVenueInputChange = (e) => {
     const { name, value } = e.target;
-    setVenueFormData({
-      ...venueFormData,
-      [name]: value,
-    });
-  }
+    setVenueFormData({ ...venueFormData, [name]: value });
+  };
 
-  // Add amenity
   const handleAddAmenity = () => {
     if (amenityInput.trim() !== "") {
       setVenueFormData({
         ...venueFormData,
         amenities: [...venueFormData.amenities, amenityInput.trim()],
       });
-      setAmenityInput(""); // Clear input
+      setAmenityInput("");
     }
   };
 
-  // Remove amenity
   const handleRemoveAmenity = (index) => {
     const updatedAmenities = venueFormData.amenities.filter((_, i) => i !== index);
     setVenueFormData({ ...venueFormData, amenities: updatedAmenities });
   };
 
-  // Handle venue form submit
   const handleVenueSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -330,31 +286,39 @@ const Booking = () => {
       console.error("Error creating venue:", error);
       toast.error("Failed to create venue!");
     }
-  }
+  };
 
-  // Delete venue
-  const handleDeleteVenue = async (venueId) => {
+  const handleDeleteVenue = (venueId, venueName) => {
+    setConfirmModal({ open: true, type: "venue", id: venueId, venueName });
+  };
+
+  const confirmDelete = async () => {
+    const { type, id } = confirmModal;
+    setConfirmModal({ open: false, type: null, id: null, venueName: "" });
     try {
-      const response = await axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/deleteVenue/${venueId}`, { withCredentials: true });
-      setVenues(venues.filter((venue) => venue._id !== venueId));
-      toast.success("Venue deleted successfully!"); // Toast for success
+      if (type === "booking") {
+        await axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/delete/${id}`, { withCredentials: true });
+        setMyBooking(prev => prev.filter(b => b._id !== id));
+        toast.success("Reservation cancelled successfully!");
+      } else if (type === "venue") {
+        await axios.delete(`${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/deleteVenue/${id}`, { withCredentials: true });
+        setVenues(prev => prev.filter(v => v._id !== id));
+        toast.success("Venue deleted successfully!");
+      }
     } catch (error) {
-      console.error("Error deleting venue:", error);
-      toast.error("Failed to delete venue!"); // Toast for error
+      console.error("Delete failed:", error);
+      toast.error("Action failed. Please try again.");
     }
   };
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send the venue's name as bookingType
       const response = await axios.post(
         `${import.meta.env.VITE_URL_BACKEND}/api/v1/booking/new-booking`,
-        { ...formData, bookingType: selectedVenue.venue }, // Corrected here
+        { ...formData, bookingType: selectedVenue.venue },
         { withCredentials: true }
       );
-
       toast.success("Booking created successfully!");
       setMyBooking([...myBooking, response.data.data]);
       setIsFormOpen(false);
@@ -366,505 +330,489 @@ const Booking = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <HashLoader size={60} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+        <p className="mt-4 text-[1.1rem] text-gray-700">Loading...</p>
       </div>
     );
   }
+
+  const tabs = [
+    { id: "venues", label: "Available Venues", count: venues.length },
+    { id: "upcoming", label: "Upcoming Bookings", count: myBooking.filter(b => getBookingOrder(b._id)?.status !== 'Refunded').length },
+    { id: "past", label: "Past Bookings", count: myPastBooking.filter(b => isBookingHistoryVisibleStatus(getBookingOrder(b._id || b.id)?.status)).length },
+  ];
+
   return (
-    <div className="container relative mx-auto px-4 py-8 bg-gray-100">
-      <Toaster />
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
 
-      <div className="">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          Venue Bookings
-        </h1>
-        <p className="text-gray-600 text-lg">Easily book society venues for your events and gatherings.</p>
+      {/* Page Header */}
+      <div className="flex justify-between items-start mb-7">
+        <div>
+          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Venue Bookings</h1>
+          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Reserve society spaces for events and gatherings</p>
+        </div>
+        <button
+          onClick={fetchPreviousData}
+          className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+        >
+          History
+        </button>
+      </div>
 
+      {/* Tab Navigation */}
+      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max mb-7 overflow-x-auto no-scrollbar">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex flex-row items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                isActive
+                  ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
+                  : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`inline-flex flex-row items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Available Venues Section */}
-        <section className="mb-12">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl mt-4 font-semibold text-gray-800">Available Venues</h2>
-            {rolee === "admin" && (
-              <button
-                onClick={() => setIsVenueFormOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded mt-4  mb-4"
-              >
-                Add Venue
-              </button>
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 ">
-            {loading ? (
-              <div className="flex flex-col items-center justify-center text-center min-h-[200px]">
-                <HashLoader size={50} color="#000000" loading={loading} />
-                <p className="mt-4 text-lg text-black">Loading...</p>
+      {/* Tab Content */}
+      <div className="min-h-[400px]">
+
+        {/* AVAILABLE VENUES */}
+        {activeTab === "venues" && (
+          <section>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 m-0">Available Venues</h2>
+                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Browse and reserve spaces for your next event</p>
               </div>
-
-            ) : venues.length === 0 ? (
-              <p>No venues available.</p>
-            ) :
-              (venues.map((venue) => (
-                <div
-                  key={venue._id}
-                  className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
+              {rolee === "admin" && (
+                <button
+                  onClick={() => setIsVenueFormOpen(true)}
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
-                  <div className="flex flex-col h-full">
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center mb-3">
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.venue}</h3>
-                        {rolee === "admin" && (
-                          <button onClick={() => handleDeleteVenue(venue._id)} className="text-red-500 hover:bg-red-100 p-2 rounded-md transition-colors">
-                            <RiDeleteBin6Fill size={20} />
-                          </button>
-                        )}
-                      </div>
-                      <p className="text-gray-600 text-sm mb-3">{venue.description}</p>
-                      <div className="flex gap-2 mb-4 flex-wrap">
-                        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                          Capacity: {venue.capacity}
-                        </span>
-                        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                          ₹{venue.price}/day
-                        </span>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mb-4">
+                  + Add Venue
+                </button>
+              )}
+            </div>
+
+            {venues.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+                <span className="text-5xl mb-3">🏛️</span>
+                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No venues available</p>
+                <p className="text-sm text-gray-400 mt-1.5 mb-0">Check back later or contact your admin</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                {venues.map((venue) => (
+                  <div key={venue._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-[1.05rem] font-bold text-gray-900 m-0">{venue.venue}</h3>
+                      {rolee === "admin" && (
+                        <button
+                          onClick={() => handleDeleteVenue(venue._id, venue.venue)}
+                          className="bg-transparent hover:bg-red-100 border-none text-red-500 cursor-pointer p-1.5 rounded-md transition-colors flex items-center"
+                        >
+                          <Trash2 strokeWidth={2.5} className="w-[18px] h-[18px]" />
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[0.85rem] text-gray-500 leading-relaxed m-0">{venue.description}</p>
+                    <div className="flex flex-row gap-2 flex-wrap">
+                      <span className="py-1 px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.78rem] font-medium">👥 {venue.capacity} guests</span>
+                      <span className="py-1 px-2.5 rounded-full text-[0.78rem] font-medium bg-emerald-100 text-emerald-800">₹{venue.price}/day</span>
+                    </div>
+                    {venue.amenities.length > 0 && (
+                      <div className="flex flex-row flex-wrap gap-1.5">
                         {venue.amenities.map((amenity, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
-                          >
-                            {amenity}
-                          </span>
+                          <span key={idx} className="py-[3px] px-[9px] bg-gray-100 text-gray-600 rounded-md text-[0.75rem]">{amenity}</span>
                         ))}
                       </div>
-                    </div>
+                    )}
                     <button
                       onClick={() => handleBookNow(venue)}
-                      className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"
+                      className="mt-1 py-2.5 px-0 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors w-full flex justify-center items-center"
                     >
                       Reserve Now
                     </button>
-
                   </div>
-                </div>
-              )))}
-          </div>
-        </section>
-
-        {/* My Bookings Section */}
-        {/* Upcoming Bookings */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Upcoming Bookings</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 sm:px-2">
-            {loading ? (
-              <p className="col-span-full text-center text-gray-500 py-10">Loading...</p>
-            ) : myBooking.length === 0 ? (
-              <p className="col-span-full text-center text-gray-500 py-10">No upcoming bookings.</p>
-            ) : (
-              myBooking.filter(booking => getBookingOrder(booking._id)?.status !== 'Refunded').map((booking) => (
-                <div
-                  key={booking._id}
-                  className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100 flex flex-col h-full relative"
-                >
-                  {/* Status badge at top-right */}
-                  <span
-                    className={`absolute top-4 right-4 px-2 py-1 rounded-full text-xs  ${new Date(booking.date) >= Date.now()
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                      }`}
-                  >
-                    {new Date(booking.date) >= Date.now() ? 'Upcoming' : 'Completed'}
-                  </span>
-
-                  <div className="flex-1 space-y-2">
-                    <h3 className="text-xl font-bold text-gray-800">{booking.bookingType}</h3>
-                    <p className="text-gray-600 text-sm">{booking.bookDescription}</p>
-                    <div className="space-y-1 text-sm">
-                      <p className="text-gray-500">⏳ Duration: {booking.duration} hours</p>
-                      <p className="text-gray-500">📅 Date: {new Date(booking.date).toLocaleDateString('en-GB')}</p>
-                    </div>
-                  </div>
-
-                  {new Date(booking.date) >= Date.now() && (
-                    <div className="flex items-start justify-between mt-4 gap-2">
-                      <button
-                        onClick={() => handleDelete(booking._id)}
-                        className="px-4 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors h-fit text-sm font-medium"
-                      >
-                        Cancel Reservation
-                      </button>
-                      {isBookingPaid(booking._id) ? (
-                        <div className="flex flex-col gap-2 w-5/12 justify-center">
-                          {getBookingReceiptUrl(booking._id) ? (
-                            <div className="flex flex-col gap-2">
-                              <a
-                                href={getBookingReceiptUrl(booking._id)}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="w-full py-2 rounded-lg border border-blue-600 text-blue-600 font-semibold text-center hover:bg-blue-50 transition-colors"
-                              >
-                                View Receipt
-                              </a>
-                              
-                              {getBookingOrder(booking._id)?.status === 'succeeded' && (
-                                <button
-                                  onClick={() => handleRequestRefundClick(getBookingOrder(booking._id)._id)}
-                                  className="w-full py-2 rounded-lg bg-orange-100 text-orange-700 font-semibold text-center  hover:bg-orange-200 transition-colors"
-                                >
-                                  Request Refund
-                                </button>
-                              )}
-                              {(getBookingOrder(booking._id)?.status === 'Refund Initiated' || getBookingOrder(booking._id)?.status === 'Refund_Initiated' || getBookingOrder(booking._id)?.status === 'Refund_Pending_Approval') && (
-                                <span className="w-full py-2 text-sm text-orange-500 font-semibold text-center bg-orange-50 rounded-lg">Refund Pending</span>
-                              )}
-                              {getBookingOrder(booking._id)?.status === 'Refunded' && (
-                                <span className="w-full py-2 text-sm text-green-500 font-semibold text-center bg-green-50 rounded-lg">Refunded</span>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="w-full py-2 text-sm text-gray-500 text-center bg-gray-100 rounded-lg cursor-not-allowed">Receipt unavailable</span>
-                          )}
-                        </div>
-                      ) : (
-                        <Link
-                          to={`/layout/payBooking/${booking._id}`}
-                          className="w-5/12 flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                          Pay now
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))
+                ))}
+              </div>
             )}
+          </section>
+        )}
+
+        {/* UPCOMING BOOKINGS */}
+        {activeTab === "upcoming" && (
+          <section>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 m-0">Upcoming Bookings</h2>
+                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Manage your scheduled reservations</p>
+              </div>
+            </div>
+
+            {myBooking.filter(b => getBookingOrder(b._id)?.status !== 'Refunded').length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+                <span className="text-5xl mb-3">📅</span>
+                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No upcoming bookings</p>
+                <p className="text-sm text-gray-400 mt-1.5 mb-0">Browse available venues and make your first reservation</p>
+                <button
+                  onClick={() => setActiveTab("venues")}
+                  className="mt-3 py-2.5 px-6 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
+                >
+                  Browse Venues
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                {myBooking
+                  .filter(booking => getBookingOrder(booking._id)?.status !== 'Refunded')
+                  .map((booking) => {
+                    const isUpcoming = new Date(booking.date) >= Date.now();
+                    const order = getBookingOrder(booking._id);
+                    return (
+                      <div key={booking._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
+                        <div className="flex justify-between items-start gap-3">
+                          <div>
+                            <h3 className="text-base font-bold text-gray-900 m-0">{booking.bookingType}</h3>
+                            <p className="text-[0.82rem] text-gray-500 mt-[3px] mb-0">{booking.bookDescription}</p>
+                          </div>
+                          <span className={isUpcoming ? "py-[3px] px-2.5 bg-emerald-100 text-emerald-800 rounded-full text-[0.72rem] font-semibold whitespace-nowrap" : "py-[3px] px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.72rem] font-semibold whitespace-nowrap"}>
+                            {isUpcoming ? 'Upcoming' : 'Completed'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 py-3 border-y border-gray-100">
+                          <div className="flex flex-col gap-0.5 flex-1">
+                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Duration</span>
+                            <span className="text-[0.9rem] font-semibold text-gray-900">{booking.duration} hrs</span>
+                          </div>
+                          <div className="w-px h-[30px] bg-gray-200" />
+                          <div className="flex flex-col gap-0.5 flex-1">
+                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Date</span>
+                            <span className="text-[0.9rem] font-semibold text-gray-900">{new Date(booking.date).toLocaleDateString('en-GB')}</span>
+                          </div>
+                        </div>
+                        {isUpcoming && (
+                          <div className="flex gap-2 items-start">
+                            <button
+                              onClick={() => handleDelete(booking._id)}
+                              className="py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-[0.8rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                            >
+                              Cancel
+                            </button>
+                            {isBookingPaid(booking._id) ? (
+                              <div className="flex flex-col gap-1.5 flex-1">
+                                {getBookingReceiptUrl(booking._id) ? (
+                                  <>
+                                    <a
+                                      href={getBookingReceiptUrl(booking._id)}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="block py-[7px] px-2.5 border border-blue-600 hover:bg-blue-50 text-blue-600 rounded-md text-[0.78rem] font-semibold text-center no-underline transition-colors"
+                                    >
+                                      View Receipt
+                                    </a>
+                                    {order?.status === 'succeeded' && (
+                                      <button
+                                        onClick={() => handleRequestRefundClick(order._id)}
+                                        className="block w-full py-[7px] px-2.5 bg-transparent hover:bg-orange-50 border border-orange-500 text-orange-700 rounded-md text-[0.78rem] font-semibold cursor-pointer transition-colors"
+                                      >
+                                        Request Refund
+                                      </button>
+                                    )}
+                                    {(order?.status === 'Refund Initiated' || order?.status === 'Refund_Initiated' || order?.status === 'Refund_Pending_Approval') && (
+                                      <span className="block py-[7px] px-2.5 bg-orange-50 text-orange-700 rounded-md text-[0.78rem] font-semibold text-center">Refund Pending</span>
+                                    )}
+                                    {order?.status === 'Refunded' && (
+                                      <span className="block py-[7px] px-2.5 bg-emerald-50 text-emerald-800 rounded-md text-[0.78rem] font-semibold text-center">Refunded</span>
+                                    )}
+                                  </>
+                                ) : (
+                                  <span className="block py-[7px] px-2.5 bg-gray-50 text-gray-400 rounded-md text-[0.78rem] text-center">Receipt unavailable</span>
+                                )}
+                              </div>
+                            ) : (
+                              <Link
+                                to={`/layout/payBooking/${booking._id}`}
+                                className="flex flex-row items-center justify-center flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-md text-[0.8rem] font-semibold cursor-pointer no-underline transition-colors text-center"
+                              >
+                                Pay Now
+                              </Link>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* PAST BOOKINGS */}
+        {activeTab === "past" && (
+          <section>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 m-0">Past Bookings</h2>
+                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Your completed and paid reservations</p>
+              </div>
+            </div>
+
+            {myPastBooking.filter(b => isBookingHistoryVisibleStatus(getBookingOrder(b._id || b.id)?.status)).length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
+                <span className="text-5xl mb-3">🗂️</span>
+                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No past bookings</p>
+                <p className="text-sm text-gray-400 mt-1.5 mb-0">Your completed reservations will appear here</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+                {myPastBooking
+                  .filter(booking => isBookingHistoryVisibleStatus(getBookingOrder(booking._id || booking.id)?.status))
+                  .map((booking) => {
+                    const isUpcoming = new Date(booking.date) >= Date.now();
+                    return (
+                      <div key={booking._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
+                        <div className="flex justify-between items-start gap-3">
+                          <div>
+                            <h3 className="text-base font-bold text-gray-900 m-0">{booking.bookingType}</h3>
+                            <p className="text-[0.82rem] text-gray-500 mt-[3px] mb-0">{booking.bookDescription}</p>
+                          </div>
+                          <span className={isUpcoming ? "py-[3px] px-2.5 bg-emerald-100 text-emerald-800 rounded-full text-[0.72rem] font-semibold whitespace-nowrap" : "py-[3px] px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.72rem] font-semibold whitespace-nowrap"}>
+                            {isUpcoming ? "Upcoming" : "Completed"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 py-3 border-y border-gray-100">
+                          <div className="flex flex-col gap-0.5 flex-1">
+                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Duration</span>
+                            <span className="text-[0.9rem] font-semibold text-gray-900">{booking.duration} hrs</span>
+                          </div>
+                          <div className="w-px h-[30px] bg-gray-200" />
+                          <div className="flex flex-col gap-0.5 flex-1">
+                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Date</span>
+                            <span className="text-[0.9rem] font-semibold text-gray-900">{new Date(booking.date).toLocaleDateString('en-GB')}</span>
+                          </div>
+                        </div>
+                        {isUpcoming && (
+                          <div className="flex gap-2 items-start">
+                            <button
+                              onClick={() => handleDelete(booking._id)}
+                              className="py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-[0.8rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                            >
+                              Cancel
+                            </button>
+                            <button className="flex flex-row items-center justify-center flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-md text-[0.8rem] font-semibold cursor-pointer transition-colors text-center">
+                              Pay Now
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+          </section>
+        )}
+      </div>
+
+      {/* BOOKING FORM MODAL */}
+      {isFormOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[520px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Reserve {selectedVenue?.venue}</h2>
+              <button onClick={() => setIsFormOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Event Description</label>
+                <input
+                  type="text"
+                  name="bookDescription"
+                  value={formData.bookDescription}
+                  onChange={handleInputChange}
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                  placeholder="e.g. Annual Society Meeting"
+                  required
+                />
+              </div>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Duration (hours)</label>
+                <input
+                  type="number"
+                  name="duration"
+                  min="1"
+                  max="18"
+                  value={formData.duration}
+                  onChange={handleInputChange}
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                  placeholder="1–18 hours"
+                  required
+                />
+              </div>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Booking Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  min={new Date().toISOString().split("T")[0]}
+                  value={formData.date}
+                  onChange={handleInputChange}
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                  required
+                />
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-lg py-3.5 px-4 my-1">
+                <p className="text-[0.78rem] font-bold text-slate-600 uppercase tracking-[0.4px] m-0 mb-2">📋 Reservation Guidelines</p>
+                <ul className="m-0 pl-4 flex flex-col gap-1 text-[0.8rem] text-slate-500 leading-relaxed list-disc">
+                  <li>Book at least <strong>24 hours</strong> in advance</li>
+                  <li>Cancellations need <strong>12 hours</strong> notice for a full refund</li>
+                  <li>Max duration is <strong>18 hours</strong> per booking</li>
+                  <li>Arrive <strong>30 minutes</strong> before your scheduled time</li>
+                </ul>
+              </div>
+              <div className="flex justify-end gap-2.5 mt-6">
+                <button type="button" onClick={() => setIsFormOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Confirm Reservation</button>
+              </div>
+            </form>
           </div>
-        </section>
+        </div>
+      )}
 
-
-        {/* Past Bookings */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Past Bookings</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {myPastBooking
-              .filter((booking) => isBookingHistoryVisibleStatus(getBookingOrder(booking._id || booking.id)?.status))
-              .map((booking) => (
-              <div
-                key={booking._id}
-                className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100"
-              >
-                <div className="flex flex-col h-full">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                      {booking.bookingType}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-2">{booking.bookDescription}</p>
-                    <div className="space-y-1 text-sm mb-4">
-                      <p className="text-gray-500">
-                        ⏳ Duration: {booking.duration} hours
-                      </p>
-                      <p className="text-gray-500 pb-2">
-                        📅 Date: {new Date(booking.date).toLocaleDateString()}
-                      </p>
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${new Date(booking.date) >= Date.now()
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                        }`}>
-                        {new Date(booking.date) >= Date.now() ? "Upcoming" : "Completed"}
+      {/* ADD VENUE FORM MODAL */}
+      {isVenueFormOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Add New Venue</h2>
+              <button onClick={() => setIsVenueFormOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+            </div>
+            <form onSubmit={handleVenueSubmit}>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Venue Name</label>
+                <input type="text" name="venue" value={venueFormData.venue} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+              </div>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Description</label>
+                <input type="text" name="description" value={venueFormData.description} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+              </div>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Amenities</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={amenityInput}
+                    onChange={(e) => setAmenityInput(e.target.value)}
+                    className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                    placeholder="e.g. Projector"
+                  />
+                  <button type="button" onClick={handleAddAmenity} className="py-2.5 px-4 bg-blue-600 hover:bg-blue-700 transition-colors text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer whitespace-nowrap">Add</button>
+                </div>
+                {venueFormData.amenities.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2.5">
+                    {venueFormData.amenities.map((amenity, index) => (
+                      <span key={index} className="inline-flex items-center gap-1.5 py-1 px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.78rem]">
+                        {amenity}
+                        <button type="button" onClick={() => handleRemoveAmenity(index)} className="bg-transparent border-none text-gray-400 hover:text-red-500 cursor-pointer p-0 text-[0.7rem] leading-none">✕</button>
                       </span>
-                    </div>
+                    ))}
                   </div>
-                  {new Date(booking.date) >= Date.now() && (
-                    <div className="flex justify-between">
-                      <button
-                        onClick={() => handleDelete(booking._id)}
-                        className="mt-1 w-5/12 bg-red-100 text-red-700 py-2 rounded-lg hover:bg-red-200 transition-colors"
-                      >
-                        Cancel Reservation
-                      </button>
-                      <button className="mt-1 w-5/12 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        Pay now
-                      </button>
-                    </div>
-
-                  )}
+                )}
+              </div>
+              <div className="flex gap-3 mb-4">
+                <div className="flex flex-col flex-1">
+                  <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Capacity</label>
+                  <input type="number" name="capacity" value={venueFormData.capacity} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+                </div>
+                <div className="flex flex-col flex-1">
+                  <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Price (₹/day)</label>
+                  <input type="number" name="price" value={venueFormData.price} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
                 </div>
               </div>
-            ))}
+              <div className="flex justify-end gap-2.5 mt-6">
+                <button type="button" onClick={() => setIsVenueFormOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Create Venue</button>
+              </div>
+            </form>
           </div>
-        </section>
+        </div>
+      )}
 
-        {/* Booking Form Modal */}
-        {isFormOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                Reserve {selectedVenue?.venue}
-              </h2>
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Event Description
-                    </label>
-                    <input
-                      type="text"
-                      name="bookDescription"
-                      value={formData.bookDescription}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Duration (hours)
-                    </label>
-                    <input
-                      type="number"
-                      name="duration"
-                      min="1"
-                      max="18"
-                      value={formData.duration}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Booking Date
-                    </label>
-                    <input
-                      type="date"
-                      name="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      value={formData.date}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsFormOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Confirm Reservation
-                  </button>
-                </div>
-              </form>
+      {/* CONFIRM DELETE MODAL */}
+      {confirmModal.open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl pt-8 pb-7 px-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+              <Trash2 className="h-8 w-8 text-red-600" />
+            </div>
+            <h3 className="text-[1.1rem] font-bold text-gray-900 m-0 mb-2">
+              {confirmModal.type === "venue" ? "Delete Venue?" : "Cancel Reservation?"}
+            </h3>
+            <p className="text-[0.875rem] text-gray-500 leading-relaxed m-0 mb-6">
+              {confirmModal.type === "venue"
+                ? <></>
+                : "Are you sure you want to cancel this reservation? This action cannot be undone."}
+              {confirmModal.type === "venue" && <>Are you sure you want to delete <strong>{confirmModal.venueName}</strong>? This cannot be undone.</>}
+            </p>
+            <div className="flex gap-2.5">
+              <button
+                onClick={() => setConfirmModal({ open: false, type: null, id: null, venueName: "" })}
+                className="flex-1 py-2.5 px-0 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+              >
+                No, Keep it
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 py-2.5 px-0 bg-red-600 hover:bg-red-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+              >
+                Yes, Delete
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Venue Add Form Modal */}
-        {isVenueFormOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                Add Venue
-              </h2>
-              <form onSubmit={handleVenueSubmit}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Venue Name
-                    </label>
-                    <input
-                      type="text"
-                      name="venue"
-                      value={venueFormData.venue}
-                      onChange={handleVenueInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Venue Description
-                    </label>
-                    <input
-                      type="text"
-                      name="description"
-                      value={venueFormData.description}
-                      onChange={handleVenueInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  {/* amenities */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Venue Amenities
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={amenityInput}
-                        onChange={(e) => setAmenityInput(e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter an amenity"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddAmenity}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                  {venueFormData.amenities.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-sm font-medium text-gray-700 mb-2">Added Amenities:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {venueFormData.amenities.map((amenity, index) => (
-                          <span
-                            key={index}
-                            className="flex items-center gap-2 bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm"
-                          >
-                            {amenity}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveAmenity(index)}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              ✕
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Venue Capacity
-                    </label>
-                    <input
-                      type="number"
-                      name="capacity"
-                      value={venueFormData.capacity}
-                      onChange={handleVenueInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  {/* price */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Venue Price
-                    </label>
-                    <input
-                      type="number"
-                      name="price"
-                      value={venueFormData.price}
-                      onChange={handleVenueInputChange}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-
-
-
-                </div>
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsVenueFormOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Add Venue
-                  </button>
-                </div>
-              </form>
+      {/* REFUND MODAL */}
+      {isRefundModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Request Refund</h2>
+              <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
+            <form onSubmit={submitRefundRequest}>
+              <div className="mb-4 flex flex-col">
+                <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Reason for Refund</label>
+                <textarea
+                  name="refundReason"
+                  rows="4"
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                  placeholder="Please provide a valid reason..."
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white resize-y font-sans"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-2.5 mt-6">
+                <button type="button" onClick={() => setIsRefundModalOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Submit Request</button>
+              </div>
+            </form>
           </div>
-
-
-        )}
-
-        {/* Refund Form Modal */}
-        {isRefundModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                Request Refund
-              </h2>
-              <form onSubmit={submitRefundRequest}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Reason for Refund
-                    </label>
-                    <textarea
-                      name="refundReason"
-                      rows="4"
-                      value={refundReason}
-                      onChange={(e) => setRefundReason(e.target.value)}
-                      placeholder="Please provide a valid reason..."
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsRefundModalOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                  >
-                    Submit Request
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Booking Guidelines */}
-        <section className="bg-blue-50 rounded-xl p-6 mt-12">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Reservation Guidelines</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-700">
-            <li>All reservations must be made at least 24 hours in advance</li>
-            <li>Cancellations require 12 hours notice for full refund</li>
-            <li>Maximum reservation duration is 18 hours</li>
-            <li>Please arrive 30 minutes before your scheduled time</li>
-          </ul>
-        </section>
-      </div>
-
-
-
-      {/* History */}
-      {/* {isAdmin && ( */}
-      <div><button onClick={fetchPreviousData} className='absolute top-8 right-5 rounded-lg px-3 py-2 text-white bg-blue-600'>History</button>
-
-      </div>
-      {/* )} */}
+        </div>
+      )}
     </div>
   );
 };

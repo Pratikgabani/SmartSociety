@@ -3,13 +3,18 @@ import axios from "../../axios";
 import { toast, Toaster } from "react-hot-toast";
 import { HashLoader } from "react-spinners";
 import UserContext from "../../context/UserContext";
+import { CheckCircle2, XCircle, MapPin, Calendar, FileText, User, Banknote, HelpCircle, Check, X, AlertCircle } from "lucide-react";
 
 function RefundAdmin() {
   const [refunds, setRefunds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [rejectId, setRejectId] = useState(null);
+  
+  // Modals state
+  const [rejectModal, setRejectModal] = useState({ open: false, id: null });
+  const [approveModal, setApproveModal] = useState({ open: false, id: null });
   const [adminNotes, setAdminNotes] = useState("");
+  
   const { rolee } = useContext(UserContext);
 
   useEffect(() => {
@@ -34,21 +39,22 @@ function RefundAdmin() {
     }
   }, [rolee]);
 
-  const handleApprove = async (id) => {
-    if(!window.confirm("Are you sure you want to approve this refund? The money will be deducted from the Stripe account immediately.")) return;
+  const handleConfirmApprove = async () => {
+    if (!approveModal.id) return;
     setActionLoading(true);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/admin/${id}/approve`,
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/admin/${approveModal.id}/approve`,
         {},
         { withCredentials: true }
       );
       toast.success(res.data.message || "Refund approved!");
-      setRefunds(refunds.filter((r) => r._id !== id));
+      setRefunds(refunds.filter((r) => r._id !== approveModal.id));
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to approve refund");
     } finally {
       setActionLoading(false);
+      setApproveModal({ open: false, id: null });
     }
   };
 
@@ -57,114 +63,216 @@ function RefundAdmin() {
     setActionLoading(true);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/admin/${rejectId}/reject`,
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/refunds/admin/${rejectModal.id}/reject`,
         { adminNotes },
         { withCredentials: true }
       );
       toast.success(res.data.message || "Refund rejected.");
-      setRefunds(refunds.filter((r) => r._id !== rejectId));
-      setRejectId(null);
-      setAdminNotes("");
+      setRefunds(refunds.filter((r) => r._id !== rejectModal.id));
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to reject refund");
     } finally {
       setActionLoading(false);
+      setRejectModal({ open: false, id: null });
+      setAdminNotes("");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <HashLoader size={60} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <HashLoader size={52} color="#2563eb" loading={loading} />
+        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading refunds…</p>
       </div>
     );
   }
 
   if (rolee !== "admin") {
-    return <div className="p-8 text-center text-red-500 font-bold">Unauthorized. Admin access required.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <div className="bg-red-50 text-red-500 p-8 rounded-2xl border border-red-100 shadow-sm text-center">
+          <XCircle className="w-12 h-12 mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Unauthorized Access</h2>
+          <p className="text-red-400 font-medium">Admin privileges required to view this page.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container relative mx-auto px-4 py-8 bg-gray-100 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
       <Toaster />
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Refund Approvals</h1>
-      <p className="text-gray-600 text-lg mb-8">Manage manual refund requests from members</p>
-
-      {refunds.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-100">
-          <p className="text-gray-500 text-lg">No pending refund requests.</p>
+      
+      {/* PAGE HEADER */}
+      <div className="flex justify-between items-start mb-7">
+        <div>
+          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Refund Approvals</h1>
+          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Review and manage manual refund requests from members</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-6">
-          {refunds.map((req) => (
-            <div key={req._id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex flex-col md:flex-row md:items-center justify-between">
-              <div className="mb-4 md:mb-0">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-xl font-bold text-gray-800">{req.user?.name || "Unknown User"}</h3>
-                  <span className="px-2 py-1 bg-gray-200 text-gray-800 rounded-md text-xs font-medium">Flat: {req.user?.houseNo || "N/A"}</span>
-                  <span className={`px-2 py-1 rounded-md text-xs font-medium ${req.orderType === 'EventOrder' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                    {req.orderType === 'EventOrder' ? 'Event' : 'Venue Booking'}
-                  </span>
-                </div>
-                <p className="text-gray-600 mb-1"><strong>Amount:</strong> ₹{req.amount}</p>
-                <p className="text-gray-600 mb-1"><strong>Reason given:</strong> {req.reason}</p>
-                <p className="text-gray-400 text-xs mt-2">Requested on: {new Date(req.createdAt).toLocaleString("en-GB")}</p>
+      </div>
+
+      {/* REFUNDS GRID */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-5 items-start">
+        {refunds.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
+            <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle2 className="w-8 h-8 text-green-500" />
+            </div>
+            <p className="font-bold text-[1.1rem] text-gray-700 mb-1.5">No pending requests!</p>
+            <p className="text-[0.875rem] text-gray-400">All refund requests have been processed.</p>
+          </div>
+        ) : (
+          refunds.map((req) => (
+            <div key={req._id} className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 transition-all duration-300 flex flex-col h-full group">
+              
+              {/* Badge Top Left */}
+              <div className={`absolute top-4 right-4 inline-flex flex-shrink-0 items-center justify-center px-2.5 py-1 rounded-full text-[0.72rem] font-bold tracking-[0.3px] whitespace-nowrap shadow-sm border ${
+                req.orderType === 'EventOrder' 
+                  ? "bg-purple-50 text-purple-700 border-purple-200/60" 
+                  : "bg-blue-50 text-blue-700 border-blue-200/60"
+              }`}>
+                {req.orderType === 'EventOrder' ? 'Event Refund' : 'Venue Refund'}
               </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setRejectId(req._id)}
-                  disabled={actionLoading}
-                  className="px-6 py-2 bg-red-100 text-red-700 hover:bg-red-200 font-semibold rounded-lg transition-colors"
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={() => handleApprove(req._id)}
-                  disabled={actionLoading}
-                  className="px-6 py-2 bg-green-600 text-white hover:bg-green-700 font-semibold rounded-lg transition-colors"
-                >
-                  Approve
-                </button>
+
+              <div className="p-5 flex-1 flex flex-col relative z-20 mt-2">
+                {/* Header row */}
+                <div className="mb-4 pr-24">
+                  <div className="flex items-center gap-2 mb-1">
+                    <User className="w-4 h-4 text-gray-400" />
+                    <h3 className="text-[1.12rem] font-semibold text-gray-800 m-0 leading-snug tracking-tight truncate">
+                      {req.user?.name || "Unknown User"}
+                    </h3>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {(req.user?.block || req.user?.houseNo) && (
+                      <div className="inline-flex items-center gap-1.5 text-[0.75rem] text-blue-700 font-bold bg-blue-50/80 hover:bg-blue-100 border border-blue-100/50 px-2.5 py-1 rounded-md transition-colors">
+                        <MapPin strokeWidth={2.5} className="w-3.5 h-3.5 text-blue-600" />
+                        <span>
+                          {[
+                            req.user?.block ? `Block ${req.user.block}` : null,
+                            req.user?.houseNo ? `House ${req.user.houseNo}` : null
+                          ].filter(Boolean).join(" - ")}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5 text-[0.8rem] text-gray-500 font-medium">
+                      <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                      <span>{new Date(req.createdAt).toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100 mb-5 relative flex-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 bg-blue-100/50 rounded-lg text-blue-600 flex items-center justify-center">
+                      <h4 className="text-[1.1rem] font-bold m-0 leading-none">₹{req.amount}</h4>
+                    </div>
+                    <span className="text-[0.75rem] font-bold text-gray-500 uppercase tracking-wider">Refund Amount</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <FileText className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                    <p className="text-[0.88rem] text-gray-600 m-0 italic line-clamp-3">
+                      &quot;{req.reason}&quot;
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-end gap-3 text-right">
+                  <button
+                    onClick={() => setRejectModal({ open: true, id: req._id })}
+                    disabled={actionLoading}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 bg-white hover:bg-red-50 text-red-600 hover:text-red-700 border border-gray-200 hover:border-red-200 rounded-lg text-[0.85rem] font-bold cursor-pointer transition-all hover:shadow-sm active:scale-95"
+                  >
+                    <X className="w-4 h-4" />
+                    <span>Reject</span>
+                  </button>
+                  <button
+                    onClick={() => setApproveModal({ open: true, id: req._id })}
+                    disabled={actionLoading}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white border border-transparent rounded-lg text-[0.85rem] font-bold cursor-pointer transition-all hover:shadow-md hover:shadow-emerald-600/20 active:scale-95"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Approve</span>
+                  </button>
+                </div>
               </div>
             </div>
-          ))}
+          ))
+        )}
+      </div>
+
+      {/* APPROVE CONFIRMATION MODAL */}
+      {approveModal.open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center animate-in fade-in duration-200 zoom-in-95">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 mb-4">
+              <Banknote className="h-8 w-8 text-emerald-600" />
+            </div>
+            <h2 className="text-[1.2rem] font-bold text-gray-900 m-0 mb-2">Approve Refund?</h2>
+            <p className="text-[0.9rem] text-gray-500 mb-6">
+              Are you sure you want to approve this refund? The funds will be deducted from the Stripe account immediately.
+            </p>
+            
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => setApproveModal({ open: false, id: null })}
+                disabled={actionLoading}
+                className="flex-1 py-2.5 px-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmApprove}
+                disabled={actionLoading}
+                className="flex-1 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-500/30 border-none rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
+              >
+                {actionLoading ? "Processing..." : "Yes, Approve"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Reject Modal */}
-      {rejectId && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md mx-4 border border-gray-100">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Reject Refund</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rejection Reason (Admin Notes)
-                </label>
-                <textarea
-                  rows="3"
-                  value={adminNotes}
-                  onChange={(e) => setAdminNotes(e.target.value)}
-                  placeholder="Required: Tell the user why this was rejected..."
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
+      {/* REJECT MODAL */}
+      {rejectModal.open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-7 w-full max-w-[420px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-left animate-in fade-in duration-200 zoom-in-95">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-red-100">
+                <AlertCircle className="h-5 w-5 text-red-600" />
               </div>
+              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Reject Refund Request</h2>
             </div>
-            <div className="mt-6 flex justify-end gap-3">
+            
+            <div className="mb-6">
+              <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Reason for Rejection *</label>
+              <textarea
+                rows="3"
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                placeholder="Explain why this request is denied..."
+                className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-red-400 focus:bg-white transition-colors resize-none"
+                required
+              />
+            </div>
+
+            <div className="flex gap-3 justify-end">
               <button
-                onClick={() => { setRejectId(null); setAdminNotes(""); }}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                onClick={() => { setRejectModal({ open: false, id: null }); setAdminNotes(""); }}
+                disabled={actionLoading}
+                className="py-2.5 px-5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
               >
                 Cancel
               </button>
               <button
                 onClick={submitReject}
                 disabled={actionLoading}
-                className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="py-2.5 px-5 bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-500/30 border-none rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
               >
-                Confirm Rejection
+                {actionLoading ? "Processing..." : "Confirm Rejection"}
               </button>
             </div>
           </div>

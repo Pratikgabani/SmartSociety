@@ -118,9 +118,9 @@ const getPendingRefunds = asyncHandler(async (req, res) => {
         throw new ApiError(403, "Admin access required");
     }
     
-    // Populate user to get name/email
+    // Populate user to get name/email/block/houseNo
     const requests = await RefundRequest.find({ status: 'Pending' })
-        .populate('user', 'name email societyId')
+        .populate('user', 'name email societyId block houseNo')
         .sort({ createdAt: -1 });
         
     // Filter to only this society's admins

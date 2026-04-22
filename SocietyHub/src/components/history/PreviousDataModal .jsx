@@ -326,189 +326,172 @@ const PreviousDataPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
-      {/* Header Section */}
-      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-20">
-        <div className="max-w-[95%] mx-auto py-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate(-1)}
-                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
-                title="Go Back"
-              >
-                <FiArrowLeft className="w-5 h-5" />
-              </button>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
-                  Historical Records
-                </h1>
-                <p className="text-sm text-gray-500 mt-1">
-                  View, filter, and export system audit and operational records.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={exportToExcel}
-                disabled={filteredByMonthYear.length === 0}
-                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white px-4 py-2 text-sm font-semibold rounded-md shadow-sm transition-colors duration-200"
-              >
-                <FiDownload className="w-4 h-4" />
-                Export to Excel
-              </button>
-            </div>
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+      
+      {/* PAGE HEADER */}
+      <div className="flex justify-between items-start mb-7">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+            title="Go Back"
+          >
+            <FiArrowLeft className="w-5 h-5" />
+          </button>
+          <div>
+            <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Historical Records</h1>
+            <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">View, filter, and export system audit and operational records.</p>
           </div>
         </div>
-      </header>
+        <div className="flex gap-2.5 items-center">
+          <button
+            onClick={exportToExcel}
+            disabled={filteredByMonthYear.length === 0}
+            className="inline-flex items-center gap-2 py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            <FiDownload className="w-4 h-4" />
+            Export to Excel
+          </button>
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <main className="flex-1 w-full max-w-[95%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        
-        {/* Controls / Filter Bar */}
-        <div className="bg-white rounded-t-lg border border-gray-200 border-b-0 p-4 flex flex-col lg:flex-row items-center justify-between gap-4">
-          <div className="relative w-full lg:max-w-md">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search records across all fields..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-shadow duration-200"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <div className="flex items-center gap-2 text-gray-700 font-medium bg-gray-50 rounded-md border border-gray-200 p-1">
-              <FiFilter className="w-4 h-4 ml-2 text-gray-500" />
-              <select
-                className="bg-transparent border-none focus:ring-0 text-sm font-medium pr-8 cursor-pointer"
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-              >
-                <option value="">All Years</option>
-                {years.map((year, idx) => (
-                  <option key={idx} value={year}>{year}</option>
-                ))}
-              </select>
-              <div className="w-px h-4 bg-gray-300"></div>
-              <select
-                className="bg-transparent border-none focus:ring-0 text-sm font-medium pr-8 cursor-pointer"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-              >
-                <option value="">All Months</option>
-                {months.map((month) => (
-                  <option key={month.value} value={month.value}>{month.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              onClick={() => {
-                setSelectedYear("");
-                setSelectedMonth("");
-                setSearchTerm("");
-              }}
-              className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+      {/* FILTER BAR & SEARCH */}
+      <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max">
+            <FiFilter className="w-4 h-4 ml-2 text-gray-500" />
+            <select
+              className="bg-transparent border-none focus:ring-0 text-[0.85rem] font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
             >
-              <FiRefreshCw className="w-4 h-4 text-gray-500" />
-              Reset
-            </button>
+              <option value="">All Years</option>
+              {years.map((year, idx) => (
+                <option key={idx} value={year}>{year}</option>
+              ))}
+            </select>
+            <div className="w-px h-4 bg-gray-300/80"></div>
+            <select
+              className="bg-transparent border-none focus:ring-0 text-[0.85rem] font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none pr-2"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              <option value="">All Months</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>{month.label}</option>
+              ))}
+            </select>
           </div>
+
+          <button
+            onClick={() => {
+              setSelectedYear("");
+              setSelectedMonth("");
+              setSearchTerm("");
+            }}
+            className="flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent"
+            title="Reset Filters"
+          >
+            <FiRefreshCw className="w-4 h-4" />
+            Reset
+          </button>
         </div>
 
-        {/* Data Table */}
-        <div className="bg-white border text-sm text-gray-900 border-gray-200 rounded-b-lg shadow-sm overflow-hidden">
-          {filteredByMonthYear.length === 0 ? (
-             <div className="py-16 flex flex-col items-center justify-center p-6 text-center">
-              <div className="bg-gray-100 p-4 rounded-full mb-4">
-                <FiSearch className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900">No records found</h3>
-              <p className="mt-1 text-sm text-gray-500 max-w-sm">
-                We couldn't find any data matching your current filters and search criteria. Try adjusting them.
-              </p>
-            </div>
-          ) : (
-            // 🔥 Virtualization Wrapper: We lock the height and attach an Intersection Observer to the boundary box.
-            <div 
-              className="overflow-x-auto overflow-y-auto max-h-[600px] border-b border-gray-200"
-              onScroll={(e) => {
-                const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
-                if (scrollHeight - scrollTop <= clientHeight + 50) {
-                   if (visibleCount < filteredByMonthYear.length) {
-                      setVisibleCount(prev => prev + 50);
-                   }
-                }
-              }}
-            >
-              <table className="min-w-full divide-y divide-gray-200 relative">
-                <thead className="bg-gray-50">
-                  <tr>
-                    {tableHeaders.map((header, idx) => (
-                      <th 
-                        key={header} 
-                        scope="col" 
-                        className={`px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider ${idx === 0 ? 'rounded-tl-lg' : ''} ${idx === tableHeaders.length-1 ? 'rounded-tr-lg' : ''}`}
-                      >
-                        <div className="flex items-center gap-2 w-max">
-                          {header === "description" ? "Description" : header.replace(/([A-Z])/g, ' $1').trim()}
-                          {/* We only attach SORT to the first date header found for simplicity, or we let a global sort handle it */}
-                          {dateFields.includes(header === "description" ? "paymentId" : header) && (
-                            <button onClick={toggleSortOrder} className="p-1 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors">
-                              {sortOrder === "asc" ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" /> }
-                            </button>
-                          )}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredByMonthYear
-                    .filter((item) => {
-                      if ("paymentId" in item) {
-                        return item.paymentId?.description;
-                      }
-                      return true;
-                    })
-                    .slice(0, visibleCount)  // 🔥 Slicing logic: Blocks React from rendering 50,000 DOM nodes at a time!
-                    .map((item, idx) => (
-                      <tr key={idx} className="hover:bg-indigo-50/50 transition-colors duration-150 ease-in-out">
-                        {tableHeaders.map((header) => {
-                          const actualKey =
-                            header === "Description" ? "paymentId" : header;
-                          return (
-                            <td key={actualKey} className="px-6 py-4 whitespace-normal align-top text-sm">
-                              {renderValue(actualKey, item[actualKey])}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-          {/* Footer of table for record counts & scroll status */}
-          {filteredByMonthYear.length > 0 && (
-             <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center">
-               <p className="text-sm text-gray-500">
-                 Showing matching database records: <span className="font-semibold text-gray-900">{filteredByMonthYear.length}</span> total.
-               </p>
-               {visibleCount < filteredByMonthYear.length && (
-                 <span className="text-xs font-semibold text-indigo-600 animate-pulse">
-                   Scroll down to render more...
-                 </span>
-               )}
-             </div>
-          )}
+        {/* Search */}
+        <div className="relative w-full max-w-[280px]">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search records..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
+          />
         </div>
-      </main>
+      </div>
+
+      {/* Data Table */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
+        {filteredByMonthYear.length === 0 ? (
+          <div className="text-center py-16 px-6">
+            <p className="text-[2rem] mb-2">🗂️</p>
+            <h3 className="font-semibold text-gray-700 mb-1">No records found</h3>
+            <p className="text-[0.85rem] text-gray-400 m-0">We couldn't find any data matching your criteria.</p>
+          </div>
+        ) : (
+          <div 
+            className="overflow-x-auto overflow-y-auto max-h-[520px]"
+            onScroll={(e) => {
+              const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+              if (scrollHeight - scrollTop <= clientHeight + 50) {
+                 if (visibleCount < filteredByMonthYear.length) {
+                    setVisibleCount(prev => prev + 50);
+                 }
+              }
+            }}
+          >
+            <table className="w-full border-collapse min-w-[650px] relative">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200 sticky top-0 z-[1]">
+                  {tableHeaders.map((header, idx) => (
+                    <th 
+                      key={header} 
+                      className="py-3 px-4 text-left text-[0.75rem] font-bold text-gray-500 uppercase tracking-[0.4px] whitespace-nowrap"
+                    >
+                      <div className="flex items-center gap-2 w-max">
+                        {header === "description" ? "Description" : header.replace(/([A-Z])/g, ' $1').trim()}
+                        {dateFields.includes(header === "description" ? "paymentId" : header) && (
+                          <button onClick={toggleSortOrder} className="p-0.5 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors">
+                            {sortOrder === "asc" ? <FiChevronUp className="w-3.5 h-3.5" /> : <FiChevronDown className="w-3.5 h-3.5" /> }
+                          </button>
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white">
+                {filteredByMonthYear
+                  .filter((item) => {
+                    if ("paymentId" in item) {
+                      return item.paymentId?.description;
+                    }
+                    return true;
+                  })
+                  .slice(0, visibleCount)
+                  .map((item, idx) => (
+                    <tr key={idx} className="border-t border-gray-100 bg-white hover:bg-slate-50 transition-colors duration-100">
+                      {tableHeaders.map((header) => {
+                        const actualKey = header === "Description" ? "paymentId" : header;
+                        return (
+                          <td key={actualKey} className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle whitespace-normal">
+                            {renderValue(actualKey, item[actualKey])}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* Footer of table for record counts & scroll status */}
+        {filteredByMonthYear.length > 0 && (
+           <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-[0.8rem]">
+             <p className="text-gray-500 m-0">
+               Showing records: <span className="font-semibold text-gray-900">{filteredByMonthYear.length}</span> total
+             </p>
+             {visibleCount < filteredByMonthYear.length && (
+               <span className="font-semibold text-blue-600 animate-pulse">
+                 Scroll down to load more...
+               </span>
+             )}
+           </div>
+        )}
+      </div>
 
       {/* Modern Modal for Sub-details (User Info) */}
       {modalData.length > 0 && (

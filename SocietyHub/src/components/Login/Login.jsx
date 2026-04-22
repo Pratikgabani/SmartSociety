@@ -1,6 +1,5 @@
 import React, { useState , useContext , useEffect } from 'react';
-import building1 from './../../assets/Rectangle95.png';
-import building2 from './../../assets/Rectangle97.jpg';
+
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../axios';
 import * as Yup from "yup";
@@ -216,125 +215,146 @@ function Login() {
   };
 
   return (
-    
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
+    <div className="min-h-screen flex items-center justify-center bg-[#F4F7FE] font-raleway p-4">
       <Toaster />
-      <div className="bg-white rounded-lg shadow-lg p-8  md:flex w-11/12 max-w-5xl">
-        {/* Left Form Section */}
-        <div className="md:w-1/2">
-          <h1 className="text-3xl font-bold  mb-4 cursor-pointer">Login</h1>
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 w-full max-w-md transition-all duration-300 hover:shadow-2xl">
+        <div className="text-center mb-5">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h1>
+          <p className="text-gray-500 mt-1 text-sm font-medium">Log in to access your dashboard</p>
+        </div>
 
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="email">Email Address</label>
+            <input
+              name='email'
+              type="text"
+              placeholder="Enter your email"
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+              onChange={handleChange}
+              value={formData.email}
+              id='email'
+            />
+            {errorMessage.email && <div className='text-red-500 text-xs font-semibold mt-1 pl-1'>{errorMessage.email}</div>}
+          </div>
 
-            <div className="mb-2">
-              <label className="block  text-gray-700 font-semibold">Email</label>
-              <input
-                name='email'
-                type="text"
-                placeholder="Enter your email"
-                className="w-full px-3 py-2 border rounded-lg"
-                onChange={handleChange}
-                value={formData.email}
-                id='email'
-              />
-              {errorMessage.email && <div className='text-red-500 mt-1'>{errorMessage.email}</div>}
-            </div>
-            <div className="mb-2">
-              <label className="block text-gray-700 font-semibold">Password</label>
-              <input
-                name='password'
-                type="password"
-                placeholder="Enter your password"
-                className="w-full px-3 py-2 border rounded-lg"
-                onChange={handleChange}
-                value={formData.password}
-                id='password'
-              />
-              {errorMessage.password && <div className='text-red-500 mt-1'>{errorMessage.password}</div>}
-            </div>
-            <div className="mb-2">
-              <label className="block text-gray-700 font-semibold">Role</label>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="password">Password</label>
+            <input
+              name='password'
+              type="password"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+              onChange={handleChange}
+              value={formData.password}
+              id='password'
+            />
+            {errorMessage.password && <div className='text-red-500 text-xs font-semibold mt-1 pl-1'>{errorMessage.password}</div>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="role">Account Role</label>
+            <div className="relative">
               <select
                 name="role"
-                className="w-full px-3 py-2 border rounded-lg cursor-pointer"
+                id="role"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 appearance-none cursor-pointer"
                 value={formData.role}
                 onChange={handleChange}
               >
-                <option value="" disabled>Select a role</option>
+                <option value="" disabled>Select your role</option>
                 <option value="security">Security</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
               </select>
-              {errorMessage.role && <div className='text-red-500 mt-1'>{errorMessage.role}</div>}
-            </div>
-            <div className="text-right mb-4">
-              <span 
-                onClick={() => setIsForgotModalOpen(true)}
-                className="text-sm text-blue-600 hover:underline cursor-pointer"
-              >
-                Forgot Password?
-              </span>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 font-bold rounded-lg hover:bg-blue-700 transition"
-            >
-              Login
-            </button>
-          </form>
-          <div className="text-center mt-2 cursor-pointer">
-            <p>Or</p>
-            <button className="w-full bg-gray-200 text-gray-600 py-2 font-bold rounded-lg mt-2 hover:bg-gray-300" onClick={googleLogin}> 
-              Continue with Google
-            </button >
-              <div className="text-center mt-4">
-                <p>
-                  Don't have an account?{' '}
-                  <a href="/register" className="text-blue-600 font-bold">
-                    Register
-                  </a>
-                </p>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
               </div>
+            </div>
+            {errorMessage.role && <div className='text-red-500 text-xs font-semibold mt-1 pl-1'>{errorMessage.role}</div>}
           </div>
+
+          <div className="flex items-center justify-end">
+            <span 
+              onClick={() => setIsForgotModalOpen(true)}
+              className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer transition-colors"
+            >
+              Forgot Password?
+            </span>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2.5 mt-1 font-bold rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <div className="mt-4 flex items-center justify-center space-x-4">
+          <span className="block h-px w-full bg-gray-200"></span>
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">OR</span>
+          <span className="block h-px w-full bg-gray-200"></span>
         </div>
 
-        {/* Right Image Section */}
-        <div className="hidden md:flex md:w-1/2 md:flex-col md:gap-4 md:pl-6">
-          <img src={building1} alt="Building 1" className=" rounded-lg h-72" />
-          <img src={building2} alt="Building 2" className=" rounded-lg h-72" />
+        <div className="mt-4">
+          <button 
+            type="button"
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 py-2.5 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 active:scale-[0.98] shadow-sm" 
+            onClick={googleLogin}
+          >
+            <svg viewBox="0 0 24 24" className="w-5 h-5">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
+        </div>
+
+        <div className="text-center mt-5">
+          <p className="text-sm text-gray-600 font-medium">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-colors">
+              Create an account
+            </Link>
+          </p>
         </div>
       </div>
 
       {/* Forgot Password Modal */}
       {isForgotModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity p-4">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all border border-gray-100">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">Reset Password</h2>
+              <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">Reset Password</h2>
               <button 
                 onClick={() => { setIsForgotModalOpen(false); setForgotStep(1); }}
-                className="text-gray-400 hover:text-gray-600 transition"
+                className="text-gray-400 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 p-2 rounded-full"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {forgotStep === 1 && (
-              <div className="space-y-4">
-                <p className="text-gray-600">Enter your email to receive a password reset OTP.</p>
-                <input 
-                  type="email" 
-                  placeholder="Email Address"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                />
+              <div className="space-y-5">
+                <p className="text-gray-600 text-sm font-medium">Enter your email to receive a password reset OTP.</p>
+                <div>
+                  <input 
+                    type="email" 
+                    placeholder="Email Address"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                  />
+                </div>
                 <button 
                   onClick={handleForgotPassword}
                   disabled={forgotLoading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-blue-400 transition"
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
                 >
                   {forgotLoading ? "Sending..." : "Send OTP"}
                 </button>
@@ -342,50 +362,54 @@ function Login() {
             )}
 
             {forgotStep === 2 && (
-              <div className="space-y-4">
-                <p className="text-gray-600">Enter the 6-digit code sent to <b>{forgotEmail}</b></p>
-                <input 
-                  type="text" 
-                  placeholder="6-Digit OTP"
-                  maxLength={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center tracking-widest text-xl font-bold outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  value={forgotOtp}
-                  onChange={(e) => setForgotOtp(e.target.value)}
-                />
+              <div className="space-y-5">
+                <p className="text-gray-600 text-sm font-medium">Enter the 6-digit code sent to <b className="text-gray-900">{forgotEmail}</b></p>
+                <div>
+                  <input 
+                    type="text" 
+                    placeholder="6-Digit OTP"
+                    maxLength={6}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-center tracking-[0.5em] text-xl font-bold outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                    value={forgotOtp}
+                    onChange={(e) => setForgotOtp(e.target.value)}
+                  />
+                </div>
                 <button 
                   onClick={handleVerifyForgotOtp}
                   disabled={forgotLoading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-blue-400 transition"
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
                 >
                   {forgotLoading ? "Verifying..." : "Verify OTP"}
                 </button>
                 <div className="text-center">
-                  <button onClick={() => setForgotStep(1)} className="text-blue-600 hover:underline text-sm">Wrong email?</button>
+                  <button onClick={() => setForgotStep(1)} className="text-blue-600 font-semibold hover:text-blue-700 hover:underline text-sm transition-colors">Wrong email?</button>
                 </div>
               </div>
             )}
 
             {forgotStep === 3 && (
-              <div className="space-y-4">
-                <p className="text-gray-600">Create a new secure password.</p>
-                <input 
-                  type="password" 
-                  placeholder="New Password"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <input 
-                  type="password" 
-                  placeholder="Confirm New Password"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+              <div className="space-y-5">
+                <p className="text-gray-600 text-sm font-medium">Create a new secure password.</p>
+                <div className="space-y-4">
+                  <input 
+                    type="password" 
+                    placeholder="New Password"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <input 
+                    type="password" 
+                    placeholder="Confirm New Password"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
                 <button 
                   onClick={handleResetPassword}
                   disabled={forgotLoading}
-                  className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:bg-green-400 transition"
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
                 >
                   {forgotLoading ? "Resetting..." : "Reset Password"}
                 </button>
@@ -395,7 +419,6 @@ function Login() {
         </div>
       )}
     </div>
-
   );
 }
 
