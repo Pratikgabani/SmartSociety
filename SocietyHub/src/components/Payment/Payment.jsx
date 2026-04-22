@@ -14,44 +14,43 @@ const PaymentRow = React.memo(({ payment, status, payDate, receiptUrl, rolee, on
   const isOverdue = !isPaid && new Date(payment.dueDate) < new Date();
 
   return (
-    <tr className={`transition-colors duration-100 ${isOverdue ? "bg-[#fff9f9] hover:bg-[#fff1f1]" : "bg-white hover:bg-slate-50"}`}>
+    <tr className="transition-colors duration-100 bg-white hover:bg-slate-50 border-b border-gray-100 last:border-none">
       {/* Description */}
-      <td className="py-3.5 px-4 border-t border-gray-100 text-[0.875rem] text-gray-700 align-middle">
+      <td className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle">
         <span className="font-medium text-gray-900 text-[0.9rem]">{payment.description}</span>
       </td>
 
       {/* Amount */}
-      <td className="py-3.5 px-4 border-t border-gray-100 text-[0.875rem] text-gray-700 align-middle">
+      <td className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle">
         <span className="font-bold text-[1rem] text-gray-900">₹{payment.amount}</span>
       </td>
 
       {/* Status badge */}
-      <td className="py-3.5 px-4 border-t border-gray-100 text-[0.875rem] text-gray-700 align-middle">
-        <span className={`inline-block py-[3px] px-2.5 rounded-full text-[0.72rem] font-bold tracking-[0.2px] ${
-          isPaid
+      <td className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle">
+        <span className={`inline-block py-[3px] px-2.5 rounded-full text-[0.72rem] font-bold tracking-[0.2px] ${isPaid
             ? "bg-green-100 text-green-800"
             : isOverdue
-            ? "bg-red-100 text-red-800"
-            : "bg-yellow-100 text-yellow-800"
-        }`}>
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800"
+          }`}>
           {isOverdue ? "Overdue" : status}
         </span>
       </td>
 
       {/* Payment Date */}
-      <td className="py-3.5 px-4 border-t border-gray-100 text-[0.875rem] text-gray-700 align-middle">
+      <td className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle">
         <span className="text-[0.82rem] text-gray-500">{payDate}</span>
       </td>
 
       {/* Due Date */}
-      <td className="py-3.5 px-4 border-t border-gray-100 text-[0.875rem] text-gray-700 align-middle">
+      <td className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle">
         <span className={`text-[0.82rem] ${isOverdue ? "text-red-600 font-semibold" : "text-gray-500"}`}>
           {new Date(payment.dueDate).toLocaleDateString("en-GB")}
         </span>
       </td>
 
       {/* Actions */}
-      <td className="py-3.5 px-4 border-t border-gray-100 text-[0.875rem] text-gray-700 align-middle whitespace-nowrap">
+      <td className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle whitespace-nowrap">
         <div className="flex items-center gap-2 justify-end">
           {status !== "Paid" && (
             <Link
@@ -73,14 +72,14 @@ const PaymentRow = React.memo(({ payment, status, payDate, receiptUrl, rolee, on
                   View Receipt
                 </a>
               ) : (
-                <span className="inline-block py-[5px] px-2.5 bg-gray-100 text-gray-400 rounded-[6px] text-[0.78rem] font-medium whitespace-nowrap">No receipt</span>
+                <span className="inline-block py-[5px] px-2.5 bg-gray-50 text-gray-400 border border-gray-100 rounded-[6px] text-[0.78rem] font-medium whitespace-nowrap">No receipt</span>
               )}
             </>
           )}
           {rolee === "admin" && (
             <button
               onClick={() => onRequestDelete(payment._id, payment.description)}
-              className="inline-flex items-center justify-center p-1.5 bg-transparent hover:bg-red-100 text-red-500 border-none rounded-[6px] cursor-pointer transition-colors"
+              className="inline-flex items-center justify-center p-1.5 bg-transparent hover:bg-red-50 text-red-500 hover:text-red-700 border-none rounded-[6px] cursor-pointer transition-colors"
               title="Delete"
             >
               <Trash2 strokeWidth={2.5} className="w-[18px] h-[18px]" />
@@ -311,10 +310,10 @@ const PaymentSection = () => {
   const overdueCount = pendingPayments.filter(p => new Date(p.dueDate) < new Date()).length;
 
   const statCards = [
-    { label: "Total Paid", value: `₹${totalPaid.toLocaleString("en-IN")}`, cls: "bg-green-50 border-green-200 text-green-800" },
-    { label: "Pending Amount", value: `₹${totalPending.toLocaleString("en-IN")}`, cls: "bg-yellow-50 border-yellow-200 text-yellow-800" },
-    { label: "Overdue Amount", value: `₹${totalOverdue.toLocaleString("en-IN")}`, cls: "bg-rose-50 border-rose-200 text-rose-800" },
-    { label: "Total Charges", value: totalTxns, cls: "bg-blue-50 border-blue-200 text-blue-800" },
+    { label: "Total Paid", value: `₹${totalPaid.toLocaleString("en-IN")}`, cls: "bg-white border-gray-200 text-gray-900" },
+    { label: "Pending Amount", value: `₹${totalPending.toLocaleString("en-IN")}`, cls: "bg-white border-gray-200 text-gray-900" },
+    { label: "Overdue Amount", value: `₹${totalOverdue.toLocaleString("en-IN")}`, cls: "bg-white border-gray-200 text-gray-900" },
+    { label: "Total Charges", value: totalTxns, cls: "bg-white border-gray-200 text-gray-900" },
   ];
 
   return (
@@ -341,14 +340,6 @@ const PaymentSection = () => {
           >
             History
           </button>
-          {rolee === "admin" && (
-            <button
-              onClick={() => setShowAdminForm(true)}
-              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
-            >
-              + New Payment
-            </button>
-          )}
         </div>
       </div>
 
@@ -356,7 +347,7 @@ const PaymentSection = () => {
       <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4 mb-6">
         {statCards.map(({ label, value, cls }) => (
           <div key={label} className={`p-5 rounded-xl border shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${cls}`}>
-            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.4px] m-0 mb-1.5 opacity-80">{label}</p>
+            <p className="text-[0.75rem] font-semibold text-gray-500 uppercase tracking-[0.4px] m-0 mb-1.5">{label}</p>
             <p className="text-[1.6rem] font-extrabold m-0 tracking-[-0.5px]">{value}</p>
           </div>
         ))}
@@ -368,42 +359,51 @@ const PaymentSection = () => {
         <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max overflow-x-auto no-scrollbar">
           {[
             { id: "pending", label: "Pending Payments", count: pendingPayments.length },
-            { id: "history", label: "Payment History", count: paidPayments.length },
+            { id: "history", label: "Paid Payments", count: paidPayments.length },
           ].map(tab => {
             const isActive = activePayTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActivePayTab(tab.id)}
-                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
-                  isActive
+                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${isActive
                     ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
                     : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-                }`}
+                  }`}
               >
                 <span>{tab.label}</span>
-                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
-                  isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
-                }`}>
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
+                  }`}>
                   {tab.count}
                 </span>
               </button>
             );
           })}
         </div>
+        
+        <div className="flex gap-3 items-center w-full md:w-auto">
+          {/* Search */}
+          <div className="relative w-full max-w-[280px]">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search payments…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
+            />
+          </div>
 
-        {/* Search */}
-        <div className="relative w-full max-w-[280px]">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search payments…"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
-          />
+          {rolee === "admin" && (
+            <button
+              onClick={() => setShowAdminForm(true)}
+              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            >
+              + New Payment
+            </button>
+          )}
         </div>
       </div>
 
@@ -500,7 +500,7 @@ const PaymentSection = () => {
             {paidPayments.filter(p => p.description.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
               <div className="text-center py-16 px-6">
                 <p className="text-[2rem] mb-2">🗂️</p>
-                <p className="font-semibold text-gray-700 mb-1">No payment history</p>
+                <p className="font-semibold text-gray-700 mb-1">No paid payments </p>
                 <p className="text-[0.85rem] text-gray-400">Completed payments will appear here</p>
               </div>
             )}

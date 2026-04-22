@@ -318,12 +318,6 @@ function Complaint() {
         </div>
         <div className="flex gap-2.5 items-center">
           <button
-            onClick={() => setIsFormOpen(true)}
-            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
-          >
-            + Add Complaint
-          </button>
-          <button
             onClick={handleHistoryClick}
             className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
@@ -361,8 +355,12 @@ function Complaint() {
             );
           })}
         </div>
-
-        {/* Search */}
+        <button
+          onClick={() => setIsFormOpen(true)}
+          className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+        >
+          + Add Complaint
+        </button>
         {/* <div className="relative w-full max-w-[280px]">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />

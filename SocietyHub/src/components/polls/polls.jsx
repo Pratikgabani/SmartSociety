@@ -160,14 +160,6 @@ const PollApp = () => {
           <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Create and participate in society polls for collective decisions</p>
         </div>
         <div className="flex gap-2.5 items-center">
-          {rolee === "admin" && (
-            <button
-              onClick={() => setIsPollModalOpen(true)}
-              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
-            >
-              + Create Poll
-            </button>
-          )}
           <button
             onClick={fetchPreviousData}
             className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
@@ -177,32 +169,42 @@ const PollApp = () => {
         </div>
       </div>
 
-      {/* TAB BAR */}
-      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max mb-6 overflow-x-auto no-scrollbar">
-        {[
-          { id: "open", label: "Open Polls", count: openPolls.length },
-          { id: "past", label: "Past Polls", count: pastPolls.length },
-        ].map(tab => {
-          const isActive = activePollTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActivePollTab(tab.id)}
-              className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
-                isActive
-                  ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
-                  : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
-                isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
-              }`}>
-                {tab.count}
-              </span>
-            </button>
-          );
-        })}
+      {/* TAB BAR AND ACTIONS */}
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max overflow-x-auto no-scrollbar">
+          {[
+            { id: "open", label: "Open Polls", count: openPolls.length },
+            { id: "past", label: "Past Polls", count: pastPolls.length },
+          ].map(tab => {
+            const isActive = activePollTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActivePollTab(tab.id)}
+                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                  isActive
+                    ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
+                    : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                  isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        {rolee === "admin" && (
+          <button
+            onClick={() => setIsPollModalOpen(true)}
+            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            + Create Poll
+          </button>
+        )}
       </div>
 
       {/* POLLS LIST */}

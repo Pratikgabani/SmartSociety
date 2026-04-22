@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { HashLoader } from 'react-spinners';
 import { toast } from 'react-hot-toast';
 import UserContext from '../../context/UserContext';
-import { RiDeleteBin6Fill } from 'react-icons/ri';
+import { Trash2 } from 'lucide-react';
 
 // ── Initials Avatar ──────────────────────────────────────────────────────────
 const Avatar = ({ name }) => {
@@ -234,42 +234,46 @@ function Visitor() {
       </div>
 
       {/* TAB BAR & SEARCH */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-gray-200 mb-5 gap-3">
-        <div className="flex gap-1 -mb-[2px]">
+      <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+        {/* Containerized Tabs */}
+        <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max overflow-x-auto no-scrollbar">
           {[
             { id: 'active', label: 'Active Visitors', count: activeVisitors.length },
             { id: 'history', label: 'Visitor History', count: recentVisitors.length },
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 py-2.5 px-5 border-none border-b-2 font-medium cursor-pointer transition-colors rounded-none ${
-                activeTab === tab.id
-                  ? "text-blue-600 border-b-blue-600 font-semibold"
-                  : "border-b-transparent bg-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.75rem] font-semibold ${
-                activeTab === tab.id ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"
-              }`}>
-                {tab.count}
-              </span>
-            </button>
-          ))}
+          ].map(tab => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                  isActive
+                    ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
+                    : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                  isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Search */}
-        <div className="relative w-full max-w-[280px] pb-2 pt-1">
-          <svg className="absolute left-2.5 top-[calc(50%-2px)] -translate-y-1/2 text-gray-400 w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+        <div className="relative w-full max-w-[280px]">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
           </svg>
           <input
             type="text"
             placeholder="Search visitors…"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-[34px] pr-3 py-1.5 border border-gray-300 rounded-lg text-[0.85rem] text-gray-900 outline-none bg-white box-border focus:border-blue-400 transition-colors"
+            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
           />
         </div>
       </div>
@@ -353,7 +357,7 @@ function Visitor() {
                               className="inline-flex items-center justify-center p-1.5 bg-transparent hover:bg-red-50 text-red-400 hover:text-red-600 border border-transparent hover:border-red-200 rounded-lg cursor-pointer transition-colors"
                               title="Delete visitor"
                             >
-                              <RiDeleteBin6Fill size={15} />
+                              <Trash2 strokeWidth={2.5} className="w-[18px] h-[18px]" />
                             </button>
                           </div>
                         </td>
@@ -443,7 +447,7 @@ function Visitor() {
                               className="inline-flex items-center justify-center p-1.5 bg-transparent hover:bg-red-50 text-red-400 hover:text-red-600 border border-transparent hover:border-red-200 rounded-lg cursor-pointer transition-colors"
                               title="Delete visitor"
                             >
-                              <RiDeleteBin6Fill size={15} />
+                              <Trash2 strokeWidth={2.5} className="w-[18px] h-[18px]" />
                             </button>
                           </div>
                         </td>

@@ -427,21 +427,9 @@ function Event() {
           <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Stay updated with society events and celebrations</p>
         </div>
         <div className="flex gap-2.5 items-center">
-          {rolee === "admin" && (
-            <button
-              onClick={() => setShowAddEventForm(!showAddEventForm)}
-              className={`py-[9px] px-[18px] border rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors ${
-                showAddEventForm
-                  ? "bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300"
-                  : "bg-blue-600 hover:bg-blue-700 text-white border-transparent"
-              }`}
-            >
-              {showAddEventForm ? "✕ Cancel" : "+ Add Event"}
-            </button>
-          )}
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -484,6 +472,14 @@ function Event() {
                 <h2 className="text-xl font-bold text-gray-900 m-0">Upcoming Events</h2>
                 <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Browse and register for society events</p>
               </div>
+              {rolee === "admin" && (
+                <button
+                  onClick={() => setShowAddEventForm(!showAddEventForm)}
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                >
+                  {showAddEventForm ? "✕ Cancel" : "+ Add Event"}
+                </button>
+              )}
             </div>
 
             {upcomingEvents.length === 0 ? (

@@ -402,7 +402,7 @@ function OrgLanding() {
                     </div>
                     <div>
                       <p className="font-semibold text-slate-900">Email</p>
-                      <p className="text-slate-600 mt-1">support@resihub.com</p>
+                      <p className="text-slate-600 mt-1">resihubproject@gmail.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -423,15 +423,15 @@ function OrgLanding() {
         {/* Footer */}
         <footer className="bg-slate-50 text-slate-600 py-16 border-t border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 border-b border-slate-200 pb-12">
-              <div className="md:col-span-5 flex flex-col">
+            <div className="flex flex-col md:flex-row justify-between gap-12 lg:gap-8 border-b border-slate-200 pb-12">
+              <div className="flex flex-col max-w-md">
                 <div className="flex items-center gap-2 mb-6">
                   <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                     <span className="text-white text-lg font-bold">R</span>
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 tracking-tight">ResiHub</h3>
                 </div>
-                <p className="text-sm leading-relaxed max-w-sm text-slate-600">
+                <p className="text-sm leading-relaxed text-slate-600">
                   We are a dedicated platform designed to streamline society management, ensuring communication, maintenance, and community engagement are always hassle-free.
                 </p>
                 <div className="flex space-x-5 mt-8">
@@ -443,21 +443,24 @@ function OrgLanding() {
                 </div>
               </div>
 
-              <div className="md:col-span-3">
-                <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Solutions</h3>
-                <ul className="space-y-3 text-sm">
-                  {['Visitor Management', 'Complaint System', 'Facility Booking', 'Payment Gateway'].map(link => (
-                    <li key={link}><a href="/login" className="text-slate-600 hover:text-blue-600 transition-colors">{link}</a></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="md:col-span-4">
-                <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Stay Updated</h3>
-                <p className="text-sm mb-4 text-slate-600">Subscribe to our newsletter for the latest updates.</p>
-                <div className="flex gap-2">
-                  <input type="email" placeholder="Enter email" className="bg-white border border-slate-300 text-slate-900 placeholder-slate-400 text-sm rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 w-full transition-colors" />
-                  <button className="bg-slate-900 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition-colors shadow-sm">Submit</button>
+              <div className="flex flex-col md:flex-row gap-12 md:gap-24 md:items-start">
+                <div className="text-left md:text-right">
+                  <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Solutions</h3>
+                  <ul className="space-y-3 text-sm">
+                    {['Visitor Management', 'Complaint System', 'Facility Booking', 'Payment Gateway'].map(link => (
+                      <li key={link}><a href="/login" className="text-slate-600 hover:text-blue-600 transition-colors">{link}</a></li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="text-left md:text-right">
+                  <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Contact Us</h3>
+                  <ul className="space-y-3 text-sm">
+                    <li>
+                      <a href="mailto:resihubproject@gmail.com" className="text-slate-600 hover:text-blue-600 transition-colors">
+                        resihubproject@gmail.com
+                      </a>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

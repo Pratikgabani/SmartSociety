@@ -354,9 +354,9 @@ const Booking = () => {
         </div>
         <button
           onClick={fetchPreviousData}
-          className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
         >
-          View History
+          History
         </button>
       </div>
 

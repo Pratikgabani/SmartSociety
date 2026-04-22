@@ -33,7 +33,7 @@ const NoticeCard = React.memo(({ notice, rolee, onDeleteRequest }) => {
         {/* Header row */}
         <div className="flex items-start justify-between gap-4 mb-4 pr-8">
           <div className="min-w-0 flex-1">
-            <h3 className="text-[1.12rem] font-extrabold text-gray-900 m-0 leading-snug tracking-tight pb-2 break-words" title={notice.topic}>
+            <h3 className="text-base font-bold text-gray-900 m-0 leading-[1.35] pb-2 break-words" title={notice.topic}>
               {notice.topic}
             </h3>
             
@@ -49,7 +49,7 @@ const NoticeCard = React.memo(({ notice, rolee, onDeleteRequest }) => {
         </div>
 
         {/* Description body */}
-        <div className="text-[0.9rem] text-gray-600 leading-relaxed mb-2 flex-1 break-words whitespace-pre-wrap">
+        <div className="text-[0.84rem] text-gray-500 leading-[1.55] mb-2 flex-1 break-words whitespace-pre-wrap">
           <p className="m-0">
             {notice.description}
           </p>
@@ -155,14 +155,6 @@ export default function Announcements() {
           <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Stay informed with important society announcements and notices at one place.</p>
         </div>
         <div className="flex gap-2.5 items-center">
-          {rolee === "admin" && (
-            <button
-              onClick={() => setIsNoticeModalOpen(true)}
-              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
-            >
-              + Add Notice
-            </button>
-          )}
           <button
             onClick={fetchPreviousData}
             className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
@@ -172,9 +164,16 @@ export default function Announcements() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-6 mt-8">
-        {/* <Bell className="w-5 h-5 text-blue-600" /> */}
+      <div className="flex items-center justify-between mb-6 mt-8">
         <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Recent Notices</h2>
+        {rolee === "admin" && (
+          <button
+            onClick={() => setIsNoticeModalOpen(true)}
+            className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          >
+            + Add Notice
+          </button>
+        )}
       </div>
 
       {/* NOTICES GRID */}
