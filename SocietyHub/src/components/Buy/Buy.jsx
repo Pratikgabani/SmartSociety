@@ -100,6 +100,7 @@ const Buy = () => {
       setLoading(false);
       return;
     }
+    // what does this functon do ? it confirms the card payment with the client secret and the card details, and returns a payment intent object if successful, or an error if failed 
     const { paymentIntent, error: confirmError } =
       await stripe.confirmCardPayment(clientSecret, {
         payment_method: {

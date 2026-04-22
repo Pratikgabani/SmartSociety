@@ -11,6 +11,7 @@ import { sendRefundReviewEmail } from '../utils/mailer.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Removes a user from an event's ready list and re-syncs participant count.
 const removeUserFromEventReadyList = async (eventId, userId) => {
     if (!eventId || !userId) return;
 
@@ -27,6 +28,7 @@ const removeUserFromEventReadyList = async (eventId, userId) => {
 };
 
 // POST /api/v1/payments/:id/refund
+// Creates a refund request or triggers instant Stripe refund based on 24-hour policy.
 const requestRefund = asyncHandler(async (req, res) => {
     const { id } = req.params; // orderId
     const { reason, orderType } = req.body; // 'EventOrder' or 'BookingOrder'
@@ -109,6 +111,7 @@ const requestRefund = asyncHandler(async (req, res) => {
 });
 
 // GET /api/v1/admin/refunds
+// Returns pending refund requests filtered to the admin's society.
 const getPendingRefunds = asyncHandler(async (req, res) => {
     // Admins only
     if (req.user.role !== 'admin') {
@@ -127,6 +130,7 @@ const getPendingRefunds = asyncHandler(async (req, res) => {
 });
 
 // POST /api/v1/admin/refunds/:id/approve
+// Approves a pending refund, initiates Stripe refund, and marks order as refund initiated.
 const approveRefund = asyncHandler(async (req, res) => {
     if (req.user.role !== 'admin') {
         throw new ApiError(403, "Admin access required");
@@ -166,6 +170,7 @@ const approveRefund = asyncHandler(async (req, res) => {
 });
 
 // POST /api/v1/admin/refunds/:id/reject
+// Rejects a pending refund request with optional admin notes.
 const rejectRefund = asyncHandler(async (req, res) => {
     if (req.user.role !== 'admin') {
         throw new ApiError(403, "Admin access required");

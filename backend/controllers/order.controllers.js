@@ -1,5 +1,6 @@
 import { Order } from "../models/order.model.js";
 
+// Stores client-reported order metadata for history/logging after payment confirmation.
  const orderData = async (req, res) => {
   const order = req.body;
   try {

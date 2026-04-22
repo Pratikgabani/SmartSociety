@@ -15,6 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // In-memory SSE registry keyed by society. Keeps things simple and avoids a DB round-trip on each webhook event.
 const paymentStreams = new Map(); // Map<societyId, Set<res>>
 
+// Broadcasts a payment-related SSE payload to all listeners in a society.
 const sendPaymentEvent = (societyId, payload) => {
   const listeners = paymentStreams.get(societyId?.toString());
   if (!listeners || listeners.size === 0) return;
@@ -24,6 +25,7 @@ const sendPaymentEvent = (societyId, payload) => {
   }
 };
 
+// Opens and manages an SSE stream so clients receive live payment updates.
 const paymentStream = asyncHandler(async (req, res) => {
   const societyId = req.user?.societyId?.toString();
   if (!societyId) {
@@ -54,6 +56,7 @@ const paymentStream = asyncHandler(async (req, res) => {
 
 
 // 1. Get all payments (Admin View) with Pagination!
+// Returns paginated payment records for the authenticated user's society.
 const getPayments = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -78,6 +81,7 @@ const getPayments = async (req, res) => {
 };
 
 // 2. Get payments for a specific user
+// Returns all payments assigned to a specific user in the same society.
 const getUserPayments = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -89,6 +93,7 @@ const getUserPayments = async (req, res) => {
 };
 
 // 3. Create a new payment (Admin can add)
+// Creates a new maintenance/payment entry scoped to the current society.
 const createPayment = async (req, res) => {
   try {
     const { description, amount, dueDate } = req.body;
@@ -127,6 +132,7 @@ const createPayment = async (req, res) => {
 // };
 
 // 5. Delete a payment (Admin only)
+// Deletes a payment record by id.
 const deletePayment = async (req, res) => {
   const { paymentId } = req.params;
   if (!paymentId) return res.status(400).json({ error: "Payment ID is required" });
@@ -141,6 +147,7 @@ const deletePayment = async (req, res) => {
 };
 
 // 6. Update a payment (Admin only)
+// Updates description, amount, and due date for an existing payment.
 const updatePayment = async (req, res) => {
   const { id } = req.params;
   const { description, amount, dueDate } = req.body;
@@ -161,6 +168,7 @@ const updatePayment = async (req, res) => {
 };
 
 
+// Creates a Stripe PaymentIntent for a maintenance payment after duplicate checks.
 const payPayment = asyncHandler(async (req, res) => {
   const { paymentId } = req.params;
   const userId = req.user._id;
@@ -220,6 +228,7 @@ const payPayment = asyncHandler(async (req, res) => {
   });
 });
 
+// Retrieves Stripe-hosted receipt URL for a successful intent when available.
 const getReceiptUrl = async (paymentIntent) => {
   if (!paymentIntent.latest_charge) return null;
   try {
@@ -231,6 +240,7 @@ const getReceiptUrl = async (paymentIntent) => {
   }
 };
 
+// Finalizes maintenance payment success by updating Payment and creating Purchase.
 const handleMaintenanceSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
   const { paymentId, userId, societyId } = metadata || {};
   if (!paymentId || !userId) return;
@@ -259,6 +269,7 @@ const handleMaintenanceSuccess = async ({ paymentIntent, metadata, receiptUrl })
   });
 };
 
+// Finalizes booking payment success by upserting BookingOrder and receipt data.
 const handleBookingSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
   const { bookingId, userId, societyId, email } = metadata || {};
   if (!bookingId || !userId) return;
@@ -288,6 +299,7 @@ const handleBookingSuccess = async ({ paymentIntent, metadata, receiptUrl }) => 
   });
 };
 
+// Finalizes event payment success by upserting EventOrder and attendee readiness.
 const handleEventSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
   const { eventId, userId, societyId, email } = metadata || {};
   if (!eventId || !userId) return;
@@ -323,6 +335,7 @@ const handleEventSuccess = async ({ paymentIntent, metadata, receiptUrl }) => {
   });
 };
 
+// Verifies Stripe webhook signatures and routes events to domain-specific handlers.
 const stripeWebhook = asyncHandler(async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
@@ -434,6 +447,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
   res.status(200).json({ received: true });
 });
 
+// Returns admin-facing payment data with payer details for the current society.
 const getAdminData = async (req, res) => {
   try {
     const payments = await Payment.find({ societyId: req.user.societyId }).populate("paidBy", "name phoneNo houseNo block -_id").select(" -updatedAt -__v -societyId -_id").lean();
