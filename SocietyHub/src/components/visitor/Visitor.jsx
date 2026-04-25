@@ -240,7 +240,9 @@ function Visitor() {
           {[
             { id: 'active', label: 'Active Visitors', count: activeVisitors.length },
             { id: 'history', label: 'Visitor History', count: recentVisitors.length },
-          ].map(tab => {
+          ]
+            .filter(tab => !(rolee === 'security' && tab.id === 'history'))
+            .map(tab => {
             const isActive = activeTab === tab.id;
             return (
               <button

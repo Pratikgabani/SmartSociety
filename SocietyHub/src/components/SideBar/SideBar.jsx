@@ -4,15 +4,15 @@ import UserContext from "../../context/UserContext";
 import axios from "axios";
 import {
   LayoutDashboard,
-  CalendarCheck,
-  Megaphone,
-  CreditCard,
+  MapPin,
+  CalendarDays,
+  Wallet,
   UserCheck,
   BarChart2,
-  MessageSquareWarning,
+  TriangleAlert,
   Bell,
   LogOut,
-  RotateCcw,
+  ReceiptText,
   Building2,
   Menu,
   X,
@@ -20,14 +20,14 @@ import {
 
 const NAV_ITEMS = [
   { name: "Dashboard",  icon: LayoutDashboard,        roles: ["admin", "resident"] },
-  { name: "Booking",    icon: CalendarCheck,           roles: ["admin", "resident"] },
-  { name: "Event",      icon: Megaphone,               roles: ["admin", "resident"] },
-  { name: "Payment",    icon: CreditCard,              roles: ["admin", "resident"] },
+  { name: "Booking",    icon: MapPin,                  roles: ["admin", "resident"] },
+  { name: "Event",      icon: CalendarDays,            roles: ["admin", "resident"] },
+  { name: "Payment",    icon: Wallet,                  roles: ["admin", "resident"] },
   { name: "Visitor",    icon: UserCheck,               roles: ["admin", "resident", "security"] },
   { name: "Poll",       icon: BarChart2,               roles: ["admin", "resident"] },
-  { name: "Complaint",  icon: MessageSquareWarning,    roles: ["admin", "resident"] },
+  { name: "Complaint",  icon: TriangleAlert,           roles: ["admin", "resident"] },
   { name: "Notice",     icon: Bell,                    roles: ["admin", "resident"] },
-  { name: "Refunds",    icon: RotateCcw,               roles: ["admin"] },
+  { name: "Refunds",    icon: ReceiptText,             roles: ["admin"] },
 ];
 
 function SideBar() {
