@@ -71,14 +71,14 @@ const ComplaintCard = React.memo(({ complaint, rolee, onResolve, onDelete, canDe
           {/* Missing Image Fallback */}
           <div className="hidden absolute inset-0 flex-col items-center justify-center bg-gray-50 text-gray-400">
             <FileImage className="w-8 h-8 mb-2 opacity-30" />
-            <span className="text-[0.75rem] font-semibold text-gray-400 uppercase tracking-widest">Unavailable</span>
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Unavailable</span>
           </div>
 
           {/* Hover Overlay */}
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px] opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
             <div className="flex flex-col items-center text-white translate-y-4 group-hover/image:translate-y-0 transition-transform duration-300">
               <ExternalLink className="w-7 h-7 mb-2 drop-shadow-md" />
-              <span className="text-[0.8rem] font-bold tracking-wide drop-shadow-md">View Full File</span>
+              <span className="text-xs font-medium tracking-wide drop-shadow-md">View Full File</span>
             </div>
           </div>
         </a>
@@ -88,19 +88,19 @@ const ComplaintCard = React.memo(({ complaint, rolee, onResolve, onDelete, canDe
         {/* Header row */}
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="min-w-0 flex-1">
-            <h3 className="text-[1.12rem] font-extrabold text-gray-900 m-0 leading-snug tracking-tight pb-2 line-clamp-2" title={complaint.subject}>
+            <h3 className="text-lg font-semibold text-gray-900 m-0 leading-snug tracking-tight pb-2 line-clamp-2" title={complaint.subject}>
               {complaint.subject}
             </h3>
             
             <div className="flex flex-col gap-2 mt-1">
               {postedByText && (
-                <div className="inline-flex items-center gap-1.5 text-[0.75rem] text-blue-700 font-bold bg-blue-50/80 hover:bg-blue-100 border border-blue-100/50 w-fit px-2.5 py-1 rounded-md transition-colors">
+                <div className="inline-flex items-center gap-1.5 text-xs text-blue-700 font-medium bg-blue-50/80 hover:bg-blue-100 border border-blue-100/50 w-fit px-2.5 py-1 rounded-md transition-colors">
                   <MapPin strokeWidth={2.5} className="w-3.5 h-3.5 text-blue-600" />
                   <span>{postedByText}</span>
                 </div>
               )}
               {displayDate && (
-                <div className="flex items-center gap-1.5 text-[0.8rem] text-gray-500 font-medium ml-0.5">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium ml-0.5">
                   <Calendar className="w-3.5 h-3.5 text-gray-400" />
                   <span>{displayDate}</span>
                 </div>
@@ -109,7 +109,7 @@ const ComplaintCard = React.memo(({ complaint, rolee, onResolve, onDelete, canDe
           </div>
           
           {/* Status Badge */}
-          <div className={`inline-flex flex-shrink-0 items-center justify-center px-2.5 py-1 rounded-full text-[0.72rem] font-bold tracking-[0.3px] whitespace-nowrap shadow-sm border ${
+          <div className={`inline-flex flex-shrink-0 items-center justify-center px-2.5 py-1 rounded-full text-xs font-medium tracking-[0.3px] whitespace-nowrap shadow-sm border ${
             isResolved 
               ? "bg-green-50 text-green-700 border-green-200/60" 
               : "bg-amber-50 text-amber-700 border-amber-200/60"
@@ -129,7 +129,7 @@ const ComplaintCard = React.memo(({ complaint, rolee, onResolve, onDelete, canDe
         </div>
 
         {/* Description body */}
-        <div className="text-[0.9rem] text-gray-600 leading-relaxed mb-6 flex-1 break-words">
+        <div className="text-sm text-gray-600 leading-relaxed mb-6 flex-1 break-words">
           <p className="line-clamp-4 m-0" title={complaint.description}>
             {complaint.description}
           </p>
@@ -140,7 +140,7 @@ const ComplaintCard = React.memo(({ complaint, rolee, onResolve, onDelete, canDe
           {!isResolved && rolee === "admin" && (
             <button
               onClick={() => onResolve(complaint._id)}
-              className="flex items-center gap-1.5 py-1.5 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white border border-transparent rounded-lg text-[0.8rem] font-bold cursor-pointer transition-all hover:shadow-md hover:shadow-emerald-600/20 active:scale-95 text-center mx-auto w-full justify-center"
+              className="flex items-center gap-1.5 py-1.5 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white border border-transparent rounded-lg text-xs font-medium cursor-pointer transition-all hover:shadow-md hover:shadow-emerald-600/20 active:scale-95 text-center mx-auto w-full justify-center"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Mark Resolved</span>
@@ -302,7 +302,7 @@ function Complaint() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <HashLoader size={52} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading complaints…</p>
+        <p className="mt-4 text-sm text-gray-500 font-medium">Loading complaints…</p>
       </div>
     );
   }
@@ -313,13 +313,13 @@ function Complaint() {
       {/* PAGE HEADER */}
       <div className="flex justify-between items-start mb-7">
         <div>
-          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Complaints Space</h1>
-          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Submit, track, and resolve residential concerns</p>
+          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Complaints Space</h1>
+          <p className="text-sm text-gray-500 mt-1 mb-0">Submit, track, and resolve residential concerns</p>
         </div>
         <div className="flex gap-2.5 items-center">
           <button
             onClick={handleHistoryClick}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -339,14 +339,14 @@ function Complaint() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-sm cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
                   isActive
                     ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
                     : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-xs font-medium ${
                   isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
                 }`}>
                   {tab.count}
@@ -357,7 +357,7 @@ function Complaint() {
         </div>
         <button
           onClick={() => setIsFormOpen(true)}
-          className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
         >
           + Add Complaint
         </button>
@@ -370,7 +370,7 @@ function Complaint() {
             placeholder="Search matching issues…"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
+            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-sm text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
           />
         </div> */}
       </div>
@@ -382,12 +382,12 @@ function Complaint() {
             <p className="text-[2.4rem] mb-3">
               {activeTab === "pending" ? "🎉" : "🗂️"}
             </p>
-            <p className="font-bold text-[1.1rem] text-gray-700 mb-1.5">
+            <p className="font-medium text-lg text-gray-700 mb-1.5">
               {searchQuery 
                 ? "No matching records found" 
                 : (activeTab === "pending" ? "No pending complaints!" : "No resolved records")}
             </p>
-            <p className="text-[0.875rem] text-gray-400">
+            <p className="text-sm text-gray-400">
               {searchQuery 
                 ? "Try adjusting your search terms" 
                 : (activeTab === "pending" ? "You're all caught up and completely issue-free." : "")}
@@ -423,23 +423,23 @@ function Complaint() {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <Trash2 className="h-8 w-8 text-red-600" />
             </div>
-            <h2 className="text-[1.2rem] font-bold text-gray-900 m-0 mb-2">Delete Complaint?</h2>
-            <p className="text-[0.9rem] text-gray-500 mb-2">Are you sure you want to permanently remove:</p>
+            <h2 className="text-xl font-medium text-gray-900 m-0 mb-2">Delete Complaint?</h2>
+            <p className="text-sm text-gray-500 mb-2">Are you sure you want to permanently remove:</p>
             <p className="font-semibold text-gray-900 text-[0.95rem] mb-2 line-clamp-2 px-2">
               &ldquo;{confirmDeleteModal.subject}&rdquo;
             </p>
-            <p className="text-[0.8rem] text-red-500 mb-6 font-medium bg-red-50 py-1.5 px-3 rounded-md inline-block">This action cannot be undone.</p>
+            <p className="text-xs text-red-500 mb-6 font-medium bg-red-50 py-1.5 px-3 rounded-md inline-block">This action cannot be undone.</p>
             
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => setConfirmDeleteModal({ open: false, complaintId: null, subject: "" })}
-                className="flex-1 py-2.5 px-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
+                className="flex-1 py-2.5 px-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm rounded-xl text-sm font-medium cursor-pointer transition-all active:scale-95"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-500/30 border-none rounded-xl text-[0.9rem] font-bold cursor-pointer transition-all active:scale-95"
+                className="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-500/30 border-none rounded-xl text-sm font-medium cursor-pointer transition-all active:scale-95"
               >
                 Yes, Delete
               </button>
@@ -454,47 +454,47 @@ function Complaint() {
           <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Log a Complaint</h2>
-                <p className="text-[0.8rem] text-gray-400 mt-0.5 mb-0">Outline your issue for resolution</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Log a Complaint</h2>
+                <p className="text-xs text-gray-400 mt-0.5 mb-0">Outline your issue for resolution</p>
               </div>
               <button 
                 onClick={() => setIsFormOpen(false)} 
-                className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none"
+                className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none"
               >✕</button>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Subject *</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Subject *</label>
                 <input
                   type="text"
                   placeholder="E.g., Broken street light, Water issue..."
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   required
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Description *</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Description *</label>
                 <textarea
                   placeholder="Provide details about what happened and where..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
                   rows={4}
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors resize-y"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors resize-y"
                 />
               </div>
 
               <div className="pt-2">
-                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Attach Proof (Optional)</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Attach Proof (Optional)</label>
                 <div className="relative">
                   <input 
                     type="file" 
                     onChange={(e) => setFile(e.target.files[0])} 
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-[0.85rem] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors cursor-pointer"
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors cursor-pointer"
                   />
                 </div>
               </div>
@@ -503,14 +503,14 @@ function Complaint() {
                 <button
                   type="button"
                   onClick={() => setIsFormOpen(false)}
-                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`py-2 px-4 text-white border-none rounded-lg text-[0.875rem] font-semibold transition-colors flex items-center justify-center min-w-[124px] ${
+                  className={`py-2 px-4 text-white border-none rounded-lg text-sm font-semibold transition-colors flex items-center justify-center min-w-[124px] ${
                     isSubmitting 
                       ? "bg-blue-400 cursor-not-allowed" 
                       : "bg-blue-600 hover:bg-blue-700 cursor-pointer"

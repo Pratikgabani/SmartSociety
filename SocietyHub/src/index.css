@@ -1,7 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #1f2937;
+  }
+}
 .hidden-scrollbar::-webkit-scrollbar {
     display: none;  /* Hide scrollbar in Webkit browsers */
   }
@@ -31,7 +41,7 @@
   
   .logo {
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 500;
     margin-bottom: 30px;
   }
   

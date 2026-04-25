@@ -339,15 +339,15 @@ const PreviousDataPage = () => {
             <FiArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Historical Records</h1>
-            <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">View, filter, and export system audit and operational records.</p>
+            <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Historical Records</h1>
+            <p className="text-sm text-gray-500 mt-1 mb-0">View, filter, and export system audit and operational records.</p>
           </div>
         </div>
         <div className="flex gap-2.5 items-center">
           <button
             onClick={exportToExcel}
             disabled={filteredByMonthYear.length === 0}
-            className="inline-flex items-center gap-2 py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="inline-flex items-center gap-2 py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             <FiDownload className="w-4 h-4" />
             Export to Excel
@@ -362,7 +362,7 @@ const PreviousDataPage = () => {
           <div className="flex items-center gap-2 bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max">
             <FiFilter className="w-4 h-4 ml-2 text-gray-500" />
             <select
-              className="bg-transparent border-none focus:ring-0 text-[0.85rem] font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none"
+              className="bg-transparent border-none focus:ring-0 text-sm font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
             >
@@ -373,7 +373,7 @@ const PreviousDataPage = () => {
             </select>
             <div className="w-px h-4 bg-gray-300/80"></div>
             <select
-              className="bg-transparent border-none focus:ring-0 text-[0.85rem] font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none pr-2"
+              className="bg-transparent border-none focus:ring-0 text-sm font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none pr-2"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
             >
@@ -390,7 +390,7 @@ const PreviousDataPage = () => {
               setSelectedMonth("");
               setSearchTerm("");
             }}
-            className="flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent"
+            className="flex items-center gap-2 py-1.5 px-4 font-semibold text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent"
             title="Reset Filters"
           >
             <FiRefreshCw className="w-4 h-4" />
@@ -408,7 +408,7 @@ const PreviousDataPage = () => {
             placeholder="Search records..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
+            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-sm text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
           />
         </div>
       </div>
@@ -419,7 +419,7 @@ const PreviousDataPage = () => {
           <div className="text-center py-16 px-6">
             <p className="text-[2rem] mb-2">🗂️</p>
             <h3 className="font-semibold text-gray-700 mb-1">No records found</h3>
-            <p className="text-[0.85rem] text-gray-400 m-0">We couldn't find any data matching your criteria.</p>
+            <p className="text-sm text-gray-400 m-0">We couldn't find any data matching your criteria.</p>
           </div>
         ) : (
           <div 
@@ -439,7 +439,7 @@ const PreviousDataPage = () => {
                   {tableHeaders.map((header, idx) => (
                     <th 
                       key={header} 
-                      className="py-3 px-4 text-left text-[0.75rem] font-bold text-gray-500 uppercase tracking-[0.4px] whitespace-nowrap"
+                      className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px] whitespace-nowrap"
                     >
                       <div className="flex items-center gap-2 w-max">
                         {header === "description" ? "Description" : header.replace(/([A-Z])/g, ' $1').trim()}
@@ -467,7 +467,7 @@ const PreviousDataPage = () => {
                       {tableHeaders.map((header) => {
                         const actualKey = header === "Description" ? "paymentId" : header;
                         return (
-                          <td key={actualKey} className="py-3.5 px-4 text-[0.875rem] text-gray-700 align-middle whitespace-normal">
+                          <td key={actualKey} className="py-3.5 px-4 text-sm text-gray-700 align-middle whitespace-normal">
                             {renderValue(actualKey, item[actualKey])}
                           </td>
                         );
@@ -480,7 +480,7 @@ const PreviousDataPage = () => {
         )}
         {/* Footer of table for record counts & scroll status */}
         {filteredByMonthYear.length > 0 && (
-           <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-[0.8rem]">
+           <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-xs">
              <p className="text-gray-500 m-0">
                Showing records: <span className="font-semibold text-gray-900">{filteredByMonthYear.length}</span> total
              </p>

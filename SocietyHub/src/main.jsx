@@ -18,7 +18,7 @@ import Login from './components/Login/Login.jsx';
 // Instead of downloading all these modules on initial page load, 
 // they are now split into smaller JS chunks and downloaded only when the user navigates to them!
 const Load = (Component) => (props) => (
-  <Suspense fallback={<div className="flex h-screen items-center justify-center font-bold text-gray-500 animate-pulse">Loading Module...</div>}>
+  <Suspense fallback={<div className="flex h-screen items-center justify-center font-medium text-gray-500 animate-pulse">Loading Module...</div>}>
     <Component {...props} />
   </Suspense>
 );

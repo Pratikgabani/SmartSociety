@@ -13,7 +13,7 @@
 //             <div className="flex">
 //                 {/* Sidebar - Fixed */}
 //                 <div className="w-64 h-screen fixed bg-gray-800 text-white p-4">
-//                     <h2 className="text-xl font-bold mb-4">My Sidebar</h2>
+//                     <h2 className="text-xl font-medium mb-4">My Sidebar</h2>
 //                     <ul>
 //                         <li>
 //                             <NavLink 

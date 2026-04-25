@@ -132,9 +132,9 @@ function OrgLanding() {
       <div className="w-full relative z-50">
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300 bg-transparent'>
           <div className='relative flex justify-between items-center md:justify-center md:gap-12 lg:gap-24 transition-all duration-300'>
-            <div className='font-bold text-2xl sm:text-3xl text-slate-800 tracking-tight flex items-center gap-2 shrink-0 text-center md:text-left'>
+            <div className='font-medium text-2xl sm:text-3xl text-slate-800 tracking-tight flex items-center gap-2 shrink-0 text-center md:text-left'>
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center shadow-inner">
-                <span className="text-white text-lg font-bold">R</span>
+                <span className="text-white text-lg font-medium">R</span>
               </div>
               ResiHub
             </div>
@@ -181,7 +181,7 @@ function OrgLanding() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className='w-full max-w-5xl z-10'
         >
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white text-blue-700 text-sm font-bold mb-10 border border-blue-200 shadow-[0_4px_14px_0_rgb(59,130,246,0.1)] cursor-default">
+          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white text-blue-700 text-sm font-medium mb-10 border border-blue-200 shadow-[0_4px_14px_0_rgb(59,130,246,0.1)] cursor-default">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
@@ -189,7 +189,7 @@ function OrgLanding() {
             <span>Welcome to ResiHub</span>
           </div>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-8">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] font-semibold text-slate-900 tracking-tight leading-[1.1] mb-8">
             Manage Your Society with <br className="hidden sm:block" />
             <span className="text-blue-600">Seamless Elegance</span>
           </h1>
@@ -200,10 +200,10 @@ function OrgLanding() {
 
           {!rolee && (
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
-              <Link to="/register" className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-blue-600 border border-blue-600 rounded-xl overflow-hidden hover:bg-blue-700 hover:shadow-[0_8px_30px_rgb(37,99,235,0.3)] hover:-translate-y-1 w-full sm:w-auto">
+              <Link to="/register" className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white transition-all duration-300 bg-blue-600 border border-blue-600 rounded-xl overflow-hidden hover:bg-blue-700 hover:shadow-[0_8px_30px_rgb(37,99,235,0.3)] hover:-translate-y-1 w-full sm:w-auto">
                 Join an Existing Society
               </Link>
-              <Link to="/SocietyDetails" className="group inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-700 transition-all duration-300 bg-white border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 w-full sm:w-auto">
+              <Link to="/SocietyDetails" className="group inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-slate-700 transition-all duration-300 bg-white border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 w-full sm:w-auto">
                 Create a New Society
               </Link>
             </div>
@@ -216,7 +216,7 @@ function OrgLanding() {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] pointer-events-none"></div>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-            <h2 className='text-3xl sm:text-4xl font-bold text-slate-900 mb-6 tracking-tight'>Comprehensive Society Management</h2>
+            <h2 className='text-3xl sm:text-4xl font-medium text-slate-900 mb-6 tracking-tight'>Comprehensive Society Management</h2>
             <p className='text-lg text-slate-600 font-medium'>Everything you need to manage your residential community effortlessly and efficiently.</p>
           </div>
 
@@ -226,7 +226,7 @@ function OrgLanding() {
                 <div className={`w-14 h-14 rounded-xl ${feature.bgColor} ${feature.iconColor} flex items-center justify-center mb-6 border ${feature.borderColor} group-hover:scale-110 transition-transform duration-300`}>
                   {feature.icon}
                 </div>
-                <h3 className='text-xl text-slate-900 font-bold mb-3'>{feature.title}</h3>
+                <h3 className='text-xl text-slate-900 font-medium mb-3'>{feature.title}</h3>
                 <p className='text-slate-600 leading-relaxed text-sm sm:text-base'>{feature.desc}</p>
               </div>
             ))}
@@ -241,8 +241,8 @@ function OrgLanding() {
 
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-            <span className="text-blue-600 font-bold tracking-wider uppercase text-sm mb-3 block">Core Benefits</span>
-            <h2 className='text-3xl sm:text-4xl font-extrabold text-slate-900 mb-6 tracking-tight'>Why Choose Our Solutions</h2>
+            <span className="text-blue-600 font-medium tracking-wider uppercase text-sm mb-3 block">Core Benefits</span>
+            <h2 className='text-3xl sm:text-4xl font-semibold text-slate-900 mb-6 tracking-tight'>Why Choose Our Solutions</h2>
             <p className='text-lg text-slate-600 font-medium'>
               Transform your society management with these exclusive advantages designed for modern living.
             </p>
@@ -260,7 +260,7 @@ function OrgLanding() {
                     {benefit.icon}
                   </div>
 
-                  <h3 className='text-xl font-bold text-slate-900 mb-3'>{benefit.title}</h3>
+                  <h3 className='text-xl font-medium text-slate-900 mb-3'>{benefit.title}</h3>
                   <p className='text-sm text-slate-600 leading-relaxed mb-6'>{benefit.desc}</p>
 
                   <ul className='flex flex-col gap-3 mt-auto'>
@@ -284,7 +284,7 @@ function OrgLanding() {
       <div id='pricing' className='bg-white py-20 sm:py-32 border-t border-slate-100'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-            <h2 className='text-3xl sm:text-4xl font-bold text-slate-900 mb-6 tracking-tight'>Simple & Transparent Pricing</h2>
+            <h2 className='text-3xl sm:text-4xl font-medium text-slate-900 mb-6 tracking-tight'>Simple & Transparent Pricing</h2>
             <p className='text-lg text-slate-600 font-medium'>Choose the perfect plan tailored for your residential society.</p>
           </div>
 
@@ -296,12 +296,12 @@ function OrgLanding() {
             ].map((plan, index) => (
               <div key={index} className={`relative flex flex-col p-8 sm:p-10 rounded-3xl transition-all duration-300 ${plan.popular ? 'bg-blue-600 border-none shadow-[0_20px_40px_rgb(37,99,235,0.2)] md:-translate-y-4' : 'bg-slate-50 border border-slate-200'}`}>
                 {plan.popular && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-teal-400 to-blue-400 text-slate-900 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-teal-400 to-blue-400 text-slate-900 text-xs font-medium px-4 py-1.5 rounded-full uppercase tracking-wide">
                     Most Popular
                   </div>
                 )}
-                <h3 className={`text-xl font-bold mb-2 ${plan.popular ? 'text-blue-50' : 'text-slate-800'}`}>{plan.name}</h3>
-                <div className={`text-5xl font-extrabold mb-4 tracking-tight ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
+                <h3 className={`text-xl font-medium mb-2 ${plan.popular ? 'text-blue-50' : 'text-slate-800'}`}>{plan.name}</h3>
+                <div className={`text-5xl font-semibold mb-4 tracking-tight ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
                   {plan.price}<span className={`text-base font-medium ml-1 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>/month</span>
                 </div>
                 <p className={`text-sm mb-8 ${plan.popular ? 'text-blue-100' : 'text-slate-600'}`}>{plan.desc}</p>
@@ -314,7 +314,7 @@ function OrgLanding() {
                   ))}
                 </ul>
                 <Link to="/pageNotFound" className="mt-auto w-full">
-                  <button className={`w-full py-3.5 px-6 rounded-xl font-bold transition-all duration-300 ${plan.popular ? 'bg-white text-blue-600 hover:bg-slate-50' : 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-100 hover:shadow-sm'}`}>
+                  <button className={`w-full py-3.5 px-6 rounded-xl font-medium transition-all duration-300 ${plan.popular ? 'bg-white text-blue-600 hover:bg-slate-50' : 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-100 hover:shadow-sm'}`}>
                     Get Started
                   </button>
                 </Link>
@@ -328,7 +328,7 @@ function OrgLanding() {
       <section id='testimonials' className="bg-slate-50 py-20 sm:py-32 relative overflow-hidden border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col items-center justify-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-center text-slate-900 tracking-tight mb-6">
+            <h2 className="text-3xl sm:text-4xl font-medium text-center text-slate-900 tracking-tight mb-6">
               Trusted by Communities
             </h2>
             <p className="text-center text-lg text-slate-600 font-medium">
@@ -348,7 +348,7 @@ function OrgLanding() {
       <div id='contact' className="bg-white border-t border-slate-100">
         <div className='max-w-7xl mx-auto py-20 sm:py-32 px-4 sm:px-6 lg:px-8'>
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-            <h2 className='text-3xl sm:text-4xl font-bold text-slate-900 mb-6 tracking-tight'>Get in touch with us</h2>
+            <h2 className='text-3xl sm:text-4xl font-medium text-slate-900 mb-6 tracking-tight'>Get in touch with us</h2>
             <p className='text-lg text-slate-600 font-medium'>Have questions? Our support team is here to help.</p>
           </div>
 
@@ -377,7 +377,7 @@ function OrgLanding() {
                   <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
                   <textarea id="message" rows="4" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors resize-none" placeholder="How can we help you?"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-slate-900 text-white rounded-xl py-4 font-bold hover:bg-slate-800 transition-colors shadow-md shadow-slate-900/10">
+                <button type="submit" className="w-full bg-slate-900 text-white rounded-xl py-4 font-medium hover:bg-slate-800 transition-colors shadow-md shadow-slate-900/10">
                   Send Message
                 </button>
               </form>
@@ -385,7 +385,7 @@ function OrgLanding() {
 
             <div className='w-full lg:w-2/5 flex flex-col gap-8'>
               <div className="bg-slate-50 p-8 sm:p-10 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center h-full">
-                <h3 className="text-xl font-bold text-slate-900 mb-8">Contact Information</h3>
+                <h3 className="text-xl font-medium text-slate-900 mb-8">Contact Information</h3>
                 <div className="space-y-8">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
@@ -427,9 +427,9 @@ function OrgLanding() {
               <div className="flex flex-col max-w-md">
                 <div className="flex items-center gap-2 mb-6">
                   <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-lg font-bold">R</span>
+                    <span className="text-white text-lg font-medium">R</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 tracking-tight">ResiHub</h3>
+                  <h3 className="text-2xl font-medium text-slate-900 tracking-tight">ResiHub</h3>
                 </div>
                 <p className="text-sm leading-relaxed text-slate-600">
                   We are a dedicated platform designed to streamline society management, ensuring communication, maintenance, and community engagement are always hassle-free.
@@ -445,7 +445,7 @@ function OrgLanding() {
 
               <div className="flex flex-col md:flex-row gap-12 md:gap-24 md:items-start">
                 <div className="text-left md:text-right">
-                  <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Solutions</h3>
+                  <h3 className="font-medium text-slate-900 mb-6 uppercase text-xs tracking-wider">Solutions</h3>
                   <ul className="space-y-3 text-sm">
                     {['Visitor Management', 'Complaint System', 'Facility Booking', 'Payment Gateway'].map(link => (
                       <li key={link}><a href="/login" className="text-slate-600 hover:text-blue-600 transition-colors">{link}</a></li>
@@ -453,7 +453,7 @@ function OrgLanding() {
                   </ul>
                 </div>
                 <div className="text-left md:text-right">
-                  <h3 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-wider">Contact Us</h3>
+                  <h3 className="font-medium text-slate-900 mb-6 uppercase text-xs tracking-wider">Contact Us</h3>
                   <ul className="space-y-3 text-sm">
                     <li>
                       <a href="mailto:resihubproject@gmail.com" className="text-slate-600 hover:text-blue-600 transition-colors">

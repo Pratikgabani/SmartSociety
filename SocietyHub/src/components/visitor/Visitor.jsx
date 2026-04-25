@@ -21,7 +21,7 @@ const Avatar = ({ name }) => {
   ];
   const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
   return (
-    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-[0.78rem] font-bold flex-shrink-0 ${color}`}>
+    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${color}`}>
       {initials}
     </div>
   );
@@ -192,7 +192,7 @@ function Visitor() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <HashLoader size={52} color="#2563eb" />
-        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading visitors…</p>
+        <p className="mt-4 text-sm text-gray-500 font-medium">Loading visitors…</p>
       </div>
     );
   }
@@ -212,21 +212,21 @@ function Visitor() {
       {/* PAGE HEADER */}
       <div className="flex justify-between items-start mb-7">
         <div>
-          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Visitors</h1>
-          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Manage and track your society visitors</p>
+          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Visitors</h1>
+          <p className="text-sm text-gray-500 mt-1 mb-0">Manage and track your society visitors</p>
         </div>
         <div className="flex gap-2.5 items-center">
           {rolee === 'security' && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
             >
               + Add Visitor
             </button>
           )}
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -246,14 +246,14 @@ function Visitor() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-sm cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
                   isActive
                     ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
                     : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-xs font-medium ${
                   isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
                 }`}>
                   {tab.count}
@@ -273,7 +273,7 @@ function Visitor() {
             placeholder="Search visitors…"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-[0.88rem] text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
+            className="w-full pl-[38px] pr-3 py-2.5 border border-gray-200/80 rounded-xl text-sm text-gray-900 outline-none bg-white font-medium box-border focus:ring-2 focus:ring-blue-100 hover:border-gray-300 focus:border-blue-400 transition-all"
           />
         </div>
       </div>
@@ -288,7 +288,7 @@ function Visitor() {
           {filteredActive.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
               <span className="text-5xl mb-3">🚶</span>
-              <p className="text-[1.05rem] font-semibold text-gray-700 m-0">
+              <p className="text-lg font-semibold text-gray-700 m-0">
                 {searchQuery ? 'No visitors match your search' : 'No active visitors'}
               </p>
               <p className="text-sm text-gray-400 mt-1.5 mb-0">
@@ -300,13 +300,13 @@ function Visitor() {
               <table className="w-full border-collapse min-w-[640px]">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Visitor</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Purpose</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Phone</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Check-In</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Status</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Visitor</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Purpose</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Phone</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Check-In</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Status</th>
                     {rolee === 'security' && (
-                      <th className="py-3 px-5 text-right text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Actions</th>
+                      <th className="py-3 px-5 text-right text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Actions</th>
                     )}
                   </tr>
                 </thead>
@@ -321,24 +321,24 @@ function Visitor() {
                         <div className="flex items-center gap-3">
                           <Avatar name={visitor.visitorName} />
                           <div>
-                            <p className="text-[0.88rem] font-semibold text-gray-900 m-0">{visitor.visitorName}</p>
+                            <p className="text-sm font-semibold text-gray-900 m-0">{visitor.visitorName}</p>
                             {visitor.visitingBlock && (
-                              <p className="text-[0.75rem] text-gray-400 m-0">Block {visitor.visitingBlock}{visitor.visitingAdd ? ` · ${visitor.visitingAdd}` : ''}</p>
+                              <p className="text-xs text-gray-400 m-0">Block {visitor.visitingBlock}{visitor.visitingAdd ? ` · ${visitor.visitingAdd}` : ''}</p>
                             )}
                           </div>
                         </div>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.85rem] text-gray-600">{visitor.purpose || '—'}</span>
+                        <span className="text-sm text-gray-600">{visitor.purpose || '—'}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.85rem] text-gray-700 font-medium">{visitor.visitorPhone || '—'}</span>
+                        <span className="text-sm text-gray-700 font-medium">{visitor.visitorPhone || '—'}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.83rem] text-gray-600">{formatVisitTime(visitor.visitDate)}</span>
+                        <span className="text-sm text-gray-600">{formatVisitTime(visitor.visitDate)}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="inline-flex items-center gap-1.5 py-[3px] px-2.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-[0.72rem] font-bold">
+                        <span className="inline-flex items-center gap-1.5 py-[3px] px-2.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-medium">
                           <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
                           Active
                         </span>
@@ -348,7 +348,7 @@ function Visitor() {
                           <div className="flex items-center gap-2 justify-end">
                             <button
                               onClick={() => handleCheckOut(visitor._id)}
-                              className="py-1.5 px-3.5 bg-green-600 hover:bg-green-700 text-white border-none rounded-lg text-[0.78rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                              className="py-1.5 px-3.5 bg-green-600 hover:bg-green-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer transition-colors whitespace-nowrap"
                             >
                               Check Out
                             </button>
@@ -382,7 +382,7 @@ function Visitor() {
           {filteredRecent.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
               <span className="text-5xl mb-3">🗂️</span>
-              <p className="text-[1.05rem] font-semibold text-gray-700 m-0">
+              <p className="text-lg font-semibold text-gray-700 m-0">
                 {searchQuery ? 'No visitors match your search' : 'No visitor history'}
               </p>
               <p className="text-sm text-gray-400 mt-1.5 mb-0">
@@ -394,14 +394,14 @@ function Visitor() {
               <table className="w-full border-collapse min-w-[640px]">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Visitor</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Purpose</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Phone</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Visit Time</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Checkout</th>
-                    <th className="py-3 px-5 text-left text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Status</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Visitor</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Purpose</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Phone</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Visit Time</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Checkout</th>
+                    <th className="py-3 px-5 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Status</th>
                     {rolee === 'security' && (
-                      <th className="py-3 px-5 text-right text-[0.72rem] font-bold text-gray-500 uppercase tracking-[0.4px]">Actions</th>
+                      <th className="py-3 px-5 text-right text-xs font-medium text-gray-500 uppercase tracking-[0.4px]">Actions</th>
                     )}
                   </tr>
                 </thead>
@@ -415,27 +415,27 @@ function Visitor() {
                         <div className="flex items-center gap-3">
                           <Avatar name={visitor.visitorName} />
                           <div>
-                            <p className="text-[0.88rem] font-semibold text-gray-700 m-0">{visitor.visitorName}</p>
+                            <p className="text-sm font-semibold text-gray-700 m-0">{visitor.visitorName}</p>
                             {visitor.visitingBlock && (
-                              <p className="text-[0.75rem] text-gray-400 m-0">Block {visitor.visitingBlock}{visitor.visitingAdd ? ` · ${visitor.visitingAdd}` : ''}</p>
+                              <p className="text-xs text-gray-400 m-0">Block {visitor.visitingBlock}{visitor.visitingAdd ? ` · ${visitor.visitingAdd}` : ''}</p>
                             )}
                           </div>
                         </div>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.85rem] text-gray-500">{visitor.purpose || '—'}</span>
+                        <span className="text-sm text-gray-500">{visitor.purpose || '—'}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.85rem] text-gray-600">{visitor.visitorPhone || '—'}</span>
+                        <span className="text-sm text-gray-600">{visitor.visitorPhone || '—'}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.83rem] text-gray-500">{formatVisitTime(visitor.visitDate)}</span>
+                        <span className="text-sm text-gray-500">{formatVisitTime(visitor.visitDate)}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="text-[0.83rem] text-gray-500">{visitor.duration || '—'}</span>
+                        <span className="text-sm text-gray-500">{visitor.duration || '—'}</span>
                       </td>
                       <td className="py-3.5 px-5 align-middle">
-                        <span className="inline-flex items-center gap-1.5 py-[3px] px-2.5 bg-gray-100 text-gray-500 border border-gray-200 rounded-full text-[0.72rem] font-bold">
+                        <span className="inline-flex items-center gap-1.5 py-[3px] px-2.5 bg-gray-100 text-gray-500 border border-gray-200 rounded-full text-xs font-medium">
                           Checked Out
                         </span>
                       </td>
@@ -468,18 +468,18 @@ function Visitor() {
           <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Add New Visitor</h2>
-                <p className="text-[0.8rem] text-gray-400 mt-0.5 mb-0">Fill in visitor details below</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Add New Visitor</h2>
+                <p className="text-xs text-gray-400 mt-0.5 mb-0">Fill in visitor details below</p>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none"
+                className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none"
               >✕</button>
             </div>
             <form onSubmit={handleAddVisitor}>
               {formFields.map(({ key, label, placeholder }) => (
                 <div key={key} className="mb-4">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">
                     {label} *
                   </label>
                   <input
@@ -488,7 +488,7 @@ function Visitor() {
                     placeholder={placeholder}
                     value={newVisitor[key] || ''}
                     onChange={(e) => setNewVisitor({ ...newVisitor, [key]: e.target.value })}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                   />
                 </div>
               ))}
@@ -496,13 +496,13 @@ function Visitor() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   Add Visitor
                 </button>

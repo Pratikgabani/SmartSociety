@@ -50,7 +50,7 @@ function SecurityRegister() {
       <Toaster />
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 w-full max-w-md transition-all duration-300 hover:shadow-2xl">
         <div className="text-center mb-5">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Security Register</h1>
+          <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Security Register</h1>
           <p className="text-gray-500 mt-1 text-sm font-medium">Register for security access</p>
         </div>
 
@@ -109,7 +109,7 @@ function SecurityRegister() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2.5 mt-2 font-bold rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+            className="w-full bg-blue-600 text-white py-2.5 mt-2 font-medium rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
           >
             Register
           </button>
@@ -118,7 +118,7 @@ function SecurityRegister() {
         <div className="text-center mt-5">
           <p className="text-sm text-gray-600 font-medium">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-colors">
+            <a href="/login" className="text-blue-600 font-medium hover:text-blue-700 hover:underline transition-colors">
               Login here
             </a>
           </p>

@@ -105,7 +105,7 @@ function SideBar() {
             <div className="shrink-0 w-[42px] h-[42px] bg-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-600/30">
               <Building2 size={24} color="white" strokeWidth={2.5} />
             </div>
-            <span className="text-[1.35rem] font-extrabold text-gray-900 tracking-[-0.3px] transition-all duration-300 delay-75 md:opacity-0 md:-translate-x-3 md:group-hover:opacity-100 md:group-hover:translate-x-0 opacity-100 translate-x-0">
+            <span className="text-xl font-semibold text-gray-900 tracking-[-0.3px] transition-all duration-300 delay-75 md:opacity-0 md:-translate-x-3 md:group-hover:opacity-100 md:group-hover:translate-x-0 opacity-100 translate-x-0">
               ResiHub
             </span>
           </div>
@@ -140,7 +140,7 @@ function SideBar() {
                 <span className="shrink-0 flex items-center justify-center w-[26px] h-[26px]">
                   <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                 </span>
-                <span className="text-[0.92rem] font-semibold transition-all duration-300 delay-75 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 opacity-100 translate-x-0">
+                <span className="text-sm font-semibold transition-all duration-300 delay-75 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 opacity-100 translate-x-0">
                   {item.name}
                 </span>
                 {isActive && (
@@ -163,7 +163,7 @@ function SideBar() {
             <span className="shrink-0 flex items-center justify-center w-[26px] h-[26px]">
               <LogOut size={22} strokeWidth={2} />
             </span>
-            <span className="text-[0.92rem] font-semibold transition-all duration-300 delay-75 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 opacity-100 translate-x-0">
+            <span className="text-sm font-semibold transition-all duration-300 delay-75 md:opacity-0 md:-translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 opacity-100 translate-x-0">
               Logout
             </span>
           </div>

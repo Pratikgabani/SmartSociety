@@ -280,7 +280,7 @@ function Event() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <HashLoader size={52} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading events…</p>
+        <p className="mt-4 text-sm text-gray-500 font-medium">Loading events…</p>
       </div>
     );
   }
@@ -313,8 +313,8 @@ function Event() {
       >
         {/* Title + category */}
         <div className="flex justify-between items-start gap-2.5">
-          <h3 className="text-base font-bold text-gray-900 m-0 leading-[1.35]">{event.eventName}</h3>
-          <span className={`py-[3px] px-2.5 rounded-full text-[0.72rem] font-semibold whitespace-nowrap flex-shrink-0 ${getCategoryClass(event.category)}`}>
+          <h3 className="text-base font-medium text-gray-900 m-0 leading-[1.35]">{event.eventName}</h3>
+          <span className={`py-[3px] px-2.5 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ${getCategoryClass(event.category)}`}>
             {event.category}
           </span>
         </div>
@@ -325,25 +325,25 @@ function Event() {
         {/* Info rows */}
         <div className="flex flex-col gap-[5px] py-2.5 border-y border-gray-100">
           <div className="flex items-center gap-2 text-[0.84rem] text-gray-600">
-            <BsCalendar2Date className="text-gray-400 flex-shrink-0 text-[0.9rem]" />
+            <BsCalendar2Date className="text-gray-400 flex-shrink-0 text-sm" />
             <span>{new Date(event.eventDate).toLocaleDateString("en-GB")}</span>
           </div>
           <div className="flex items-center gap-2 text-[0.84rem] text-gray-600">
-            <FaRegClock className="text-gray-400 flex-shrink-0 text-[0.9rem]" />
+            <FaRegClock className="text-gray-400 flex-shrink-0 text-sm" />
             <span>{event.time}</span>
           </div>
           <div className="flex items-center gap-2 text-[0.84rem] text-gray-600">
-            <IoLocationOutline className="text-gray-400 flex-shrink-0 text-[0.9rem]" />
+            <IoLocationOutline className="text-gray-400 flex-shrink-0 text-sm" />
             <span>{event.venue}</span>
           </div>
         </div>
 
         {/* Price + last date footer */}
-        <div className="flex justify-between items-center text-[0.78rem] text-gray-500">
-          <span className="text-[0.95rem] font-bold text-gray-900">
-            ₹{event.amtPerPerson} <span className="text-[0.78rem] font-normal text-gray-400">/person</span>
+        <div className="flex justify-between items-center text-xs text-gray-500">
+          <span className="text-[0.95rem] font-medium text-gray-900">
+            ₹{event.amtPerPerson} <span className="text-xs font-normal text-gray-400">/person</span>
           </span>
-          <span className="text-[0.78rem] text-gray-400">Pay by {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}</span>
+          <span className="text-xs text-gray-400">Pay by {new Date(event.lastDateOfPay).toLocaleDateString("en-GB")}</span>
         </div>
 
         {/* Action buttons */}
@@ -358,7 +358,7 @@ function Event() {
             {!loading && isUnpaid && !isRefunded && (
               <Link
                 to={`/layout/payEvent/${event._id}`}
-                className="block w-full py-[9px] px-0 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.85rem] font-semibold text-center no-underline transition-colors box-border"
+                className="block w-full py-[9px] px-0 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold text-center no-underline transition-colors box-border"
               >
                 Pay Now
               </Link>
@@ -387,15 +387,15 @@ function Event() {
                     )}
 
                     {(order?.status === "Refund Initiated" || order?.status === "Refund_Initiated" || order?.status === "Refund_Pending_Approval") && (
-                      <span className="block py-[7px] px-2.5 bg-orange-50 text-orange-700 rounded-[6px] text-[0.78rem] font-semibold text-center">Refund Pending</span>
+                      <span className="block py-[7px] px-2.5 bg-orange-50 text-orange-700 rounded-[6px] text-xs font-semibold text-center">Refund Pending</span>
                     )}
 
                     {order?.status === "Refunded" && (
-                      <span className="block py-[7px] px-2.5 bg-green-50 text-green-800 rounded-[6px] text-[0.78rem] font-semibold text-center">Refunded</span>
+                      <span className="block py-[7px] px-2.5 bg-green-50 text-green-800 rounded-[6px] text-xs font-semibold text-center">Refunded</span>
                     )}
                   </>
                 ) : (
-                  <span className="block py-[7px] px-2.5 bg-gray-50 text-gray-400 rounded-[6px] text-[0.78rem] text-center">Receipt unavailable</span>
+                  <span className="block py-[7px] px-2.5 bg-gray-50 text-gray-400 rounded-[6px] text-xs text-center">Receipt unavailable</span>
                 )}
               </div>
             )}
@@ -423,13 +423,13 @@ function Event() {
       {/* PAGE HEADER */}
       <div className="flex justify-between items-start mb-7">
         <div>
-          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Events</h1>
-          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Stay updated with society events and celebrations</p>
+          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Events</h1>
+          <p className="text-sm text-gray-500 mt-1 mb-0">Stay updated with society events and celebrations</p>
         </div>
         <div className="flex gap-2.5 items-center">
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -444,14 +444,14 @@ function Event() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+              className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-sm cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
                 isActive
                   ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
                   : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
               }`}
             >
               <span>{tab.label}</span>
-              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+              <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-xs font-medium ${
                 isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
               }`}>
                 {tab.count}
@@ -469,13 +469,13 @@ function Event() {
           <section>
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 m-0">Upcoming Events</h2>
-                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Browse and register for society events</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Upcoming Events</h2>
+                <p className="text-sm text-gray-400 mt-[3px] mb-0">Browse and register for society events</p>
               </div>
               {rolee === "admin" && (
                 <button
                   onClick={() => setShowAddEventForm(!showAddEventForm)}
-                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   {showAddEventForm ? "✕ Cancel" : "+ Add Event"}
                 </button>
@@ -485,7 +485,7 @@ function Event() {
             {upcomingEvents.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
                 <span className="text-5xl mb-3">🎉</span>
-                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No upcoming events</p>
+                <p className="text-lg font-semibold text-gray-700 m-0">No upcoming events</p>
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Stay tuned — new events will appear here</p>
               </div>
             ) : (
@@ -501,15 +501,15 @@ function Event() {
           <section>
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 m-0">Past Events</h2>
-                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Events you attended or that have ended</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Past Events</h2>
+                <p className="text-sm text-gray-400 mt-[3px] mb-0">Events you attended or that have ended</p>
               </div>
             </div>
 
             {filteredPast.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
                 <span className="text-5xl mb-3">🗂️</span>
-                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No past events</p>
+                <p className="text-lg font-semibold text-gray-700 m-0">No past events</p>
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Events you attended will appear here</p>
               </div>
             ) : (
@@ -526,8 +526,8 @@ function Event() {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-7 w-full max-w-[500px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">New Event</h2>
-              <button onClick={() => setShowAddEventForm(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+              <h2 className="text-xl font-medium text-gray-900 m-0">New Event</h2>
+              <button onClick={() => setShowAddEventForm(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               {[
@@ -535,11 +535,11 @@ function Event() {
                 { label: "Description", name: "description", type: "text" },
               ].map(({ label, name, type }) => (
                 <div key={name} className="mb-4">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">{label}</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">{label}</label>
                   <input
                     type={type} name={name} value={formData[name]}
                     onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required
                   />
                 </div>
@@ -547,61 +547,61 @@ function Event() {
 
               <div className="flex gap-3">
                 <div className="mb-4 flex-1">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Date</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Date</label>
                   <input type="date" name="eventDate"
                     min={new Date().toISOString().split("T")[0]}
                     value={formData.eventDate} onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required />
                 </div>
                 <div className="mb-4 flex-1">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Time</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Time</label>
                   <input placeholder="06:00 AM – 09:00 AM" type="text" name="time"
                     value={formData.time} onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required />
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <div className="mb-4 flex-1">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Venue</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Venue</label>
                   <input type="text" name="venue" value={formData.venue}
                     onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required />
                 </div>
                 <div className="mb-4 flex-1">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Amount / Person (₹)</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Amount / Person (₹)</label>
                   <input type="number" name="amtPerPerson" value={formData.amtPerPerson}
                     onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required />
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <div className="mb-4 flex-1">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Last Date to Pay</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Last Date to Pay</label>
                   <input type="date" name="lastDateOfPay"
                     min={new Date().toISOString().split("T")[0]}
                     max={formData.eventDate}
                     value={formData.lastDateOfPay} onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required />
                 </div>
                 <div className="mb-4 flex-1">
-                  <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Category</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Category</label>
                   <input type="text" name="category" value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                    className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                     required />
                 </div>
               </div>
 
               <div className="flex justify-end gap-2.5 mt-6">
-                <button type="button" onClick={() => setShowAddEventForm(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
-                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Create Event</button>
+                <button type="button" onClick={() => setShowAddEventForm(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors">Create Event</button>
               </div>
             </form>
           </div>
@@ -613,24 +613,24 @@ function Event() {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Request Refund</h2>
-              <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+              <h2 className="text-xl font-medium text-gray-900 m-0">Request Refund</h2>
+              <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
             <form onSubmit={submitRefundRequest}>
               <div className="mb-4">
-                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Reason for Refund</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Reason for Refund</label>
                 <textarea
                   name="refundReason" rows="4"
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
                   placeholder="Please provide a valid reason..."
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors resize-y font-sans"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors resize-y font-sans"
                   required
                 />
               </div>
               <div className="flex justify-end gap-2.5 mt-6">
-                <button type="button" onClick={() => setIsRefundModalOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
-                <button type="submit" className="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Submit Request</button>
+                <button type="button" onClick={() => setIsRefundModalOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors">Submit Request</button>
               </div>
             </form>
           </div>

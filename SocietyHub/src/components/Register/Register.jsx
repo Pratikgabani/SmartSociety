@@ -175,7 +175,7 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#F4F7FE] font-raleway p-4">
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 w-full max-w-2xl transition-all duration-300 hover:shadow-2xl overflow-y-auto max-h-[95vh]">
         <div className="text-center mb-5">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Create an Account</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">Create an Account</h1>
           <p className="text-gray-500 mt-1 text-sm font-medium">Join us and access your dashboard</p>
         </div>
 
@@ -278,7 +278,7 @@ const Register = () => {
           {/* ── Send OTP button (only in FORM step) ── */}
           {step === STEP.FORM && (
             <button type="submit" disabled={isSending}
-              className="mt-2 w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] disabled:bg-blue-400">
+              className="mt-2 w-full py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] disabled:bg-blue-400">
               {isSending ? 'Sending OTP…' : 'Send OTP to Email'}
             </button>
           )}
@@ -301,7 +301,7 @@ const Register = () => {
                     onChange={(e) => { setOtpValue(e.target.value.replace(/\D/g, '')); setOtpError(''); }}
                     onKeyDown={(e) => e.key === 'Enter' && handleVerifyOtp()}
                     placeholder="6-digit OTP"
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all tracking-[0.5em] text-center font-bold text-lg"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all tracking-[0.5em] text-center font-medium text-lg"
                   />
                   {otpError && (
                     <p className="text-red-500 text-xs font-semibold mt-1 pl-1">{otpError}</p>
@@ -311,7 +311,7 @@ const Register = () => {
                 <button
                   onClick={handleVerifyOtp}
                   disabled={isVerifying}
-                  className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] disabled:bg-blue-400">
+                  className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] disabled:bg-blue-400">
                   {isVerifying ? 'Verifying…' : 'Verify OTP'}
                 </button>
 
@@ -320,7 +320,7 @@ const Register = () => {
                   <button
                     onClick={handleResend}
                     disabled={isSending}
-                    className="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-colors disabled:opacity-50">
+                    className="text-blue-600 font-medium hover:text-blue-700 hover:underline transition-colors disabled:opacity-50">
                     {isSending ? 'Resending…' : 'Resend OTP'}
                   </button>
                 </p>
@@ -336,7 +336,7 @@ const Register = () => {
                 <button
                   onClick={handleRegister}
                   disabled={isRegistering}
-                  className="w-full py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] disabled:bg-green-400">
+                  className="w-full py-2.5 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] disabled:bg-green-400">
                   {isRegistering ? 'Registering…' : 'Complete Registration'}
                 </button>
               </>
@@ -347,7 +347,7 @@ const Register = () => {
         <div className="text-center mt-5">
           <p className="text-sm text-gray-600 font-medium">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-colors">Login here</a>
+            <a href="/login" className="text-blue-600 font-medium hover:text-blue-700 hover:underline transition-colors">Login here</a>
           </p>
         </div>
 

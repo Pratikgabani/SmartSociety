@@ -67,7 +67,7 @@ const PratikPreviousDataModal = ({ isOpen, onClose, data }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
       <div className="bg-white w-full max-w-3xl max-h-[80vh] p-4 sm:p-6 rounded-lg shadow-lg relative overflow-y-auto">
-        <h2 className="text-lg sm:text-xl font-bold mb-4">Previous Data</h2>
+        <h2 className="text-lg sm:text-xl font-medium mb-4">Previous Data</h2>
   
         {/* Search Input */}
         <input

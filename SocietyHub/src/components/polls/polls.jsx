@@ -141,7 +141,7 @@ const PollApp = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <HashLoader size={52} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-[0.9rem] text-gray-500 font-medium">Loading polls…</p>
+        <p className="mt-4 text-sm text-gray-500 font-medium">Loading polls…</p>
       </div>
     );
   }
@@ -156,13 +156,13 @@ const PollApp = () => {
       {/* PAGE HEADER */}
       <div className="flex justify-between items-start mb-7">
         <div>
-          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Polls &amp; Voting</h1>
-          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Create and participate in society polls for collective decisions</p>
+          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Polls &amp; Voting</h1>
+          <p className="text-sm text-gray-500 mt-1 mb-0">Create and participate in society polls for collective decisions</p>
         </div>
         <div className="flex gap-2.5 items-center">
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -181,14 +181,14 @@ const PollApp = () => {
               <button
                 key={tab.id}
                 onClick={() => setActivePollTab(tab.id)}
-                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+                className={`flex items-center gap-2 py-1.5 px-4 font-semibold text-sm cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
                   isActive
                     ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
                     : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-xs font-medium ${
                   isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
                 }`}>
                   {tab.count}
@@ -200,7 +200,7 @@ const PollApp = () => {
         {rolee === "admin" && (
           <button
             onClick={() => setIsPollModalOpen(true)}
-            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             + Create Poll
           </button>
@@ -212,10 +212,10 @@ const PollApp = () => {
         {tabPolls.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
             <p className="text-[2.4rem] mb-3">🗳️</p>
-            <p className="font-bold text-[1.1rem] text-gray-700 mb-1.5">
+            <p className="font-medium text-lg text-gray-700 mb-1.5">
               {activePollTab === "open" ? "No open polls" : "No past polls"}
             </p>
-            <p className="text-[0.875rem] text-gray-400">
+            <p className="text-sm text-gray-400">
               {activePollTab === "open"
                 ? (rolee === "admin" ? "Create the first poll to get started." : "No active polls right now.")
                 : "Closed polls will appear here."}
@@ -239,19 +239,19 @@ const PollApp = () => {
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-2.5">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-[1.08rem] font-bold text-gray-900 m-0 leading-[1.45] tracking-[-0.2px]">
+                    <h3 className="text-[1.08rem] font-medium text-gray-900 m-0 leading-[1.45] tracking-[-0.2px]">
                       {poll.question}
                     </h3>
                     <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
-                      <p className="text-[0.78rem] text-gray-400 m-0">
+                      <p className="text-xs text-gray-400 m-0">
                         {totalVotes} vote{totalVotes !== 1 ? "s" : ""} · {poll.options.length} options
                       </p>
                       {votedOptionId && (
-                        <span className="inline-flex items-center gap-1 py-[3px] px-2.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-full text-[0.72rem] font-bold">
+                        <span className="inline-flex items-center gap-1 py-[3px] px-2.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-full text-xs font-medium">
                           ✓ You voted
                         </span>
                       )}
-                      <span className={`inline-block py-[2px] px-2 rounded-full text-[0.67rem] font-bold tracking-[0.3px] whitespace-nowrap ${
+                      <span className={`inline-block py-[2px] px-2 rounded-full text-[0.67rem] font-medium tracking-[0.3px] whitespace-nowrap ${
                         isOpen ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500"
                       }`}>
                         {isOpen ? "Open" : "Closed"}
@@ -265,7 +265,7 @@ const PollApp = () => {
                       {isOpen && (
                         <button
                           onClick={() => handleClosePoll(poll._id)}
-                          className="py-[5px] px-3 bg-green-600 hover:bg-green-700 text-white border-none rounded-[7px] text-[0.78rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                          className="py-[5px] px-3 bg-green-600 hover:bg-green-700 text-white border-none rounded-[7px] text-xs font-semibold cursor-pointer transition-colors whitespace-nowrap"
                         >
                           Close
                         </button>
@@ -308,7 +308,7 @@ const PollApp = () => {
                         />
                         {/* Option label */}
                         <span
-                          className="relative flex items-center gap-1.5 text-[0.83rem]"
+                          className="relative flex items-center gap-1.5 text-sm"
                           style={{
                             zIndex: 1,
                             fontWeight: isMyVote ? 700 : 500,
@@ -320,7 +320,7 @@ const PollApp = () => {
                         </span>
                         {/* Percent badge */}
                         <span
-                          className="relative text-[0.75rem] font-bold px-2 py-[2px] rounded-full whitespace-nowrap"
+                          className="relative text-xs font-medium px-2 py-[2px] rounded-full whitespace-nowrap"
                           style={{
                             zIndex: 1,
                             color: isMyVote ? "#fff" : (isOpen ? "#2563eb" : "#6b7280"),
@@ -346,22 +346,22 @@ const PollApp = () => {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <Trash2 className="h-8 w-8 text-red-600" />
             </div>
-            <h2 className="text-[1.2rem] font-bold text-gray-900 m-0 mb-2.5 flex justify-center">Delete Poll?</h2>
-            <p className="text-[0.875rem] text-gray-500 mb-1.5">Are you sure you want to delete:</p>
-            <p className="font-semibold text-gray-900 text-[0.9rem] mb-1.5">
+            <h2 className="text-xl font-medium text-gray-900 m-0 mb-2.5 flex justify-center">Delete Poll?</h2>
+            <p className="text-sm text-gray-500 mb-1.5">Are you sure you want to delete:</p>
+            <p className="font-semibold text-gray-900 text-sm mb-1.5">
               &ldquo;{confirmDeleteModal.question}&rdquo;
             </p>
-            <p className="text-[0.8rem] text-red-500 mb-6">This action cannot be undone.</p>
+            <p className="text-xs text-red-500 mb-6">This action cannot be undone.</p>
             <div className="flex gap-2.5 justify-center">
               <button
                 onClick={() => setConfirmDeleteModal({ open: false, pollId: null, question: "" })}
-                className="flex-1 max-w-[130px] py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                className="flex-1 max-w-[130px] py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="flex-1 max-w-[130px] py-2 px-4 bg-red-600 hover:bg-red-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                className="flex-1 max-w-[130px] py-2 px-4 bg-red-600 hover:bg-red-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
               >
                 Yes, Delete
               </button>
@@ -375,24 +375,24 @@ const PollApp = () => {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Create a Poll</h2>
-              <button onClick={() => setIsPollModalOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+              <h2 className="text-xl font-medium text-gray-900 m-0">Create a Poll</h2>
+              <button onClick={() => setIsPollModalOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
             <form onSubmit={handleCreatePoll}>
               <div className="mb-[18px]">
-                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-[7px] uppercase tracking-[0.3px]">Question *</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-[7px] uppercase tracking-[0.3px]">Question *</label>
                 <input
                   type="text"
                   value={question}
                   onChange={e => setQuestion(e.target.value)}
                   placeholder="What would you like to ask?"
                   required
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                 />
               </div>
 
               <div className="mb-[18px]">
-                <label className="block text-[0.78rem] font-semibold text-gray-700 mb-[7px] uppercase tracking-[0.3px]">Options</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-[7px] uppercase tracking-[0.3px]">Options</label>
                 <div className="flex flex-col gap-2">
                   {options.map((opt, index) => (
                     <div key={index} className="flex gap-2 items-center">
@@ -406,12 +406,12 @@ const PollApp = () => {
                         }}
                         placeholder={`Option ${index + 1}`}
                         required
-                        className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
+                        className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border bg-gray-50 focus:border-blue-500 focus:bg-white transition-colors"
                       />
                       <button
                         type="button"
                         onClick={() => removeOption(index)}
-                        className="inline-flex items-center justify-center py-2 px-2.5 flex-shrink-0 bg-transparent text-red-400 border border-red-200 rounded-[7px] text-[0.78rem] font-bold cursor-pointer hover:bg-red-50 transition-colors"
+                        className="inline-flex items-center justify-center py-2 px-2.5 flex-shrink-0 bg-transparent text-red-400 border border-red-200 rounded-[7px] text-xs font-medium cursor-pointer hover:bg-red-50 transition-colors"
                         title="Remove option"
                       >
                         ✕
@@ -432,13 +432,13 @@ const PollApp = () => {
                 <button
                   type="button"
                   onClick={() => setIsPollModalOpen(false)}
-                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                  className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   Create Poll
                 </button>

@@ -32,7 +32,7 @@ function dashboard() {
         </div>
       </div>
       <div className='mt-3 flex items-end justify-between'>
-        <span className='text-3xl font-bold text-gray-800'>{value}</span>
+        <span className='text-3xl font-medium text-gray-800'>{value}</span>
         <a href={link} className='text-blue-600 text-sm font-medium flex items-center'>
           View all
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -178,7 +178,7 @@ function dashboard() {
         {/* Header Section */}
         <div className='flex justify-between items-start mb-8'>
           <div>
-            <h1 className='text-3xl font-bold text-gray-900'>Dashboard</h1>
+            <h1 className='text-3xl font-medium text-gray-900'>Dashboard</h1>
             <p className='text-gray-600 text-lg mt-2'>Welcome to <span className='font-semibold'>{society}</span></p>
           </div>
         </div>

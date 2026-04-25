@@ -332,7 +332,7 @@ const Booking = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <HashLoader size={60} color="#2563eb" loading={loading} />
-        <p className="mt-4 text-[1.1rem] text-gray-700">Loading...</p>
+        <p className="mt-4 text-lg text-gray-700">Loading...</p>
       </div>
     );
   }
@@ -349,12 +349,12 @@ const Booking = () => {
       {/* Page Header */}
       <div className="flex justify-between items-start mb-7">
         <div>
-          <h1 className="text-[1.875rem] font-bold text-gray-900 m-0 tracking-[-0.3px]">Venue Bookings</h1>
-          <p className="text-[0.9rem] text-gray-500 mt-1 mb-0">Reserve society spaces for events and gatherings</p>
+          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Venue Bookings</h1>
+          <p className="text-sm text-gray-500 mt-1 mb-0">Reserve society spaces for events and gatherings</p>
         </div>
         <button
           onClick={fetchPreviousData}
-          className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
         >
           History
         </button>
@@ -368,14 +368,14 @@ const Booking = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-row items-center gap-2 py-1.5 px-4 font-semibold text-[0.85rem] cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
+              className={`flex flex-row items-center gap-2 py-1.5 px-4 font-semibold text-sm cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent ${
                 isActive
                   ? "bg-white text-blue-700 shadow-sm border-gray-200/50"
                   : "bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
               }`}
             >
               <span>{tab.label}</span>
-              <span className={`inline-flex flex-row items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[0.72rem] font-bold ${
+              <span className={`inline-flex flex-row items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-xs font-medium ${
                 isActive ? "bg-blue-100/80 text-blue-700" : "bg-gray-300/60 text-gray-600"
               }`}>
                 {tab.count}
@@ -393,8 +393,8 @@ const Booking = () => {
           <section>
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 m-0">Available Venues</h2>
-                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Browse and reserve spaces for your next event</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Available Venues</h2>
+                <p className="text-sm text-gray-400 mt-[3px] mb-0">Browse and reserve spaces for your next event</p>
               </div>
               {rolee === "admin" && (
                 <button
@@ -409,7 +409,7 @@ const Booking = () => {
             {venues.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
                 <span className="text-5xl mb-3">🏛️</span>
-                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No venues available</p>
+                <p className="text-lg font-semibold text-gray-700 m-0">No venues available</p>
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Check back later or contact your admin</p>
               </div>
             ) : (
@@ -417,7 +417,7 @@ const Booking = () => {
                 {venues.map((venue) => (
                   <div key={venue._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
                     <div className="flex justify-between items-start">
-                      <h3 className="text-[1.05rem] font-bold text-gray-900 m-0">{venue.venue}</h3>
+                      <h3 className="text-lg font-medium text-gray-900 m-0">{venue.venue}</h3>
                       {rolee === "admin" && (
                         <button
                           onClick={() => handleDeleteVenue(venue._id, venue.venue)}
@@ -427,15 +427,15 @@ const Booking = () => {
                         </button>
                       )}
                     </div>
-                    <p className="text-[0.85rem] text-gray-500 leading-relaxed m-0">{venue.description}</p>
+                    <p className="text-sm text-gray-500 leading-relaxed m-0">{venue.description}</p>
                     <div className="flex flex-row gap-2 flex-wrap">
-                      <span className="py-1 px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.78rem] font-medium">👥 {venue.capacity} guests</span>
-                      <span className="py-1 px-2.5 rounded-full text-[0.78rem] font-medium bg-emerald-100 text-emerald-800">₹{venue.price}/day</span>
+                      <span className="py-1 px-2.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">👥 {venue.capacity} guests</span>
+                      <span className="py-1 px-2.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">₹{venue.price}/day</span>
                     </div>
                     {venue.amenities.length > 0 && (
                       <div className="flex flex-row flex-wrap gap-1.5">
                         {venue.amenities.map((amenity, idx) => (
-                          <span key={idx} className="py-[3px] px-[9px] bg-gray-100 text-gray-600 rounded-md text-[0.75rem]">{amenity}</span>
+                          <span key={idx} className="py-[3px] px-[9px] bg-gray-100 text-gray-600 rounded-md text-xs">{amenity}</span>
                         ))}
                       </div>
                     )}
@@ -457,15 +457,15 @@ const Booking = () => {
           <section>
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 m-0">Upcoming Bookings</h2>
-                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Manage your scheduled reservations</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Upcoming Bookings</h2>
+                <p className="text-sm text-gray-400 mt-[3px] mb-0">Manage your scheduled reservations</p>
               </div>
             </div>
 
             {myBooking.filter(b => getBookingOrder(b._id)?.status !== 'Refunded').length === 0 ? (
               <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
                 <span className="text-5xl mb-3">📅</span>
-                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No upcoming bookings</p>
+                <p className="text-lg font-semibold text-gray-700 m-0">No upcoming bookings</p>
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Browse available venues and make your first reservation</p>
                 <button
                   onClick={() => setActiveTab("venues")}
@@ -485,29 +485,29 @@ const Booking = () => {
                       <div key={booking._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
                         <div className="flex justify-between items-start gap-3">
                           <div>
-                            <h3 className="text-base font-bold text-gray-900 m-0">{booking.bookingType}</h3>
+                            <h3 className="text-base font-medium text-gray-900 m-0">{booking.bookingType}</h3>
                             <p className="text-[0.82rem] text-gray-500 mt-[3px] mb-0">{booking.bookDescription}</p>
                           </div>
-                          <span className={isUpcoming ? "py-[3px] px-2.5 bg-emerald-100 text-emerald-800 rounded-full text-[0.72rem] font-semibold whitespace-nowrap" : "py-[3px] px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.72rem] font-semibold whitespace-nowrap"}>
+                          <span className={isUpcoming ? "py-[3px] px-2.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold whitespace-nowrap" : "py-[3px] px-2.5 bg-gray-100 text-gray-700 rounded-full text-xs font-semibold whitespace-nowrap"}>
                             {isUpcoming ? 'Upcoming' : 'Completed'}
                           </span>
                         </div>
                         <div className="flex items-center gap-3 py-3 border-y border-gray-100">
                           <div className="flex flex-col gap-0.5 flex-1">
-                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Duration</span>
-                            <span className="text-[0.9rem] font-semibold text-gray-900">{booking.duration} hrs</span>
+                            <span className="text-xs text-gray-400 uppercase tracking-[0.5px]">Duration</span>
+                            <span className="text-sm font-semibold text-gray-900">{booking.duration} hrs</span>
                           </div>
                           <div className="w-px h-[30px] bg-gray-200" />
                           <div className="flex flex-col gap-0.5 flex-1">
-                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Date</span>
-                            <span className="text-[0.9rem] font-semibold text-gray-900">{new Date(booking.date).toLocaleDateString('en-GB')}</span>
+                            <span className="text-xs text-gray-400 uppercase tracking-[0.5px]">Date</span>
+                            <span className="text-sm font-semibold text-gray-900">{new Date(booking.date).toLocaleDateString('en-GB')}</span>
                           </div>
                         </div>
                         {isUpcoming && (
                           <div className="flex gap-2 items-start">
                             <button
                               onClick={() => handleDelete(booking._id)}
-                              className="py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-[0.8rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                              className="py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-xs font-semibold cursor-pointer transition-colors whitespace-nowrap"
                             >
                               Cancel
                             </button>
@@ -519,33 +519,33 @@ const Booking = () => {
                                       href={getBookingReceiptUrl(booking._id)}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="block py-[7px] px-2.5 border border-blue-600 hover:bg-blue-50 text-blue-600 rounded-md text-[0.78rem] font-semibold text-center no-underline transition-colors"
+                                      className="block py-[7px] px-2.5 border border-blue-600 hover:bg-blue-50 text-blue-600 rounded-md text-xs font-semibold text-center no-underline transition-colors"
                                     >
                                       View Receipt
                                     </a>
                                     {order?.status === 'succeeded' && (
                                       <button
                                         onClick={() => handleRequestRefundClick(order._id)}
-                                        className="block w-full py-[7px] px-2.5 bg-transparent hover:bg-orange-50 border border-orange-500 text-orange-700 rounded-md text-[0.78rem] font-semibold cursor-pointer transition-colors"
+                                        className="block w-full py-[7px] px-2.5 bg-transparent hover:bg-orange-50 border border-orange-500 text-orange-700 rounded-md text-xs font-semibold cursor-pointer transition-colors"
                                       >
                                         Request Refund
                                       </button>
                                     )}
                                     {(order?.status === 'Refund Initiated' || order?.status === 'Refund_Initiated' || order?.status === 'Refund_Pending_Approval') && (
-                                      <span className="block py-[7px] px-2.5 bg-orange-50 text-orange-700 rounded-md text-[0.78rem] font-semibold text-center">Refund Pending</span>
+                                      <span className="block py-[7px] px-2.5 bg-orange-50 text-orange-700 rounded-md text-xs font-semibold text-center">Refund Pending</span>
                                     )}
                                     {order?.status === 'Refunded' && (
-                                      <span className="block py-[7px] px-2.5 bg-emerald-50 text-emerald-800 rounded-md text-[0.78rem] font-semibold text-center">Refunded</span>
+                                      <span className="block py-[7px] px-2.5 bg-emerald-50 text-emerald-800 rounded-md text-xs font-semibold text-center">Refunded</span>
                                     )}
                                   </>
                                 ) : (
-                                  <span className="block py-[7px] px-2.5 bg-gray-50 text-gray-400 rounded-md text-[0.78rem] text-center">Receipt unavailable</span>
+                                  <span className="block py-[7px] px-2.5 bg-gray-50 text-gray-400 rounded-md text-xs text-center">Receipt unavailable</span>
                                 )}
                               </div>
                             ) : (
                               <Link
                                 to={`/layout/payBooking/${booking._id}`}
-                                className="flex flex-row items-center justify-center flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-md text-[0.8rem] font-semibold cursor-pointer no-underline transition-colors text-center"
+                                className="flex flex-row items-center justify-center flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-md text-xs font-semibold cursor-pointer no-underline transition-colors text-center"
                               >
                                 Pay Now
                               </Link>
@@ -565,15 +565,15 @@ const Booking = () => {
           <section>
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 m-0">Past Bookings</h2>
-                <p className="text-[0.85rem] text-gray-400 mt-[3px] mb-0">Your completed and paid reservations</p>
+                <h2 className="text-xl font-medium text-gray-900 m-0">Past Bookings</h2>
+                <p className="text-sm text-gray-400 mt-[3px] mb-0">Your completed and paid reservations</p>
               </div>
             </div>
 
             {myPastBooking.filter(b => isBookingHistoryVisibleStatus(getBookingOrder(b._id || b.id)?.status)).length === 0 ? (
               <div className="flex flex-col items-center justify-center py-[72px] px-6 text-center">
                 <span className="text-5xl mb-3">🗂️</span>
-                <p className="text-[1.1rem] font-semibold text-gray-700 m-0">No past bookings</p>
+                <p className="text-lg font-semibold text-gray-700 m-0">No past bookings</p>
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Your completed reservations will appear here</p>
               </div>
             ) : (
@@ -586,33 +586,33 @@ const Booking = () => {
                       <div key={booking._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
                         <div className="flex justify-between items-start gap-3">
                           <div>
-                            <h3 className="text-base font-bold text-gray-900 m-0">{booking.bookingType}</h3>
+                            <h3 className="text-base font-medium text-gray-900 m-0">{booking.bookingType}</h3>
                             <p className="text-[0.82rem] text-gray-500 mt-[3px] mb-0">{booking.bookDescription}</p>
                           </div>
-                          <span className={isUpcoming ? "py-[3px] px-2.5 bg-emerald-100 text-emerald-800 rounded-full text-[0.72rem] font-semibold whitespace-nowrap" : "py-[3px] px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.72rem] font-semibold whitespace-nowrap"}>
+                          <span className={isUpcoming ? "py-[3px] px-2.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold whitespace-nowrap" : "py-[3px] px-2.5 bg-gray-100 text-gray-700 rounded-full text-xs font-semibold whitespace-nowrap"}>
                             {isUpcoming ? "Upcoming" : "Completed"}
                           </span>
                         </div>
                         <div className="flex items-center gap-3 py-3 border-y border-gray-100">
                           <div className="flex flex-col gap-0.5 flex-1">
-                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Duration</span>
-                            <span className="text-[0.9rem] font-semibold text-gray-900">{booking.duration} hrs</span>
+                            <span className="text-xs text-gray-400 uppercase tracking-[0.5px]">Duration</span>
+                            <span className="text-sm font-semibold text-gray-900">{booking.duration} hrs</span>
                           </div>
                           <div className="w-px h-[30px] bg-gray-200" />
                           <div className="flex flex-col gap-0.5 flex-1">
-                            <span className="text-[0.72rem] text-gray-400 uppercase tracking-[0.5px]">Date</span>
-                            <span className="text-[0.9rem] font-semibold text-gray-900">{new Date(booking.date).toLocaleDateString('en-GB')}</span>
+                            <span className="text-xs text-gray-400 uppercase tracking-[0.5px]">Date</span>
+                            <span className="text-sm font-semibold text-gray-900">{new Date(booking.date).toLocaleDateString('en-GB')}</span>
                           </div>
                         </div>
                         {isUpcoming && (
                           <div className="flex gap-2 items-start">
                             <button
                               onClick={() => handleDelete(booking._id)}
-                              className="py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-[0.8rem] font-semibold cursor-pointer transition-colors whitespace-nowrap"
+                              className="py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-xs font-semibold cursor-pointer transition-colors whitespace-nowrap"
                             >
                               Cancel
                             </button>
-                            <button className="flex flex-row items-center justify-center flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-md text-[0.8rem] font-semibold cursor-pointer transition-colors text-center">
+                            <button className="flex flex-row items-center justify-center flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-md text-xs font-semibold cursor-pointer transition-colors text-center">
                               Pay Now
                             </button>
                           </div>
@@ -631,8 +631,8 @@ const Booking = () => {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-7 w-full max-w-[520px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Reserve {selectedVenue?.venue}</h2>
-              <button onClick={() => setIsFormOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+              <h2 className="text-xl font-medium text-gray-900 m-0">Reserve {selectedVenue?.venue}</h2>
+              <button onClick={() => setIsFormOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="mb-4 flex flex-col">
@@ -642,7 +642,7 @@ const Booking = () => {
                   name="bookDescription"
                   value={formData.bookDescription}
                   onChange={handleInputChange}
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
                   placeholder="e.g. Annual Society Meeting"
                   required
                 />
@@ -656,7 +656,7 @@ const Booking = () => {
                   max="18"
                   value={formData.duration}
                   onChange={handleInputChange}
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
                   placeholder="1–18 hours"
                   required
                 />
@@ -669,13 +669,13 @@ const Booking = () => {
                   min={new Date().toISOString().split("T")[0]}
                   value={formData.date}
                   onChange={handleInputChange}
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
                   required
                 />
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-lg py-3.5 px-4 my-1">
-                <p className="text-[0.78rem] font-bold text-slate-600 uppercase tracking-[0.4px] m-0 mb-2">📋 Reservation Guidelines</p>
-                <ul className="m-0 pl-4 flex flex-col gap-1 text-[0.8rem] text-slate-500 leading-relaxed list-disc">
+                <p className="text-xs font-medium text-slate-600 uppercase tracking-[0.4px] m-0 mb-2">📋 Reservation Guidelines</p>
+                <ul className="m-0 pl-4 flex flex-col gap-1 text-xs text-slate-500 leading-relaxed list-disc">
                   <li>Book at least <strong>24 hours</strong> in advance</li>
                   <li>Cancellations need <strong>12 hours</strong> notice for a full refund</li>
                   <li>Max duration is <strong>18 hours</strong> per booking</li>
@@ -683,8 +683,8 @@ const Booking = () => {
                 </ul>
               </div>
               <div className="flex justify-end gap-2.5 mt-6">
-                <button type="button" onClick={() => setIsFormOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
-                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Confirm Reservation</button>
+                <button type="button" onClick={() => setIsFormOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors">Confirm Reservation</button>
               </div>
             </form>
           </div>
@@ -696,17 +696,17 @@ const Booking = () => {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Add New Venue</h2>
-              <button onClick={() => setIsVenueFormOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+              <h2 className="text-xl font-medium text-gray-900 m-0">Add New Venue</h2>
+              <button onClick={() => setIsVenueFormOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
             <form onSubmit={handleVenueSubmit}>
               <div className="mb-4 flex flex-col">
                 <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Venue Name</label>
-                <input type="text" name="venue" value={venueFormData.venue} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+                <input type="text" name="venue" value={venueFormData.venue} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
               </div>
               <div className="mb-4 flex flex-col">
                 <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Description</label>
-                <input type="text" name="description" value={venueFormData.description} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+                <input type="text" name="description" value={venueFormData.description} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
               </div>
               <div className="mb-4 flex flex-col">
                 <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Amenities</label>
@@ -715,15 +715,15 @@ const Booking = () => {
                     type="text"
                     value={amenityInput}
                     onChange={(e) => setAmenityInput(e.target.value)}
-                    className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
+                    className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white"
                     placeholder="e.g. Projector"
                   />
-                  <button type="button" onClick={handleAddAmenity} className="py-2.5 px-4 bg-blue-600 hover:bg-blue-700 transition-colors text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer whitespace-nowrap">Add</button>
+                  <button type="button" onClick={handleAddAmenity} className="py-2.5 px-4 bg-blue-600 hover:bg-blue-700 transition-colors text-white border-none rounded-lg text-sm font-semibold cursor-pointer whitespace-nowrap">Add</button>
                 </div>
                 {venueFormData.amenities.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-2.5">
                     {venueFormData.amenities.map((amenity, index) => (
-                      <span key={index} className="inline-flex items-center gap-1.5 py-1 px-2.5 bg-gray-100 text-gray-700 rounded-full text-[0.78rem]">
+                      <span key={index} className="inline-flex items-center gap-1.5 py-1 px-2.5 bg-gray-100 text-gray-700 rounded-full text-xs">
                         {amenity}
                         <button type="button" onClick={() => handleRemoveAmenity(index)} className="bg-transparent border-none text-gray-400 hover:text-red-500 cursor-pointer p-0 text-[0.7rem] leading-none">✕</button>
                       </span>
@@ -734,16 +734,16 @@ const Booking = () => {
               <div className="flex gap-3 mb-4">
                 <div className="flex flex-col flex-1">
                   <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Capacity</label>
-                  <input type="number" name="capacity" value={venueFormData.capacity} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+                  <input type="number" name="capacity" value={venueFormData.capacity} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
                 </div>
                 <div className="flex flex-col flex-1">
                   <label className="block text-[0.82rem] font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Price (₹/day)</label>
-                  <input type="number" name="price" value={venueFormData.price} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
+                  <input type="number" name="price" value={venueFormData.price} onChange={handleVenueInputChange} className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white" required />
                 </div>
               </div>
               <div className="flex justify-end gap-2.5 mt-6">
-                <button type="button" onClick={() => setIsVenueFormOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
-                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Create Venue</button>
+                <button type="button" onClick={() => setIsVenueFormOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors">Create Venue</button>
               </div>
             </form>
           </div>
@@ -757,10 +757,10 @@ const Booking = () => {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <Trash2 className="h-8 w-8 text-red-600" />
             </div>
-            <h3 className="text-[1.1rem] font-bold text-gray-900 m-0 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 m-0 mb-2">
               {confirmModal.type === "venue" ? "Delete Venue?" : "Cancel Reservation?"}
             </h3>
-            <p className="text-[0.875rem] text-gray-500 leading-relaxed m-0 mb-6">
+            <p className="text-sm text-gray-500 leading-relaxed m-0 mb-6">
               {confirmModal.type === "venue"
                 ? <></>
                 : "Are you sure you want to cancel this reservation? This action cannot be undone."}
@@ -769,13 +769,13 @@ const Booking = () => {
             <div className="flex gap-2.5">
               <button
                 onClick={() => setConfirmModal({ open: false, type: null, id: null, venueName: "" })}
-                className="flex-1 py-2.5 px-0 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                className="flex-1 py-2.5 px-0 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors"
               >
                 No, Keep it
               </button>
               <button
                 onClick={confirmDelete}
-                className="flex-1 py-2.5 px-0 bg-red-600 hover:bg-red-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors"
+                className="flex-1 py-2.5 px-0 bg-red-600 hover:bg-red-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
               >
                 Yes, Delete
               </button>
@@ -789,8 +789,8 @@ const Booking = () => {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-[1.2rem] font-bold text-gray-900 m-0">Request Refund</h2>
-              <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-[1.1rem] text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
+              <h2 className="text-xl font-medium text-gray-900 m-0">Request Refund</h2>
+              <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
             </div>
             <form onSubmit={submitRefundRequest}>
               <div className="mb-4 flex flex-col">
@@ -801,13 +801,13 @@ const Booking = () => {
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
                   placeholder="Please provide a valid reason..."
-                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-[0.9rem] text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white resize-y font-sans"
+                  className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none box-border transition-colors bg-gray-50 focus:border-blue-500 focus:bg-white resize-y font-sans"
                   required
                 />
               </div>
               <div className="flex justify-end gap-2.5 mt-6">
-                <button type="button" onClick={() => setIsRefundModalOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Cancel</button>
-                <button type="submit" className="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white border-none rounded-lg text-[0.875rem] font-semibold cursor-pointer transition-colors">Submit Request</button>
+                <button type="button" onClick={() => setIsRefundModalOpen(false)} className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors">Cancel</button>
+                <button type="submit" className="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors">Submit Request</button>
               </div>
             </form>
           </div>

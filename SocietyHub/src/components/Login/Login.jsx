@@ -219,7 +219,7 @@ function Login() {
       <Toaster />
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 w-full max-w-md transition-all duration-300 hover:shadow-2xl">
         <div className="text-center mb-5">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h1>
+          <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Welcome Back</h1>
           <p className="text-gray-500 mt-1 text-sm font-medium">Log in to access your dashboard</p>
         </div>
 
@@ -285,7 +285,7 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2.5 mt-1 font-bold rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+            className="w-full bg-blue-600 text-white py-2.5 mt-1 font-medium rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
           >
             Sign In
           </button>
@@ -293,14 +293,14 @@ function Login() {
 
         <div className="mt-4 flex items-center justify-center space-x-4">
           <span className="block h-px w-full bg-gray-200"></span>
-          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">OR</span>
+          <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">OR</span>
           <span className="block h-px w-full bg-gray-200"></span>
         </div>
 
         <div className="mt-4">
           <button 
             type="button"
-            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 py-2.5 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 active:scale-[0.98] shadow-sm" 
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 py-2.5 font-medium rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 active:scale-[0.98] shadow-sm" 
             onClick={googleLogin}
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5">
@@ -316,7 +316,7 @@ function Login() {
         <div className="text-center mt-5">
           <p className="text-sm text-gray-600 font-medium">
             Don't have an account?{' '}
-            <Link to="/register" className="text-blue-600 font-bold hover:text-blue-700 hover:underline transition-colors">
+            <Link to="/register" className="text-blue-600 font-medium hover:text-blue-700 hover:underline transition-colors">
               Create an account
             </Link>
           </p>
@@ -328,7 +328,7 @@ function Login() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity p-4">
           <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all border border-gray-100">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">Reset Password</h2>
+              <h2 className="text-xl font-semibold text-gray-900 tracking-tight">Reset Password</h2>
               <button 
                 onClick={() => { setIsForgotModalOpen(false); setForgotStep(1); }}
                 className="text-gray-400 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 p-2 rounded-full"
@@ -354,7 +354,7 @@ function Login() {
                 <button 
                   onClick={handleForgotPassword}
                   disabled={forgotLoading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
                 >
                   {forgotLoading ? "Sending..." : "Send OTP"}
                 </button>
@@ -369,7 +369,7 @@ function Login() {
                     type="text" 
                     placeholder="6-Digit OTP"
                     maxLength={6}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-center tracking-[0.5em] text-xl font-bold outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-center tracking-[0.5em] text-xl font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
                     value={forgotOtp}
                     onChange={(e) => setForgotOtp(e.target.value)}
                   />
@@ -377,7 +377,7 @@ function Login() {
                 <button 
                   onClick={handleVerifyForgotOtp}
                   disabled={forgotLoading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
                 >
                   {forgotLoading ? "Verifying..." : "Verify OTP"}
                 </button>
@@ -409,7 +409,7 @@ function Login() {
                 <button 
                   onClick={handleResetPassword}
                   disabled={forgotLoading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 disabled:bg-blue-400 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
                 >
                   {forgotLoading ? "Resetting..." : "Reset Password"}
                 </button>

@@ -71,7 +71,7 @@ const SocietyDetails = () => {
       <Toaster />
       <div className="bg-white rounded-lg shadow-lg p-8 md:flex w-11/12 max-w-5xl">
         <div className="md:w-1/2">
-          <h1 className="text-3xl font-bold mb-4">Society Details Form</h1>
+          <h1 className="text-3xl font-medium mb-4">Society Details Form</h1>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -147,7 +147,7 @@ const SocietyDetails = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white mt-5 py-2 font-bold rounded-lg hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white mt-5 py-2 font-medium rounded-lg hover:bg-blue-700 transition"
             >
               Submit
             </button>
@@ -156,7 +156,7 @@ const SocietyDetails = () => {
           <div className="text-center mt-4">
             <p>
               Go to{' '}
-              <a href="/register" className="text-blue-600 font-bold">
+              <a href="/register" className="text-blue-600 font-medium">
                 Register
               </a>
             </p>
