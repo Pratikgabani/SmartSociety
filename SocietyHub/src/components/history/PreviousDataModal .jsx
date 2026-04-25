@@ -144,9 +144,11 @@ const PreviousDataPage = () => {
 
   const tableHeaders =
     filteredByMonthYear.length > 0
-      ? Object.keys(filteredByMonthYear[0]).map((key) =>
-          key === "paymentId" ? "Description" : key
-        )
+      ? Object.keys(filteredByMonthYear[0])
+          .filter((key) => key !== "_id" && key !== "id")
+          .map((key) =>
+            key === "paymentId" ? "Description" : key === "complainId" ? "Complaint By" : key
+          )
       : [];
 
   const exportToExcel = async () => {
@@ -167,7 +169,7 @@ const PreviousDataPage = () => {
       filteredByMonthYear.forEach((item) => {
         const rowData = {};
         tableHeaders.forEach((header) => {
-          const actualKey = header === "Description" ? "paymentId" : header;
+          const actualKey = header === "Description" ? "paymentId" : header === "Complaint By" ? "complainId" : header;
           let cellValue = item[actualKey];
 
           if (actualKey === "paymentId" && cellValue?.description) {
@@ -230,6 +232,15 @@ const PreviousDataPage = () => {
   const renderValue = (key, value) => {
     if (key === "paymentId" && value?.description) {
       return highlightSearch(value.description);
+    }
+
+    if (key === "complainId" && typeof value === "object" && value !== null) {
+      const name = value.name || "";
+      const block = value.block || "";
+      const houseNo = value.houseNo || "";
+      const displayBlockHouse = (block && houseNo) ? `${block}-${houseNo}` : (houseNo ? houseNo : "");
+      const finalStr = `${name} ${displayBlockHouse}`.trim();
+      return <span className="text-gray-700 whitespace-nowrap">{highlightSearch(finalStr)}</span>;
     }
 
     if (key === "options" && Array.isArray(value)) {
@@ -442,8 +453,8 @@ const PreviousDataPage = () => {
                       className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-[0.4px] whitespace-nowrap"
                     >
                       <div className="flex items-center gap-2 w-max">
-                        {header === "description" ? "Description" : header.replace(/([A-Z])/g, ' $1').trim()}
-                        {dateFields.includes(header === "description" ? "paymentId" : header) && (
+                        {header === "Description" ? "Description" : header === "Complaint By" ? "Complaint By" : header.replace(/([A-Z])/g, ' $1').trim()}
+                        {dateFields.includes(header === "Description" ? "paymentId" : header === "Complaint By" ? "complainId" : header) && (
                           <button onClick={toggleSortOrder} className="p-0.5 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors">
                             {sortOrder === "asc" ? <FiChevronUp className="w-3.5 h-3.5" /> : <FiChevronDown className="w-3.5 h-3.5" /> }
                           </button>
@@ -465,7 +476,7 @@ const PreviousDataPage = () => {
                   .map((item, idx) => (
                     <tr key={idx} className="border-t border-gray-100 bg-white hover:bg-slate-50 transition-colors duration-100">
                       {tableHeaders.map((header) => {
-                        const actualKey = header === "Description" ? "paymentId" : header;
+                        const actualKey = header === "Description" ? "paymentId" : header === "Complaint By" ? "complainId" : header;
                         return (
                           <td key={actualKey} className="py-3.5 px-4 text-sm text-gray-700 align-middle whitespace-normal">
                             {renderValue(actualKey, item[actualKey])}
@@ -515,9 +526,9 @@ const PreviousDataPage = () => {
               </div>
               
               <div className="p-6">
-                <div className="overflow-hidden rounded-lg border border-gray-200">
+                <div className="overflow-y-auto max-h-[60vh] rounded-lg border border-gray-200">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 sticky top-0 z-10">
                       <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
