@@ -10,6 +10,7 @@ function dashboard() {
   const [events, setEvents] = useState([]);
   const [complaints, setComplaints] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [purchases, setPurchases] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [polls, setPolls] = useState([]);
   const [society, setSociety] = useState("");
@@ -17,7 +18,7 @@ function dashboard() {
   // const [payments , setPayments] = useState([]);
   // const user = JSON.parse(localStorage.getItem("user"));
   // const houseNo = user?.data?.user?.houseNo
-  const {rolee , setRolee } = useContext(UserContext);
+  const { rolee, setRolee } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -97,7 +98,7 @@ function dashboard() {
     }
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/events/getAllEvent`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/events/getUpcomingEvents`, { withCredentials: true });
         setLoading(false);
         // console.log(response.data.data)
         setEvents(response.data.data);
@@ -148,6 +149,17 @@ function dashboard() {
         console.error("Error fetching visitors:", error);
       }
     }
+    const fetchPurchases = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/v1/purchase/getAllPurchases`, {
+          withCredentials: true,
+        });
+        setLoading(false);
+        setPurchases(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching purchases:", error);
+      }
+    }
     fetchVisitors();
     fetchNotices();
     fetchComplaints();
@@ -156,13 +168,24 @@ function dashboard() {
     fetchBookings();
     societyDet();
     fetchPayments();
+    fetchPurchases();
   }, []);
 
+  const isPaymentPaid = (paymentId) => {
+    return purchases.some((purchase) => {
+      const purchasePaymentId = purchase?.paymentId?._id || purchase?.paymentId;
+      return purchasePaymentId && paymentId && purchasePaymentId.toString() === paymentId.toString();
+    });
+  };
+
+  const pendingPayments = payments.filter((payment) => !isPaymentPaid(payment?._id));
+  const activePolls = polls.filter((poll) => poll?.isClosed !== true);
+
   useEffect(() => {
-    if(rolee === "security") {
+    if (rolee === "security") {
       navigate("/layout/Visitor");
     }
-  } , [rolee , navigate]);
+  }, [rolee, navigate]);
 
   if (loading) {
     return (
@@ -226,7 +249,7 @@ function dashboard() {
               />
 
               <SummaryCard
-                title=" Events"
+                title="Upcoming Events"
                 value={events.length}
                 icon={
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -377,8 +400,8 @@ function dashboard() {
                 link="/layout/Poll"
               >
                 <div className='space-y-4'>
-                  {polls.length === 0 && <p className='text-gray-600'>No Polls found.</p>}
-                  {polls.slice(0, 2).map((poll) => (
+                  {activePolls.length === 0 && <p className='text-gray-600'>No active polls found.</p>}
+                  {activePolls.slice(0, 2).map((poll) => (
                     <div className='p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow'>
                       <div className='flex justify-between'>
                         <h4 className='font-semibold text-gray-800 mb-3'>{poll.question}</h4>
@@ -428,14 +451,15 @@ function dashboard() {
               </div>
             </DashboardSection> */}
               <DashboardSection
-                title="Recent Payments"
+                title="Pending Payments"
                 icon={
                   <svg className='w-6 h-6' fill="#2563eb" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M200.533,25.6h-42.667c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533h42.667c4.71,0,8.533-3.814,8.533-8.533 S205.244,25.6,200.533,25.6z"></path> <path d="M132.267,25.6h-8.533c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533h8.533c4.71,0,8.533-3.814,8.533-8.533 S136.977,25.6,132.267,25.6z"></path> <rect x="354.133" y="290.133" width="93.867" height="42.667"></rect> <path d="M499.2,153.6v-8.533c0-18.825-15.309-34.133-34.133-34.133h-153.6V51.2V33.809C311.467,15.164,296.303,0,277.666,0 H55.134C36.497,0,21.333,15.164,21.333,33.809V51.2v25.6c-4.71,0-8.533,3.814-8.533,8.533v8.533c0,4.719,3.823,8.533,8.533,8.533 v8.533c-4.71,0-8.533,3.814-8.533,8.533V128c0,4.719,3.823,8.533,8.533,8.533v8.533c-4.71,0-8.533,3.814-8.533,8.533v8.533 c0,4.719,3.823,8.533,8.533,8.533v273.067v34.458c0,18.645,15.164,33.809,33.801,33.809h222.532 c18.637,0,33.801-15.164,33.801-33.809v-34.458V384h153.6c18.825,0,34.133-15.309,34.133-34.133v-128H149.333V204.8H499.2 v-34.133H149.333V153.6H499.2z M337.067,281.6c0-4.719,3.823-8.533,8.533-8.533h110.933c4.71,0,8.533,3.814,8.533,8.533v59.733 c0,4.719-3.823,8.533-8.533,8.533H345.6c-4.71,0-8.533-3.814-8.533-8.533V281.6z M38.4,33.809 c0-9.233,7.509-16.742,16.734-16.742h222.532c9.225,0,16.734,7.509,16.734,16.742V51.2h-256V33.809z M144.06,494.933H55.134 c-9.225,0-16.734-7.509-16.734-16.742v-34.458h105.66c-7.168,6.263-11.793,15.352-11.793,25.6S136.892,488.67,144.06,494.933z M166.4,486.4c-9.412,0-17.067-7.654-17.067-17.067c0-9.412,7.654-17.067,17.067-17.067c9.412,0,17.067,7.654,17.067,17.067 C183.467,478.746,175.812,486.4,166.4,486.4z M294.4,478.191c0,9.233-7.509,16.742-16.734,16.742H188.74 c7.168-6.263,11.793-15.351,11.793-25.6s-4.625-19.337-11.793-25.6H294.4V478.191z M302.345,298.667h-16.478 c-4.71,0-8.533-3.814-8.533-8.533s3.823-8.533,8.533-8.533h16.478c4.71,0,8.533,3.814,8.533,8.533 S307.055,298.667,302.345,298.667z M246.801,247.467h55.543c4.71,0,8.533,3.814,8.533,8.533s-3.823,8.533-8.533,8.533h-55.543 c-4.71,0-8.533-3.814-8.533-8.533S242.091,247.467,246.801,247.467z M174.933,247.467H217.6c4.71,0,8.533,3.814,8.533,8.533 s-3.823,8.533-8.533,8.533h-42.667c-4.71,0-8.533-3.814-8.533-8.533S170.223,247.467,174.933,247.467z M174.933,281.6h84.156 c4.719,0,8.533,3.814,8.533,8.533s-3.814,8.533-8.533,8.533h-84.156c-4.71,0-8.533-3.814-8.533-8.533 S170.223,281.6,174.933,281.6z M132.267,145.067v8.533v17.067V204.8v17.067v128c0,18.825,15.309,34.133,34.133,34.133h128v42.667 h-256v-358.4h256v42.667h-128C147.575,110.933,132.267,126.242,132.267,145.067z"></path> </g> </g> </g> </g></svg>
                 }
                 link="/layout/Payment"
               >
                 <div className='space-y-4'>
-                  {payments.slice(0, 2).map((payment) => (
+                  {pendingPayments.length === 0 && <p className='text-gray-600'>No pending payments found.</p>}
+                  {pendingPayments.slice(0, 2).map((payment) => (
                     <div
                       key={payment._id}
                       className='p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow'

@@ -339,7 +339,7 @@ const Booking = () => {
 
   const tabs = [
     { id: "venues", label: "Available Venues", count: venues.length },
-    { id: "upcoming", label: "Upcoming Bookings", count: myBooking.filter(b => getBookingOrder(b._id)?.status !== 'Refunded').length },
+    { id: "upcoming", label: "My Bookings", count: myBooking.filter(b => getBookingOrder(b._id)?.status !== 'Refunded').length },
     { id: "past", label: "Past Bookings", count: myPastBooking.filter(b => isBookingHistoryVisibleStatus(getBookingOrder(b._id || b.id)?.status)).length },
   ];
 

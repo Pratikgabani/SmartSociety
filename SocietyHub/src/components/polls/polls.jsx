@@ -151,7 +151,7 @@ const PollApp = () => {
   const tabPolls  = activePollTab === "open" ? openPolls : pastPolls;
 
   return (
-    <div className="max-w-[1100px] mx-auto py-8 px-6 pb-14 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
 
       {/* PAGE HEADER */}
       <div className="flex justify-between items-start mb-7">
