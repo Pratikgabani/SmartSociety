@@ -424,17 +424,26 @@ const stripeWebhook = asyncHandler(async (req, res) => {
         await reqRecord.save();
       }
 
+      console.log(`[Webhook] charge.refunded for PI: ${paymentIntentId}. bOrder found: ${!!bOrder}, eOrder found: ${!!eOrder}`);
+
       const order = bOrder || eOrder;
       if (order && order.email) {
+          console.log(`[Webhook] Sending refund email using order.email: ${order.email}`);
           const type = bOrder ? 'Venue Booking' : 'Event Registration';
           sendRefundProcessedEmail(order.email, order.amount, type, paymentIntentId).catch(console.error);
       } else if (order) {
           // Fallback if email wasn't directly saved on the order document
+          console.log(`[Webhook] order.email is empty, populating userId...`);
           await order.populate('userId');
           if (order.userId && order.userId.email) {
+            console.log(`[Webhook] Sending refund email using populated userId.email: ${order.userId.email}`);
             const type = bOrder ? 'Venue Booking' : 'Event Registration';
             sendRefundProcessedEmail(order.userId.email, order.amount, type, paymentIntentId).catch(console.error);
+          } else {
+             console.log(`[Webhook] Could not find email even after populating userId.`);
           }
+      } else {
+          console.log(`[Webhook] No matching BookingOrder or EventOrder found for this refund. Email aborted.`);
       }
 
       break;

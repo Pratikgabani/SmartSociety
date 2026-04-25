@@ -80,9 +80,9 @@ const router = createBrowserRouter(
     <Route path='OrgLanding' element={<OrgLanding/>} />
    
      <Route path="Payment" element={<Payment />} />
-     <Route path="payPayment/:paymentId" element={<Buy />} />
-     <Route path="payEvent/:eventId" element={<EventBuy/>} />
-     <Route path="payBooking/:bookingId" element={<BookingBuy />} />
+     <Route path="payPayment/:paymentId" element={<Elements stripe={stripePromise}><Buy /></Elements>} />
+     <Route path="payEvent/:eventId" element={<Elements stripe={stripePromise}><EventBuy/></Elements>} />
+     <Route path="payBooking/:bookingId" element={<Elements stripe={stripePromise}><BookingBuy /></Elements>} />
      <Route path="Visitor" element={<Visitor />} />
     <Route path = "Poll" element = {<PollApp />} />
     <Route path = "Complaint" element= {<Complaint />} />
@@ -106,12 +106,10 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')).render(
   <UserContextProvider> 
 
-  <Elements stripe={stripePromise}>
     <StrictMode>
   <RouterProvider router={router} />
   
    </StrictMode>
-   </Elements>
   </UserContextProvider>
 )
 
