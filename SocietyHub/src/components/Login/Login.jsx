@@ -50,7 +50,9 @@ function Login() {
       try {
         if (authResult["code"]) {
           const result = await googleAuth(authResult.code); 
-            setRolee(result.data.data.user.role.toString());
+            const gRole = result.data?.data?.user?.role?.toString();
+            if (!gRole) throw new Error("Invalid login response");
+            setRolee(gRole);
           toast.success("Google Login Successful");
           navigate('/layout/Dashboard');
         } else {
@@ -86,7 +88,11 @@ function Login() {
             },
           }
         );
-        const userRole = response.data.data.user.role.toString();
+        const userRole = response.data?.data?.user?.role?.toString();
+        if (!userRole) {
+          toast.error("Login failed — unexpected response");
+          return;
+        }
         setRolee(userRole);
         toast.success("Logged in successfully");
         if (userRole === "security") {
