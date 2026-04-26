@@ -112,7 +112,9 @@ const EventBuy = () => {
           withCredentials: true,
         });
 
-        navigate("/layout/event");
+        setTimeout(() => {
+          navigate("/layout/event");
+        }, 1500);
       }
     } catch (err) {
       console.error(err);
@@ -138,7 +140,6 @@ const EventBuy = () => {
 
   return (
     <>
-      <Toaster />
       <div className="flex flex-col sm:flex-row justify-center items-center my-20 mx-auto max-w-7xl px-4">
         {/* Event Details */}
         <div className="w-full sm:w-1/2 lg:w-1/3 mt-10">

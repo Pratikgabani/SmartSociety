@@ -111,7 +111,9 @@ console.log("Payment Info:", paymentInfo);
           withCredentials: true,
         });
 
-        navigate("/layout/booking");
+        setTimeout(() => {
+          navigate("/layout/booking");
+        }, 1500);
       }
     } catch (err) {
       console.error(err);
@@ -139,11 +141,10 @@ console.log("Payment Info:", paymentInfo);
 
  return (
      <>
-       <Toaster />
        <div className="flex flex-col sm:flex-row justify-center items-center my-20 mx-auto max-w-7xl px-4">
          {/* Event Details */}
          <div className="w-full sm:w-1/2 lg:w-1/3 mt-10">
-           <h1 className="text-xl font-semibold underline">booking Payment Details</h1>
+           <h1 className="text-xl font-semibold underline">Booking Payment Details</h1>
            <p><strong>Booking type:</strong> {bookingData.bookingType}</p>
            <p><strong>Description:</strong> {bookingData.description}</p>
            <p><strong>Date:</strong> {new Date(bookingData.date).toLocaleDateString()}</p>
@@ -153,7 +154,7 @@ console.log("Payment Info:", paymentInfo);
          {/* Payment Form */}
          <div className="w-full sm:w-1/2 lg:w-1/3 mt-10">
            <div className="bg-white shadow-md rounded-lg p-6 w-full">
-             <h2 className="text-lg font-semibold mb-4">Pay for this Event</h2>
+             <h2 className="text-lg font-semibold mb-4">Pay for this Booking</h2>
              <form onSubmit={handleBookingPayment}>
                <CardElement
                  options={{
