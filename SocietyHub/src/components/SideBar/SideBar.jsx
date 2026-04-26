@@ -16,6 +16,7 @@ import {
   Building2,
   Menu,
   X,
+  UserCircle,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -28,6 +29,7 @@ const NAV_ITEMS = [
   { name: "Complaint",  icon: TriangleAlert,           roles: ["admin", "resident"] },
   { name: "Notice",     icon: Bell,                    roles: ["admin", "resident"] },
   { name: "Refunds",    icon: ReceiptText,             roles: ["admin"] },
+  { name: "Profile",    icon: UserCircle,              roles: ["admin", "resident", "security"] },
 ];
 
 function SideBar() {

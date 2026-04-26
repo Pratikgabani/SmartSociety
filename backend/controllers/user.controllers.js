@@ -263,9 +263,13 @@ const getUserDetail = asyncHandler(async (req, res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body
 
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Old password and new password are required")
+  }
+
   const user = await User.findById(req.user?._id)
 
-  const isPasswordValid = user.isPasswordCorrect(oldPassword)
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword)
 
   if (!isPasswordValid) {
     throw new ApiError(400, "Invalid old password")
@@ -282,24 +286,22 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  const { phoneNo, vehicleNo, numberOfVeh } = req.body
+  const { phoneNo, phoneNo2 } = req.body
 
-  if (!vehicleNo || !numberOfVeh || !phoneNo) {
-    throw new ApiError(400, "All fields are required")
+  if (!phoneNo) {
+    throw new ApiError(400, "Phone number is required")
+  }
+
+  const updateFields = { phoneNo };
+  if (phoneNo2 !== undefined) {
+    updateFields.phoneNo2 = phoneNo2;
   }
 
   const user = await User.findByIdAndUpdate(
     req.user?._id,
-    {
-      $set: {
-        phoneNo,
-        vehicleNo,
-        numberOfVeh
-      }
-    },
+    { $set: updateFields },
     { new: true }
-
-  ).select("-password")
+  ).select("-password -refreshToken")
 
   return res
     .status(200)

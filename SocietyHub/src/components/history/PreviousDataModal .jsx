@@ -145,7 +145,7 @@ const PreviousDataPage = () => {
   const tableHeaders =
     filteredByMonthYear.length > 0
       ? Object.keys(filteredByMonthYear[0])
-          .filter((key) => key !== "_id" && key !== "id")
+          .filter((key) => key !== "_id" && key !== "id" && key !== "paymentIntentId" && key !== "societyId")
           .map((key) =>
             key === "paymentId" ? "Description" : key === "complainId" ? "Complaint By" : key
           )

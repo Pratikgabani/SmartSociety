@@ -40,6 +40,7 @@ const PreviousDataModal = Load(lazy(() => import('./components/history/PreviousD
 const EventBuy = Load(lazy(() => import('./components/Buy/EventBuy.jsx')));
 const BookingBuy = Load(lazy(() => import('./components/Buy/BookingBuy.jsx')));
 const RefundAdmin = Load(lazy(() => import('./components/RefundAdmin/RefundAdmin.jsx')));
+const Profile = Load(lazy(() => import('./components/Profile/Profile.jsx')));
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -91,6 +92,7 @@ const router = createBrowserRouter(
     
     <Route path = "Notice" element = {<Announcements/>} />
     <Route path="Refunds" element={<RefundAdmin />} />
+    <Route path="Profile" element={<Profile />} />
     
     </Route>
     </Route>

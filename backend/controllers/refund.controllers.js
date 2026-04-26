@@ -98,7 +98,11 @@ const requestRefund = asyncHandler(async (req, res) => {
         });
 
         // Send email to admins
-        const admins = await User.find({ role: 'admin', societyId: req.user.societyId }).select('email');
+        const admins = await User.find({ 
+            role: 'admin', 
+            societyId: req.user.societyId,
+            _id: { $ne: req.user._id }
+        }).select('email');
         if (admins.length > 0) {
             const adminEmails = admins.map(a => a.email);
             // Non-blocking fire and forget email
@@ -123,8 +127,12 @@ const getPendingRefunds = asyncHandler(async (req, res) => {
         .populate('user', 'name email societyId block houseNo')
         .sort({ createdAt: -1 });
         
-    // Filter to only this society's admins
-    const societyRequests = requests.filter(r => r.user && r.user.societyId === req.user.societyId);
+    // Filter to only this society's admins, excluding the admin's own requests
+    const societyRequests = requests.filter(r => 
+        r.user && 
+        r.user.societyId === req.user.societyId && 
+        r.user._id.toString() !== req.user._id.toString()
+    );
 
     return res.status(200).json(new ApiResponse(200, societyRequests, "Pending refund requests fetched"));
 });
@@ -142,6 +150,7 @@ const approveRefund = asyncHandler(async (req, res) => {
     if (!refundReq) throw new ApiError(404, "Refund request not found");
     if (refundReq.status !== 'Pending') throw new ApiError(400, "Request is not pending. Current status: " + refundReq.status);
     if (refundReq.user.societyId !== req.user.societyId) throw new ApiError(403, "Not authorized for this society");
+    if (refundReq.user._id.toString() === req.user._id.toString()) throw new ApiError(403, "You cannot approve your own refund request");
 
     // Initiate stripe refund
     try {
@@ -184,6 +193,7 @@ const rejectRefund = asyncHandler(async (req, res) => {
     if (!refundReq) throw new ApiError(404, "Refund request not found");
     if (refundReq.status !== 'Pending') throw new ApiError(400, "Request is not pending. Current status: " + refundReq.status);
     if (refundReq.user.societyId !== req.user.societyId) throw new ApiError(403, "Not authorized for this society");
+    if (refundReq.user._id.toString() === req.user._id.toString()) throw new ApiError(403, "You cannot reject your own refund request");
 
     refundReq.status = 'Rejected';
     if (adminNotes) refundReq.adminNotes = adminNotes;

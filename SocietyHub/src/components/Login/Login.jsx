@@ -14,8 +14,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState({});
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    role: ''
+    password: ''
   })
   const {rolee , setRolee} = useContext(UserContext);
   const validationSchema = Yup.object({
@@ -27,10 +26,8 @@ function Login() {
       .required('Email is required'),
     password: Yup.string()
       .min(8, 'Password must be at least 8 characters')
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
+      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?\u0026])[A-Za-z\d@$!%*?\u0026]{8,16}$/, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
       .required('Password is required'),
-    role: Yup.string()
-      .required("Role is required")
   })
   useEffect(() => {
   if (rolee==="admin" || rolee==="user") {
@@ -75,62 +72,33 @@ function Login() {
     e.preventDefault();
     try {
       await validationSchema.validate(formData, { abortEarly: false });
-      // console.log("Form submitted " , formData);
-      if (formData.role === "security") {
-        try {
-          const response = await axios.post(
-            `${import.meta.env.VITE_URL_BACKEND}/api/v1/users/login`,
-            {
-              email: formData.email,
-              password: formData.password,
-              role: formData.role
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_URL_BACKEND}/api/v1/users/login`,
+          {
+            email: formData.email,
+            password: formData.password,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
             },
-            {
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          // console.log(response.data.data.user.role)
-          setRolee(response.data.data.user.role.toString());
-          toast.success("Logged in successfully");
+          }
+        );
+        const userRole = response.data.data.user.role.toString();
+        setRolee(userRole);
+        toast.success("Logged in successfully");
+        if (userRole === "security") {
           navigate("/layout/Visitor");
-        } catch (error) {
-          console.log(error)
-          toast.error("error logging in");
-          if (error.response) {
-            setErrorMessage(error.response.data.errors || "Login failed!!!");
-          }
-        }
-      }
-      else {
-        try {
-          await validationSchema.validate(formData, { abortEarly: false });
-          const response = await axios.post(
-            `${import.meta.env.VITE_URL_BACKEND}/api/v1/users/login`,
-            {
-              email: formData.email,
-              password: formData.password,
-
-            },
-            {
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          // console.log(response.data.data.user.role)
-          setRolee(response.data.data.user.role.toString());
-          toast.success("Logged in successfully");
+        } else {
           navigate("/layout/Dashboard");
-        } catch (error) {
-          toast.error("error logging in");
-          if (error.response) {
-
-            setErrorMessage(error.response.data.errors || "Login failed!!!");
-          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Error logging in");
+        if (error.response) {
+          setErrorMessage(error.response.data.errors || "Login failed!!!");
         }
       }
     } catch (error) {
@@ -139,10 +107,7 @@ function Login() {
         newErrors[err.path] = err.message
       });
       setErrorMessage(newErrors)
-
     }
-
-
   };
 
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
@@ -252,27 +217,7 @@ function Login() {
             {errorMessage.password && <div className='text-red-500 text-xs font-semibold mt-1 pl-1'>{errorMessage.password}</div>}
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="role">Account Role</label>
-            <div className="relative">
-              <select
-                name="role"
-                id="role"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 appearance-none cursor-pointer"
-                value={formData.role}
-                onChange={handleChange}
-              >
-                <option value="" disabled>Select your role</option>
-                <option value="security">Security</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-              </div>
-            </div>
-            {errorMessage.role && <div className='text-red-500 text-xs font-semibold mt-1 pl-1'>{errorMessage.role}</div>}
-          </div>
+
 
           <div className="flex items-center justify-end">
             <span 
