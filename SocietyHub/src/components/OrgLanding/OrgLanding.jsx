@@ -4,6 +4,8 @@ import UserContext from '../../context/UserContext';
 import finalLogo from './../../assets/finalLogo.svg';
 import { motion } from "framer-motion";
 import GlowCard from './GlowCard';
+import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 const testimonials = [
   { text: "This society management system revolutionized our operations, streamlining maintenance fee collection and visitor tracking. Highly recommend!", image: "https://randomuser.me/api/portraits/women/1.jpg", name: "Anita Menon", role: "Cultural Secretary" },
@@ -65,8 +67,43 @@ const CloseIcon = () => (
 function OrgLanding() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    societyName: '',
+    message: '',
+  });
   const navigate = useNavigate();
   const { rolee } = useContext(UserContext);
+
+  const handleContactChange = (e) => {
+    setContactForm({ ...contactForm, [e.target.id]: e.target.value });
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!contactForm.firstName || !contactForm.lastName || !contactForm.email || !contactForm.message) {
+      toast.error('Please fill in all required fields.');
+      return;
+    }
+
+    setContactLoading(true);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_URL_BACKEND}/api/v1/contact/send`,
+        contactForm
+      );
+      toast.success(res.data.message || 'Message sent successfully!');
+      setContactForm({ firstName: '', lastName: '', email: '', societyName: '', message: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setContactLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (rolee == "admin" || rolee == "user") {
@@ -127,6 +164,7 @@ function OrgLanding() {
 
   return (
     <div className='bg-slate-50 min-h-screen w-full font-raleway overflow-x-hidden selection:bg-blue-100 selection:text-blue-900'>
+      <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
 
       {/* Navigation */}
       <div className="w-full relative z-50">
@@ -354,31 +392,41 @@ function OrgLanding() {
 
           <div className='flex flex-col lg:flex-row gap-12 lg:gap-16 items-start'>
             <div className="w-full lg:w-3/5 bg-slate-50 rounded-3xl p-8 sm:p-10 border border-slate-100 shadow-sm">
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleContactSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
-                    <input type="text" id="firstName" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="John" />
+                    <label htmlFor="firstName" className="block text-sm font-semibold text-slate-700 mb-2">First Name <span className="text-red-500">*</span></label>
+                    <input type="text" id="firstName" value={contactForm.firstName} onChange={handleContactChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="John" />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-semibold text-slate-700 mb-2">Last Name</label>
-                    <input type="text" id="lastName" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="Doe" />
+                    <label htmlFor="lastName" className="block text-sm font-semibold text-slate-700 mb-2">Last Name <span className="text-red-500">*</span></label>
+                    <input type="text" id="lastName" value={contactForm.lastName} onChange={handleContactChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="Doe" />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="emailAddress" className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                  <input type="email" id="emailAddress" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="john@example.com" />
+                  <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">Email Address <span className="text-red-500">*</span></label>
+                  <input type="email" id="email" value={contactForm.email} onChange={handleContactChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="john@example.com" />
                 </div>
                 <div>
                   <label htmlFor="societyName" className="block text-sm font-semibold text-slate-700 mb-2">Society Name</label>
-                  <input type="text" id="societyName" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="Palm Residency" />
+                  <input type="text" id="societyName" value={contactForm.societyName} onChange={handleContactChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors" placeholder="Palm Residency" />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
-                  <textarea id="message" rows="4" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors resize-none" placeholder="How can we help you?"></textarea>
+                  <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">Message <span className="text-red-500">*</span></label>
+                  <textarea id="message" rows="4" value={contactForm.message} onChange={handleContactChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors resize-none" placeholder="How can we help you?"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-slate-900 text-white rounded-xl py-4 font-medium hover:bg-slate-800 transition-colors shadow-md shadow-slate-900/10">
-                  Send Message
+                <button type="submit" disabled={contactLoading} className="w-full bg-slate-900 text-white rounded-xl py-4 font-medium hover:bg-slate-800 transition-colors shadow-md shadow-slate-900/10 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                  {contactLoading ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             </div>

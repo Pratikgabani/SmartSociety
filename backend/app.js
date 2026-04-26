@@ -87,6 +87,7 @@ import orderRouter from "./routes/order.routes.js";
 import expenseRouter from "./routes/expense.routes.js" 
 import purchaseRouter from "./routes/purchase.routes.js"
 import refundRouter from "./routes/refund.routes.js"
+import contactRouter from "./routes/contact.routes.js"
 
 app.use('/auth', authRoutes);
 
@@ -104,4 +105,5 @@ app.use("/api/v1/expense" , expenseRouter)
 app.use("/api/v1/order",orderRouter)
 app.use("/api/v1/purchase",purchaseRouter)
 app.use("/api/v1/refunds", refundRouter)
+app.use("/api/v1/contact", contactRouter)
 export default app;

@@ -300,3 +300,57 @@ export const sendVisitorArrivalEmail = async (ownerEmails, visitorDetails) => {
 
   return await transporter.sendMail(mailOptions);
 };
+
+/**
+ * Send Contact Us form enquiry email to ResiHub team.
+ * @param {Object} contactData - { firstName, lastName, email, societyName, message }
+ */
+export const sendContactFormEmail = async (contactData) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'resihubproject@gmail.com',
+      pass: process.env.APP_PASSWORD,
+    },
+  });
+
+  const { firstName, lastName, email, societyName, message } = contactData;
+  const fullName = `${firstName} ${lastName}`.trim();
+  const submittedAt = new Date().toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  const mailOptions = {
+    from: '"Resihub Contact Form" <resihubproject@gmail.com>',
+    to: 'projectresihub@gmail.com',
+    replyTo: email,
+    subject: `New Contact Enquiry from ${fullName}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background:#f9f9f9; border-radius:12px;">
+        <h2 style="color:#1a56db; margin-bottom:8px;">New Contact Form Submission</h2>
+        <p style="color:#374151; font-size:15px;">
+          You have received a new enquiry from the ResiHub landing page.
+        </p>
+        <div style="background:#fff; padding:20px; border-radius:8px; border:1px solid #e5e7eb; margin: 24px 0;">
+          <p style="margin:0 0 12px;"><strong>Name:</strong> ${fullName}</p>
+          <p style="margin:0 0 12px;"><strong>Email:</strong> <a href="mailto:${email}" style="color:#1a56db;">${email}</a></p>
+          <p style="margin:0 0 12px;"><strong>Society Name:</strong> ${societyName || 'Not specified'}</p>
+          <p style="margin:0 0 12px;"><strong>Submitted At:</strong> ${submittedAt}</p>
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0;"/>
+          <p style="margin:0 0 4px;"><strong>Message:</strong></p>
+          <p style="color:#4b5563; white-space:pre-wrap; margin:0;">${message}</p>
+        </div>
+        <p style="color:#6b7280; font-size:13px;">
+          You can reply directly to this email to respond to <strong>${fullName}</strong>.
+        </p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;"/>
+        <p style="color:#9ca3af; font-size:12px; text-align:center;">
+          Resihub – Society Management System
+        </p>
+      </div>
+    `,
+  };
+
+  return await transporter.sendMail(mailOptions);
+};
