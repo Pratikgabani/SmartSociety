@@ -137,13 +137,13 @@ function Profile() {
   const badge = roleBadge[user.role] || roleBadge.user;
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
       <Toaster />
 
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">My Profile</h1>
-        <p className="text-sm text-gray-500 mt-1 mb-0">View and manage your account information</p>
+        <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">My Profile</h1>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">View and manage your account information</p>
       </div>
 
       {/* Profile Card — Identity */}
@@ -153,12 +153,12 @@ function Profile() {
             <div className="w-[72px] h-[72px] bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white border border-white/30 shadow-lg">
               <User size={36} strokeWidth={1.8} />
             </div>
-            <div className="text-white">
-              <h2 className="text-2xl font-semibold m-0 tracking-tight">{user.name}</h2>
-              <p className="text-blue-100 text-sm mt-1 mb-0 font-medium">{user.email}</p>
+            <div className="text-white min-w-0">
+              <h2 className="text-xl sm:text-2xl font-semibold m-0 tracking-tight truncate">{user.name}</h2>
+              <p className="text-blue-100 text-xs sm:text-sm mt-1 mb-0 font-medium truncate">{user.email}</p>
             </div>
           </div>
-          <div className="absolute top-6 right-6">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold tracking-[0.3px] border shadow-sm bg-white/90 backdrop-blur-sm ${badge.text}`}
             >
@@ -222,7 +222,7 @@ function Profile() {
 
       {/* Contact Info — Editable */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start sm:items-center justify-between mb-4 gap-4">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600">
               <Phone size={18} strokeWidth={2} />
@@ -304,7 +304,7 @@ function Profile() {
 
       {/* Change Password */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start sm:items-center justify-between mb-4 gap-4">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-red-50 rounded-lg text-red-500">
               <Lock size={18} strokeWidth={2} />

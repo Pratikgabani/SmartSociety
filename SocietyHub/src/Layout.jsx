@@ -61,7 +61,7 @@ function Layout() {
       {/* Mobile Backdrop overlay */}
       {isSidebarOpen && (
         <div
-          className='fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden'
+          className='fixed inset-0 bg-black/40 backdrop-blur-sm z-[55] md:hidden'
           onClick={closeSidebar}
         />
       )}

@@ -418,18 +418,18 @@ function Event() {
   const filteredPast = pastData.filter(ev => rolee === "admin" || hasAttendedEventOrder(ev._id || ev.id));
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
 
       {/* PAGE HEADER */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Events</h1>
-          <p className="text-sm text-gray-500 mt-1 mb-0">Stay updated with society events and celebrations</p>
+          <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Events</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">Stay updated with society events and celebrations</p>
         </div>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex gap-2.5 items-center w-full sm:w-auto">
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -437,7 +437,7 @@ function Event() {
       </div>
 
       {/* TAB BAR */}
-      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max mb-6 overflow-x-auto no-scrollbar">
+      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-full sm:w-max max-w-full mb-6 overflow-x-auto no-scrollbar">
         {tabs.map(tab => {
           const isActive = activeTab === tab.id;
           return (
@@ -467,7 +467,7 @@ function Event() {
         {/* UPCOMING */}
         {activeTab === "upcoming" && (
           <section>
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-medium text-gray-900 m-0">Upcoming Events</h2>
                 <p className="text-sm text-gray-400 mt-[3px] mb-0">Browse and register for society events</p>
@@ -475,7 +475,7 @@ function Event() {
               {rolee === "admin" && (
                 <button
                   onClick={() => setShowAddEventForm(!showAddEventForm)}
-                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
+                  className="w-full sm:w-auto py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   {showAddEventForm ? "✕ Cancel" : "+ Add Event"}
                 </button>
@@ -489,7 +489,7 @@ function Event() {
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Stay tuned — new events will appear here</p>
               </div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcomingEvents.map(ev => renderEventCard(ev, false))}
               </div>
             )}
@@ -499,7 +499,7 @@ function Event() {
         {/* PAST */}
         {activeTab === "past" && (
           <section>
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-medium text-gray-900 m-0">Past Events</h2>
                 <p className="text-sm text-gray-400 mt-[3px] mb-0">Events you attended or that have ended</p>
@@ -513,7 +513,7 @@ function Event() {
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Events you attended will appear here</p>
               </div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {filteredPast.map(ev => renderEventCard(ev, true))}
               </div>
             )}
@@ -524,7 +524,7 @@ function Event() {
       {/* ADD EVENT MODAL */}
       {showAddEventForm && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[500px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[500px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">New Event</h2>
               <button onClick={() => setShowAddEventForm(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
@@ -545,7 +545,7 @@ function Event() {
                 </div>
               ))}
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="mb-4 flex-1">
                   <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Date</label>
                   <input type="date" name="eventDate"
@@ -563,7 +563,7 @@ function Event() {
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="mb-4 flex-1">
                   <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Venue</label>
                   <input type="text" name="venue" value={formData.venue}
@@ -580,7 +580,7 @@ function Event() {
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="mb-4 flex-1">
                   <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-[0.3px]">Last Date to Pay</label>
                   <input type="date" name="lastDateOfPay"
@@ -611,7 +611,7 @@ function Event() {
       {/* REFUND MODAL */}
       {isRefundModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">Request Refund</h2>
               <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>

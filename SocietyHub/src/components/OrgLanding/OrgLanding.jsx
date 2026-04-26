@@ -186,10 +186,10 @@ function OrgLanding() {
                   ))}
                 </ul>
               </div>
-              <div className="flex justify-center md:flex md:justify-center shrink-0 w-full md:w-auto mt-2 md:mt-0">
+              <div className="flex justify-center md:flex md:justify-end shrink-0 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-none border-slate-100">
                 {!isLoggedIn && (
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="w-full md:w-auto">
-                    <button className="w-full md:w-auto flex items-center justify-center bg-slate-900 text-white font-semibold rounded-xl py-2.5 px-6 text-sm hover:bg-slate-800 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="w-full md:w-auto block">
+                    <button className="w-full md:w-auto flex items-center justify-center bg-slate-900 text-white font-semibold rounded-xl py-3 px-6 text-sm hover:bg-slate-800 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                       Login
                     </button>
                   </Link>

@@ -78,7 +78,7 @@ function SideBar({ isMobileOpen, closeMobile }) {
   });
 
   return (
-    <div className={`fixed left-0 top-0 h-[100dvh] bg-white border-r border-gray-200 z-50 flex flex-col transition-all duration-300 ease-in-out shadow-[4px_0_24px_rgba(0,0,0,0.04)] overflow-hidden group font-sans ${
+    <div className={`fixed left-0 top-0 bottom-0 bg-white border-r border-gray-200 z-[60] flex flex-col transition-all duration-300 ease-in-out shadow-[4px_0_24px_rgba(0,0,0,0.04)] overflow-hidden group font-sans ${
       isMobileOpen ? "translate-x-0" : "-translate-x-full"
     } md:translate-x-0 w-[260px] md:w-[76px] md:hover:w-[240px]`}>
       

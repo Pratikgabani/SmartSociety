@@ -344,24 +344,24 @@ const Booking = () => {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
 
       {/* Page Header */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Venue Bookings</h1>
-          <p className="text-sm text-gray-500 mt-1 mb-0">Reserve society spaces for events and gatherings</p>
+          <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Venue Bookings</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">Reserve society spaces for events and gatherings</p>
         </div>
         <button
           onClick={fetchPreviousData}
-          className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+          className="w-full sm:w-auto py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
         >
           History
         </button>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max mb-7 overflow-x-auto no-scrollbar">
+      <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-full sm:w-max max-w-full mb-7 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -391,7 +391,7 @@ const Booking = () => {
         {/* AVAILABLE VENUES */}
         {activeTab === "venues" && (
           <section>
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-medium text-gray-900 m-0">Available Venues</h2>
                 <p className="text-sm text-gray-400 mt-[3px] mb-0">Browse and reserve spaces for your next event</p>
@@ -399,7 +399,7 @@ const Booking = () => {
               {rolee === "admin" && (
                 <button
                   onClick={() => setIsVenueFormOpen(true)}
-                  className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
+                  className="w-full sm:w-auto py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors"
                 >
                   + Add Venue
                 </button>
@@ -413,7 +413,7 @@ const Booking = () => {
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Check back later or contact your admin</p>
               </div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {venues.map((venue) => (
                   <div key={venue._id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-3 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-shadow">
                     <div className="flex justify-between items-start">
@@ -455,7 +455,7 @@ const Booking = () => {
         {/* UPCOMING BOOKINGS */}
         {activeTab === "upcoming" && (
           <section>
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-medium text-gray-900 m-0">Upcoming Bookings</h2>
                 <p className="text-sm text-gray-400 mt-[3px] mb-0">Manage your scheduled reservations</p>
@@ -475,7 +475,7 @@ const Booking = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {myBooking
                   .filter(booking => getBookingOrder(booking._id)?.status !== 'Refunded')
                   .map((booking) => {
@@ -563,7 +563,7 @@ const Booking = () => {
         {/* PAST BOOKINGS */}
         {activeTab === "past" && (
           <section>
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-medium text-gray-900 m-0">Past Bookings</h2>
                 <p className="text-sm text-gray-400 mt-[3px] mb-0">Your completed and paid reservations</p>
@@ -577,7 +577,7 @@ const Booking = () => {
                 <p className="text-sm text-gray-400 mt-1.5 mb-0">Your completed reservations will appear here</p>
               </div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {myPastBooking
                   .filter(booking => isBookingHistoryVisibleStatus(getBookingOrder(booking._id || booking.id)?.status))
                   .map((booking) => {
@@ -629,7 +629,7 @@ const Booking = () => {
       {/* BOOKING FORM MODAL */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[520px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[520px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">Reserve {selectedVenue?.venue}</h2>
               <button onClick={() => setIsFormOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
@@ -694,7 +694,7 @@ const Booking = () => {
       {/* ADD VENUE FORM MODAL */}
       {isVenueFormOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">Add New Venue</h2>
               <button onClick={() => setIsVenueFormOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
@@ -753,7 +753,7 @@ const Booking = () => {
       {/* CONFIRM DELETE MODAL */}
       {confirmModal.open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl pt-8 pb-7 px-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
+          <div className="bg-white rounded-2xl p-5 sm:pt-8 sm:pb-7 sm:px-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <Trash2 className="h-8 w-8 text-red-600" />
             </div>
@@ -787,7 +787,7 @@ const Booking = () => {
       {/* REFUND MODAL */}
       {isRefundModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[460px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">Request Refund</h2>
               <button onClick={() => setIsRefundModalOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>

@@ -337,10 +337,10 @@ const PreviousDataPage = () => {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
       
       {/* PAGE HEADER */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
@@ -350,15 +350,15 @@ const PreviousDataPage = () => {
             <FiArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Historical Records</h1>
-            <p className="text-sm text-gray-500 mt-1 mb-0">View, filter, and export system audit and operational records.</p>
+            <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Historical Records</h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">View, filter, and export system audit and operational records.</p>
           </div>
         </div>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex gap-2.5 items-center w-full sm:w-auto">
           <button
             onClick={exportToExcel}
             disabled={filteredByMonthYear.length === 0}
-            className="inline-flex items-center gap-2 py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto inline-flex justify-center items-center gap-2 py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             <FiDownload className="w-4 h-4" />
             Export to Excel
@@ -367,10 +367,10 @@ const PreviousDataPage = () => {
       </div>
 
       {/* FILTER BAR & SEARCH */}
-      <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center justify-between gap-2 bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-full sm:w-max">
             <FiFilter className="w-4 h-4 ml-2 text-gray-500" />
             <select
               className="bg-transparent border-none focus:ring-0 text-sm font-semibold text-gray-600 hover:text-gray-800 cursor-pointer outline-none"
@@ -401,7 +401,7 @@ const PreviousDataPage = () => {
               setSelectedMonth("");
               setSearchTerm("");
             }}
-            className="flex items-center gap-2 py-1.5 px-4 font-semibold text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent"
+            className="w-full sm:w-auto justify-center flex items-center gap-2 py-1.5 px-4 font-semibold text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 cursor-pointer transition-all duration-300 rounded-lg whitespace-nowrap border border-transparent"
             title="Reset Filters"
           >
             <FiRefreshCw className="w-4 h-4" />
@@ -410,7 +410,7 @@ const PreviousDataPage = () => {
         </div>
 
         {/* Search */}
-        <div className="relative w-full max-w-[280px]">
+        <div className="relative w-full md:max-w-[280px]">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
           </svg>

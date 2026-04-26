@@ -317,26 +317,26 @@ const PaymentSection = () => {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
 
       {/* PAGE HEADER */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Payments</h1>
-          <p className="text-sm text-gray-500 mt-1 mb-0">Manage society maintenance and charges</p>
+          <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Payments</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">Manage society maintenance and charges</p>
         </div>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex flex-col sm:flex-row gap-2.5 items-center w-full sm:w-auto">
           {rolee === "admin" && (
             <button
               onClick={fetchAgainData}
-              className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+              className="w-full sm:w-auto py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
             >
               All Data
             </button>
           )}
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -344,7 +344,7 @@ const PaymentSection = () => {
       </div>
 
       {/* SUMMARY CARDS */}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {statCards.map(({ label, value, cls }) => (
           <div key={label} className={`p-5 rounded-xl border shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${cls}`}>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-[0.4px] m-0 mb-1.5">{label}</p>
@@ -354,9 +354,9 @@ const PaymentSection = () => {
       </div>
 
       {/* TAB BAR & SEARCH */}
-      <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
         {/* Containerized Tabs */}
-        <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max overflow-x-auto no-scrollbar">
+        <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-full md:w-max max-w-full overflow-x-auto no-scrollbar">
           {[
             { id: "pending", label: "Pending Payments", count: pendingPayments.length },
             { id: "history", label: "Paid Payments", count: paidPayments.length },
@@ -381,9 +381,9 @@ const PaymentSection = () => {
           })}
         </div>
         
-        <div className="flex gap-3 items-center w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full md:w-auto">
           {/* Search */}
-          <div className="relative w-full max-w-[280px]">
+          <div className="relative w-full md:max-w-[280px]">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
             </svg>
@@ -399,7 +399,7 @@ const PaymentSection = () => {
           {rolee === "admin" && (
             <button
               onClick={() => setShowAdminForm(true)}
-              className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+              className="w-full sm:w-auto py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
             >
               + New Payment
             </button>
@@ -518,7 +518,7 @@ const PaymentSection = () => {
       {/* ADD PAYMENT MODAL */}
       {showAdminForm && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[440px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[440px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">New Payment</h2>
               <button onClick={() => setShowAdminForm(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>
@@ -565,7 +565,7 @@ const PaymentSection = () => {
       {/* DELETE CONFIRMATION MODAL */}
       {confirmModal.open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[400px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[400px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
             <div className="flex justify-center mb-4">
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
                 <Trash2 className="h-8 w-8 text-red-600" />

@@ -145,31 +145,31 @@ export default function Announcements() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
       <Toaster />
       
       {/* PAGE HEADER */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Announcements & Notices</h1>
-          <p className="text-sm text-gray-500 mt-1 mb-0">Stay informed with important society announcements and notices at one place.</p>
+          <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Announcements & Notices</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">Stay informed with important society announcements and notices at one place.</p>
         </div>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex gap-2.5 items-center w-full sm:w-auto">
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-6 mt-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 mt-8 gap-4">
         <h2 className="text-xl font-medium text-gray-900 m-0">Recent Notices</h2>
         {rolee === "admin" && (
           <button
             onClick={() => setIsNoticeModalOpen(true)}
-            className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             + Add Notice
           </button>
@@ -177,7 +177,7 @@ export default function Announcements() {
       </div>
 
       {/* NOTICES GRID */}
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(330px,1fr))] gap-5 items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
         {notices.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
             <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
@@ -201,7 +201,7 @@ export default function Announcements() {
       {/* DELETE CONFIRMATION MODAL */}
       {confirmDeleteModal.open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center animate-in fade-in duration-200 zoom-in-95">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center animate-in fade-in duration-200 zoom-in-95">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <Trash2 className="h-8 w-8 text-red-600" />
             </div>
@@ -233,7 +233,7 @@ export default function Announcements() {
       {/* ADD NOTICE MODAL */}
       {isNoticeModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[480px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-xl font-medium text-gray-900 m-0">Add a Notice</h2>

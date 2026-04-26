@@ -151,18 +151,18 @@ const PollApp = () => {
   const tabPolls  = activePollTab === "open" ? openPolls : pastPolls;
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
 
       {/* PAGE HEADER */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Polls &amp; Voting</h1>
-          <p className="text-sm text-gray-500 mt-1 mb-0">Create and participate in society polls for collective decisions</p>
+          <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Polls &amp; Voting</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">Create and participate in society polls for collective decisions</p>
         </div>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex gap-2.5 items-center w-full sm:w-auto">
           <button
             onClick={fetchPreviousData}
-            className="py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto py-[9px] px-[18px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             History
           </button>
@@ -170,8 +170,8 @@ const PollApp = () => {
       </div>
 
       {/* TAB BAR AND ACTIONS */}
-      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-        <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-max overflow-x-auto no-scrollbar">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div className="flex bg-gray-200/60 p-1 rounded-xl border border-gray-200/80 w-full sm:w-max max-w-full overflow-x-auto no-scrollbar">
           {[
             { id: "open", label: "Open Polls", count: openPolls.length },
             { id: "past", label: "Past Polls", count: pastPolls.length },
@@ -200,7 +200,7 @@ const PollApp = () => {
         {rolee === "admin" && (
           <button
             onClick={() => setIsPollModalOpen(true)}
-            className="py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto py-[9px] px-[18px] bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap"
           >
             + Create Poll
           </button>
@@ -208,7 +208,7 @@ const PollApp = () => {
       </div>
 
       {/* POLLS GRID */}
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-5 items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
         {tabPolls.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
             <p className="text-[2.4rem] mb-3">🗳️</p>
@@ -346,7 +346,7 @@ const PollApp = () => {
       {/* DELETE CONFIRMATION MODAL */}
       {confirmDeleteModal.open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <Trash2 className="h-8 w-8 text-red-600" />
             </div>
@@ -377,7 +377,7 @@ const PollApp = () => {
       {/* CREATE POLL MODAL */}
       {isPollModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium text-gray-900 m-0">Create a Poll</h2>
               <button onClick={() => setIsPollModalOpen(false)} className="bg-transparent border-none text-lg text-gray-400 hover:text-gray-600 cursor-pointer p-1 leading-none">✕</button>

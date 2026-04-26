@@ -100,19 +100,19 @@ function RefundAdmin() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto py-8 px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="max-w-[1200px] mx-auto py-6 px-4 md:py-8 md:px-6 font-sans text-gray-900 bg-gray-50 min-h-screen">
       <Toaster />
       
       {/* PAGE HEADER */}
-      <div className="flex justify-between items-start mb-7">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1 className="text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Refund Approvals</h1>
-          <p className="text-sm text-gray-500 mt-1 mb-0">Review and manage manual refund requests from members</p>
+          <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 m-0 tracking-[-0.3px]">Refund Approvals</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1 mb-0">Review and manage manual refund requests from members</p>
         </div>
       </div>
 
       {/* REFUNDS GRID */}
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-5 items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
         {refunds.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center text-center py-[72px] px-6">
             <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
@@ -207,7 +207,7 @@ function RefundAdmin() {
       {/* APPROVE CONFIRMATION MODAL */}
       {approveModal.open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center animate-in fade-in duration-200 zoom-in-95">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[380px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-center animate-in fade-in duration-200 zoom-in-95">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 mb-4">
               <Banknote className="h-8 w-8 text-emerald-600" />
             </div>
@@ -239,7 +239,7 @@ function RefundAdmin() {
       {/* REJECT MODAL */}
       {rejectModal.open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-7 w-full max-w-[420px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-left animate-in fade-in duration-200 zoom-in-95">
+          <div className="bg-white rounded-2xl p-5 sm:p-7 w-full max-w-[420px] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-200 text-left animate-in fade-in duration-200 zoom-in-95">
             <div className="flex items-center gap-3 mb-5">
               <div className="flex items-center justify-center h-10 w-10 rounded-full bg-red-100">
                 <AlertCircle className="h-5 w-5 text-red-600" />
