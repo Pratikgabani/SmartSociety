@@ -15,7 +15,7 @@ export const globalLimiter = rateLimit({
 // Stricter limiter for authentication/OTP routes: 5 requests per 15 minutes per IP
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1500, // Limit each IP to 5 requests per `window` for auth routes
+    max: 500, // Limit each IP to 5 requests per `window` for auth routes
     message: {
         success: false,
         message: 'Too many attempts from this IP, please try again after 15 minutes'

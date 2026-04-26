@@ -14,13 +14,15 @@ dotenv.config({
 const app = express();
 
 // 1. Set security HTTP headers
-app.use(helmet());
+app.use(helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
 app.use(
     cors({
-        // origin: 'https://resi-hub.onrender.com',
+        origin: 'https://resi-hub.onrender.com',
         // origin: `${process.env.URL_FRONTEND}`,
-        origin: 'http://localhost:5173',
+        // origin: 'http://localhost:5173',
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE" ,"PATCH"],
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -84,7 +86,7 @@ import paymentRouter from "./routes/payment.routes.js";
 import pollRouter from "./routes/poll.routes.js";
 import noticeRouter from "./routes/notice.routes.js";
 import orderRouter from "./routes/order.routes.js";
-import expenseRouter from "./routes/expense.routes.js" 
+
 import purchaseRouter from "./routes/purchase.routes.js"
 import refundRouter from "./routes/refund.routes.js"
 import contactRouter from "./routes/contact.routes.js"
@@ -101,7 +103,7 @@ app.use("/api/v1/security" , securityRouter)
 app.use("/api/v1/polls" , pollRouter )
 app.use("/api/v1/payment" , paymentRouter)
 app.use("/api/v1/notices" , noticeRouter)
-app.use("/api/v1/expense" , expenseRouter)
+
 app.use("/api/v1/order",orderRouter)
 app.use("/api/v1/purchase",purchaseRouter)
 app.use("/api/v1/refunds", refundRouter)
