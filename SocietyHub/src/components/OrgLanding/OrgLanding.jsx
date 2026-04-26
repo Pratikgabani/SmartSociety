@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import GlowCard from './GlowCard';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+import { Menu, X } from 'lucide-react';
 
 const testimonials = [
   { text: "This society management system revolutionized our operations, streamlining maintenance fee collection and visitor tracking. Highly recommend!", image: "https://randomuser.me/api/portraits/women/1.jpg", name: "Anita Menon", role: "Cultural Secretary" },
@@ -52,17 +53,7 @@ const TestimonialsColumn = (props) => {
   );
 };
 
-const MenuIcon = () => (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-  </svg>
-);
 
-const CloseIcon = () => (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-  </svg>
-);
 
 function OrgLanding() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -177,8 +168,11 @@ function OrgLanding() {
               ResiHub
             </div>
             <div className="md:hidden flex justify-end">
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-600 hover:text-blue-600 focus:outline-none p-2 transition-colors">
-                {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+                className="p-2 rounded-xl text-gray-700 hover:bg-gray-100 focus:outline-none transition-colors"
+              >
+                {mobileMenuOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
               </button>
             </div>
 
@@ -192,10 +186,10 @@ function OrgLanding() {
                   ))}
                 </ul>
               </div>
-              <div className="md:flex md:justify-center shrink-0">
+              <div className="flex justify-center md:flex md:justify-center shrink-0 w-full md:w-auto mt-2 md:mt-0">
                 {!isLoggedIn && (
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="w-full md:w-auto">
-                    <button className="w-full md:w-auto bg-slate-900 text-white font-semibold rounded-xl py-2.5 px-6 text-sm hover:bg-slate-800 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                    <button className="w-full md:w-auto flex items-center justify-center bg-slate-900 text-white font-semibold rounded-xl py-2.5 px-6 text-sm hover:bg-slate-800 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                       Login
                     </button>
                   </Link>

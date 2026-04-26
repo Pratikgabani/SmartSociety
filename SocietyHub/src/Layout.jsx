@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import SideBar from './components/SideBar/SideBar.jsx'
 import { Toaster } from 'react-hot-toast'
@@ -8,9 +8,37 @@ import { Menu, X } from 'lucide-react'
 function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isSidebarHovered, setIsSidebarHovered] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 768
+      setIsDesktop(desktop)
+      // Auto-close mobile sidebar when switching to desktop
+      if (desktop) setIsSidebarOpen(false)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isSidebarOpen && !isDesktop) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isSidebarOpen, isDesktop])
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
+  }
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false)
   }
 
   return (
@@ -18,45 +46,39 @@ function Layout() {
       <Toaster />
 
       {/* Mobile Topbar */}
-      <div className='md:hidden fixed top-0 left-0 right-0 bg-white shadow flex items-center justify-between p-4 z-50'>
-        <button onClick={toggleSidebar}>
-          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+      <div className='md:hidden fixed top-0 left-0 right-0 bg-white shadow-sm border-b border-gray-100 flex items-center justify-between px-4 py-3 z-50'>
+        <button
+          onClick={toggleSidebar}
+          className="p-2 rounded-xl text-gray-700 hover:bg-gray-100 focus:outline-none transition-colors"
+        >
+          {isSidebarOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
         </button>
-        <h1 className='text-3xl font-medium'>ResiHub</h1>
+        <h1 className='text-xl font-semibold text-gray-900 tracking-tight'>ResiHub</h1>
+        {/* Spacer to center the title */}
+        <div className="w-10" />
       </div>
 
-      {/* Sidebar Wrapper — tracks hover to sync main content margin */}
-      <div
-        onMouseEnter={() => setIsSidebarHovered(true)}
-        onMouseLeave={() => setIsSidebarHovered(false)}
-        className={`
-          fixed top-0 left-0 h-screen z-40
-          transition-transform duration-300 ease-in-out
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:translate-x-0
-        `}
-      >
-        <SideBar />
-      </div>
-
-      {/* Overlay for mobile */}
+      {/* Mobile Backdrop overlay */}
       {isSidebarOpen && (
         <div
-          className='fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden'
-          onClick={toggleSidebar}
+          className='fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden'
+          onClick={closeSidebar}
         />
       )}
 
-      {/* Main Content Area — margin syncs with sidebar width */}
+      {/* Sidebar Wrapper — tracks hover to sync main content margin on desktop */}
       <div
-        className='pt-20 md:pt-4 p-4 transition-all duration-300 ease-in-out hidden md:block'
-        style={{ marginLeft: isSidebarHovered ? '230px' : '70px' }}
+        onMouseEnter={() => setIsSidebarHovered(true)}
+        onMouseLeave={() => setIsSidebarHovered(false)}
       >
-        <Outlet />
+        <SideBar isMobileOpen={isSidebarOpen} closeMobile={closeSidebar} />
       </div>
 
-      {/* Mobile main content (no sidebar margin needed) */}
-      <div className='pt-20 p-4 block md:hidden'>
+      {/* Main Content Area */}
+      <div
+        className='pt-[72px] md:pt-4 p-4 transition-all duration-300 ease-in-out'
+        style={{ marginLeft: isDesktop ? (isSidebarHovered ? '240px' : '76px') : '0px' }}
+      >
         <Outlet />
       </div>
     </div>
