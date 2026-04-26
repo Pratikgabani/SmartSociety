@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios from '../../axios';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
-import building1 from './../../assets/Rectangle95.png';
-import building2 from './../../assets/Rectangle97.jpg';
+// import building1 from './../../assets/Rectangle95.png';
+// import building2 from './../../assets/Rectangle97.jpg';
 import * as Yup from 'yup';
 
 const SocietyDetails = () => {

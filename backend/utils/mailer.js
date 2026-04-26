@@ -24,7 +24,7 @@ export const sendOtpEmail = async (to, otp) => {
       <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 32px; background:#f9f9f9; border-radius:12px;">
         <h2 style="color:#1a56db; margin-bottom:8px;">Email Verification</h2>
         <p style="color:#374151; font-size:15px;">
-          Welcome to <strong>SmartSociety</strong>! Use the OTP below to verify your email address.
+          Welcome to <strong>ResiHub</strong>! Use the OTP below to verify your email address.
           It is valid for <strong>5 minutes</strong>.
         </p>
         <div style="margin:32px 0; text-align:center;">
