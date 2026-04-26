@@ -50,9 +50,13 @@ function Login() {
       try {
         if (authResult["code"]) {
           const result = await googleAuth(authResult.code); 
-            const gRole = result.data?.data?.user?.role?.toString();
-            if (!gRole) throw new Error("Invalid login response");
-            setRolee(gRole);
+          console.log("GOOGLE AUTH RESULT:", result);
+          const gRole = result.data?.data?.user?.role?.toString();
+          if (!gRole) {
+            console.error("INVALID RESPONSE PAYLOAD:", result.data);
+            throw new Error("Invalid login response");
+          }
+          setRolee(gRole);
           toast.success("Google Login Successful");
           navigate('/layout/Dashboard');
         } else {

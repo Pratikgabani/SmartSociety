@@ -14,7 +14,9 @@ dotenv.config({
 const app = express();
 
 // 1. Set security HTTP headers
-app.use(helmet());
+app.use(helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
 app.use(
     cors({
