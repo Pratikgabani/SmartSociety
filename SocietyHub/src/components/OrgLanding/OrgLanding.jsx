@@ -161,11 +161,8 @@ function OrgLanding() {
       <div className="w-full relative z-50">
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300 bg-transparent'>
           <div className='relative flex justify-between items-center md:justify-center md:gap-12 lg:gap-24 transition-all duration-300'>
-            <div className='font-medium text-2xl sm:text-3xl text-slate-800 tracking-tight flex items-center gap-2 shrink-0 text-center md:text-left'>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center shadow-inner">
-                <span className="text-white text-lg font-medium">R</span>
-              </div>
-              ResiHub
+            <div className='flex items-center shrink-0 mr-4 sm:mr-12'>
+              <img src="/logo.png" alt="ResiHub Logo" className="h-12 sm:h-16 w-auto object-contain scale-[1.6] sm:scale-[1.8] origin-left mix-blend-multiply" />
             </div>
             <div className="md:hidden flex justify-end">
               <button 
@@ -288,16 +285,13 @@ function OrgLanding() {
                 className='text-left'
               >
                 <div className="relative z-10 flex flex-col h-full">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 mb-5 transform group-hover:scale-110 transition-transform duration-500">
-                    {benefit.icon}
-                  </div>
-
-                  <h3 className='text-xl font-medium text-slate-900 mb-3'>{benefit.title}</h3>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-blue-500 mb-3">0{index + 1}</span>
+                  <h3 className='text-xl font-semibold text-slate-900 mb-3'>{benefit.title}</h3>
                   <p className='text-sm text-slate-600 leading-relaxed mb-6'>{benefit.desc}</p>
 
                   <ul className='flex flex-col gap-3 mt-auto'>
                     {benefit.points.map((point, pIndex) => (
-                      <li key={pIndex} className='flex items-center gap-3 text-slate-700 text-sm font-medium bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100 group-hover:bg-white group-hover:border-blue-100 transition-colors duration-300'>
+                      <li key={pIndex} className='flex items-center gap-3 text-slate-700 text-sm font-medium bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100'>
                         <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                           <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         </div>
@@ -467,11 +461,8 @@ function OrgLanding() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between gap-12 lg:gap-8 border-b border-slate-200 pb-12">
               <div className="flex flex-col max-w-md">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-lg font-medium">R</span>
-                  </div>
-                  <h3 className="text-2xl font-medium text-slate-900 tracking-tight">ResiHub</h3>
+                <div className="flex items-center mb-10">
+                  <img src="/logo.png" alt="ResiHub Logo" className="h-14 sm:h-16 w-auto object-contain scale-[1.6] sm:scale-[1.8] origin-left mix-blend-multiply" />
                 </div>
                 <p className="text-sm leading-relaxed text-slate-600">
                   We are a dedicated platform designed to streamline society management, ensuring communication, maintenance, and community engagement are always hassle-free.

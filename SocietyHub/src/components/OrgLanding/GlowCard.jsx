@@ -17,14 +17,7 @@ const GlowCard = ({ children, className = "", glowColor = "blue" }) => {
   const gradientClass = gradientMap[glowColor] || gradientMap.blue;
 
   return (
-    <div className={`relative group h-full rounded-3xl p-[2px] bg-slate-100 overflow-hidden hover:shadow-2xl ${shadowClass} transition-all duration-500 ${className}`}>
-      {/* Spinning glow border */}
-      <div
-        className={`absolute inset-[-100%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-      >
-        <div className={`absolute inset-0 bg-gradient-to-r ${gradientClass} opacity-80`} />
-      </div>
-
+    <div className={`relative group h-full rounded-3xl p-[2px] bg-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 ${className}`}>
       {/* Card Content Surface */}
       <div className="relative h-full w-full bg-white rounded-[22px] p-8 sm:p-10 z-10 flex flex-col">
         {children}
