@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../../axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
-// import building1 from './../../assets/Rectangle95.png';
-// import building2 from './../../assets/Rectangle97.jpg';
 import * as Yup from 'yup';
 
 const SocietyDetails = () => {
@@ -66,106 +64,106 @@ const SocietyDetails = () => {
     }
   };
 
+  // Shared input & error classes (same as Register page)
+  const inputCls = 'w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 text-sm';
+  const errCls = 'text-red-500 text-xs font-semibold mt-1 pl-1';
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 font-raleway">
+    <div className="min-h-screen flex items-center justify-center bg-[#F4F7FE] font-raleway p-4">
       <Toaster />
-      <div className="bg-white rounded-lg shadow-lg p-8 md:flex w-11/12 max-w-5xl">
-        <div className="md:w-1/2">
-          <h1 className="text-3xl font-medium mb-4">Society Details Form</h1>
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="block text-gray-700 font-semibold">Society ID *</label>
-              <input
-                type="text"
-                name="societyId"
-                value={society.societyId}
-                onChange={(e) => setSociety({ ...society, societyId: e.target.value })}
-                placeholder="Enter Society ID"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-gray-700 font-semibold">Society Name *</label>
-              <input
-                type="text"
-                name="societyName"
-                value={society.societyName}
-                onChange={(e) => setSociety({ ...society, societyName: e.target.value })}
-                placeholder="Enter Society Name"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-gray-700 font-semibold">Society Address *</label>
-              <input
-                type="text"
-                name="societyAddress"
-                value={society.societyAddress}
-                onChange={(e) => setSociety({ ...society, societyAddress: e.target.value })}
-                placeholder="Enter Society Address"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-gray-700 font-semibold">Admin Pass *</label>
-              <input
-                type="text"
-                name="adminPass"
-                value={society.adminPass}
-                onChange={(e) => setSociety({ ...society, adminPass: e.target.value })}
-                placeholder="Enter Admin Pass"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-              {formErrors.adminPass && (
-                <p className="text-red-500 text-sm mt-1">{formErrors.adminPass}</p>
-              )}
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-gray-700 font-semibold">Security Pass *</label>
-              <input
-                type="text"
-                name="securityPass"
-                value={society.securityPass}
-                onChange={(e) => setSociety({ ...society, securityPass: e.target.value })}
-                placeholder="Enter Security Pass"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-              {formErrors.securityPass && (
-                <p className="text-red-500 text-sm mt-1">{formErrors.securityPass}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white mt-5 py-2 font-medium rounded-lg hover:bg-blue-700 transition"
-            >
-              Submit
-            </button>
-          </form>
-
-          <div className="text-center mt-4">
-            <p>
-              Go to{' '}
-              <a href="/register" className="text-blue-600 font-medium">
-                Register
-              </a>
-            </p>
-          </div>
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 w-full max-w-md transition-all duration-300 hover:shadow-2xl">
+        <div className="text-center mb-5">
+          <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Society Details</h1>
+          <p className="text-gray-500 mt-1 text-sm font-medium">Register your society to get started</p>
         </div>
 
-        <div className="hidden md:flex md:w-1/2 md:flex-col md:gap-4 md:pl-6">
-          <img src={building1} alt="Building 1" className="rounded-lg h-72" />
-          <img src={building2} alt="Building 2" className="rounded-lg h-72" />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Society ID</label>
+            <input
+              type="text"
+              name="societyId"
+              value={society.societyId}
+              onChange={(e) => setSociety({ ...society, societyId: e.target.value })}
+              placeholder="Enter Society ID"
+              required
+              className={inputCls}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Society Name</label>
+            <input
+              type="text"
+              name="societyName"
+              value={society.societyName}
+              onChange={(e) => setSociety({ ...society, societyName: e.target.value })}
+              placeholder="Enter Society Name"
+              required
+              className={inputCls}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Society Address</label>
+            <input
+              type="text"
+              name="societyAddress"
+              value={society.societyAddress}
+              onChange={(e) => setSociety({ ...society, societyAddress: e.target.value })}
+              placeholder="Enter Society Address"
+              required
+              className={inputCls}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Admin Password</label>
+            <input
+              type="password"
+              name="adminPass"
+              value={society.adminPass}
+              onChange={(e) => setSociety({ ...society, adminPass: e.target.value })}
+              placeholder="Enter Admin Password"
+              required
+              className={inputCls}
+            />
+            {formErrors.adminPass && (
+              <p className={errCls}>{formErrors.adminPass}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Security Password</label>
+            <input
+              type="password"
+              name="securityPass"
+              value={society.securityPass}
+              onChange={(e) => setSociety({ ...society, securityPass: e.target.value })}
+              placeholder="Enter Security Password"
+              required
+              className={inputCls}
+            />
+            {formErrors.securityPass && (
+              <p className={errCls}>{formErrors.securityPass}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2.5 mt-1 font-medium rounded-xl hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+          >
+            Submit
+          </button>
+        </form>
+
+        <div className="text-center mt-5">
+          <p className="text-sm text-gray-600 font-medium">
+            Go to{' '}
+            <Link to="/register" className="text-blue-600 font-medium hover:text-blue-700 hover:underline transition-colors">
+              Register
+            </Link>
+          </p>
         </div>
       </div>
     </div>
@@ -173,3 +171,4 @@ const SocietyDetails = () => {
 };
 
 export default SocietyDetails;
+
